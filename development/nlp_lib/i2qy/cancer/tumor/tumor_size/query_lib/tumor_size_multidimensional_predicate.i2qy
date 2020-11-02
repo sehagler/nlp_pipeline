@@ -1,0 +1,129 @@
+version: 5.5.1
+creationDate: '2018-09-13 16:45:43'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - word:
+          text: x
+          quantifier: {minimum: 0, maximum: 0}
+      - alternative:
+        - phrase:
+            displayChildren: false
+            of:
+            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy'}
+            - x
+        - phrase:
+            displayChildren: false
+            label: tumour size
+            of:
+            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy'}
+            - x
+            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy'}
+            - x
+      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+      - word:
+          text: x
+          quantifier: {minimum: 0, maximum: 0}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy:
+    version: 5.5.1
+    creationDate: '2018-04-30 10:18:42'
+    query:
+      document:
+      - phrase:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            of: [<, '>']
+        - alternative:
+          - class: {unit: length.meter, snid: measurement.length, pt: Length (m)}
+          - class: {snid: numerics.numerics, pt: Numerics}
+        - phrase:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - word:
+                text: (
+                quantifier: {minimum: 0, maximum: 1}
+            - alternative:
+                view: {layout: list}
+                of: [AP, ML, RL, SI]
+            - word:
+                text: )
+                quantifier: {minimum: 0, maximum: 1}
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - class: {snid: unit.length, pt: Length}
+    output: {useOutputEditor: true}
+    creator: haglers
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy:
+    version: 5.5.1
+    creationDate: '2018-04-30 10:48:27'
+    query:
+      document:
+      - phrase:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            of: [<, '>']
+        - alternative:
+            id: alternative1
+            of:
+            - phrase:
+              - alternative:
+                - phrase:
+                  - class: {unit: length.meter, snid: measurement.length, pt: Length
+                        (m)}
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - word:
+                          text: (
+                          quantifier: {minimum: 0, maximum: 1}
+                      - alternative:
+                          view: {layout: list}
+                          of: [AP, ML, RL, SI]
+                      - word:
+                          text: )
+                          quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                  - class: {snid: numerics.numerics, pt: Numerics}
+                  - phrase:
+                    - word:
+                        text: (
+                        quantifier: {minimum: 0, maximum: 1}
+                    - alternative:
+                        view: {layout: list}
+                        of: [AP, ML, RL, SI]
+                    - word:
+                        text: )
+                        quantifier: {minimum: 0, maximum: 1}
+                  - class: {snid: unit.length, pt: Length}
+              - word:
+                  text: focus
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+            - phrase:
+              - alternative:
+                - phrase:
+                  - class: {snid: numerics.numerics, pt: Numerics}
+                  - word:
+                      text: microscopic
+                      quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                  - class:
+                      quantifier: {minimum: 0, maximum: 1}
+                      snid: numerics.numerics
+                      pt: Numerics
+                  - microscopic
+              - word: {text: focus, morphoVariants: true}
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers

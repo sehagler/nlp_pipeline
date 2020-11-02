@@ -1,0 +1,19 @@
+SID ohsu_test_result
+
+test_result
+	PT Test Result
+	SYN absent
+	SYN amplified
+	SYN borderline
+	SYN equivocal
+	SYN high
+	SYN low
+	SYN marked
+	SYN minimal
+	SYN moderate
+	SYN negative
+	SYN non-amplified
+	SYN not done
+	SYN positive
+	SYN present
+	SYN unamplified

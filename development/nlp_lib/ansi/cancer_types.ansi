@@ -1,0 +1,11 @@
+SID ohsu_cancer_types
+
+cancer_type
+	PT Cancer Type
+	SYN adeno
+	SYN adenoCA
+	SYN adenocarcinoma
+	SYN CA
+	SYN cancer
+	SYN carcinoma
+	SYN melanoma

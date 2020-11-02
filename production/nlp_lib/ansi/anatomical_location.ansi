@@ -1,0 +1,227 @@
+SID ohsu_anatomical_location
+
+anatomical_location
+	PT Anatomical Location
+	SYN central
+	SYN deep
+	SYN distal
+	SYN peripheral
+	SYN proximal
+	SYN superficial
+	SYN anterior
+	SYN dorsal
+	SYN inferior
+	SYN lateral
+	SYN medial
+	SYN posterial
+	SYN superior
+	SYN anterior dorsal
+	SYN anterior/dorsal
+	SYN anterior-dorsal
+	SYN anterior inferior
+	SYN anterior/inferior
+	SYN anterior-inferior
+	SYN anterior lateral
+	SYN anterior/lateral
+	SYN anterior-lateral
+	SYN anterior medial
+	SYN anterior/medial
+	SYN anterior-medial
+	SYN anterior posterial
+	SYN anterior/posterial
+	SYN anterior-posterial
+	SYN anterior superior
+	SYN anterior/superior
+	SYN anterior-superior
+	SYN dorsal anterior
+	SYN dorsal/anterior
+	SYN dorsal-anterior
+	SYN dorsal inferior
+	SYN dorsal/inferior
+	SYN dorsal-inferior
+	SYN dorsal lateral
+	SYN dorsal/lateral
+	SYN dorsal-lateral
+	SYN dorsal medial
+	SYN dorsal/medial
+	SYN dorsal-medial
+	SYN dorsal posterial
+	SYN dorsal/posterial
+	SYN dorsal-posterial
+	SYN dorsal superior
+	SYN dorsal/superior
+	SYN dorsal-superior
+	SYN inferior anterior
+	SYN inferior/anterior
+	SYN inferior-anterior
+	SYN inferior dorsal
+	SYN inferior/dorsal
+	SYN inferior-dorsal
+	SYN inferior lateral
+	SYN inferior/lateral
+	SYN inferior-lateral
+	SYN inferior medial
+	SYN inferior/medial
+	SYN inferior-medial
+	SYN inferior posterial
+	SYN inferior/posterial
+	SYN inferior-posterial
+	SYN inferior superior
+	SYN inferior/superior
+	SYN inferior-superior
+	SYN lateral anterior
+	SYN lateral/anterior
+	SYN lateral-anterior
+	SYN lateral dorsal
+	SYN lateral/dorsal
+	SYN lateral-dorsal
+	SYN lateral inferior
+	SYN lateral/inferior
+	SYN lateral-inferior
+	SYN lateral medial
+	SYN lateral/medial
+	SYN lateral-medial
+	SYN lateral posterial
+	SYN lateral/posterial
+	SYN lateral-posterial
+	SYN lateral superior
+	SYN lateral/superior
+	SYN lateral-superior
+	SYN medial anterior
+	SYN medial/anterior
+	SYN medial-anterior
+	SYN medial dorsal
+	SYN medial/dorsal
+	SYN medial-dorsal
+	SYN medial inferior
+	SYN medial/inferior
+	SYN medial-inferior
+	SYN medial lateral
+	SYN medial/lateral
+	SYN medial-lateral
+	SYN medial posterial
+	SYN medial/posterial
+	SYN medial-posterial
+	SYN medial superior
+	SYN medial/superior
+	SYN medial-superior
+	SYN posterial anterior
+	SYN posterial/anterior
+	SYN posterial-anterior
+	SYN posterial dorsal
+	SYN posterial/dorsal
+	SYN posterial-dorsal
+	SYN posterial inferior
+	SYN posterial/inferior
+	SYN posterial-inferior
+	SYN posterial lateral
+	SYN posterial/lateral
+	SYN posterial-lateral
+	SYN posterial medial
+	SYN posterial/medial
+	SYN posterial-medial
+	SYN posterial superior
+	SYN posterial/superior
+	SYN posterial-superior
+	SYN superior anterior
+	SYN superior/anterior
+	SYN superior-anterior
+	SYN superior dorsal
+	SYN superior/dorsal
+	SYN superior-dorsal
+	SYN superior inferior
+	SYN superior/inferior
+	SYN superior-inferior
+	SYN superior lateral
+	SYN superior/lateral
+	SYN superior-lateral
+	SYN superior medial
+	SYN superior/medial
+	SYN superior-medial
+	SYN superior posterial
+	SYN superior/posterial
+	SYN superior-posterial
+	SYN anterodorsal
+	SYN antero-dorsal
+	SYN anteroinferior
+	SYN antero-inferior
+	SYN anterolateral
+	SYN antero-lateral
+	SYN anteromedial
+	SYN antero-medial
+	SYN anteroposterial
+	SYN antero-posterial
+	SYN anterosuperior
+	SYN antero-superior
+	SYN dorsoanterior
+	SYN dorso-anterior
+	SYN dorsoinferior
+	SYN dorso-inferior
+	SYN dorsolateral
+	SYN dorso-lateral
+	SYN dorsomedial
+	SYN dorso-medial
+	SYN dorsoposterial
+	SYN dorso-posterial
+	SYN dorsosuperior
+	SYN dorso-superior
+	SYN inferoanterior
+	SYN infero-anterior
+	SYN inferodorsal
+	SYN infero-dorsal
+	SYN inferolateral
+	SYN infero-lateral
+	SYN inferomedial
+	SYN infero-medial
+	SYN inferoposterial
+	SYN infero-posterial
+	SYN inferosuperior
+	SYN infero-superior
+	SYN lateroanterior
+	SYN latero-anterior
+	SYN laterodorsal
+	SYN latero-dorsal
+	SYN lateroinferior
+	SYN latero-inferior
+	SYN lateromedial
+	SYN latero-medial
+	SYN lateroposterial
+	SYN latero-posterial
+	SYN laterosuperior
+	SYN latero-superior
+	SYN medioanterior
+	SYN medio-anterior
+	SYN mediodorsal
+	SYN medio-dorsal
+	SYN medioinferior
+	SYN medio-inferior
+	SYN mediolateral
+	SYN medio-lateral
+	SYN medioposterial
+	SYN medio-posterial
+	SYN mediosuperior
+	SYN medio-superior
+	SYN posteroanterior
+	SYN postero-anterior
+	SYN posterodorsal
+	SYN postero-dorsal
+	SYN posteroinferior
+	SYN postero-inferior
+	SYN posterolateral
+	SYN postero-lateral
+	SYN posteromedial
+	SYN postero-medial
+	SYN posterosuperior
+	SYN postero-superior
+	SYN superoanterior
+	SYN supero-anterior
+	SYN superodorsal
+	SYN supero-dorsal
+	SYN superoinferior
+	SYN supero-inferior
+	SYN superolateral
+	SYN supero-lateral
+	SYN superomedial
+	SYN supero-medial
+	SYN superoposterial
+	SYN supero-posterial

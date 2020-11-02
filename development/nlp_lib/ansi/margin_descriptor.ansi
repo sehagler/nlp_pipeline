@@ -1,0 +1,15 @@
+SID ohsu_margin_decriptor
+
+margin_descriptor
+	PT Margin Descriptor
+	SYN biopsy
+	SYN cauterized
+	SYN deep
+	SYN excision
+	SYN inked
+	SYN new
+	SYN resection
+	SYN revised
+	SYN sectioned
+	SYN specimen
+	SYN surgical

@@ -1,0 +1,256 @@
+version: 5.5.1
+creationDate: '2018-05-09 14:58:04'
+query:
+  document:
+  - region:
+      snid: hc.rpt_text
+      pt: Report Text
+      where:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              id: region1
+              snid: hc.section_title
+              pt: Section Title
+              where: [SUMMARY]
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  quantifier: {minimum: 0, maximum: 0}
+                  snid: hc.specimen
+                  pt: Specimen Description
+              - link:
+                  path: [../tools_lib/body_site_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BreastCancerPathology/i2qy/tools_lib/body_site_query.i2qy']
+              - link:
+                  path: [hist_diff_predicate.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/histology/histological_differentiation/hist_diff_query.i2qy']
+                  id: link4
+output:
+  columns:
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - {id: link4.phrase1, linkItemId: link4}
+  - {id: region1}
+  columnLocations: [2, 0, 1]
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BreastCancerPathology/i2qy/tools_lib/body_site_query.i2qy:
+    version: 5.5.1
+    creationDate: '2018-05-11 10:17:50'
+    query:
+      document:
+      - alternative:
+          id: alternative1
+          of:
+          - class: {snid: snomed.76752008, pt: Breast structure}
+          - class: {snid: snomed.69031006, pt: Excision of breast tissue}
+          - mastectomy
+          - breast
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/histology/histological_differentiation/hist_diff_query.i2qy:
+    version: 5.5.1
+    creationDate: '2018-05-10 13:54:46'
+    query:
+      document:
+      - phrase:
+          boundaries: Exact
+          findMatches: longestOnly
+          id: phrase1
+          of:
+          - alternative:
+              view: {height: 535, width: 411}
+              of:
+              - phrase:
+                  allowOverlap: true
+                  view: {height: 370, width: 392}
+                  of:
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: none}
+                      of:
+                      - alternative:
+                        - macro:
+                            snid: linguamatics_wc.WC_Adverb
+                            pt: adverb
+                            of:
+                            - alternative:
+                                macroPt: adverb
+                                macroSnid: linguamatics_wc.WC_Adverb
+                                of:
+                                - additionally
+                                - after
+                                - afterwards
+                                - again
+                                - ago
+                                - phrase: [all, over]
+                                - almost
+                                - already
+                                - also
+                                - always
+                                - anyhow
+                                - anyway
+                                - anywhere
+                                - approximately
+                                - phrase: [as, well]
+                                - back
+                                - before
+                                - beforehand
+                                - besides
+                                - earlier
+                                - early
+                                - either
+                                - else
+                                - enough
+                                - especially
+                                - essentially
+                                - even
+                                - ever
+                                - everywhere
+                                - far
+                                - further
+                                - hardly
+                                - hence
+                                - here
+                                - hither
+                                - how
+                                - however
+                                - indeed
+                                - immediately
+                                - phrase: [in, particular]
+                                - instead
+                                - just
+                                - late
+                                - later
+                                - less
+                                - likely
+                                - maybe
+                                - more
+                                - most
+                                - much
+                                - nearby
+                                - nearly
+                                - never
+                                - not
+                                - now
+                                - nowhere
+                                - often
+                                - oftentimes
+                                - once
+                                - only
+                                - otherwise
+                                - overall
+                                - particularly
+                                - perhaps
+                                - possibly
+                                - presumably
+                                - probably
+                                - quite
+                                - rarely
+                                - rather
+                                - recently
+                                - relatively
+                                - respectively
+                                - seldom
+                                - so
+                                - somehow
+                                - sometimes
+                                - someway
+                                - somewhere
+                                - soon
+                                - specially
+                                - still
+                                - substantially
+                                - sufficiently
+                                - then
+                                - thence
+                                - there
+                                - thereafter
+                                - thereby
+                                - therefore
+                                - therein
+                                - thereto
+                                - thither
+                                - thus
+                                - today
+                                - tomorrow
+                                - too
+                                - twice
+                                - usually
+                                - very
+                                - well
+                                - whence
+                                - whither
+                                - 'yes'
+                                - yet
+                                - yesterday
+                        - moderately
+                        - poorly
+                        - squamous
+                        - well
+                      - alternative:
+                          quantifier: {minimum: 0, maximum: 1}
+                          view: {height: 135, width: 136}
+                          of:
+                          - {class: /prep}
+                          - macro:
+                              snid: linguamatics_wc.WC_Conjunction
+                              pt: conjunction
+                              of:
+                              - alternative:
+                                  macroPt: conjunction
+                                  macroSnid: linguamatics_wc.WC_Conjunction
+                                  of:
+                                  - '&'
+                                  - after
+                                  - albeit
+                                  - although
+                                  - also
+                                  - and
+                                  - as
+                                  - phrase: [as, far, as]
+                                  - because
+                                  - before
+                                  - but
+                                  - either
+                                  - if
+                                  - moreover
+                                  - neither
+                                  - nor
+                                  - once
+                                  - or
+                                  - so
+                                  - than
+                                  - though
+                                  - unless
+                                  - versus
+                                  - vs
+                                  - vs.
+                                  - when
+                                  - whereas
+                                  - whereby
+                                  - whether
+                                  - while
+                                  - whilst
+                                  - yet
+                  - word: {text: differentiated, matchType: Wildcard}
+              - phrase:
+                  allowOverlap: true
+                  view: {height: 118, width: 199}
+                  of:
+                  - alternative:
+                      view: {layout: list}
+                      of: [lobular, globular, tubular]
+                  - word: {text: differentiation, matchType: Wildcard}
+    output:
+      columns:
+      - {id: phrase1}
+      useOutputEditor: true
+    creator: haglers

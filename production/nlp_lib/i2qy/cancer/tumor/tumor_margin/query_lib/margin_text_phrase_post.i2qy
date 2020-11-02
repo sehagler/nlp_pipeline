@@ -1,0 +1,369 @@
+version: 5.5.1
+creationDate: '2018-07-20 09:18:33'
+query:
+  document:
+  - phrase:
+    - alternative:
+        quantifier: {minimum: 0, maximum: 0}
+        view: {layout: list}
+        of:
+        - macro:
+            snid: linguamatics_wc.WC_Conjunction
+            pt: conjunction
+            of:
+            - alternative:
+                macroPt: conjunction
+                macroSnid: linguamatics_wc.WC_Conjunction
+                of:
+                - '&'
+                - after
+                - albeit
+                - although
+                - also
+                - and
+                - as
+                - phrase: [as, far, as]
+                - because
+                - before
+                - but
+                - either
+                - if
+                - moreover
+                - neither
+                - nor
+                - once
+                - or
+                - so
+                - than
+                - though
+                - unless
+                - versus
+                - vs
+                - vs.
+                - when
+                - whereas
+                - whereby
+                - whether
+                - while
+                - whilst
+                - yet
+        - macro:
+            snid: linguamatics_wc.WC_Punctuation
+            pt: punctuation
+            of:
+            - alternative:
+                macroPt: punctuation
+                macroSnid: linguamatics_wc.WC_Punctuation
+                of:
+                - ','
+                - ;
+                - ':'
+                - .
+                - ''''
+                - ''''''
+                - '"'
+                - “
+                - ”
+                - «
+                - »
+                - ‘
+                - ’
+                - ‚
+                - ‛
+                - „
+                - ‟
+                - ‹
+                - ›
+                - (
+                - )
+                - '['
+                - ']'
+                - /
+                - '!'
+                - '?'
+                - '{'
+                - '}'
+                - word: {text: '-'}
+                - '~'
+                - '...'
+                - '***'
+                - _
+                - \
+        - receptor
+    - alternative:
+        quantifier: {minimum: 0, maximum: 1}
+        view: {layout: list}
+        of:
+        - macro:
+            snid: linguamatics_wc.WC_Auxiliary_Verb
+            pt: auxiliary verb
+            of:
+            - alternative:
+                macroPt: auxiliary verb
+                macroSnid: linguamatics_wc.WC_Auxiliary_Verb
+                of: [am, are, aren't, be, been, being, can, can't, cannot, could,
+                  couldn't, could've, did, didn't, do, does, doesn't, doing, done,
+                  don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll,
+                  he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might,
+                  must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's,
+                  should, shouldn't, should've, they'd, they'll, they're, they've,
+                  was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't,
+                  would, wouldn't, would've, you'd, you'll, you're, you've]
+        - word: {text: transect, morphoVariants: true}
+    - alternative:
+      - phrase:
+          id: phrase1
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 0}
+              view: {layout: list}
+              of:
+              - macro:
+                  snid: linguamatics_wc.WC_Punctuation
+                  pt: punctuation
+                  of:
+                  - alternative:
+                      macroPt: punctuation
+                      macroSnid: linguamatics_wc.WC_Punctuation
+                      of:
+                      - ','
+                      - ;
+                      - ':'
+                      - .
+                      - ''''
+                      - ''''''
+                      - '"'
+                      - “
+                      - ”
+                      - «
+                      - »
+                      - ‘
+                      - ’
+                      - ‚
+                      - ‛
+                      - „
+                      - ‟
+                      - ‹
+                      - ›
+                      - (
+                      - )
+                      - '['
+                      - ']'
+                      - /
+                      - '!'
+                      - '?'
+                      - '{'
+                      - '}'
+                      - word: {text: '-'}
+                      - '~'
+                      - '...'
+                      - '***'
+                      - _
+                      - \
+              - word: {text: node, morphoVariants: true}
+          - alternative:
+              view: {layout: list}
+              of: [clear, free, negative, positive]
+          - phrase:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - alternative:
+                  quantifier: {minimum: 0, maximum: 1}
+                  view: {layout: list}
+                  of:
+                  - {class: /prep}
+                  - macro:
+                      snid: linguamatics_wc.WC_Preposition
+                      pt: preposition
+                      of:
+                      - alternative:
+                          macroPt: preposition
+                          macroSnid: linguamatics_wc.WC_Preposition
+                          of:
+                          - aboard
+                          - about
+                          - above
+                          - absent
+                          - phrase: [according, to]
+                          - across
+                          - after
+                          - against
+                          - phrase: [ahead, of]
+                          - phrase: [all, over]
+                          - along
+                          - alongside
+                          - amid
+                          - amidst
+                          - among
+                          - amongst
+                          - anti
+                          - around
+                          - as
+                          - phrase: [as, far, as]
+                          - aside
+                          - phrase: [as, of]
+                          - phrase: [as, to]
+                          - astraddle
+                          - astride
+                          - at
+                          - atop
+                          - phrase: [because, of]
+                          - before
+                          - behind
+                          - below
+                          - beneath
+                          - beside
+                          - besides
+                          - between
+                          - beyond
+                          - but
+                          - by
+                          - circa
+                          - despite
+                          - down
+                          - during
+                          - except
+                          - phrase: [except, for]
+                          - for
+                          - from
+                          - given
+                          - in
+                          - phrase: [in, addition, to]
+                          - phrase: [in, between]
+                          - phrase: [in, case, of]
+                          - phrase: [in, place, of]
+                          - inside
+                          - phrase: [in, spite, of]
+                          - phrase: [instead, of]
+                          - into
+                          - less
+                          - lest
+                          - like
+                          - minus
+                          - near
+                          - phrase: [near, to]
+                          - next
+                          - phrase: [next, to]
+                          - notwithstanding
+                          - of
+                          - 'off'
+                          - 'on'
+                          - phrase: ['on', account, of]
+                          - phrase: ['on', top, of]
+                          - onto
+                          - opposite
+                          - phrase: [other, than]
+                          - out
+                          - phrase: [out, of]
+                          - outside
+                          - phrase: [outside, of]
+                          - over
+                          - past
+                          - per
+                          - plus
+                          - save
+                          - since
+                          - through
+                          - throughout
+                          - till
+                          - to
+                          - toward
+                          - towards
+                          - under
+                          - underneath
+                          - unlike
+                          - until
+                          - unto
+                          - up
+                          - phrase: [up, to]
+                          - upon
+                          - versus
+                          - vs
+                          - vs.
+                          - via
+                          - with
+                          - within
+                          - without
+              - alternative:
+                  quantifier: {minimum: 0, maximum: none}
+                  view: {layout: list}
+                  of:
+                  - macro:
+                      snid: linguamatics_wc.WC_Conjunction
+                      pt: conjunction
+                      of:
+                      - alternative:
+                          macroPt: conjunction
+                          macroSnid: linguamatics_wc.WC_Conjunction
+                          of:
+                          - '&'
+                          - after
+                          - albeit
+                          - although
+                          - also
+                          - and
+                          - as
+                          - phrase: [as, far, as]
+                          - because
+                          - before
+                          - but
+                          - either
+                          - if
+                          - moreover
+                          - neither
+                          - nor
+                          - once
+                          - or
+                          - so
+                          - than
+                          - though
+                          - unless
+                          - versus
+                          - vs
+                          - vs.
+                          - when
+                          - whereas
+                          - whereby
+                          - whether
+                          - while
+                          - whilst
+                          - yet
+                  - phrase: [in, situ]
+                  - in-situ
+                  - infiltrating
+                  - invasive
+              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy'}
+      - alternative:
+          view: {layout: list}
+          of: [clear, free, involved, negative, positive]
+      - alternative:
+          view: {layout: list}
+          of:
+          - word: {text: involve, morphoVariants: true}
+          - involvement
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy
+  : version: 5.5.1
+    creationDate: '2020-03-11 16:36:51'
+    query:
+      document:
+      - alternative:
+        - class:
+            parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific
+                neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
+            snid: nlm_plus.D009369
+            pt: Neoplasms
+            where:
+            - alternative:
+                quantifier: {minimum: 0, maximum: 0}
+                view: {layout: list}
+                of: [component, carcinoma, involvement, lesion, malignancy, tumor]
+        - alternative:
+            view: {layout: list}
+            of: [component, carcinoma, involvement, lesion, malignancy, tumor]
+    creator: haglers

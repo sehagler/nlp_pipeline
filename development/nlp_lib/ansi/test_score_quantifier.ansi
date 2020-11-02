@@ -1,0 +1,9 @@
+SID ohsu_test_score_quantifier
+
+test_score_quantifier
+	PT Test Score Quantifier
+	SYN grade
+	SYN intensity
+	SYN point
+	SYN points
+	SYN score

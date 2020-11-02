@@ -1,0 +1,335 @@
+version: 5.5.1
+creationDate: '2018-05-09 10:05:31'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      id: phrase1
+      of:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          view: {layout: list}
+          of: [measuring, spanning]
+      - alternative:
+          quantifier: {minimum: 0, maximum: none}
+          view: {layout: list}
+          of:
+          - phrase:
+              displayChildren: false
+              of: [at, least]
+          - about
+          - apparently
+          - approximately
+          - estimated
+          - within
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_dim_tag.i2qy'}
+          - class:
+              quantifier: {minimum: 0, maximum: 1}
+              snid: /prep
+      - alternative:
+        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_single_predicate.i2qy'}
+        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_double_predicate.i2qy'}
+        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_multidimensional_predicate.i2qy'}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - class:
+              quantifier: {minimum: 0, maximum: 1}
+              snid: /prep
+          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_dim_tag.i2qy'}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy
+  : version: 5.5.1
+    creationDate: '2018-04-30 10:18:42'
+    query:
+      document:
+      - phrase:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            of: [<, '>']
+        - alternative:
+          - class: {unit: length.meter, snid: measurement.length, pt: Length (m)}
+          - class: {snid: numerics.numerics, pt: Numerics}
+        - phrase:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - word:
+                text: (
+                quantifier: {minimum: 0, maximum: 1}
+            - alternative:
+                view: {layout: list}
+                of: [AP, ML, RL, SI]
+            - word:
+                text: )
+                quantifier: {minimum: 0, maximum: 1}
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - class: {snid: unit.length, pt: Length}
+    output: {useOutputEditor: true}
+    creator: haglers
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+  : version: 5.5.1
+    creationDate: '2018-04-30 10:48:27'
+    query:
+      document:
+      - phrase:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            of: [<, '>']
+        - alternative:
+            id: alternative1
+            of:
+            - phrase:
+              - alternative:
+                - phrase:
+                  - class: {unit: length.meter, snid: measurement.length, pt: Length
+                        (m)}
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - word:
+                          text: (
+                          quantifier: {minimum: 0, maximum: 1}
+                      - alternative:
+                          view: {layout: list}
+                          of: [AP, ML, RL, SI]
+                      - word:
+                          text: )
+                          quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                  - class: {snid: numerics.numerics, pt: Numerics}
+                  - phrase:
+                    - word:
+                        text: (
+                        quantifier: {minimum: 0, maximum: 1}
+                    - alternative:
+                        view: {layout: list}
+                        of: [AP, ML, RL, SI]
+                    - word:
+                        text: )
+                        quantifier: {minimum: 0, maximum: 1}
+                  - class: {snid: unit.length, pt: Length}
+              - word:
+                  text: focus
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+            - phrase:
+              - alternative:
+                - phrase:
+                  - class: {snid: numerics.numerics, pt: Numerics}
+                  - word:
+                      text: microscopic
+                      quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                  - class:
+                      quantifier: {minimum: 0, maximum: 1}
+                      snid: numerics.numerics
+                      pt: Numerics
+                  - microscopic
+              - word: {text: focus, morphoVariants: true}
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_dim_tag.i2qy
+  : version: 5.5.1
+    creationDate: '2018-05-02 14:21:27'
+    query:
+      document:
+      - phrase:
+          view: {height: 170, width: 203}
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: none}
+              view: {layout: list}
+              of: [aggregate, contiguous, estimated, greatest, largest, maximum]
+          - alternative:
+              view: {layout: list}
+              of:
+              - word: {text: diameter, morphoVariants: true}
+              - word: {text: dimension, morphoVariants: true}
+              - word: {text: extent, morphoVariants: true}
+              - word: {text: length, morphoVariants: true}
+              - word: {text: size, morphoVariants: true}
+    creator: haglers
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_double_predicate.i2qy
+  : version: 5.5.1
+    creationDate: '2018-05-09 12:47:01'
+    query:
+      document:
+      - phrase:
+          id: phrase2
+          view: {height: 283, width: 1117}
+          of:
+          - phrase:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - ranging
+              - {class: /prep}
+          - alternative:
+              view: {height: 246, width: 378}
+              of:
+              - phrase:
+                - word:
+                    text: x
+                    quantifier: {minimum: 0, maximum: 0}
+                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+                - word:
+                    text: x
+                    quantifier: {minimum: 0, maximum: 0}
+              - phrase:
+                - phrase:
+                    quantifier: {minimum: 0, maximum: 0}
+                    of:
+                    - class: {snid: numerics.numerics, pt: Numerics}
+                    - ':'
+                - class: {snid: numerics.numerics, pt: Numerics}
+          - alternative:
+            - macro:
+                snid: linguamatics_wc.WC_Conjunction
+                pt: conjunction
+                of:
+                - alternative:
+                    macroPt: conjunction
+                    macroSnid: linguamatics_wc.WC_Conjunction
+                    of:
+                    - '&'
+                    - after
+                    - albeit
+                    - although
+                    - also
+                    - and
+                    - as
+                    - phrase: [as, far, as]
+                    - because
+                    - before
+                    - but
+                    - either
+                    - if
+                    - moreover
+                    - neither
+                    - nor
+                    - once
+                    - or
+                    - so
+                    - than
+                    - though
+                    - unless
+                    - versus
+                    - vs
+                    - vs.
+                    - when
+                    - whereas
+                    - whereby
+                    - whether
+                    - while
+                    - whilst
+                    - yet
+            - {class: /prep}
+          - phrase:
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+    output:
+      columns:
+      - {id: phrase2}
+      useOutputEditor: true
+    creator: haglers
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_multidimensional_predicate.i2qy
+  : version: 5.5.1
+    creationDate: '2018-09-13 16:45:43'
+    query:
+      document:
+      - phrase:
+          id: phrase1
+          of:
+          - word:
+              text: x
+              quantifier: {minimum: 0, maximum: 0}
+          - alternative:
+            - phrase:
+                displayChildren: false
+                of:
+                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy'}
+                - x
+            - phrase:
+                displayChildren: false
+                label: tumour size
+                of:
+                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy'}
+                - x
+                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy'}
+                - x
+          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+          - word:
+              text: x
+              quantifier: {minimum: 0, maximum: 0}
+    output:
+      columns:
+      - {id: phrase1}
+      useOutputEditor: true
+    creator: haglers
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_single_predicate.i2qy
+  : version: 5.5.1
+    creationDate: '2018-05-08 14:57:34'
+    query:
+      document:
+      - phrase:
+          id: phrase2
+          of:
+          - phrase:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - phrase:
+                - word:
+                    text: x
+                    quantifier: {minimum: 0, maximum: 0}
+                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+                - word:
+                    text: x
+                    quantifier: {minimum: 0, maximum: 0}
+              - alternative:
+                  view: {layout: list}
+                  of: [+, and, but, to]
+          - phrase:
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+          - phrase:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - alternative:
+                  view: {layout: list}
+                  of: [+, and, but, to]
+              - phrase:
+                - word:
+                    text: x
+                    quantifier: {minimum: 0, maximum: 0}
+                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy'}
+                - word:
+                    text: x
+                    quantifier: {minimum: 0, maximum: 0}
+    output:
+      columns:
+      - {title: tumor size phrase, id: phrase2}
+      useOutputEditor: true
+    creator: haglers

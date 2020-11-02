@@ -1,0 +1,55 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun  5 13:49:19 2019
+
+@author: haglers
+"""
+
+#
+import re
+import statistics
+
+#
+from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_base
+
+#
+class Postprocessor(Postprocessor_base):
+    
+    #
+    def __init__(self, json_file, data_key_map, data_value_map, label):
+        self.label = label
+        Postprocessor_base.__init__(self, json_file, data_key_map, data_value_map, None)
+        self._get_smoking_products()
+        
+    #
+    def _get_smoking_products(self):
+        for i in range(len(self.data_dict_list)):
+            for key in self.data_dict_list[i]['DATA']:
+                try:
+                    text_list = self.data_dict_list[i]['DATA'][key][self.label + ' TEXT']
+                except:
+                    text_list = []
+                value_list = []
+                for text in text_list:
+                    if re.search('(?i)(?<!e-)cigar(s)?(?!ette)', text) is not None:
+                        match = re.search('(?i)(?<!e-)cigar(s)?(?!ette)', text)
+                        value = match.group(0)
+                        value = re.sub('(?i)cigar(s)?', 'cigars', value)
+                        value_list.append(value.lower())
+                    if re.search('(?i)(?<!e-)cigarette(s)?', text) is not None:
+                        match = re.search('(?i)(?<!e-)cigarette(s)?', text)
+                        value = match.group(0)
+                        value = re.sub('(?i)cigarette(s)?', 'cigarettes', value)
+                        value_list.append(value.lower())
+                    if re.search('(?i)e-cigarette(s)?', text) is not None:
+                        match = re.search('(?i)e-cigarette(s)?', text)
+                        value = match.group(0)
+                        value = re.sub('(?i)e-cigarette(s)?', 'e-cigarettes', value)
+                        value_list.append(value.lower())
+                    if re.search('(?i)(marijuana|pipe)', text):
+                        value_list.append('other')
+                    if re.search('(?i)(packs?|PPY)', text):
+                        value_list.append('cigarettes')
+                if len(value_list) > 0:
+                    value_list = list(set(value_list))
+                    self.data_dict_list[i]['DATA'][key][self.label + ' VALUE']  = value_list

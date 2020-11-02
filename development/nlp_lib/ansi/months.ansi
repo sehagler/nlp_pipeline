@@ -1,0 +1,27 @@
+SID ohsu_months
+
+months
+	PT Month
+	SYN Jan
+	SYN January
+	SYN Feb
+	SYN February
+	SYN Mar
+	SYN March
+	SYN Apr
+	SYN April
+	SYN May
+	SYN Jun
+	SYN June
+	SYN Jul
+	SYN July
+	SYN Aug
+	SYN August
+	SYN Sep
+	SYN September
+	SYN Oct
+	SYN October
+	SYN Nov
+	SYN November
+	SYN Dec
+	SYN December

@@ -1,0 +1,54 @@
+version: 5.5.1
+creationDate: '2019-04-22 18:24:37'
+query:
+  document:
+  - phrase:
+    - phrase:
+        quantifier: {minimum: 0, maximum: 0}
+        of:
+        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
+        - /
+    - alternative:
+      - phrase:
+          displayChildren: false
+          of: [monocytic, population]
+      - monocytosis
+      - word: {text: 'monocytes?', matchType: Regexp}
+      - word: {text: 'promonocytes?', matchType: Regexp}
+    - phrase:
+        quantifier: {minimum: 0, maximum: 0}
+        of:
+        - /
+        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
+creator: haglers
+querySnapshots:
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy:
+    version: 5.5.1
+    creationDate: '2019-02-26 19:12:21'
+    query:
+      document:
+      - alternative:
+          id: alternative1
+          of:
+          - involvement
+          - word: {text: monoblast, morphoVariants: true}
+          - word: {text: myeloblast, morphoVariants: true}
+          - phrase:
+              displayChildren: false
+              of:
+              - alternative:
+                  quantifier: {minimum: 0, maximum: 0}
+                  of: [immature, leukemic, lymphoid]
+              - word:
+                  text: myeloid
+                  quantifier: {minimum: 0, maximum: 1}
+              - word: {text: blast, morphoVariants: true}
+              - word:
+                  text: equivalent
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers

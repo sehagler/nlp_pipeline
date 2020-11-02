@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 16 09:55:47 2020
+
+@author: haglers
+"""
+
+#
+from nlp_lib.py.manager_lib.test_manager_class import Test_manager
+from projects_lib.CCC19.py.ccc19_project_manager_class import CCC19_project_manager
+from projects_lib.CCC19.py.data_validation_class import Data_validation
+
+#
+class CCC19_test_manager(Test_manager):
+    
+    #
+    def __init__(self, project_data, root_dir_flg):
+        user = project_data['user']
+        project_manager_development = CCC19_project_manager('development', user, root_dir_flg)
+        project_manager_production = CCC19_project_manager('production', user, root_dir_flg)
+        Test_manager.__init__(self, project_manager_development, project_manager_production)
+        
+    #
+    def data_validation(self):
+        Data_validation(self.project_data_development)
+        Data_validation(self.project_data_production)

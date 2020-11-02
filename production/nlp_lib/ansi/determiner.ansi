@@ -1,0 +1,45 @@
+SID ohsu_determiner
+
+determiner
+	PT Determiner
+	SYN a
+	SYN all
+	SYN all other
+	SYN an
+	SYN another
+	SYN any
+	SYN both
+	SYN each
+	SYN enough
+	SYN every
+	SYN few
+	SYN fewer
+	SYN her
+	SYN his
+	SYN its
+	SYN less
+	SYN little
+	SYN many
+	SYN much
+	SYN more
+	SYN most
+	SYN multiple
+	SYN my
+	SYN other
+	SYN our
+	SYN several
+	SYN some
+	SYN such
+	SYN sufficient
+	SYN that
+	SYN the
+	SYN their
+	SYN these
+	SYN this
+	SYN those
+	SYN what
+	SYN whatever
+	SYN which
+	SYN whichever
+	SYN whose
+	SYN your

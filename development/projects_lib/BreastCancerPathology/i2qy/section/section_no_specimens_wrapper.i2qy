@@ -1,0 +1,61 @@
+version: 5.5.1
+creationDate: '2018-10-26 15:56:12'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where: [SUMMARY]
+      - region:
+          columnOptions: [Text]
+          showWholeRegion: true
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              quantifier: {minimum: 0, maximum: 0}
+              snid: hc.specimen
+              pt: Specimen Description
+          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/sections_query.i2qy',
+              id: link1}
+output:
+  columns:
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - {id: region1}
+  - {id: link1.alternative1, linkItemId: link1}
+  columnLocations: [1, 0, 2]
+  outputSettings: {allResults: true, allRows: true, allTime: true}
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/sections_query.i2qy:
+    version: 5.5.1
+    creationDate: '2020-03-04 23:34:51'
+    query:
+      document:
+      - alternative:
+          findMatches: longestOnly
+          id: alternative1
+          of:
+          - phrase:
+              findMatches: longestOnly
+              maxSentenceGap: -1
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - word: {text: .*, matchType: Regexp}
+              - word: {text: .*, matchType: Regexp}
+          - word: {text: .*, matchType: Regexp}
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers

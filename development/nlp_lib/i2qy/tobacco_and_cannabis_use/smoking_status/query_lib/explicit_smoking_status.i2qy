@@ -1,0 +1,154 @@
+version: 5.6.1
+creationDate: '2020-06-08 20:16:58'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - phrase:
+        - alternative:
+          - macro:
+              snid: linguamatics_wc.WC_Negative_Word
+              pt: negative word
+              of:
+              - alternative:
+                  macroPt: negative word
+                  macroSnid: linguamatics_wc.WC_Negative_Word
+                  of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't,
+                    hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody,
+                    none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't,
+                    wasn't, weren't, won't, wouldn't]
+          - current
+          - former
+        - phrase:
+            displayChildren: false
+            of:
+            - alternative:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - phrase:
+                    displayChildren: false
+                    of: [every, day]
+                - daily
+            - word:
+                text: tobacco
+                quantifier: {minimum: 0, maximum: 1}
+            - smoker
+      - phrase:
+          displayChildren: false
+          of:
+          - phrase:
+            - word: {text: use, morphoVariants: true}
+            - tobacco
+          - word:
+              text: daily
+              quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          displayChildren: false
+          of:
+          - phrase:
+            - word: {text: smoke, morphoVariants: true}
+            - word:
+                text: tobacco
+                quantifier: {minimum: 0, maximum: 1}
+          - daily
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+            - phrase:
+              - word: {text: smoke, morphoVariants: true}
+              - status
+            - phrase:
+                displayChildren: false
+                of:
+                - word:
+                    text: smokeless
+                    quantifier: {minimum: 0, maximum: 0}
+                - tobacco
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of:
+                    - smoker
+                    - alternative: [abuse, use]
+          - word:
+              text: ':'
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+            - phrase:
+                maxWordGap: -1
+                wordGapRestricted: false
+                of:
+                - alternative:
+                  - macro:
+                      snid: linguamatics_wc.WC_Negative_Word
+                      pt: negative word
+                      of:
+                      - alternative:
+                          macroPt: negative word
+                          macroSnid: linguamatics_wc.WC_Negative_Word
+                          of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
+                            hadn't, hasn't, haven't, isn't, mustn't, never, neither,
+                            'no', nobody, none, nor, not, nothing, nowhere, oughtn't,
+                            shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+                  - current
+                  - former
+                - word:
+                    text: smoker
+                    quantifier: {minimum: 0, maximum: 1}
+            - phrase:
+                displayChildren: false
+                of:
+                - macro:
+                    snid: linguamatics_wc.WC_Negative_Word
+                    pt: negative word
+                    of:
+                    - alternative:
+                        macroPt: negative word
+                        macroSnid: linguamatics_wc.WC_Negative_Word
+                        of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
+                          hadn't, hasn't, haven't, isn't, mustn't, never, neither,
+                          'no', nobody, none, nor, not, nothing, nowhere, oughtn't,
+                          shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+                - 'on'
+                - file
+      - phrase:
+          displayChildren: false
+          of:
+          - word: {text: smoke, morphoVariants: true}
+          - ':'
+          - alternative:
+            - phrase:
+              - class: {snid: numerics.integers, pt: Integer}
+              - word: {text: cigarette, morphoVariants: true}
+            - word: {text: deny, morphoVariants: true}
+            - phrase:
+              - macro:
+                  snid: linguamatics_wc.WC_Negative_Word
+                  pt: negative word
+                  of:
+                  - alternative:
+                      macroPt: negative word
+                      macroSnid: linguamatics_wc.WC_Negative_Word
+                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
+                        hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
+                        nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
+                        shouldn't, wasn't, weren't, won't, wouldn't]
+              - word: {text: use, morphoVariants: true}
+            - macro:
+                snid: linguamatics_wc.WC_Negative_Word
+                pt: negative word
+                of:
+                - alternative:
+                    macroPt: negative word
+                    macroSnid: linguamatics_wc.WC_Negative_Word
+                    of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
+                      hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
+                      nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
+                      shouldn't, wasn't, weren't, won't, wouldn't]
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

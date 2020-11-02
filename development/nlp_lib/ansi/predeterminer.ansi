@@ -1,0 +1,29 @@
+SID ohsu_predeterminer
+
+predeterminer
+	PT Predeterminer
+	SYN all
+	SYN all other
+	SYN another
+	SYN any
+	SYN both
+	SYN each
+	SYN enough
+	SYN every one
+	SYN few
+	SYN fewer
+	SYN less
+	SYN little
+	SYN many
+	SYN much
+	SYN more
+	SYN most
+	SYN several
+	SYN some
+	SYN such
+	SYN that
+	SYN those
+	SYN what
+	SYN whatever
+	SYN which
+	SYN whichever

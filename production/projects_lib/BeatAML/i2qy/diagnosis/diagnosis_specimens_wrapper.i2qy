@@ -1,0 +1,583 @@
+version: 5.4
+creationDate: '2018-10-26 16:03:06'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - alternative: [COMMENT, NOTE, SUMMARY]
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen
+                    Id}
+              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/diagnosis/diagnosis_query.i2qy',
+                  id: link3}
+  - link:
+      path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
+output:
+  columns:
+  - {id: shadow region1}
+  - {id: region1}
+  - {id: link3.phrase2, linkItemId: link3}
+  columnLocations: [1, 0, 2]
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy:
+    version: 5.4
+    creationDate: '2019-01-30 22:16:19'
+    query:
+      document:
+      - alternative:
+          id: alternative1
+          of:
+          - region:
+              view: {height: 336, width: 316}
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  view: {height: 82, width: 96}
+                  snid: hc.section_title
+                  pt: Section Title
+                  where: [SUMMARY]
+              - region:
+                  columnOptions: [Text]
+                  showWholeRegion: true
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - alternative:
+                    - phrase:
+                        displayChildren: false
+                        of: [bone, marrow]
+                    - CSF
+                    - phrase:
+                        displayChildren: false
+                        of:
+                        - word:
+                            text: peripheral
+                            quantifier: {minimum: 0, maximum: 1}
+                        - blood
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/diagnosis/diagnosis_query.i2qy:
+    version: 5.4
+    creationDate: '2019-01-30 00:13:24'
+    query:
+      document:
+      - phrase:
+          findMatches: longestOnly
+          id: phrase2
+          view: {height: 640, width: 2046}
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - macro:
+                  snid: linguamatics_wc.WC_Negative_Word
+                  pt: negative word
+                  of:
+                  - alternative:
+                      macroPt: negative word
+                      macroSnid: linguamatics_wc.WC_Negative_Word
+                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
+                        hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
+                        nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
+                        shouldn't, wasn't, weren't, won't, wouldn't]
+              - negative
+              - rather
+          - alternative:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - class: {includeInQuery: false, snid: /vg}
+              - history
+              - possibility
+              - previous
+              - underlying
+          - phrase:
+              displayChildren: false
+              findMatches: longestOnly
+              maxWordGap: 1
+              view: {height: 593, width: 1789}
+              of:
+              - phrase:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - alternative: [compatible, consistent, evidence, involvement, suspicious]
+                  - alternative:
+                    - {class: /prep}
+                    - macro:
+                        snid: linguamatics_wc.WC_Preposition
+                        pt: preposition
+                        of:
+                        - alternative:
+                            macroPt: preposition
+                            macroSnid: linguamatics_wc.WC_Preposition
+                            of:
+                            - aboard
+                            - about
+                            - above
+                            - absent
+                            - phrase: [according, to]
+                            - across
+                            - after
+                            - against
+                            - phrase: [ahead, of]
+                            - phrase: [all, over]
+                            - along
+                            - alongside
+                            - amid
+                            - amidst
+                            - among
+                            - amongst
+                            - anti
+                            - around
+                            - as
+                            - phrase: [as, far, as]
+                            - aside
+                            - phrase: [as, of]
+                            - phrase: [as, to]
+                            - astraddle
+                            - astride
+                            - at
+                            - atop
+                            - phrase: [because, of]
+                            - before
+                            - behind
+                            - below
+                            - beneath
+                            - beside
+                            - besides
+                            - between
+                            - beyond
+                            - but
+                            - by
+                            - circa
+                            - despite
+                            - down
+                            - during
+                            - except
+                            - phrase: [except, for]
+                            - for
+                            - from
+                            - given
+                            - in
+                            - phrase: [in, addition, to]
+                            - phrase: [in, between]
+                            - phrase: [in, case, of]
+                            - phrase: [in, place, of]
+                            - inside
+                            - phrase: [in, spite, of]
+                            - phrase: [instead, of]
+                            - into
+                            - less
+                            - lest
+                            - like
+                            - minus
+                            - near
+                            - phrase: [near, to]
+                            - next
+                            - phrase: [next, to]
+                            - notwithstanding
+                            - of
+                            - 'off'
+                            - 'on'
+                            - phrase: ['on', account, of]
+                            - phrase: ['on', top, of]
+                            - onto
+                            - opposite
+                            - phrase: [other, than]
+                            - out
+                            - phrase: [out, of]
+                            - outside
+                            - phrase: [outside, of]
+                            - over
+                            - past
+                            - per
+                            - plus
+                            - save
+                            - since
+                            - through
+                            - throughout
+                            - till
+                            - to
+                            - toward
+                            - towards
+                            - under
+                            - underneath
+                            - unlike
+                            - until
+                            - unto
+                            - up
+                            - phrase: [up, to]
+                            - upon
+                            - versus
+                            - vs
+                            - vs.
+                            - via
+                            - with
+                            - within
+                            - without
+              - phrase:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - phrase:
+                      maxWordGap: 1
+                      of:
+                      - phrase:
+                          quantifier: {minimum: 0, maximum: none}
+                          of:
+                          - word:
+                              text: ','
+                              quantifier: {minimum: 0, maximum: 1}
+                          - macro:
+                              quantifier: {minimum: 0, maximum: 1}
+                              snid: linguamatics_wc.WC_Conjunction
+                              pt: conjunction
+                              of:
+                              - alternative:
+                                  macroPt: conjunction
+                                  macroSnid: linguamatics_wc.WC_Conjunction
+                                  of:
+                                  - '&'
+                                  - after
+                                  - albeit
+                                  - although
+                                  - also
+                                  - and
+                                  - as
+                                  - phrase: [as, far, as]
+                                  - because
+                                  - before
+                                  - but
+                                  - either
+                                  - if
+                                  - moreover
+                                  - neither
+                                  - nor
+                                  - once
+                                  - or
+                                  - so
+                                  - than
+                                  - though
+                                  - unless
+                                  - versus
+                                  - vs
+                                  - vs.
+                                  - when
+                                  - whereas
+                                  - whereby
+                                  - whether
+                                  - while
+                                  - whilst
+                                  - yet
+                          - alternative:
+                            - phrase:
+                                displayChildren: false
+                                of: [flow, cytometric]
+                            - immunohistochemical
+                            - immunologic
+                            - immunophenotypic
+                            - morphologic
+                      - alternative:
+                        - {class: /prep}
+                        - macro:
+                            snid: linguamatics_wc.WC_Preposition
+                            pt: preposition
+                            of:
+                            - alternative:
+                                macroPt: preposition
+                                macroSnid: linguamatics_wc.WC_Preposition
+                                of:
+                                - aboard
+                                - about
+                                - above
+                                - absent
+                                - phrase: [according, to]
+                                - across
+                                - after
+                                - against
+                                - phrase: [ahead, of]
+                                - phrase: [all, over]
+                                - along
+                                - alongside
+                                - amid
+                                - amidst
+                                - among
+                                - amongst
+                                - anti
+                                - around
+                                - as
+                                - phrase: [as, far, as]
+                                - aside
+                                - phrase: [as, of]
+                                - phrase: [as, to]
+                                - astraddle
+                                - astride
+                                - at
+                                - atop
+                                - phrase: [because, of]
+                                - before
+                                - behind
+                                - below
+                                - beneath
+                                - beside
+                                - besides
+                                - between
+                                - beyond
+                                - but
+                                - by
+                                - circa
+                                - despite
+                                - down
+                                - during
+                                - except
+                                - phrase: [except, for]
+                                - for
+                                - from
+                                - given
+                                - in
+                                - phrase: [in, addition, to]
+                                - phrase: [in, between]
+                                - phrase: [in, case, of]
+                                - phrase: [in, place, of]
+                                - inside
+                                - phrase: [in, spite, of]
+                                - phrase: [instead, of]
+                                - into
+                                - less
+                                - lest
+                                - like
+                                - minus
+                                - near
+                                - phrase: [near, to]
+                                - next
+                                - phrase: [next, to]
+                                - notwithstanding
+                                - of
+                                - 'off'
+                                - 'on'
+                                - phrase: ['on', account, of]
+                                - phrase: ['on', top, of]
+                                - onto
+                                - opposite
+                                - phrase: [other, than]
+                                - out
+                                - phrase: [out, of]
+                                - outside
+                                - phrase: [outside, of]
+                                - over
+                                - past
+                                - per
+                                - plus
+                                - save
+                                - since
+                                - through
+                                - throughout
+                                - till
+                                - to
+                                - toward
+                                - towards
+                                - under
+                                - underneath
+                                - unlike
+                                - until
+                                - unto
+                                - up
+                                - phrase: [up, to]
+                                - upon
+                                - versus
+                                - vs
+                                - vs.
+                                - via
+                                - with
+                                - within
+                                - without
+              - phrase:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - alternative:
+                    - evolving
+                    - persistent
+                    - recurrent
+                    - word: {text: relapse, morphoVariants: true}
+                    - residual
+                    - undifferentiated
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: none}
+                      of:
+                      - /
+                      - alternative:
+                        - evolving
+                        - persistent
+                        - recurrent
+                        - word: {text: relapse, morphoVariants: true}
+                        - residual
+                        - undifferentiated
+                  - word:
+                      text: involvement
+                      quantifier: {minimum: 0, maximum: 1}
+                  - alternative:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - {class: /prep}
+                      - macro:
+                          snid: linguamatics_wc.WC_Preposition
+                          pt: preposition
+                          of:
+                          - alternative:
+                              macroPt: preposition
+                              macroSnid: linguamatics_wc.WC_Preposition
+                              of:
+                              - aboard
+                              - about
+                              - above
+                              - absent
+                              - phrase: [according, to]
+                              - across
+                              - after
+                              - against
+                              - phrase: [ahead, of]
+                              - phrase: [all, over]
+                              - along
+                              - alongside
+                              - amid
+                              - amidst
+                              - among
+                              - amongst
+                              - anti
+                              - around
+                              - as
+                              - phrase: [as, far, as]
+                              - aside
+                              - phrase: [as, of]
+                              - phrase: [as, to]
+                              - astraddle
+                              - astride
+                              - at
+                              - atop
+                              - phrase: [because, of]
+                              - before
+                              - behind
+                              - below
+                              - beneath
+                              - beside
+                              - besides
+                              - between
+                              - beyond
+                              - but
+                              - by
+                              - circa
+                              - despite
+                              - down
+                              - during
+                              - except
+                              - phrase: [except, for]
+                              - for
+                              - from
+                              - given
+                              - in
+                              - phrase: [in, addition, to]
+                              - phrase: [in, between]
+                              - phrase: [in, case, of]
+                              - phrase: [in, place, of]
+                              - inside
+                              - phrase: [in, spite, of]
+                              - phrase: [instead, of]
+                              - into
+                              - less
+                              - lest
+                              - like
+                              - minus
+                              - near
+                              - phrase: [near, to]
+                              - next
+                              - phrase: [next, to]
+                              - notwithstanding
+                              - of
+                              - 'off'
+                              - 'on'
+                              - phrase: ['on', account, of]
+                              - phrase: ['on', top, of]
+                              - onto
+                              - opposite
+                              - phrase: [other, than]
+                              - out
+                              - phrase: [out, of]
+                              - outside
+                              - phrase: [outside, of]
+                              - over
+                              - past
+                              - per
+                              - plus
+                              - save
+                              - since
+                              - through
+                              - throughout
+                              - till
+                              - to
+                              - toward
+                              - towards
+                              - under
+                              - underneath
+                              - unlike
+                              - until
+                              - unto
+                              - up
+                              - phrase: [up, to]
+                              - upon
+                              - versus
+                              - vs
+                              - vs.
+                              - via
+                              - with
+                              - within
+                              - without
+              - alternative:
+                - phrase:
+                    displayChildren: false
+                    of:
+                    - phrase:
+                        maxWordGap: 1
+                        of: [acute, leukemia]
+                    - phrase:
+                        quantifier: {minimum: 0, maximum: 1}
+                        of: [of, ambiguous, lineage]
+                - AML
+                - phrase:
+                    displayChildren: false
+                    of: [mature, b-cell, neoplasm]
+                - phrase:
+                  - MDS
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of: [/, MPN]
+                - phrase:
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 0}
+                      of: [MDS, /]
+                  - MPN
+    output:
+      columns:
+      - {id: phrase2}
+      outputSettings: {allResults: true, allRows: true, allTime: true}
+      useOutputEditor: true
+    creator: haglers
