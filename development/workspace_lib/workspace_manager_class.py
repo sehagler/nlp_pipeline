@@ -42,25 +42,13 @@ class Workspace_manager(object):
                     os.remove(os.path.join(root, name))
         
     #
-    def copy_x_nlp_sandbox_to_acc_nlp_sandbox(self):
-        acc_nlp_sandbox_path = '/home/users/' + self.project_data['user'] + '/NLP_Sandbox'
-        x_nlp_sandbox_path = 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Sandbox/'
-        self.server_manager.open_ssh_client()
-        self.server_manager.remove_directory(acc_nlp_sandbox_path)
-        for item in os.listdir(x_nlp_sandbox_path + '/' + self.project_data['user']):
-            if item != 'NLP_Data_Processing':
-                self.server_manager.push_directory(x_nlp_sandbox_path + '/' + self.project_data['user'] + '/' + item,
-                                                   acc_nlp_sandbox_path + '/' + self.project_data['user'] + '/' + item)
-        self.server_manager.close_ssh_client()
-        
-    #
     def copy_x_nlp_software_to_x_nlp_sandbox(self):
         sandbox_path = 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Sandbox/' + \
                         self.project_data['user'] + '/NLP_Software'
         if os.path.exists(sandbox_path):
             shutil.rmtree(sandbox_path)
         shutil.copytree('X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software',
-                        sandbox_path)
+                        sandbox_path, ignore=shutil.ignore_patterns('.git'))
         
     #
     def copy_x_nlp_software_to_z_nlp_sandbox(self):
@@ -68,4 +56,4 @@ class Workspace_manager(object):
         if os.path.exists(sandbox_path):
             shutil.rmtree(sandbox_path)
         shutil.copytree('X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software',
-                        sandbox_path)
+                        sandbox_path, ignore=shutil.ignore_patterns('.git'))
