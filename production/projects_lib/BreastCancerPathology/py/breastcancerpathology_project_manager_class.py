@@ -28,6 +28,7 @@ class BreastCancerPathology_project_manager(Project_manager):
                                                       ('section_json_file', 'section.json'),
                                                       ('tumor_size_json_file', 'tumor size.json') ]
         self.project_data['patient_identifiers'] = ['MRN']
+        self.project_data['raw_data_encoding'] = 'utf-8'
         self.project_data['raw_data_files'] = {}
         self.project_data['raw_data_files']['BreastCancerPathology.xls'] = {}
         self.project_data['raw_data_files']['BreastCancerPathology.xls']['NLP_MODE'] = 'RESULT_ID'

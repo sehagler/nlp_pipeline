@@ -29,30 +29,34 @@ class CCC19_project_manager(Project_manager):
         self.project_data['document_identifiers'] = [ 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.project_data['json_files_key_value'] = []
         self.project_data['patient_identifiers'] = [ 'OHSU_MRN' ]
+        self.project_data['raw_data_encoding'] = 'utf-8'
         self.project_data['raw_data_files'] = {}
-        '''
-        self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML'] = {}
-        self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['NLP_PROCESS'] = 'NOTE'
-        self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-        self.project_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE.XML' ]
-        '''
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_PROCESS'] = 'NOTE'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_PROCESS'] = 'NOTE'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_PROCESS'] = 'NOTE'
-        self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
-        self.project_data['raw_data_files_sequence'] = [ 'Nagle_CCC19_NLP_hno_note_v_covid_positive.xml',
-                                                         'Nagle_CCC19_NLP_hno_note_v_second_general_set.xml',
-                                                         'Nagle_CCC19_NLP_hno_note_v_first_general_set.xml' ]
-        
+        if False:
+            self.project_data['raw_data_encoding'] = 'utf-16'
+            self.project_data['raw_data_files'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE.XML' ]
+        else:
+            self.project_data['raw_data_encoding'] = 'utf-8'
+            self.project_data['raw_data_files'] = {}
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files_sequence'] = [ 'Nagle_CCC19_NLP_hno_note_v_covid_positive.xml',
+                                                             'Nagle_CCC19_NLP_hno_note_v_second_general_set.xml',
+                                                             'Nagle_CCC19_NLP_hno_note_v_first_general_set.xml' ]
         self.project_data['text_identifiers'] = [ 'COMMENT_TEXT', 'NOTE_TEXT', 'RESULT_TEXT' ]
         self.project_data['xml_metadata_keys'] = ['NLP_PROCESS', 'NOTE_TYPE']
         self._create_processors()

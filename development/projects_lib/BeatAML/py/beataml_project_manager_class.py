@@ -40,6 +40,7 @@ class BeatAML_project_manager(Project_manager):
                                                       ('residual_disease_file', 'residual_disease.json'),
                                                       ('sections_file', 'sections.json') ]
         self.project_data['patient_identifiers'] = ['MRN']
+        self.project_data['raw_data_encoding'] = 'utf-8'
         self.project_data['raw_data_files'] = {}
         self.project_data['raw_data_files']['Beaker Results.xls'] = {}
         self.project_data['raw_data_files']['Beaker Results.xls']['NLP_MODE'] = 'RESULT_ID'
