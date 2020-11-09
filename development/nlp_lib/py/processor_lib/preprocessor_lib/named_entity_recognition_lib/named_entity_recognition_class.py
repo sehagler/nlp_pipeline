@@ -14,6 +14,8 @@ class Named_entity_recognition(Preprocessor_base):
         
     #
     def _process_regular_initialisms(self):
+        
+        #
         self._clear_command_list()
         self._normalize_regular_initialism('cerebrospinal fluid', 'CSF')
         self._normalize_regular_initialism('chronic kidney disease', 'CKD')
@@ -37,6 +39,22 @@ class Named_entity_recognition(Preprocessor_base):
         self._general_command('(?i)red blood cell', {None : 'RBC'})
         self._normalize_regular_initialism('(?i)sudan black B', 'SBB')
         self._general_command('(?i)white blood cell', {None : 'WBC'})
+        
+        # miscellaneous
+        self._normalize_regular_initialism('columnar cell change', 'CCC')
+        self._normalize_regular_initialism('eastern cooperative oncology group', 'ECOG')
+        self._normalize_regular_initialism('flat epithelial atypia', 'FEA')
+        self._normalize_regular_initialism('pathologic complete response', 'pCR')
+        self._normalize_regular_initialism('residual ca(ncer)? burden', 'RCB')
+        self._general_command('(?i)FAB (?=[0-9])', {None : 'FAB M'})
+        self._general_command('(?i)HLA-Dr', {None : 'HLA-DR'})
+        self._general_command('(?i)blasts ?(\+|and|plus) ?promonocytes', {None : 'blasts/promonocytes'})
+        self._normalize_regular_initialism('(?i)butyrate esterase', 'BE')
+        self._normalize_regular_initialism('(?i)minimal residual disease', 'MRD')
+        self._normalize_regular_initialism('(?i)myelodysplastic syndrome', 'MDS')
+        self._normalize_regular_initialism('(?i)myeloperoxidase', 'MPO')
+        
+        #
         self._process_command_list()
         
     #

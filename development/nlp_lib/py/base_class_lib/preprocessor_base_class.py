@@ -178,6 +178,18 @@ class Preprocessor_base(object):
             self.text = re.sub('^' + self.body_header + '[\n\s]*', '', self.text)
     
     #
+    def _substitution_endings_list(self, search_str):
+        self._clear_command_list()
+        self._general_command(search_str + '\n', {None : '\n'})
+        self._general_command(search_str + '\t', {None : '\t'})
+        self._general_command(search_str + ' ', {None : ' '})
+        self._general_command(search_str + ',', {None : ','})
+        self._general_command(search_str + '\.', {None : '.'})
+        self._general_command(search_str + ';', {None : ';'})
+        self._general_command(search_str + '( )?-', {None : '-'})
+        self._process_command_list()
+    
+    #
     def _tagged_section_header(self, untagged_text):
          tagged_text = self.section_header_pre_tag + untagged_text + self.section_header_post_tag
          return tagged_text

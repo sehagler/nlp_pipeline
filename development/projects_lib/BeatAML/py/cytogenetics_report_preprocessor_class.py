@@ -20,9 +20,9 @@ class Cytogenetics_report_preprocessor(Cytogenetics_report):
         section_header_normalizer = Section_header_normalizer_pathology_report()
         section_header_normalizer.push_linguamatics_i2e_writer(self.linguamatics_i2e_writer)
         section_header_normalizer.push_text(self.text)
-        section_header_normalizer.cytogenetic_analysis_summary('formatted')
-        section_header_normalizer.fish_analysis_summary('formatted')
-        section_header_normalizer.karyotype('formatted')
+        section_header_normalizer.cytogenetic_analysis_summary_section_header('formatted')
+        section_header_normalizer.fish_analysis_summary_section_header('formatted')
+        section_header_normalizer.karyotype_section_header('formatted')
         self.text = section_header_normalizer.pull_text()
         self.linguamatics_i2e_writer = section_header_normalizer.pull_linguamatics_i2e_writer()
     

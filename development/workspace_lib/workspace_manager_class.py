@@ -31,6 +31,14 @@ class Workspace_manager(object):
         self.server_manager = Server_manager(self.project_data, password)
         
     #
+    def _copy_nlp_software(self, sandbox_path):
+        self.cleanup_nlp_software()
+        if os.path.exists(sandbox_path):
+            shutil.rmtree(sandbox_path)
+        shutil.copytree('X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software',
+                        sandbox_path, ignore=shutil.ignore_patterns('.git'))
+    
+    #
     def cleanup_nlp_software(self):
         for root, dirs, files in os.walk(self.directory_manager.pull_directory('software_dir')):
             for name in dirs:
@@ -42,18 +50,10 @@ class Workspace_manager(object):
                     os.remove(os.path.join(root, name))
         
     #
-    def copy_x_nlp_software_to_x_nlp_sandbox(self):
-        sandbox_path = 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Sandbox/' + \
-                        self.project_data['user'] + '/NLP_Software'
-        if os.path.exists(sandbox_path):
-            shutil.rmtree(sandbox_path)
-        shutil.copytree('X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software',
-                        sandbox_path, ignore=shutil.ignore_patterns('.git'))
-        
-    #
-    def copy_x_nlp_software_to_z_nlp_sandbox(self):
-        sandbox_path = 'Z:/NLP/NLP_Sandbox/' + self.project_data['user'] + '/NLP_Software'
-        if os.path.exists(sandbox_path):
-            shutil.rmtree(sandbox_path)
-        shutil.copytree('X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software',
-                        sandbox_path, ignore=shutil.ignore_patterns('.git'))
+    def copy_x_nlp_software_to_nlp_sandbox(self, dest_drive):
+        if dest_drive == 'X':
+            sandbox_path = 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Sandbox/' + \
+                            self.project_data['user'] + '/NLP_Software'
+        elif dest_drive == 'Z':
+            sandbox_path = 'Z:/NLP/NLP_Sandbox/' + self.project_data['user'] + '/NLP_Software'
+        self._copy_nlp_software(sandbox_path)

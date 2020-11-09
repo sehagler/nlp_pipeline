@@ -38,7 +38,7 @@ class BreastCancerPathology_preprocessor(Pathology_report):
         section_header_normalizer = Section_header_normalizer_pathology_report()
         section_header_normalizer.push_linguamatics_i2e_writer(self.linguamatics_i2e_writer)
         section_header_normalizer.push_text(self.text)
-        section_header_normalizer.surgical_pathology_summary('formatted')
+        section_header_normalizer.surgical_pathology_summary_section_header('formatted')
         self.text = section_header_normalizer.pull_text()
         self.linguamatics_i2e_writer = section_header_normalizer.pull_linguamatics_i2e_writer()
         

@@ -20,9 +20,13 @@ from nlp_lib.py.manager_lib.directory_manager_class import Directory_manager
 from nlp_lib.py.manager_lib.metadata_manager_class import Metadata_manager
 from nlp_lib.py.manager_lib.server_manager_class import Server_manager
 from nlp_lib.py.packager_lib.packager_class import Packager
+from nlp_lib.py.reader_lib.raw_data_reader_class import Raw_data_reader
 from nlp_lib.py.template_lib.preprocessor_template_lib.raw_report_preprocessor_class \
     import Raw_report_preprocessor
-from nlp_lib.py.reader_lib.raw_data_reader_class import Raw_data_reader
+from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+    import remove_repeated_substrings
+from nlp_lib.py.tool_lib.processing_tools_lib.variable_processing_tools \
+    import delete_key
 
 #
 class Process_manager(object):
@@ -47,26 +51,6 @@ class Process_manager(object):
         self.report_postprocessor.set_credentials(self.project_data, password)
         self.report_postprocessor.set_data_dirs(self.project_data)
         self.server_manager = Server_manager(self.project_data, password)
-        
-    #
-    def _delete_key(self, metadata, key):
-        try:
-            del metadata[key]
-        except:
-            pass
-        
-    #
-    def _prepare_keywords_file(self, keywords_tmp_file):
-        shutil.copyfile(self.linguamatics_i2e_file_manager.keywords_file(), self.linguamatics_i2e_file_manager.server_file('keywords'))
-        
-    #
-    def _prepare_keywords_file_ssh(self, keywords_tmp_file):
-        self.server_manager.open_ssh_client()
-        self.server_manager.push_file(self.linguamatics_i2e_file_manager.keywords_file(), keywords_tmp_file)
-        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
-        self.server_manager.close_ssh_client()
 
     #
     def _preprocess_document(self, raw_data_reader, do_beakerap_flg, data_tmp, 
@@ -101,11 +85,8 @@ class Process_manager(object):
                                     for i in range(len(data_tmp[self.project_data['header_key']])):
                                         data_value = re.sub(':', '', data_tmp[self.project_data['header_key']][i])
                                         if header_value.lower() == data_value.lower():
-                                            raw_text += '\n'
-                                            raw_text += header_value
-                                            raw_text += '\n\n'
-                                            raw_text += data_tmp['RAW_TEXT'][i]
-                                            raw_text += '\n'
+                                            raw_text += '\n' + header_value + '\n'
+                                            raw_text += '\n' + data_tmp['RAW_TEXT'][i] + '\n'
                                 for key in data_tmp.keys():
                                     data_tmp[key] = list(set(data_tmp[key]))
                                 data_tmp['RAW_TEXT'] = raw_text
@@ -194,31 +175,32 @@ class Process_manager(object):
         
     #
     def _prune_metadata(self, metadata):
-        self._delete_key(metadata, 'RAW_TEXT')
-        self._delete_key(metadata, 'REPORT_GROUP')
-        self._delete_key(metadata, 'REPORT_HEADER')
-        self._delete_key(metadata, 'REPORT_LINE')
+        delete_key(metadata, 'RAW_TEXT')
+        delete_key(metadata, 'REPORT_GROUP')
+        delete_key(metadata, 'REPORT_HEADER')
+        delete_key(metadata, 'REPORT_LINE')
         return metadata
         
     #
     def _read_beakerap_data(self, data_tmp):
         
+        # initialize lists
         metadata_list = []
         raw_text_list = []
         rpt_text_list = []
         
-        # Iterate through filtered data by result IDs
+        # iterate through filtered data by result IDs
         RESULT_IDS = sorted(set(data_tmp['RESULT_ID']))
         for result_id in RESULT_IDS:
             
-            # Filter filtered data by result ID
+            # filter filtered data by result ID
             data_tmp_tmp = {}
             idxs = [i for i, x in enumerate(data_tmp['RESULT_ID']) \
                     if x == result_id]
             for key in data_tmp.keys():
                 data_tmp_tmp[key] = [data_tmp[key][i] for i in idxs]
 
-            # Iterate through filtered filtered data by report groups
+            # iterate through filtered filtered data by report groups
             REPORT_GROUPS = sorted(set(data_tmp_tmp['REPORT_GROUP']))
             for report_group in REPORT_GROUPS:
                 
@@ -236,7 +218,7 @@ class Process_manager(object):
                         
                 #
                 raw_text = ''.join(raw_text)
-                raw_text = self._remove_repeated_substrings(raw_text)
+                raw_text = remove_repeated_substrings(raw_text)
                 rpt_text = raw_text
                 
                 #
@@ -259,7 +241,7 @@ class Process_manager(object):
            data_tmp['RAW_TEXT'][0] is not None:
             raw_text = data_tmp['RAW_TEXT']
             raw_text = ''.join(raw_text)
-            raw_text = self._remove_repeated_substrings(raw_text)
+            raw_text = remove_repeated_substrings(raw_text)
             rpt_text = raw_text
         else:
             raw_text = None
@@ -281,32 +263,16 @@ class Process_manager(object):
         return metadata_list, raw_text_list, rpt_text_list
     
     #
-    def _remove_repeated_substrings(self, text):
-        ctr = 0
-        while True:
-            ctr += 1
-            stop_flg = True
-            for i in range(int(len(text)/2)):
-                if text[:i+1] == text[i+1:2*(i+1)]:
-                    text = text[i+1:]
-                    stop_flg = False
-                    break
-            if stop_flg or ctr > 100:
-                break
-        return text
-    
-    #
     def _report_preprocessor(self, xml_metadata):
         print('_report_preprocessor not defined')
     
     #
     def indexer(self):
         keywords_tmp_file = '/tmp/keywords_default.txt'
-        if self.project_data['root_dir_flg'] == 'X' or \
-           self.project_data['root_dir_flg'] == 'Z':
-            self._prepare_keywords_file_ssh(keywords_tmp_file)
-        elif self.project_data['root_dir_flg'] == 'dev_server':
-            self._prepare_keywords_file(keywords_tmp_file)
+        if self.project_data['root_dir_flg'] in ''.join([ 'X', 'Z' ]):
+            self.linguamatics_i2e_writer.prepare_keywords_file_ssh(keywords_tmp_file)
+        elif self.project_data['root_dir_flg'] in ''.join([ 'dev_server', 'prod_server' ]):
+            self.linguamatics_i2e_writer.prepare_keywords_file(keywords_tmp_file)
         for resource_type in self.linguamatics_i2e_file_manager.resource_files_keys():
             try:
                 self.linguamatics_i2e_client_manager.delete_resource(self.linguamatics_i2e_file_manager.i2e_resource(resource_type))

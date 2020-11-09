@@ -10,6 +10,7 @@ import re
 
 #
 from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_base
+from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
@@ -72,6 +73,18 @@ class Postprocessor(Postprocessor_base):
                     for j in range(len(self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']])):
                         self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']][j] = \
                             self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']][j].replace(',', '')
+
+#
+class Summarization(Preprocessor_base):
+    
+    #
+    def remove_tnm_staging(self):
+        self._clear_command_list()
+        self._general_command('(?i) \( pTNM \)', {None : ''})
+        self._general_command('(?i) \( pT \)', {None : ''})
+        self._general_command('(?i) \( pN \)', {None : ''})
+        self._general_command('(?i) \( p?M \)', {None : ''})
+        self._process_command_list()
 
 #
 def get_data_text_map():
