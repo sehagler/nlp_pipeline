@@ -25,18 +25,18 @@ class Hematopathology_report_preprocessor(Pathology_report):
      #
     def _extract_section_headers(self):
         Pathology_report._extract_section_headers(self)
-        section_header_normalizer = Section_header_normalizer_pathology_report()
+        section_header_normalizer = Section_header_normalizer_pathology_report(self.project_data)
         section_header_normalizer.push_linguamatics_i2e_writer(self.linguamatics_i2e_writer)
         section_header_normalizer.push_text(self.text)
-        section_header_normalizer.antibodies_tested('formatted')
-        section_header_normalizer.bone_marrow('formatted')
-        section_header_normalizer.cytogenetic_and_fish_studies('formatted')
-        section_header_normalizer.flow_cytometric_analysis('formatted')
-        section_header_normalizer.immunohistochemical_stains('formatted')
-        section_header_normalizer.immunologic_analysis('formatted')
-        section_header_normalizer.molecular_studies('formatted')
-        section_header_normalizer.peripheral_blood_morphology('formatted')
-        section_header_normalizer.special_stains('formatted')
+        section_header_normalizer.antibodies_tested_section_header('formatted')
+        section_header_normalizer.bone_marrow_section_header('formatted')
+        section_header_normalizer.cytogenetic_and_fish_studies_section_header('formatted')
+        section_header_normalizer.flow_cytometric_analysis_section_header('formatted')
+        section_header_normalizer.immunohistochemical_stains_section_header('formatted')
+        section_header_normalizer.immunologic_analysis_section_header('formatted')
+        section_header_normalizer.molecular_studies_section_header('formatted')
+        section_header_normalizer.peripheral_blood_morphology_section_header('formatted')
+        section_header_normalizer.special_stains_section_header('formatted')
         self.text = section_header_normalizer.pull_text()
         self.linguamatics_i2e_writer = section_header_normalizer.pull_linguamatics_i2e_writer()
     
@@ -124,7 +124,7 @@ class Hematopathology_report_preprocessor(Pathology_report):
     def _named_entity_recognition(self):
         Pathology_report._named_entity_recognition(self)
         self._normalize_whitespace()
-        named_entity_recognition_cancer = Named_entity_recognition_cancer()
+        named_entity_recognition_cancer = Named_entity_recognition_cancer(self.project_data)
         named_entity_recognition_cancer.push_text(self.text)
         named_entity_recognition_cancer.process_abbreviations()
         named_entity_recognition_cancer.process_initialisms()
@@ -141,11 +141,11 @@ class Hematopathology_report_preprocessor(Pathology_report):
     #
     def _posttokenizer(self, clear_section_headers=True):
         Pathology_report._posttokenizer(self)
-        posttokenizer_antigens = Posttokenizer_antigens()
+        posttokenizer_antigens = Posttokenizer_antigens(self.project_data)
         posttokenizer_antigens.push_text(self.text)
         posttokenizer_antigens.process_antigens()
         self.text = posttokenizer_antigens.pull_text()
-        posttokenizer_cancer = Posttokenizer_cancer()
+        posttokenizer_cancer = Posttokenizer_cancer(self.project_data)
         posttokenizer_cancer.push_text(self.text)
         posttokenizer_cancer.process_general()
         self.text = posttokenizer_cancer.pull_text()
@@ -171,7 +171,7 @@ class Hematopathology_report_preprocessor(Pathology_report):
     #
     def _text_cleanup(self):
         self._normalize_whitespace()
-        text_preparation = Text_preparation_cancer()
+        text_preparation = Text_preparation_cancer(self.project_data)
         text_preparation.push_text(self.text)
         text_preparation.cleanup_text()
         self.text = text_preparation.pull_text()
@@ -181,7 +181,7 @@ class Hematopathology_report_preprocessor(Pathology_report):
     def _text_setup(self):
         Pathology_report._text_setup(self)
         self._normalize_whitespace()
-        text_preparation = Text_preparation_cancer()
+        text_preparation = Text_preparation_cancer(self.project_data)
         text_preparation.push_text(self.text)
         text_preparation.normalize_text()
         text_preparation.setup_text()

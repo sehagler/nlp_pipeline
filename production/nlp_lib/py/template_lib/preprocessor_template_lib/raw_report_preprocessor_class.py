@@ -14,12 +14,8 @@ from nlp_lib.py.processor_lib.preprocessor_lib.deidentifier_lib.deidentifier_cla
 class Raw_report_preprocessor(Preprocessor_base):
     
     #
-    def __init__(self):
-        pass
-    
-    #
     def _deidentifier(self):
-        deidentifier = Deidentifier()
+        deidentifier = Deidentifier(self.project_data)
         deidentifier.push_text(self.text)
         deidentifier.remove_phi()
         self.text = deidentifier.pull_text()

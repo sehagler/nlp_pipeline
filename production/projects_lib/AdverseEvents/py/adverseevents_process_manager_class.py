@@ -16,8 +16,8 @@ class AdverseEvents_process_manager(Process_manager):
     #
     def __init__(self, project_data, password):
         Process_manager.__init__(self, project_data, password)
-        self.note_preprocessor = Note_template()
-        self.pathology_report_preprocessor = Pathology_report()
+        self.note_preprocessor = Note_template(project_data, 'unformatted')
+        self.pathology_report_preprocessor = Pathology_report(project_data, 'unformatted')
         
     #
     def _preprocess_documents(self, raw_data_reader, start_idx, mrn_list, xml_metadata_keys, 

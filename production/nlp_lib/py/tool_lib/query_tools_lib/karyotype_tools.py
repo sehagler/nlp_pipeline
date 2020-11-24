@@ -17,9 +17,7 @@ class Named_entity_recognition(Preprocessor_base):
     
     #
     def process_karyotype(self):
-        self._clear_command_list()
         self._general_command('(?i)inversion \(', {None : 'inv('})
-        self._process_command_list()
 
 #
 class Postprocessor(Postprocessor_base):
@@ -69,7 +67,6 @@ class Posttokenizer(Preprocessor_base):
         
     #
     def process_karyotype(self):
-        self._clear_command_list()
         self._general_command('\) \(', {None : ')('})
         self._general_command('\) \[', {None : ')['})
         self._general_command('\] \(', {None : ']('})
@@ -82,7 +79,6 @@ class Posttokenizer(Preprocessor_base):
                               {' , ' : ','})
         self._general_command('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', {' / ' : '/'})
         self._general_command('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', {' ' : ''})
-        self._process_command_list()
     
 #
 def atomize_karyotype(full_karyotype):

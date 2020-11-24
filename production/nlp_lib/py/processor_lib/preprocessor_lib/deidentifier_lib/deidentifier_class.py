@@ -40,12 +40,10 @@ class Deidentifier(Preprocessor_base):
         self._general_command('\d{3} \d{3} \d{4}', {'\d{3} \d{3} \d{4}' : 'PHI_TELEPHONE_NUMBER'})
     
     #
-    def remove_phi(self, remove_date_flg=True):
-        self._clear_command_list()
+    def remove_phi(self):
         self._remove_age()
-        if remove_date_flg:
+        if self.project_data['flags']['remove_date']:
             self._remove_date()
         self._remove_gender()
         self._remove_mrn()
         self._remove_telephone_number()
-        self._process_command_list()

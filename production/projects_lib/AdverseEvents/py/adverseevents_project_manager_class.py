@@ -20,6 +20,10 @@ class AdverseEvents_project_manager(Project_manager):
     def get_project_data(self):
         self.project_data['date_identifiers'] = {}
         self.project_data['date_identifiers'][ 'NOTE_DATE' ] = '%d-%b-%y'
+        self.project_data['document_identifiers'] = [ 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
+        self.project_data['flags'] = {}
+        self.project_data['flags']['remove_date'] = True
+        self.project_data['flags']['trim_data_by_csn'] = True
         self.project_data['json_files_key_value'] = []
         self.project_data['patient_identifiers'] = [ 'MRN_CD', 'OHSU_MRN', 'SRC_SYSTM_PAT_ID' ]
         self.project_data['raw_data_encoding'] = 'utf-8'

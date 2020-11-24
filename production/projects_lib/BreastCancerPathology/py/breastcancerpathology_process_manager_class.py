@@ -16,7 +16,7 @@ class BreastCancerPathology_process_manager(Process_manager):
     #
     def __init__(self, project_data, server):
         Process_manager.__init__(self, project_data, server)
-        self.report_preprocessor = BreastCancerPathology_preprocessor()
+        self.report_preprocessor = BreastCancerPathology_preprocessor(project_data, 'formatted')
         
     #
     def _preprocess_documents(self, raw_data_reader, start_idx, mrn_list, xml_metadata_keys, 

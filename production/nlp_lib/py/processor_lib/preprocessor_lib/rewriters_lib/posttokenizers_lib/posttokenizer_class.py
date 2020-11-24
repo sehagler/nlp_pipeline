@@ -13,13 +13,12 @@ class Posttokenizer(Preprocessor_base):
         
     #
     def process_general(self):
-        self._clear_command_list()
         self._general_command(' M [:/] E ', {None : ' M:E '})
         self._general_command(' N [:/] C ', {None : ' N:C '})
-        self._general_command('(?i) e \. g( \.)? ', {None : ' e.g.'})
+        self._general_command('(?i) n / a ', {None : ' n/a '})
+        
+    #
+    def process_medical_abbreviations(self):
         self._general_command('(?i) f / u ', {None : ' f/u '})
         self._general_command('(?i) h / o ', {None : ' h/o '})
-        self._general_command('(?i) n / a ', {None : ' n/a '})
         self._general_command('(?i) s / p ', {None : ' s/p '})
-        self._general_command('(?i) w / ', {None : ' w/ '})
-        self._process_command_list()

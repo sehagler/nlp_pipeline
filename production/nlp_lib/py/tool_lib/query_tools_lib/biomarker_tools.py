@@ -14,7 +14,6 @@ class Named_entity_recognition(Preprocessor_base):
     
     #
     def process_biomarkers(self):
-        self._clear_command_list()
         self._general_command('(?i)estrogen and progesterone( receptor' + s() + ')?',
                               {None : 'ER and PR'})
         self._general_command('(?i)progesterone and estrogen( receptor' + s() + ')?',
@@ -22,7 +21,6 @@ class Named_entity_recognition(Preprocessor_base):
         self._general_command('(?i)estrogen receptor( \( ER( , clone [A-Z0-9]+)? \))?', {None : 'ER'})
         self._general_command('(?i)HER(-| / )?2(( | / )?neu)?( \( cerb2 \))?', {None : 'HER2'})
         self._general_command('(?i)progesterone receptor( \( PR( , clone [A-Z0-9]+)? \))?', {None : 'PR'})
-        self._process_command_list()
 
 #
 class Summarization(Preprocessor_base):
@@ -33,7 +31,6 @@ class Summarization(Preprocessor_base):
         
     #
     def process_estrogen_receptor(self):
-        self._clear_command_list()
         self._general_command('(?i)\nERs', {None : '\nER'})
         self._general_command('(?i)\sERs', {None : ' ER'})
         self._general_command('(?i)ER SP1', {None : 'ER'})
@@ -51,11 +48,9 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)\sER( :)?( )?-', {None : ' ER negative'})
         self._general_command('(?i)\nER( :)?( )?\+', {None : '\nER positive'})
         self._general_command('(?i)\sER( :)?( )?\+', {None : ' ER positive'})
-        self._process_command_list()
         
     #
     def process_her2(self):
-        self._clear_command_list()
         self._general_command('(?i)HER2( :)?( )?-', {None : 'HER2 negative'})
         self._general_command('(?i)HER2( :)?( )?\+', {None : 'HER2 positive'})
         for _ in range(7):
@@ -67,11 +62,9 @@ class Summarization(Preprocessor_base):
             self._general_command(search_str, {None : 'for HER2'})
         self._general_command('(?i)' + self._receptor_predicate() + ' of HER2', {None : 'HER2'})
         self._general_command('(?i)HER2 ' + self._receptor_predicate(), {None : 'HER2'})
-        self._process_command_list()
         
     #
     def process_progesterone_receptor(self):
-        self._clear_command_list()
         self._general_command('(?i)\nPRs', {None : '\nPR'})
         self._general_command('(?i)\sPRs', {None : ' PR'})
         self._general_command('(?i)PR IE2', {None : 'PR'})
@@ -89,4 +82,3 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)\sPR( :)?( )?-', {None : ' PR negative'})
         self._general_command('(?i)\nPR( :)?( )?\+', {None : '\nPR positive'})
         self._general_command('(?i)\sPR( :)?( )?\+', {None : ' PR positive'})
-        self._process_command_list()

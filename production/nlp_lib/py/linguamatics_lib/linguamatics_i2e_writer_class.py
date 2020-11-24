@@ -179,3 +179,16 @@ class Linguamatics_i2e_writer(object):
         self._generate_xml_file(ctr, metadata, raw_text, rpt_text)
         ret_val = True
         return ret_val
+    
+    #
+    def prepare_keywords_file(self, keywords_tmp_file):
+        shutil.copyfile(self.linguamatics_i2e_file_manager.keywords_file(), self.linguamatics_i2e_file_manager.server_file('keywords'))
+        
+    #
+    def prepare_keywords_file_ssh(self, keywords_tmp_file):
+        self.server_manager.open_ssh_client()
+        self.server_manager.push_file(self.linguamatics_i2e_file_manager.keywords_file(), keywords_tmp_file)
+        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.close_ssh_client()

@@ -20,7 +20,7 @@ class Raw_data_reader(object):
         self.data = []
         self.project_data = project_data
         self.xml_reader = Xml_reader(project_data, password)
-        self.xlsx_reader = Xlsx_reader()
+        self.xlsx_reader = Xlsx_reader(project_data, password)
                 
     #
     def _get_data_by_document_value(self, data_file, document_value,
@@ -38,23 +38,6 @@ class Raw_data_reader(object):
             for key in data.keys():
                 document_data[key] = [data[key][i] for i in idxs]
         return document_data
-    
-    '''
-    #
-    def _get_document_values(self, label0, label1):
-        document_value_dict = {}
-        for i in range(len(self.data)):
-            document_value_dict[i] = {}
-            data_label0 = self.data[i][label0]
-            data_label1 = self.data[i][label1]
-            items = sorted(set(data_label0))
-            for item in items:
-                document_value_list = []
-                idxs = [j for j, x in enumerate(data_label0) if x == item ]
-                document_value_list.append([data_label1[j] for j in idxs])
-                document_value_dict[i][item] = sorted(list(set(document_value_list[0])))
-        return document_value_dict
-    '''
     
     #
     def get_data_by_document_number(self, document_number):
@@ -78,19 +61,6 @@ class Raw_data_reader(object):
             self._get_data_by_document_value(data_file, document_value,
                                              document_value_key)
         return document_data
-        
-    '''
-    #
-    def get_data_by_document_value_case_number(self, data_file, document_value_key, document_value):
-        document_data = \
-            self._get_data_by_document_value('CASE_NUMBER', data_file, document_value, document_value_key)
-        return document_data
-    
-    #
-    def get_data_by_document_value_result_id(self, data_file, document_value):
-        document_data = self._get_data_by_document_value('RESULT_ID', data_file, document_value)
-        return document_data
-    '''
       
     #
     def get_document_numbers(self):
@@ -121,27 +91,13 @@ class Raw_data_reader(object):
                 document_value_dict[i][item] = sorted(list(set(document_value_list[0])))
         return document_value_dict
     
-    '''
-    #
-    def get_document_values_case_number(self):
-        document_value_dict = self._get_document_values('MRN', 'CASE_NUMBER')
-        return document_value_dict
-    
-    #
-    def get_document_values_result_id(self):
-        document_value_dict = self._get_document_values('RESULT_ID', 'RESULT_ID')
-        return document_value_dict
-    '''
-    
     #
     def read_data(self, raw_data_files_dict, raw_data_files):
         for i in range(len(raw_data_files)):
             filename, file_extension = os.path.splitext(raw_data_files[i])
             if file_extension.lower() in [ '.xls', '.xlsx' ]:
-                data_tmp = self.xlsx_reader.read_files(raw_data_files_dict, raw_data_files[i],
-                                                       self.project_data['datetime_keys'],
-                                                       self.project_data['header_key'], 
-                                                       self.project_data['header_values'])
+                data_tmp = self.xlsx_reader.read_files(raw_data_files_dict, 
+                                                       raw_data_files[i])
                 self.data.append(data_tmp)
             elif file_extension.lower() in [ '.xml' ]:
                 data_tmp = self.xml_reader.read_files(raw_data_files_dict, 

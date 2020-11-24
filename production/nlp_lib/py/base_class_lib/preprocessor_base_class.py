@@ -9,14 +9,16 @@ Created on Mon May 20 12:25:32 2019
 import re
 
 #
+from nlp_lib.py.base_class_lib.general_base_class import General_base
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible, substitution
 
 #
-class Preprocessor_base(object):
+class Preprocessor_base(General_base):
     
     #
-    def __init__(self):
+    def __init__(self, project_data):
+        General_base.__init__(self, project_data)
         self.command_list = []
         self.section_header_post_tag = '>>>'
         self.section_header_pre_tag = '<<<'
@@ -60,16 +62,18 @@ class Preprocessor_base(object):
         
     #
     def _general_command(self, command0, command1, keyword_flg=False):
+        self._clear_command_list()
         self.command_list.append([ 3, command0, command1 ])
         if keyword_flg:
             self._append_keywords_text(command1)
+        self._process_command_list()
         
     #
     def _insert_whitespace(self, match_str, whitespace):
         match = 0
         m_str = re.compile(match_str)
         while match is not None:
-            match = m_str.search(self.text,  re.IGNORECASE)
+            match = m_str.search(self.text, re.IGNORECASE)
             if match is not None:
                 self.text = self.text[:match.start()] + whitespace + \
                             self.text[match.start()+1:]
@@ -101,7 +105,6 @@ class Preprocessor_base(object):
     
     #
     def _normalize_whitespace(self):
-        self._clear_command_list()
         self._general_command('\n\t', {None : '\n'})
         self._general_command('\r\n', {None : '\n'})
         self._general_command('\n*\n\n', {None : '\n\n'})
@@ -111,14 +114,11 @@ class Preprocessor_base(object):
         self._general_command('\n-', {None : '\n\t-'})
         self._general_command('\t+', {None : '\t'})
         self._general_command(' ?\t ?', {None : '\t'})
-        self._process_command_list()
         self.text = re.sub('^[\n\s]*', '', self.text)
         self.text = re.sub('[\n\s]*$', '', self.text)
-        self._clear_command_list()
         self._general_command('^ +[-]', {' ' : ''})
         self._general_command(' +', {None : ' '})
         self._general_command(' \n', {None : '\n'})
-        self._process_command_list()
         self.text = re.sub(' \n', '\n', self.text)
     
     #
@@ -157,17 +157,23 @@ class Preprocessor_base(object):
             
     #
     def _pull_out_section_header(self, command):
+        self._clear_command_list()
         self.command_list.append([ 1, command ])
+        self._process_command_list()
         
     #
     def _pull_out_section_header_to_bottom_of_report(self, command0, command1, keyword_flg=False):
+        self._clear_command_list()
         self.command_list.append([ 0, command0, command1 ])
         if keyword_flg:
             self._append_keywords_text(command1)
+        self._process_command_list()
             
     #
     def _pull_out_table_entry(self, command):
+        self._clear_command_list()
         self.command_list.append([ 2, command ])
+        self._process_command_list()
         
     #
     def _push_down_body_header(self, match_str):
@@ -176,6 +182,16 @@ class Preprocessor_base(object):
             self.text = self.text[:match.end()] + '\n' + self.body_header + \
                                   '\n\n' + self.text[match.end():]
             self.text = re.sub('^' + self.body_header + '[\n\s]*', '', self.text)
+    
+    #
+    def _substitution_endings_list(self, search_str):
+        self._general_command(search_str + '\n', {None : '\n'})
+        self._general_command(search_str + '\t', {None : '\t'})
+        self._general_command(search_str + ' ', {None : ' '})
+        self._general_command(search_str + ',', {None : ','})
+        self._general_command(search_str + '\.', {None : '.'})
+        self._general_command(search_str + ';', {None : ';'})
+        self._general_command(search_str + '( )?-', {None : '-'})
     
     #
     def _tagged_section_header(self, untagged_text):

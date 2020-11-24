@@ -16,8 +16,8 @@ class CCC19_process_manager(Process_manager):
     #
     def __init__(self, project_data, server):
         Process_manager.__init__(self, project_data, server)
-        self.note_preprocessor = CCC19_note_preprocessor()
-        self.pathology_report_preprocessor = Pathology_report()
+        self.note_preprocessor = CCC19_note_preprocessor(project_data, 'unformatted')
+        self.pathology_report_preprocessor = Pathology_report(project_data, 'unformatted')
         
     #
     def _preprocess_documents(self, raw_data_reader, start_idx, patient_list, 

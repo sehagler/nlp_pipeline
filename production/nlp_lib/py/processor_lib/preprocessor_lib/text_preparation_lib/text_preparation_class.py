@@ -13,7 +13,6 @@ class Text_preparation(Preprocessor_base):
         
     #
     def correct_common_typos(self):
-        self._clear_command_list()
         self._general_command('(?i)adenomcarcinoa', {None : 'adenocarcinoma'})
         self._general_command('(?i)diagnosises', {None : 'diagnoses'})
         self._general_command('(?i)eddible', {None : 'edible'})
@@ -22,16 +21,11 @@ class Text_preparation(Preprocessor_base):
         self._general_command('(?i)refrral', {None : 'referral'})
         self._general_command('(?i)repector', {None : 'receptor'})
         self._general_command('(?i)serous', {None : 'serious'})
-        self._process_command_list()
         
     #
     def format_section_headers(self):
-        self._clear_command_list()
         self._general_command('(?i)progress note \d+/(\d+|\*+)/\d+', {'\d+/(\d+|\*+)/\d+' : ''})
-        self._process_command_list()
         
     #
     def remove_extraneous_text(self):
-        self._clear_command_list()
         self._general_command('(?i)\(HCC\)', {None : ''})
-        self._process_command_list()

@@ -14,27 +14,24 @@ from nlp_lib.py.template_lib.preprocessor_template_lib.cytogenetics_report_class
 #
 class Cytogenetics_report_preprocessor(Cytogenetics_report):
     
-        #
+    #
     def _extract_section_headers(self):
         Cytogenetics_report._extract_section_headers(self)
-        section_header_normalizer = Section_header_normalizer_pathology_report()
+        section_header_normalizer = Section_header_normalizer_pathology_report(self.project_data)
         section_header_normalizer.push_linguamatics_i2e_writer(self.linguamatics_i2e_writer)
         section_header_normalizer.push_text(self.text)
-        section_header_normalizer.cytogenetic_analysis_summary('formatted')
-        section_header_normalizer.fish_analysis_summary('formatted')
-        section_header_normalizer.karyotype('formatted')
+        section_header_normalizer.cytogenetic_analysis_summary_section_header(self.formatting)
+        section_header_normalizer.fish_analysis_summary_section_header(self.formatting)
+        section_header_normalizer.karyotype_section_header(self.formatting)
         self.text = section_header_normalizer.pull_text()
         self.linguamatics_i2e_writer = section_header_normalizer.pull_linguamatics_i2e_writer()
     
     #
     def _posttokenizer(self, clear_section_headers=True):
         Cytogenetics_report._posttokenizer(self)
-        posttokenizer_karyotype = Posttokenizer_karyotype()
+        posttokenizer_karyotype = Posttokenizer_karyotype(self.project_data)
         posttokenizer_karyotype.push_text(self.text)
         posttokenizer_karyotype.process_karyotype()
         self.text = posttokenizer_karyotype.pull_text()
-        #self._clear_command_list()
-        #self._general_command('q[0-9\.]+\) ;', {' ;' : ';'}) 
-        #self._process_command_list()
         if clear_section_headers:
             self._clear_section_header_tags()

@@ -12,6 +12,7 @@ import re
 
 #
 from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_base
+from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
@@ -54,6 +55,16 @@ class Postprocessor(Postprocessor_base):
                         value_list.append(value_tmp)
                 self.data_dict_list[i]['DATA'][key][self.label + ' VALUE'] = value_list
     
+#
+class Tokenizer(Preprocessor_base):
+    
+    #
+    def process_month(self):
+        month_list = [ 'Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep',
+                       'Oct', 'Nov', 'Dec' ]
+        for month in month_list:  
+            self._general_command('(?i)(?<=' + month + ')\.(?= [0-9])', {None : ''})
+
 #
 def atomize_date(date_str):
     month = None

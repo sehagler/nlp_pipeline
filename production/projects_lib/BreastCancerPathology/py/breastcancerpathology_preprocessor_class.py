@@ -35,10 +35,10 @@ class BreastCancerPathology_preprocessor(Pathology_report):
     def _extract_section_headers(self, extract_section_headers_flg=True):
         if extract_section_headers_flg:
             Pathology_report._extract_section_headers(self)
-        section_header_normalizer = Section_header_normalizer_pathology_report()
+        section_header_normalizer = Section_header_normalizer_pathology_report(self.project_data)
         section_header_normalizer.push_linguamatics_i2e_writer(self.linguamatics_i2e_writer)
         section_header_normalizer.push_text(self.text)
-        section_header_normalizer.surgical_pathology_summary('formatted')
+        section_header_normalizer.surgical_pathology_summary_section_header('formatted')
         self.text = section_header_normalizer.pull_text()
         self.linguamatics_i2e_writer = section_header_normalizer.pull_linguamatics_i2e_writer()
         
@@ -58,16 +58,16 @@ class BreastCancerPathology_preprocessor(Pathology_report):
     def _named_entity_recognition(self):
         Pathology_report._named_entity_recognition(self)
         self._normalize_whitespace()
-        named_entity_recognition_biomarkers = Named_entity_recognition_biomarkers()
+        named_entity_recognition_biomarkers = Named_entity_recognition_biomarkers(self.project_data)
         named_entity_recognition_biomarkers.push_text(self.text)
         named_entity_recognition_biomarkers.process_biomarkers()
         self.text = named_entity_recognition_biomarkers.pull_text()
-        named_entity_recognition_cancer = Named_entity_recognition_cancer()
+        named_entity_recognition_cancer = Named_entity_recognition_cancer(self.project_data)
         named_entity_recognition_cancer.push_text(self.text)
         named_entity_recognition_cancer.process_abbreviations()
         named_entity_recognition_cancer.process_initialisms()
         self.text = named_entity_recognition_cancer.pull_text()
-        named_entity_recognition_histological_grade = Named_entity_recognition_histological_grade()
+        named_entity_recognition_histological_grade = Named_entity_recognition_histological_grade(self.project_data)
         named_entity_recognition_histological_grade.push_text(self.text)
         named_entity_recognition_histological_grade.process_msbr()
         self.text = named_entity_recognition_histological_grade.pull_text()
@@ -88,7 +88,7 @@ class BreastCancerPathology_preprocessor(Pathology_report):
     #
     def _normalize_terminology(self):
         Pathology_report._normalize_terminology(self)
-        pretokenizer = Pretokenizer()
+        pretokenizer = Pretokenizer(self.project_data)
         pretokenizer.push_text(self.text)
         pretokenizer.process_initialisms()
         self.text = pretokenizer.pull_text()
@@ -105,11 +105,11 @@ class BreastCancerPathology_preprocessor(Pathology_report):
     #
     def _posttokenizer(self, clear_section_headers=True):
         Pathology_report._posttokenizer(self)
-        posttokenizer_cancer = Posttokenizer_cancer()
+        posttokenizer_cancer = Posttokenizer_cancer(self.project_data)
         posttokenizer_cancer.push_text(self.text)
         posttokenizer_cancer.process_general()
         self.text = posttokenizer_cancer.pull_text()
-        posttokenizer_histological_grade = Posttokenizer_histological_grade()
+        posttokenizer_histological_grade = Posttokenizer_histological_grade(self.project_data)
         posttokenizer_histological_grade.push_text(self.text)
         posttokenizer_histological_grade.process_grade()
         self.text = posttokenizer_histological_grade.pull_text()
@@ -124,13 +124,13 @@ class BreastCancerPathology_preprocessor(Pathology_report):
     def _summarization(self):
         Pathology_report._summarization(self)
         self._normalize_whitespace()
-        summarization_biomarkers = Summarization_biomarkers()
+        summarization_biomarkers = Summarization_biomarkers(self.project_data)
         summarization_biomarkers.push_text(self.text)
         summarization_biomarkers.process_estrogen_receptor()
         summarization_biomarkers.process_her2()
         summarization_biomarkers.process_progesterone_receptor()
         self.text = summarization_biomarkers.pull_text()
-        summarization_histological_grade = Summarization_histological_grade()
+        summarization_histological_grade = Summarization_histological_grade(self.project_data)
         summarization_histological_grade.push_text(self.text)
         summarization_histological_grade.process_mitotic_rate()
         summarization_histological_grade.process_nuclear_pleomorphism()

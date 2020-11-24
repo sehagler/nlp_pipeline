@@ -8,26 +8,32 @@ Created on Tue Nov 13 14:00:44 2018
 # import packages
 import os
 import re
-import xlrd
 
 #
+from nlp_lib.py.base_class_lib.reader_base_class import Reader_base
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_xlsx_file
 
 #
-class Xlsx_reader(object):
+class Xlsx_reader(Reader_base):
     
     #
-    def _read_datetime(self, book, value):
-        try:
-            y, m, d, h, mi, s = \
-                xlrd.xldate_as_tuple(value, book.datemode)
-            datetime_str = str(m) + '/' + str(d) + '/' + str(y)
-        except:
-            datetime_str = ''
-        return datetime_str
+    def _read_data_file(self, raw_data_files_dict, raw_data_file):
+        datetime_keys = self.project_data['datetime_keys']
+        header_key = self.project_data['header_key']
+        header_value_list = self.project_data['header_values']
+        if header_key != []:
+            data = \
+                self._read_data_file_key(raw_data_files_dict, raw_data_file,
+                                         datetime_keys, header_key,
+                                         header_value_list)
+        else:
+            data = \
+                self._read_data_file_nokey(raw_data_files_dict, raw_data_file,
+                                           datetime_keys)
+        return data
     
     #
-    def _read_file_key(self, raw_data_files_dict, raw_data_file, dt_labels, key_label, key_value_list):
+    def _read_data_file_key(self, raw_data_files_dict, raw_data_file, dt_labels, key_label, key_value_list):
         data = {}
         book = read_xlsx_file(raw_data_file)
         sheet = book.sheet_by_index(0)
@@ -64,7 +70,7 @@ class Xlsx_reader(object):
         return data
     
     #
-    def _read_file_nokey(self, raw_data_files_dict, raw_data_file, dt_labels):
+    def _read_data_file_nokey(self, raw_data_files_dict, raw_data_file, dt_labels):
         data = {}
         book = read_xlsx_file(raw_data_file)
         sheet = book.sheet_by_index(0)
@@ -95,18 +101,4 @@ class Xlsx_reader(object):
         else:
             data['RAW_TEXT'].extend(data[keys[-1]])
         del data[keys[-1]]
-        return data
-    
-    #
-    def read_files(self, raw_data_files_dict, raw_data_file, datetime_keys,
-                   header_key, header_value_list):
-        if header_key != []:
-            data = \
-                self._read_file_key(raw_data_files_dict, raw_data_file,
-                                    datetime_keys, header_key,
-                                    header_value_list)
-        else:
-            data = \
-                self._read_file_nokey(raw_data_files_dict, raw_data_file,
-                                      datetime_keys)
         return data

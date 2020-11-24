@@ -15,20 +15,14 @@ class Named_entity_recognition(Preprocessor_base):
     #
     def _process_irregular_initialisms(self):
         
-        self._clear_command_list()
-        
         # breast cancer
         self._general_command('(?i)in situ and invasive duct(al)? (cancer|carcinoma)',
                               {None : 'DCIS and IDC'})
         self._general_command('(?i)usual and atypical duct(al)? hyperplasia( \( UDH, ADH \))?', 
                               {None : 'UDH and ADH'})
         
-        self._process_command_list()
-        
     #
     def _process_regular_initialisms(self):
-        
-        self._clear_command_list()
         
         # carcinoma
         self._general_command('(?i)sqcc', {None : 'SCC'})
@@ -72,22 +66,6 @@ class Named_entity_recognition(Preprocessor_base):
         # tumor
         self._normalize_regular_initialism('isolated tumor cell' + s(), 'ITC')
         
-        # miscellaneous
-        self._normalize_regular_initialism('columnar cell change', 'CCC')
-        self._normalize_regular_initialism('eastern cooperative oncology group', 'ECOG')
-        self._normalize_regular_initialism('flat epithelial atypia', 'FEA')
-        self._normalize_regular_initialism('pathologic complete response', 'pCR')
-        self._normalize_regular_initialism('residual ca(ncer)? burden', 'RCB')
-        self._general_command('(?i)FAB (?=[0-9])', {None : 'FAB M'})
-        self._general_command('(?i)HLA-Dr', {None : 'HLA-DR'})
-        self._general_command('(?i)blasts ?(\+|and|plus) ?promonocytes', {None : 'blasts/promonocytes'})
-        self._normalize_regular_initialism('(?i)butyrate esterase', 'BE')
-        self._normalize_regular_initialism('(?i)minimal residual disease', 'MRD')
-        self._normalize_regular_initialism('(?i)myelodysplastic syndrome', 'MDS')
-        self._normalize_regular_initialism('(?i)myeloperoxidase', 'MPO')
-        
-        self._process_command_list()
-        
     #
     def process_abbreviations(self):
         pass
@@ -102,30 +80,22 @@ class Posttokenizer(Preprocessor_base):
         
     #
     def process_general(self):
-        self._clear_command_list()
         self._general_command('MDS / MPN', {None : 'MDS/MPN'})
-        self._process_command_list()
         
 #
 class Text_preparation(Preprocessor_base):
     
     #
     def cleanup_text(self):
-        self._clear_command_list()
         self._general_command('(?i)Scarff ', {None : 'Scarf '})
-        self._process_command_list()
         
     #
     def normalize_text(self):
-        self._clear_command_list()
         self._general_command('(?i)leukaemia', {None : 'leukemia'})
         self._general_command('(?<=[Tt])umour', {None : 'umor'})
-        self._process_command_list()
     
     #
     def setup_text(self):
-        self._clear_command_list()
         self._general_command('(?i)Scharff(-| )', {'(?i)Scharff': 'Scarff'})
         self._general_command('(?i)Scharf(-| )', {'(?i)Scharf': 'Scarff'})
         self._general_command('(?i)Scarf(-| )', {'(?i)Scarf': 'Scarff'})
-        self._process_command_list()
