@@ -30,16 +30,12 @@ class Section_header_normalizer_pathology_report(Section_header_normalizer_base)
         text_list.append(self._pre_punct() + amend() + ' comment' + s() + self._post_punct())
         text_list.append(self._pre_punct() + amend() + ' comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
         text_list.append('(?i)(?<!see )' + amend() + ' comment' + s() + ' #\d' + self._post_punct())
-        self._clear_command_list()
         self._pull_out_section_header_to_bottom_of_report(text_list, self._tagged_section_header('AMENDMENT COMMENT'), True)
         self._general_command(self._tagged_section_header('AMENDMENT COMMENT'), {None : self._tagged_section_header('AMENDMENT_COMMENT')})
-        self._process_command_list()
         text_list = []
         text_list.append('(?i)(?<!see )' + amend() + ' note' + s() + self._post_punct())
-        self._clear_command_list()
         self._pull_out_section_header_to_bottom_of_report(text_list, self._tagged_section_header('AMENDMENT COMMENT'), True)
         self._general_command(self._tagged_section_header('AMENDMENT COMMENT'), {None : self._tagged_section_header('AMENDMENT_COMMENT')})
-        self._process_command_list()
         text_list = []
         text_list.append('(?i)\n' + article() + ' ([a-z]+ )?' + amend() + ' ' + \
                          '(' + be() + '|reports)')
@@ -48,10 +44,8 @@ class Section_header_normalizer_pathology_report(Section_header_normalizer_base)
         text_list.append('(?i)\n(' + article() + ' )?([a-z]+ )?' + \
                          amend() + '( ' + review_item() + ')?(' + self._post_punct() + '|\n)')
         text_list.append('(?i)(' + article() + ' )?' + amend() + '( ' + review_item() + ')?\s?#\d' + self._post_punct())
-        self._clear_command_list()
         self._pull_out_section_header_to_bottom_of_report(text_list, self._tagged_section_header('AMENDMENT'), True)
         self._general_command(self._tagged_section_header('AMENDMENT_COMMENT'), {None : self._tagged_section_header('AMENDMENT COMMENT')})
-        self._process_command_list()
     
     #
     def antibodies_tested_section_header(self, mode_flg):
@@ -60,9 +54,7 @@ class Section_header_normalizer_pathology_report(Section_header_normalizer_base)
         text_list.append('(?i)' + article() + ' following antibodies were used' + self._post_punct())
         text_list.append('(?i)using ' + article() + ' following antibody combination' + self._post_punct())
         text_list.append('(?i)please see below for (' + article() + ' list of )?antibodies tested' + self._post_punct() + '(?=CD)')
-        self._clear_command_list()
         self._general_command(text_list, self._tagged_section_header('ANTIBODIES TESTED'), True)
-        self._process_command_list()
         
     #
     def background_section_header(self, mode_flg):
@@ -76,24 +68,18 @@ class Section_header_normalizer_pathology_report(Section_header_normalizer_base)
         text_list.append(self._pre_punct() + 'bone marrow aspirate( smear' + s() + ')?' + self._post_punct())
         text_list.append(self._pre_punct() + 'bone marrow (aspirate and )?touch prep(aration' + s() + ')?' + self._post_punct())
         text_list.append(self._pre_punct() + '(bilateral )?bone marrow aspirate' + s() + '(, (left|right) and (left|right))?' + self._post_punct())
-        self._clear_command_list()
         self._general_command(text_list, self._tagged_section_header('BONE MARROW ASPIRATE SMEARS'), True)
-        self._process_command_list()
         text_list = []
         text_list.append(self._pre_punct() + 'bone marrow (core )?(biopsy(/| and ))?clot section' + self._post_punct())
         text_list.append(self._pre_punct() + '(bilateral )?bone marrow (biopsies|biopsy cores) and clot section' + \
                          s() + '(, (left|right) and (left|right))?' + self._post_punct())
         text_list.append(self._pre_punct() + 'bone marrow (core )?biopsy' + self._post_punct())
         text_list.append(self._pre_punct() + 'clot section' + self._post_punct())
-        self._clear_command_list()
         self._general_command(text_list, self._tagged_section_header('BONE MARROW CLOT SECTION'), True)
-        self._process_command_list()
         text_list = []
         text_list.append(self._pre_punct() + '(' + article() + ' )?(bone marrow( aspirate)?|manual) differential(( count)? (\(.+\) )?includes)?[\n\s]*' + self._post_punct())
         text_list.append(self._pre_punct() + article() + ' differential count [ A-Za-z]+ includes[\n\s]*' + self._post_punct())
-        self._clear_command_list()
         self._general_command(text_list, self._tagged_section_header('BONE MARROW DIFFERENTIAL'), True)
-        self._process_command_list()
         
     #
     def cytogenetic_analysis_summary_section_header(self, mode_flg):
@@ -187,10 +173,8 @@ class Section_header_normalizer_pathology_report(Section_header_normalizer_base)
         
     #
     def peripheral_blood_morphology_section_header(self, mode_flg):
-        self._clear_command_list()
         self._general_command([ '(?i)(?<!SUMMARY\n)\n(' + article() + ' )?peripheral blood (differential count includes|morphology|smear)' + self._post_punct() ], 
                               self._tagged_section_header('PERIPHERAL BLOOD MORPHOLOGY'), True)
-        self._process_command_list()
         
     #
     def references_section_header(self, mode_flg):

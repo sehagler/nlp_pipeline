@@ -44,7 +44,7 @@ querySnapshots:
           findMatches: longestOnly
           id: phrase1
           maxWordGap: -1
-          view: {height: 544, width: 656}
+          view: {height: 490, width: 656}
           wordGapRestricted: false
           of:
           - alternative:
@@ -55,19 +55,18 @@ querySnapshots:
                     quantifier: {minimum: 0, maximum: 1}
                     of: [initial, preliminary]
                 - dx
-              - diagnosed
+              - dxed
           - alternative:
               quantifier: {minimum: 0, maximum: 0}
               of:
               - link:
                   path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
               - word: {text: '[0-9]{4}', matchType: Regexp}
-              - diagnosed
               - dx
+              - dxed
               - recurrence
               - recurrent
-              - relapse
-              - relapsed
+              - word: {text: relapse, morphoVariants: true}
               - residual
           - alternative:
               findMatches: longestOnly
@@ -107,6 +106,7 @@ querySnapshots:
           findMatches: longestOnly
           id: alternative1
           of:
+          - PHI_DATE
           - phrase:
             - phrase:
                 quantifier: {minimum: 0, maximum: 1}

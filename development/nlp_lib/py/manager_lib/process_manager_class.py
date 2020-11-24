@@ -46,7 +46,7 @@ class Process_manager(object):
         self.metadata_manager = self.project_data['metadata_manager']
         self.project_name = self.project_data['project_name']
         self.raw_data_reader = Raw_data_reader(self.project_data, password)
-        self.raw_report_preprocessor = Raw_report_preprocessor()
+        self.raw_report_preprocessor = Raw_report_preprocessor(project_data)
         self.report_postprocessor = self.project_data['report_postprocessor']
         self.report_postprocessor.set_credentials(self.project_data, password)
         self.report_postprocessor.set_data_dirs(self.project_data)

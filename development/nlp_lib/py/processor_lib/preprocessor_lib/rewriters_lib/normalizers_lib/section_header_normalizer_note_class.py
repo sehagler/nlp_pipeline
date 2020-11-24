@@ -36,15 +36,11 @@ class Section_header_normalizer_note(Section_header_normalizer_base):
         text_list = []
         text_list.append('(?i)(?<!(.. no| quit|start|.. to) )' + datetime() + '( of (' + diagnosis() + '|' + datetime(mode_flg='modifier') + '))?(:|;) PHI_DATE')
         text_list.append('(?i)start of care(:|;) PHI_DATE')
-        self._clear_command_list()
         self._general_command(text_list, self._tagged_section_header('DATETIME'), True)
-        self._process_command_list()
         text_list = []
         text_list.append('(?i)(?<!(.. no| quit|start|.. to) )' + datetime() + '( of (' + diagnosis() + '|' + datetime(mode_flg='modifier') + '))?(:|;)')
         text_list.append('(?i)start of care(:|;)')
-        self._clear_command_list()
         self._general_command(text_list, self._tagged_section_header('DATETIME'), True)
-        self._process_command_list()
         
     #
     def diagnosis_section_header(self, mode_flg):

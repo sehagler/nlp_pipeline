@@ -79,12 +79,10 @@ class Summarization(Preprocessor_base):
     
     #
     def remove_tnm_staging(self):
-        self._clear_command_list()
         self._general_command('(?i) \( pTNM \)', {None : ''})
         self._general_command('(?i) \( pT \)', {None : ''})
         self._general_command('(?i) \( pN \)', {None : ''})
         self._general_command('(?i) \( p?M \)', {None : ''})
-        self._process_command_list()
 
 #
 def get_data_text_map():

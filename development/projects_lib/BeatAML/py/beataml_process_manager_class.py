@@ -19,9 +19,9 @@ class BeatAML_process_manager(Process_manager):
     #
     def __init__(self, project_data, server):
         Process_manager.__init__(self, project_data, server)
-        self.beataml_report_preprocessor = BeatAML_report_preprocessor()
-        self.cytogenetics_report_preprocessor = Cytogenetics_report_preprocessor()
-        self.hematopathology_report_preprocessor = Hematopathology_report_preprocessor()
+        self.beataml_report_preprocessor = BeatAML_report_preprocessor(project_data, 'formatted')
+        self.cytogenetics_report_preprocessor = Cytogenetics_report_preprocessor(project_data, 'formatted')
+        self.hematopathology_report_preprocessor = Hematopathology_report_preprocessor(project_data, 'formatted')
         
     #
     def _preprocess_documents(self, raw_data_reader, start_idx, mrn_list, xml_metadata_keys, 

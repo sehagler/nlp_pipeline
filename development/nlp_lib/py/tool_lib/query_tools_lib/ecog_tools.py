@@ -86,9 +86,7 @@ class Summarization(Preprocessor_base):
     
     #
     def process_ecog(self):
-        self._clear_command_list()
         self._general_command('(?i)(?<!{ )ecog( :)? (performance )?(status|score|ps)', {None : 'ECOG ( ZUBROD ) '})
         self._general_command('(?i)karnofsky (performance )?(status|score|ps)', {None : 'ECOG ( KARNOFSKY ) '})
         self._general_command('(?i)lansky (play performance )?(status|score|ps)', {None : 'ECOG ( LANSKY ) '})
         self._general_command('(?i)(?<!{ )ecog (?!\()', {None : 'ECOG ( ZUBROD ) '})
-        self._process_command_list()

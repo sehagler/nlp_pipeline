@@ -16,31 +16,25 @@ class Label_normalizer(Preprocessor_base):
     def process_labels(self):
         term_list = []
         term_list.append('note' + s())
-        self._clear_command_list()
         for term in term_list:
             self._general_command('(?i)' + term + ' #?' + note_label(), {' ' : '-'})
             self._general_command('(?i)' + term + '-#' + note_label(), {'#' : ''})
             self._general_command('(?i)' + term + '-' + note_label() + ' to', {' ' : '-'})
             self._general_command('(?i)' + term + '-' + note_label() + '-to #?' + note_label(), {' ' : '-'})
             self._general_command('(?i)' + term + '-' + note_label() + '-to-#' + note_label(), {'#' : ''})
-        self._process_command_list()
         term_list = []
         term_list.append('part' + s())
-        self._clear_command_list()
         for term in term_list:
             self._general_command('(?i)' + term + ' #?' + part_label(), {' ' : '-'})
             self._general_command('(?i)' + term + '-#' + part_label(), {'#' : ''})
             self._general_command('(?i)' + term + '-' + part_label() + ' to', {' ' : '-'})
             self._general_command('(?i)' + term + '-' + part_label() + '-to #?' + part_label(), {' ' : '-'})
             self._general_command('(?i)' + term + '-' + part_label() + '-to-#' + part_label(), {'#' : ''})
-        self._process_command_list()
         term_list = []
         term_list.append('specimen' + s())
-        self._clear_command_list()
         for term in term_list:
             self._general_command('(?i)' + term + ' #?' + specimen_label(), {' ' : '-'})
             self._general_command('(?i)' + term + '-#' + specimen_label(), {'#' : ''})
             self._general_command('(?i)' + term + '-' + specimen_label() + ' to', {' ' : '-'})
             self._general_command('(?i)' + term + '-' + specimen_label() + '-to #?' + specimen_label(), {' ' : '-'})
             self._general_command('(?i)' + term + '-' + specimen_label() + '-to-#' + specimen_label(), {'#' : ''})
-        self._process_command_list()

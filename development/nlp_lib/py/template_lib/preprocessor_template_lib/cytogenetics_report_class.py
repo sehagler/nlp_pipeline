@@ -18,7 +18,7 @@ class Cytogenetics_report(Pathology_report):
     #
     def _named_entity_recognition(self):
         Pathology_report._named_entity_recognition(self)
-        named_entity_recognition_karyotype = Named_entity_recognition_karyotype()
+        named_entity_recognition_karyotype = Named_entity_recognition_karyotype(self.project_data)
         named_entity_recognition_karyotype.push_text(self.text)
         named_entity_recognition_karyotype.process_karyotype()
         self.text = named_entity_recognition_karyotype.pull_text()

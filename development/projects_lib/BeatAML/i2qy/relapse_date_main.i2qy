@@ -309,6 +309,7 @@ querySnapshots:
           findMatches: longestOnly
           id: alternative1
           of:
+          - PHI_DATE
           - phrase:
             - phrase:
                 quantifier: {minimum: 0, maximum: 1}

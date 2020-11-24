@@ -55,7 +55,6 @@ class Posttokenizer(Preprocessor_base):
     #
     def process_antigens(self):
         antigens = antigens_list()
-        self._clear_command_list()
         self._general_command('HLA ?DR', {None : 'HLA-DR'})
         self._general_command('(?i)dim(-| (/ )?)partial', {None : 'dim/partial'})
         self._general_command('(?i)dim (/ )?variable', {None : 'dim/variable'})
@@ -71,7 +70,6 @@ class Posttokenizer(Preprocessor_base):
         self._general_command(antigens + ' *\+', {'\+' : ' positive '})
         self._general_command(antigens + ' *\( \+ \)', {'\( \+ \)' : ' positive'})
         self._general_command('(?<=HLA) (negative|positive)(?=DR)', {None : '-'})
-        self._process_command_list()
 
 #
 def antigens_list():

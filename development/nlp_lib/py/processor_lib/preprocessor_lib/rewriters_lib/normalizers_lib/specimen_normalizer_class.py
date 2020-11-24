@@ -37,8 +37,6 @@ class Specimen_normalizer(Preprocessor_base):
     #
     def process_specimens(self):
         self._indicate_nonspecimens('do')
-        self._clear_command_list()
         self._general_command('(?i)[ \t][a-z]:[ \t]', {':' : '.'})
         self._general_command('(?i)[ \t][a-z]\.[ \t]', {'(?i)[ \t](?=[a-z])' : '\n\n'})
-        self._process_command_list()
         self._indicate_nonspecimens('undo')

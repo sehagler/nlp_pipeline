@@ -13,7 +13,6 @@ class Named_entity_recognition(Preprocessor_base):
         
     #
     def process_msbr(self):
-        self._clear_command_list()
         text_list = []
         text_list.append('(?i)modified Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(mSBR\))?')
         text_list.append('(?i)modified Bloom(-| )(and(-| ))?Richardson( \(mBR\))?')
@@ -21,28 +20,24 @@ class Named_entity_recognition(Preprocessor_base):
         text_list.append('(?i)modified Richardson')
         text_list.append('(?i)Bloom(-| )(and(-| ))?Richardson( \(BR\))?')
         self._general_command(text_list, {None : 'mSBR'})
-        self._process_command_list()
 
 #
 class Posttokenizer(Preprocessor_base):
 
     #
     def process_grade(self):
-        self._clear_command_list()
         self._general_command('(?<= )I( / | of )III(?=( |\n))', {None : '1 / 3'})
         self._general_command('(?<= )II( / | of )III(?=( |\n))', {None : '2 / 3'})
         self._general_command('(?<= )III( / | of )III(?=( |\n))', {None : '3 / 3'})
         self._general_command('(?<= )1 of 3(?=( |\n))', {None : '1 / 3'})
         self._general_command('(?<= )2 of 3(?=( |\n))', {None : '2 / 3'})
         self._general_command('(?<= )3 of 3(?=( |\n))', {None : '3 / 3'})
-        self._process_command_list()
 
 #
 class Summarization(Preprocessor_base):
     
     #
     def process_mitotic_rate(self):
-        self._clear_command_list()
         self._general_command('(?i)(points )?for mito(s(e|i)s|tic)( (activity|count|figure(s)?|index|rate))',
                               {None : 'for mitoses'})
         match_str0 = '(?i)mito(s(e|i)s|tic)( (activity|count|figure(s)?|index|rate))? \( \d \)'
@@ -60,11 +55,9 @@ class Summarization(Preprocessor_base):
                               {None : 'mitoses'})
         self._general_command('(?i) mitoses per ', {None : '/'})
         self._general_command(' a mitoses', {None : ' mitoses'})
-        self._process_command_list()
         
     #
     def process_nuclear_pleomorphism(self):
-        self._clear_command_list()
         self._general_command('(?i)pleomorphism', {None : 'nuclear pleomorphism'} )
         self._general_command('(?i)nuclear nuclear', {None : 'nuclear'})
         self._general_command('(?i)(points )?for nuclear (atypia|grade|pleomorphism|score)',
@@ -85,11 +78,9 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)nuclear (atypia|grade|pleomorphism|score)',
                               {None : 'nuclei'})
         self._general_command(' a nuclei', {None : ' nuclei'})
-        self._process_command_list()
         
     #
     def process_tubule_formation(self):
-        self._clear_command_list()
         match_str = '(?i)(points )?for (glandular )?(\(acinar\)-)?tub(al|ular|ule(s)?)' + \
                     '( (differentiation|formation))?'
         self._general_command(match_str, {None : 'for tubules'})
@@ -115,4 +106,3 @@ class Summarization(Preprocessor_base):
                     '( (differentiation|formation))'
         self._general_command(match_str, {None : 'tubules'})
         self._general_command(' a tubules', {None : ' tubules'})
-        self._process_command_list()

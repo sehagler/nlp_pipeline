@@ -24,16 +24,20 @@ from nlp_lib.py.processor_lib.preprocessor_lib.text_preparation_lib.text_prepara
     import Text_preparation
 from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.tokenizers_lib.tokenizer_class \
     import Tokenizer
+from nlp_lib.py.tool_lib.query_tools_lib.date_tools import Tokenizer as Tokenizer_date
 from nlp_lib.py.tool_lib.query_tools_lib.serial_number_tools \
     import Summarization as Summarization_serial_number
+from nlp_lib.py.tool_lib.query_tools_lib.smoking_tools \
+    import Named_entity_recognition as Named_entity_recognition_smoking
     
 #
 class Template_base(Preprocessor_base):
     
     #
-    def __init__(self):
-        Preprocessor_base.__init__(self)
+    def __init__(self, project_data, formatting):
+        Preprocessor_base.__init__(self, project_data)
         self.body_header = 'SUMMARY'
+        self.formatting = formatting
         
     #
     def _add_body_header(self):
@@ -45,7 +49,7 @@ class Template_base(Preprocessor_base):
     
     #
     def _deidentifier(self):
-        deidentifier = Deidentifier()
+        deidentifier = Deidentifier(self.project_data)
         deidentifier.push_text(self.text)
         deidentifier.remove_phi()
         self.text = deidentifier.pull_text()
@@ -71,25 +75,30 @@ class Template_base(Preprocessor_base):
     #
     def _named_entity_recognition(self):
         self._normalize_whitespace()
-        named_entity_recognition = Named_entity_recognition()
+        named_entity_recognition = Named_entity_recognition(self.project_data)
         named_entity_recognition.push_text(self.text)
         named_entity_recognition.process_initialisms()
         self.text = named_entity_recognition.pull_text()
+        named_entity_recognition_smoking = Named_entity_recognition_smoking(self.project_data)
+        named_entity_recognition_smoking.push_text(self.text)
+        named_entity_recognition_smoking.process_initialisms()
+        self.text = named_entity_recognition_smoking.pull_text()
         self._normalize_whitespace()
         
     #
     def _posttokenizer(self):
         self._normalize_whitespace()
-        posttokenizer = Posttokenizer()
+        posttokenizer = Posttokenizer(self.project_data)
         posttokenizer.push_text(self.text)
         posttokenizer.process_general()
+        posttokenizer.process_medical_abbreviations()
         self.text = posttokenizer.pull_text()
         self._normalize_whitespace()         
     
     #
     def _pretokenizer(self):
         self._normalize_whitespace()
-        pretokenizer = Pretokenizer()
+        pretokenizer = Pretokenizer(self.project_data)
         pretokenizer.push_text(self.text)
         pretokenizer.process_punctuation()
         self.text = pretokenizer.pull_text()
@@ -105,12 +114,11 @@ class Template_base(Preprocessor_base):
     #
     def _summarization(self):
         self._normalize_whitespace()
-        summarization_serial_number = Summarization_serial_number()
+        summarization_serial_number = Summarization_serial_number(self.project_data)
         summarization_serial_number.push_text(self.text)
-        summarization_serial_number.process_names()
         summarization_serial_number.remove_extraneous_text()
         self.text = summarization_serial_number.pull_text()
-        summarization = Summarization()
+        summarization = Summarization(self.project_data)
         summarization.push_text(self.text)
         summarization.process_names()
         summarization.remove_extraneous_text()
@@ -120,7 +128,7 @@ class Template_base(Preprocessor_base):
     #
     def _text_setup(self):
         self._normalize_whitespace()
-        text_preparation = Text_preparation()
+        text_preparation = Text_preparation(self.project_data)
         text_preparation.push_text(self.text)
         text_preparation.correct_common_typos()
         text_preparation.format_section_headers()
@@ -131,16 +139,21 @@ class Template_base(Preprocessor_base):
     #
     def _tokenizer(self):
         self._normalize_whitespace()
-        tokenizer = Tokenizer()
+        tokenizer = Tokenizer(self.project_data)
         tokenizer.push_text(self.text)
         tokenizer.process_punctuation()
         tokenizer.process_initialisms()
         tokenizer.process_abbreviations()
+        tokenizer.process_chemical_abbreviations()
         tokenizer.process_measurements()
-        tokenizer.process_month()
+        tokenizer.process_medical_abbreviations()
         tokenizer.process_numbers()
         tokenizer.process_simplifications()
         self.text = tokenizer.pull_text()
+        tokenizer_date = Tokenizer_date(self.project_data)
+        tokenizer_date.push_text(self.text)
+        tokenizer_date.process_month()
+        self.text = tokenizer_date.pull_text()
         self._normalize_whitespace()
         
     #

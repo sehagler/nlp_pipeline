@@ -23,8 +23,12 @@ class BeatAML_project_manager(Project_manager):
     
     #
     def get_project_data(self):
-        self.project_data['date_identifiers'] = {}
-        self.project_data['date_identifiers'][ 'RESULT_COMPLETED_DT' ] = '%m/%d/%Y'
+        self.project_data['datetime_identifiers'] = {}
+        self.project_data['datetime_identifiers'][ 'RESULT_COMPLETED_DT' ] = '%m/%d/%Y'
+        self.project_data['document_identifiers'] = [ 'CSN' ]
+        self.project_data['flags'] = {}
+        self.project_data['flags']['remove_date'] = False
+        self.project_data['flags']['trim_data_by_csn'] = False
         self.project_data['header_values'] = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
                                                'Karyotype', 'Clinical History', 'Immunologic Analysis',
                                                'Laboratory Data', 'Microscopic Description',

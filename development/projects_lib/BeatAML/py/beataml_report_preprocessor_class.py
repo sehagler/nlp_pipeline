@@ -15,8 +15,8 @@ from projects_lib.BeatAML.py.hematopathology_report_preprocessor_class \
 class BeatAML_report_preprocessor(Cytogenetics_report_preprocessor, Hematopathology_report_preprocessor):
     
     #
-    def __init__(self):
-        Hematopathology_report_preprocessor.__init__(self)
+    def __init__(self, project_data, formatting):
+        Hematopathology_report_preprocessor.__init__(self, project_data, formatting)
         
     #
     def _extract_section_headers(self):
@@ -32,11 +32,6 @@ class BeatAML_report_preprocessor(Cytogenetics_report_preprocessor, Hematopathol
     def _format_powerpath(self):
         Hematopathology_report_preprocessor._format_powerpath(self)
         Cytogenetics_report_preprocessor._format_powerpath(self)
-        
-    #
-    def _format_section_headers(self):
-        Hematopathology_report_preprocessor._format_section_headers(self)
-        Cytogenetics_report_preprocessor._format_section_headers(self)
         
     #
     def _named_entity_recognition(self):
