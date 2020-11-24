@@ -21,7 +21,7 @@ class Nlp_processor(object):
             if self.operation_mode == 'development':
                 self.root_dir_flg = 'dev_server'
             elif self.operation_mode == 'production':
-                self._root_dir_flg = 'prod_server'
+                self.root_dir_flg = 'prod_server'
         self.nlp_workspace = Workspace_manager(password, self.root_dir_flg)
         self.nlp_pipeline = \
             Pipeline_manager(password, self.operation_mode, self.project, self.root_dir_flg)
