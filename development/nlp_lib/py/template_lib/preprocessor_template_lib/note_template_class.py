@@ -11,10 +11,6 @@ from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.sec
     import Section_header_normalizer_note
 from nlp_lib.py.processor_lib.preprocessor_lib.summarization_lib.summarization_class \
     import Summarization
-from nlp_lib.py.tool_lib.query_tools_lib.ecog_tools \
-    import Summarization as Summarization_ecog
-from nlp_lib.py.tool_lib.query_tools_lib.tnm_stage_tools \
-    import Summarization as Summarization_tnm_stage
 
 #
 class Note_template(Template_base):
@@ -48,21 +44,3 @@ class Note_template(Template_base):
         section_header_normalizer.twenty_four_hour_events_section_header(self.formatting)
         self.text = section_header_normalizer.pull_text()
         self.linguamatics_i2e_writer = section_header_normalizer.pull_linguamatics_i2e_writer()
-        
-    #
-    def _summarization(self):
-        self._normalize_whitespace()
-        summarization_ecog = Summarization_ecog(self.project_data)
-        summarization_ecog.push_text(self.text)
-        summarization_ecog.process_ecog()
-        self.text = summarization_ecog.pull_text()
-        summarization_tnm_stage = Summarization_tnm_stage(self.project_data)
-        summarization_tnm_stage.push_text(self.text)
-        summarization_tnm_stage.remove_tnm_staging()
-        self.text = summarization_tnm_stage.pull_text()
-        summarization = Summarization(self.project_data)
-        summarization.push_text(self.text)
-        summarization.process_names()
-        summarization.remove_extraneous_text()
-        self.text = summarization.pull_text()
-        self._normalize_whitespace()

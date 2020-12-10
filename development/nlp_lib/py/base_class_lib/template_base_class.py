@@ -25,10 +25,6 @@ from nlp_lib.py.processor_lib.preprocessor_lib.text_preparation_lib.text_prepara
 from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.tokenizers_lib.tokenizer_class \
     import Tokenizer
 from nlp_lib.py.tool_lib.query_tools_lib.date_tools import Tokenizer as Tokenizer_date
-from nlp_lib.py.tool_lib.query_tools_lib.serial_number_tools \
-    import Summarization as Summarization_serial_number
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_tools \
-    import Named_entity_recognition as Named_entity_recognition_smoking
     
 #
 class Template_base(Preprocessor_base):
@@ -77,12 +73,8 @@ class Template_base(Preprocessor_base):
         self._normalize_whitespace()
         named_entity_recognition = Named_entity_recognition(self.project_data)
         named_entity_recognition.push_text(self.text)
-        named_entity_recognition.process_initialisms()
+        named_entity_recognition.do_named_entity_recognition()
         self.text = named_entity_recognition.pull_text()
-        named_entity_recognition_smoking = Named_entity_recognition_smoking(self.project_data)
-        named_entity_recognition_smoking.push_text(self.text)
-        named_entity_recognition_smoking.process_initialisms()
-        self.text = named_entity_recognition_smoking.pull_text()
         self._normalize_whitespace()
         
     #
@@ -114,14 +106,9 @@ class Template_base(Preprocessor_base):
     #
     def _summarization(self):
         self._normalize_whitespace()
-        summarization_serial_number = Summarization_serial_number(self.project_data)
-        summarization_serial_number.push_text(self.text)
-        summarization_serial_number.remove_extraneous_text()
-        self.text = summarization_serial_number.pull_text()
         summarization = Summarization(self.project_data)
         summarization.push_text(self.text)
-        summarization.process_names()
-        summarization.remove_extraneous_text()
+        summarization.do_summarization()
         self.text = summarization.pull_text()
         self._normalize_whitespace()
         

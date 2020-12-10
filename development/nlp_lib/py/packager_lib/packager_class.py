@@ -33,5 +33,8 @@ class Packager(object):
                 
     #
     def _save_data_json(self):
-        write_json_file(os.path.join(self.save_dir, self.project_name + '.json'), self.data)
+        data = {}
+        for key in self.data.keys():
+            data['DOCUMENT_' + key] = self.data[key]
+        write_json_file(os.path.join(self.save_dir, self.project_name + '.json'), data)
         

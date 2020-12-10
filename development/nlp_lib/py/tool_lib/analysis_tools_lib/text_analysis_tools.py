@@ -13,15 +13,21 @@ from nlp_lib.py.tool_lib.query_tools_lib.antigens_tools import extract_antigens
 
 #
 def compare_texts(text0, text1, strip_commas_flg=False):
+    text0 = re.sub('dim', 'dim ', text0)
+    text0 = re.sub('\+', ' +', text0)
+    text0 = re.sub('(?i)(-)?positive', ' +', text0)
+    text1 = re.sub('dim', 'dim ', text1)
+    text1 = re.sub('\+', ' +', text1)
+    text1 = re.sub('(?i)(-)?positive', ' +', text1)
     text0_antigens = extract_antigens(text0)
     text1_antigens = extract_antigens(text1)
     diff0 = len(list(set(text0_antigens) - set(text1_antigens)))
     diff1 = len(list(set(text1_antigens) - set(text0_antigens)))
     if strip_commas_flg:
         text0 = re.sub(',', '', text0)
-        text0 = re.sub('  ', ' ', text0)
+        text0 = re.sub('  +', ' ', text0)
         text1 = re.sub(',', '', text1)
-        text1 = re.sub('  ', ' ', text1)
+        text1 = re.sub('  +', ' ', text1)
     text0 = text0.lower()
     text1 = text1.lower()
     s1 = text0.split(' ')
