@@ -137,12 +137,12 @@ class Gold_standard_jsons(Packaging_base):
         bone_marrow_blasts = self._make_strings(sheet.col_values(62)[1:])
         diagnoses = self._make_strings(sheet.col_values(29)[1:])
         diagnosis_date = sheet.col_values(164)[1:]
-        fab_morphology = sheet.col_values(74)[1:]
-        fish_analysis_summary = relapse_date = sheet.col_values(166)[1:]
+        fab_morphology = sheet.col_values(165)[1:]
+        fish_analysis_summary = relapse_date = sheet.col_values(167)[1:]
         karyotype = sheet.col_values(77)[1:]
         peripheral_blood_blasts = self._make_strings(sheet.col_values(63)[1:])
-        relapse_date = sheet.col_values(165)[1:]
-        residual_diagnosis = sheet.col_values(167)[1:]
+        relapse_date = sheet.col_values(166)[1:]
+        residual_diagnosis = sheet.col_values(168)[1:]
         specific_diagnoses = self._make_strings(sheet.col_values(30)[1:])
         surface_antigens = sheet.col_values(82)[1:]
         for i in range(len(labIds)):
