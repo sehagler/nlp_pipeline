@@ -52,9 +52,11 @@ class Directory_manager(object):
         self._create_directory(tmp_dir)
         self.directory_dict['processing_data_dir'] = os.path.join(tmp_dir, project_name)
         self._create_directory(self.directory_dict['processing_data_dir'])
-        self.directory_dict['raw_data_dir'] = nlp_source_data_root_dir
-        self.directory_dict['i2e_queries'] = \
+        self.directory_dict['general_queries_dir'] = \
+            nlp_software_root_dir + '/' + server + '/nlp_lib/i2qy'
+        self.directory_dict['project_queries_dir'] = \
             nlp_software_root_dir + '/' + server + '/projects_lib/' + project_name + '/i2qy'
+        self.directory_dict['raw_data_dir'] = nlp_source_data_root_dir
         self.directory_dict['log_dir'] = \
             os.path.join(self.directory_dict['processing_data_dir'], 'log')
         self._create_directory(self.directory_dict['log_dir'])

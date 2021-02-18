@@ -1,82 +1,255 @@
-version: 5.5.1
-creationDate: '2020-03-06 22:29:00'
+output:
+  useOutputEditor: true
+  columns:
+  - id: phrase1
+creator: haglers
 query:
   document:
   - phrase:
-      id: phrase1
-      maxSentenceGap: -1
-      maxWordGap: -1
       multiSentence: true
+      maxWordGap: -1
       wordGapRestricted: false
       of:
       - phrase:
         - alternative:
-            quantifier: {minimum: 0, maximum: 0}
             of:
             - phrase:
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
               - alternative:
-                  view: {layout: list}
-                  of: [':', /, ',']
+                  view:
+                    layout: list
+                  of:
+                  - ':'
+                  - /
+                  - ','
             - phrase:
+                of:
+                - using
+                - the
                 displayChildren: false
-                of: [using, the]
-        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
-        - alternative:
-            quantifier: {minimum: 0, maximum: 0}
-            view: {layout: list}
-            of: [':', /]
-      - phrase:
-        - alternative:
-            quantifier: {minimum: 0, maximum: 0}
-            view: {layout: list}
-            of: [':', /]
-        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
-        - alternative:
-            quantifier: {minimum: 0, maximum: 0}
-            view: {layout: list}
-            of: [':', /]
-      - phrase:
-        - alternative:
-            quantifier: {minimum: 0, maximum: 0}
-            view: {layout: list}
-            of: [':', /]
-        - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
-        - alternative:
-            quantifier: {minimum: 0, maximum: 0}
-            view: {layout: list}
-            of: [':', /]
-        - alternative:
-            quantifier: {minimum: 0, maximum: 1}
-            view: {layout: list}
-            of: [negative, positive]
+            quantifier:
+              maximum: 0
+              minimum: 0
         - link:
-            path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy'
-            quantifier: {minimum: 0, maximum: 1}
-output:
-  columns:
-  - {id: phrase1}
-  useOutputEditor: true
-creator: haglers
+            path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+        - alternative:
+            view:
+              layout: list
+            of:
+            - ':'
+            - /
+            quantifier:
+              maximum: 0
+              minimum: 0
+      - phrase:
+        - alternative:
+            view:
+              layout: list
+            of:
+            - ':'
+            - /
+            quantifier:
+              maximum: 0
+              minimum: 0
+        - link:
+            path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+        - alternative:
+            view:
+              layout: list
+            of:
+            - ':'
+            - /
+            quantifier:
+              maximum: 0
+              minimum: 0
+      - phrase:
+        - alternative:
+            view:
+              layout: list
+            of:
+            - ':'
+            - /
+            quantifier:
+              maximum: 0
+              minimum: 0
+        - link:
+            path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+        - alternative:
+            view:
+              layout: list
+            of:
+            - ':'
+            - /
+            quantifier:
+              maximum: 0
+              minimum: 0
+        - alternative:
+            view:
+              layout: list
+            of:
+            - negative
+            - positive
+            quantifier:
+              maximum: 1
+              minimum: 0
+        - link:
+            path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+            quantifier:
+              maximum: 1
+              minimum: 0
+      maxSentenceGap: -1
+      id: phrase1
 querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy
-  : version: 5.5.1
-    creationDate: '2019-02-13 20:27:46'
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - alternative:
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          view:
+            width: 865
+            height: 842
+          of:
+          - phrase:
+              unordered: true
+              view:
+                width: 526
+                height: 724
+              of:
+              - phrase:
+                  of:
+                  - word:
+                      text: slightly
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - alternative:
+                  view:
+                    width: 257
+                    height: 682
+                  of:
+                  - BE
+                  - word:
+                      view:
+                        width: 239
+                        height: 59
+                      matchType: Regexp
+                      text: '[a-z]?CD[0-9]{1,3}[a-z]{0,2}(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: HLA-DR(-|\+|-positive)?
+                  - word:
+                      view:
+                        width: 222
+                        height: 48
+                      matchType: Regexp
+                      text: '[a-z]?Kappa[a-z]?(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: Ki-67
+                  - word:
+                      view:
+                        width: 231
+                        height: 47
+                      matchType: Regexp
+                      text: '[a-z]?Lambda[a-z]?(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: '[a-z]?T[Dd]T(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: '[a-z]?MPO(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: PAX-?5
+                  - word:
+                      matchType: Regexp
+                      text: TXM4
+                  - phrase:
+                      of:
+                      - glycophorin
+                      - word:
+                          matchType: Regexp
+                          text: '[A-Z]'
+                      displayChildren: false
+                  - lysozyme
+                  - word:
+                      matchType: Regexp
+                      text: '[a-z]?p53'
+          - phrase:
+              of:
+              - (
+              - alternative:
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]+%'
+              - )
+              quantifier:
+                maximum: 1
+                minimum: 0
+          id: phrase1
+    creationDate: '2019-02-11 20:43:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
     query:
       document:
       - alternative:
-          id: alternative1
           of:
           - bright
           - phrase:
-              displayChildren: false
               of:
-              - word: {text: 'dim(inished)?', matchType: Regexp}
+              - word:
+                  matchType: Regexp
+                  text: dim(inished)?
               - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - /
-                  - alternative: [partial, variable]
+                  - alternative:
+                    - partial
+                    - variable
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              displayChildren: false
           - focal
           - low
           - moderate
@@ -86,90 +259,14 @@ querySnapshots:
           - phrase:
             - word:
                 text: minor
-                quantifier: {minimum: 0, maximum: 1}
+                quantifier:
+                  maximum: 1
+                  minimum: 0
             - subset
           - variable
           - weak
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy:
-    version: 5.5.1
-    creationDate: '2019-02-11 20:43:51'
-    query:
-      document:
-      - phrase:
-          id: phrase1
-          view: {height: 842, width: 865}
-          of:
-          - phrase:
-              unordered: true
-              view: {height: 724, width: 526}
-              of:
-              - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
-                  of:
-                  - word:
-                      text: slightly
-                      quantifier: {minimum: 0, maximum: 1}
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy'}
-              - alternative:
-                  view: {height: 682, width: 257}
-                  of:
-                  - BE
-                  - word:
-                      text: '[a-z]?CD[0-9]{1,3}[a-z]{0,2}(-|\+|-positive)?'
-                      matchType: Regexp
-                      view: {height: 59, width: 239}
-                  - word: {text: 'HLA-DR(-|\+|-positive)?', matchType: Regexp}
-                  - word:
-                      text: '[a-z]?Kappa[a-z]?(-|\+|-positive)?'
-                      matchType: Regexp
-                      view: {height: 48, width: 222}
-                  - word: {text: Ki-67, matchType: Regexp}
-                  - word:
-                      text: '[a-z]?Lambda[a-z]?(-|\+|-positive)?'
-                      matchType: Regexp
-                      view: {height: 47, width: 231}
-                  - word: {text: '[a-z]?T[Dd]T(-|\+|-positive)?', matchType: Regexp}
-                  - word: {text: '[a-z]?MPO(-|\+|-positive)?', matchType: Regexp}
-                  - word: {text: 'PAX-?5', matchType: Regexp}
-                  - word: {text: TXM4, matchType: Regexp}
-                  - phrase:
-                      displayChildren: false
-                      of:
-                      - glycophorin
-                      - word: {text: '[A-Z]', matchType: Regexp}
-                  - lysozyme
-                  - word: {text: '[a-z]?p53', matchType: Regexp}
-          - phrase:
-              quantifier: {minimum: 0, maximum: 1}
-              of:
-              - (
-              - alternative:
-                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy'}
-                - word: {text: '[0-9]+%', matchType: Regexp}
-              - )
-    output:
-      columns:
-      - {id: phrase1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-07 15:22:51'
-    query:
-      document:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
-          of:
-          - (
-          - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [(, )]
-          - )
-    creator: haglers
+          id: alternative1
+    creationDate: '2019-02-13 20:27:46'
+    version: 6.2
+creationDate: '2020-03-06 22:29:00'
+version: 6.2

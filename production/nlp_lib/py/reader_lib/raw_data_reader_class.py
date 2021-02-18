@@ -17,7 +17,7 @@ class Raw_data_reader(object):
     
     #
     def __init__(self, project_data, password):
-        self.data = []
+        self.data = {}
         self.project_data = project_data
         self.xml_reader = Xml_reader(project_data, password)
         self.xlsx_reader = Xlsx_reader(project_data, password)
@@ -40,25 +40,58 @@ class Raw_data_reader(object):
         return document_data
     
     #
+    def _partition_data_by_thread(self, data):
+        num_processes = self.project_data['num_processes']
+        try:
+            multiprocessing_flg = self.project_data['flags']['multiprocessing']
+        except:
+            multiprocessing_flg = False
+        partitioned_data = {}
+        if multiprocessing_flg:
+            for i in range(num_processes):
+                partitioned_data[i] = []
+            for i in range(len(data)):
+                for j in range(num_processes):
+                    data_tmp = {}
+                    data_tmp['NLP_DOCUMENT_IDX'] = []
+                    for key in data[i].keys():
+                        data_tmp[key] = []
+                    partitioned_data[j].append(data_tmp)
+            doc_idx = 0
+            for i in range(len(data)):
+                keys = list(data[i].keys())
+                num_entries = len(data[i][keys[0]])
+                for j in range(num_entries):
+                    idx = j % num_processes
+                    partitioned_data[idx][i]['NLP_DOCUMENT_IDX'].append(doc_idx)
+                    for key in data[i].keys():
+                        partitioned_data[idx][i][key].append(data[i][key][j])
+                    doc_idx += 1
+        else:
+            partitioned_data[0] = data
+        return partitioned_data
+    
+    #
     def get_data_by_document_number(self, document_number):
         document_data = {}
         document_found = False
         for i in range(len(self.data)):
-            if not document_found:
+            if not bool(document_data):
                 data = self.data[i]
                 keys = list(data.keys())
-                if len(data[keys[0]])-1 >= document_number:
-                    document_found = True
+                num_documents = len(data[keys[0]])
+                if document_number+1 > num_documents:
+                    document_number -= num_documents
+                else:
                     for key in keys:
                         document_data[key] = [ data[key][document_number] ]
-                else:
-                    document_number -= len(data[keys[0]])-1
         return document_data
     
     #
-    def get_data_by_document_value(self, data_file, document_value_key, document_value):
+    def get_data_by_document_value(self, data_file,
+                                   document_value_key, document_value):
         document_data = \
-            self._get_data_by_document_value(data_file, document_value,
+            self._get_data_by_document_value(data_file, document_value, 
                                              document_value_key)
         return document_data
       
@@ -93,15 +126,22 @@ class Raw_data_reader(object):
     
     #
     def read_data(self, raw_data_files_dict, raw_data_files):
+        data = []
         for i in range(len(raw_data_files)):
             filename, file_extension = os.path.splitext(raw_data_files[i])
             if file_extension.lower() in [ '.xls', '.xlsx' ]:
                 data_tmp = self.xlsx_reader.read_files(raw_data_files_dict, 
                                                        raw_data_files[i])
-                self.data.append(data_tmp)
+                data.append(data_tmp)
             elif file_extension.lower() in [ '.xml' ]:
                 data_tmp = self.xml_reader.read_files(raw_data_files_dict, 
                                                       raw_data_files[i])
-                self.data.append(data_tmp)
+                data.append(data_tmp)
             else:
                 print('invalid file extension: ' + file_extension)
+        partitioned_data = self._partition_data_by_thread(data)
+        self.data = partitioned_data
+        
+    #
+    def select_process(self, process_idx):
+        self.data = self.data[process_idx]

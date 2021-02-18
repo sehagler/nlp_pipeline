@@ -116,17 +116,17 @@ def _write_file(mode_flg, filename, data):
         sys.exit('file failed to write file after ' + str(max_retries) + ' retries')
         
 #
-def _write_zip_file(filename, data_files, zip_path, start_idx):
+def _write_zip_file(filename, data_files, zip_path, max_files_per_zip, remove_file_flg):
     max_retries = __max_retries()
     retry_sleep = __retry_sleep()
-    max_files_per_zip = 10000
     data_file_array, is_numeric = _sort_files(data_files)
     if len(data_file_array) > 0:
         data_files_list = []
         if is_numeric:
             num_zips = math.ceil(data_file_array[-1][0]/max_files_per_zip)
             for i in range(num_zips):
-                data_files = [x[1] for x in data_file_array if (x[0] > i*max_files_per_zip and x[0] <= (i+1)*max_files_per_zip)]
+                data_files = [x[1] for x in data_file_array if (x[0] < (i+1)*max_files_per_zip)]
+                data_file_array = [ x for x in data_file_array if (x[0] >= (i+1)*max_files_per_zip) ]
                 data_files_list.append(data_files)
         else:
             data_files_list.append([x[1] for x in data_file_array])
@@ -134,16 +134,14 @@ def _write_zip_file(filename, data_files, zip_path, start_idx):
         wrote_file = False
         retry_ctr = 0
         filename_base = os.path.splitext(filename)[0]
-        if start_idx is None:
-            index_set = range(len(data_files_list))
-        else:
-            index_set = range(start_idx, len(data_files_list))
+        index_set = range(len(data_files_list))
         for i in index_set:
             data_files = data_files_list[i]
             if len(data_files) > 0:
                 if len(data_files_list) > 1:
                     filename = filename_base + '_' + str(i) + '.zip'
-                _remove_file(filename)
+                if remove_file_flg:
+                    _remove_file(filename)
                 with ZipFile(filename, 'a') as f:
                     for data_file in data_files:
                         if do_write:
@@ -166,8 +164,6 @@ def _write_zip_file(filename, data_files, zip_path, start_idx):
                             do_write = False
         if not wrote_file:
             sys.exit('file failed to write file after ' + str(max_retries) + ' retries')
-    else:
-        print('skipped generation of empty zip file')
 
 #
 def read_json_file(filename):
@@ -182,6 +178,10 @@ def read_xml_file(filename):
     return _read_file(2, filename)
 
 #
+def remove_file(filename):
+    _remove_file(filename)
+
+#
 def write_general_file(filename, data):
     _write_file(0, filename, data)
         
@@ -190,8 +190,8 @@ def write_json_file(filename, data):
     _write_file(1, filename, data)
     
 #
-def write_zip_file(filename, data, zip_path, start_idx):
-    _write_zip_file(filename, data, zip_path, start_idx)
+def write_zip_file(filename, data, zip_path, max_files_per_zip, remove_file_flg=True):
+    _write_zip_file(filename, data, zip_path, max_files_per_zip, remove_file_flg)
     
 #
 def xml_diff(file0, file1):

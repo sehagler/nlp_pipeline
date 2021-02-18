@@ -33,7 +33,7 @@ class Postprocessor(Postprocessor_base):
                     entry_txt = re.sub(' +', ' ', entry_txt)
                     for diagnosis_key in diagnosis_keys:
                         diagnosis_dict = self.diagnosis_reader.get_dict_by_key(diagnosis_key)
-                        for diagnosis in diagnosis_dict['specific diagnosis']:
+                        for diagnosis in diagnosis_dict['specific_diagnosis']:
                             if not re.search('(?i)no evidence of marrow involvement by ' + diagnosis, entry_txt):
                                 if re.search('(?i)(?<!/)' + diagnosis + '(?!/)', entry_txt):
                                     key = entry[0]

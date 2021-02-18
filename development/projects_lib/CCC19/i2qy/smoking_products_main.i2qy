@@ -1,332 +1,971 @@
-version: 5.6.1
-creationDate: '2018-10-26 16:08:10'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
-  - [../../../nlp_lib/i2qy/tools/document_id_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/document_id_query.i2qy']
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
   - Union:
-    - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/CCC19/i2qy/smoking_products/smoking_products_specimens_wrapper.i2qy',
-      smoking_products/smoking_products_specimens_wrapper.i2qy]
+    - /api;type=saved_query/__private__/haglers/CCC19/smoking_products/smoking_products_specimens_wrapper.i2qy
     - Subtraction:
-      - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/CCC19/i2qy/smoking_products/smoking_products_sections_wrapper.i2qy',
-        smoking_products/smoking_products_sections_wrapper.i2qy]
-      - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/CCC19/i2qy/smoking_products/smoking_products_specimen_description_wrapper.i2qy',
-        smoking_products/smoking_products_specimen_description_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+      - /api;type=saved_query/__private__/haglers/CCC19/smoking_products/smoking_products_sections_wrapper.i2qy
+      - /api;type=saved_query/__private__/haglers/CCC19/smoking_products/smoking_products_specimen_description_wrapper.i2qy
 querySnapshots:
-  ? //ohsum01.ohsu.edu/ohsu/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-15 18:38:19'
+  /api;type=saved_query/__private__/haglers/CCC19/smoking_products/smoking_products_sections_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region2
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.alternative1.col0
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.alternative1.col1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      - 3
+    creator: haglers
+    query:
+      document:
+      - region:
+          view:
+            width: 452
+            height: 156
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - phrase:
+                  of:
+                  - FAMILY
+                  - HISTORY
+                  displayChildren: false
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              id: region2
+          - region:
+              snid: hc.section_body
+              showWholeRegion: true
+              pt: Section Body
+              columnOptions:
+              - Text
+              where:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy
+                  id: link1
+    creationDate: '2020-05-27 17:01:37'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - link:
+          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
+          id: link1
+      - phrase:
+          multiSentence: true
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - sentence:
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - alternative:
+              of:
+              - phrase:
+                  multiSentence: true
+                  maxWordGap: -1
+                  wordGapRestricted: false
+                  of:
+                  - class: /chunk
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
+                  - class: /chunk
+              - phrase:
+                  multiSentence: true
+                  maxWordGap: -1
+                  wordGapRestricted: false
+                  of:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
+                  - class: /chunk
+              - phrase:
+                  multiSentence: true
+                  maxWordGap: -1
+                  wordGapRestricted: false
+                  of:
+                  - class: /chunk
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
+              - phrase:
+                  multiSentence: true
+                  maxWordGap: -1
+                  wordGapRestricted: false
+                  of:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
+              prioritization: span
+          - sentence:
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2020-06-03 19:35:37'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
     query:
       document:
       - alternative:
-          boundaries: Exact
-          id: alternative1
           of:
-          - word: {text: cigar, morphoVariants: true}
-          - word: {text: cigarette, morphoVariants: true}
-          - word: {text: e-cigarette, morphoVariants: true}
-          - word: {text: pipe, morphoVariants: true}
+          - PHI_DATE
+          - phrase:
+            - phrase:
+                of:
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{1,2}'
+                - word:
+                    matchType: Regexp
+                    text: \-
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - word:
+                matchType: Regexp
+                text: '[0-9]{1,2}'
+            - word:
+                matchType: Regexp
+                text: \-
+            - alternative:
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{2}'
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{4}'
+          - phrase:
+            - phrase:
+                of:
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{1,2}'
+                - word:
+                    matchType: Regexp
+                    text: /
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - word:
+                matchType: Regexp
+                text: '[0-9]{1,2}'
+            - word:
+                matchType: Regexp
+                text: /
+            - alternative:
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{2}'
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{4}'
+          - phrase:
+            - macro:
+                snid: ohsu_months.months
+                pt: Month
+                of:
+                - alternative:
+                    macroPt: Month
+                    of:
+                    - Jan
+                    - January
+                    - Feb
+                    - February
+                    - Mar
+                    - March
+                    - Apr
+                    - April
+                    - May
+                    - Jun
+                    - June
+                    - Jul
+                    - July
+                    - Aug
+                    - August
+                    - Sep
+                    - September
+                    - Oct
+                    - October
+                    - Nov
+                    - November
+                    - Dec
+                    - December
+                    macroSnid: ohsu_months.months
+            - word:
+                text: .
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - alternative:
+              - phrase:
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{1,2}'
+                - ','
+                - alternative:
+                  - word:
+                      matchType: Regexp
+                      text: '[0-9]{2}'
+                  - word:
+                      matchType: Regexp
+                      text: '[0-9]{4}'
+              - phrase:
+                - alternative:
+                    of:
+                    - of
+                    - ','
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{4}'
+          findMatches: longestOnly
+          id: alternative1
+    creationDate: '2019-01-28 21:59:35'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/CCC19/smoking_products/smoking_products_specimen_description_wrapper.i2qy:
     output:
-      columns:
-      - {id: alternative1}
       useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region2
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.alternative1.col0
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.alternative1.col1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      - 3
     creator: haglers
-  ? //ohsum01.ohsu.edu/ohsu/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/frequency.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-15 17:57:36'
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - phrase:
+                  of:
+                  - FAMILY
+                  - HISTORY
+                  displayChildren: false
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              id: region2
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy
+                      id: link1
+    creationDate: '2020-05-27 17:07:22'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
     query:
       document:
       - phrase:
-          id: phrase1
           of:
           - alternative:
-              quantifier: {minimum: 0, maximum: 1}
               of:
-              - once
-              - twice
-              - phrase:
-                - alternative:
-                    quantifier: {minimum: 0, maximum: 1}
-                    view: {layout: list}
-                    of: [estimated, '~', '>', <]
-                - class: {snid: numerics.integers, pt: Integer}
+              - word:
+                  text: deny
+                  morphoVariants: true
+              - macro:
+                  snid: linguamatics_wc.WC_Negative_Word
+                  pt: negative word
+                  of:
+                  - alternative:
+                      macroPt: negative word
+                      of:
+                      - aren't
+                      - can't
+                      - cannot
+                      - couldn't
+                      - didn't
+                      - doesn't
+                      - don't
+                      - hadn't
+                      - hasn't
+                      - haven't
+                      - isn't
+                      - mustn't
+                      - never
+                      - neither
+                      - 'no'
+                      - nobody
+                      - none
+                      - nor
+                      - not
+                      - nothing
+                      - nowhere
+                      - oughtn't
+                      - shan't
+                      - shouldn't
+                      - wasn't
+                      - weren't
+                      - won't
+                      - wouldn't
+                      macroSnid: linguamatics_wc.WC_Negative_Word
+              quantifier:
+                maximum: 0
+                minimum: 0
           - alternative:
-            - daily
-            - monthly
-            - phrase:
-                displayChildren: false
-                of:
-                - alternative: [/, a, per]
-                - alternative: [day, month]
+              view:
+                width: 969
+                height: 1420
+              of:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy
+              - phrase:
+                  view:
+                    width: 307
+                    height: 82
+                  of:
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
+                  - PPY
+                  - smoking
+                  - hx
+                  displayChildren: false
+              - phrase:
+                  of:
+                  - alternative:
+                    - phrase:
+                        of:
+                        - has
+                        - cut
+                        - down
+                        - 'on'
+                        displayChildren: false
+                    - phrase:
+                        of:
+                        - hx
+                        - of
+                        displayChildren: false
+                    - word:
+                        text: smoke
+                        morphoVariants: true
+                    - phrase:
+                        of:
+                        - word:
+                            text: smoke
+                            morphoVariants: true
+                        - use
+                        - word:
+                            text: include
+                            morphoVariants: true
+                        displayChildren: false
+                    - phrase:
+                      - word:
+                          text: type
+                          morphoVariants: true
+                      - ':'
+                  - phrase:
+                      of:
+                      - word:
+                          text: ','
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+                      - word:
+                          text: smoking
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 1
+                  displayChildren: false
+              - phrase:
+                  of:
+                  - alternative:
+                    - phrase:
+                      - phrase:
+                          of:
+                          - link:
+                              path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - phrase:
+                        - alternative:
+                            view:
+                              layout: list
+                            of:
+                            - estimated
+                            - '~'
+                            - '>'
+                            - <
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - class:
+                            snid: numerics.integers
+                            pt: Integer
+                        - phrase:
+                            of:
+                            - alternative:
+                              - word:
+                                  text: '-'
+                              - /
+                            - class:
+                                snid: numerics.integers
+                                pt: Integer
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/frequency.i2qy
+                  displayChildren: false
+              - phrase:
+                  of:
+                  - phrase:
+                    - link:
+                        path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+                  - alternative:
+                      of:
+                      - ','
+                      - phrase:
+                          of:
+                          - sig
+                          - ':'
+                          displayChildren: false
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/frequency.i2qy
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  displayChildren: false
+              - phrase:
+                  of:
+                  - word:
+                      text: cigarette
+                      morphoVariants: true
+                  - ','
+                  - phrase:
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - estimated
+                        - '~'
+                        - '>'
+                        - <
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - class:
+                        snid: numerics.integers
+                        pt: Integer
+                    - ppd
+                  displayChildren: false
+              - alternative:
+                - PPY
+                - phrase:
+                    of:
+                    - packs
+                    - /
+                    - day
+                    displayChildren: false
+              - phrase:
+                - word:
+                    text: smoke
+                    morphoVariants: true
+                - marijuana
+              - phrase:
+                - marijuana
+                - alternative:
+                  - word:
+                      text: smoke
+                      morphoVariants: true
+                  - smoker
+              findMatches: longestOnly
+          id: phrase1
+    creationDate: '2020-09-17 19:36:16'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy:
     output:
-      columns:
-      - {id: phrase1}
       useOutputEditor: true
+      columns:
+      - id: alternative1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-08 21:29:46'
     query:
       document:
       - alternative:
-          findMatches: longestOnly
-          id: alternative1
           of:
           - phrase:
-              displayChildren: false
               of:
-              - alternative: [h/o, hx]
+              - alternative:
+                - h/o
+                - hx
               - alternative:
                 - smoking
                 - phrase:
-                    displayChildren: false
                     of:
                     - tobacco
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [abuse, use]
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
               - phrase:
-                  displayChildren: false
                   of:
                   - word:
                       text: ':'
-                      quantifier: {minimum: 0, maximum: 1}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - quit
                   - word:
                       text: date
-                      quantifier: {minimum: 0, maximum: 1}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - link:
-                      path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
-                      quantifier: {minimum: 0, maximum: 1}
-          - phrase:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  displayChildren: false
               displayChildren: false
+          - phrase:
               of:
               - alternative:
-                  view: {layout: list}
+                  view:
+                    layout: list
                   of:
-                  - class: {snid: numerics.decimals, pt: Decimal}
-                  - class: {snid: numerics.integers, pt: Integer}
+                  - class:
+                      snid: numerics.decimals
+                      pt: Decimal
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
               - word:
                   text: pack
                   morphoVariants: true
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
-                - word: {text: mo, morphoVariants: true}
-                - word: {text: yr, morphoVariants: true}
+                - word:
+                    text: mo
+                    morphoVariants: true
+                - word:
+                    text: yr
+                    morphoVariants: true
               - alternative:
                 - smoking
                 - phrase:
-                    displayChildren: false
                     of:
                     - tobacco
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [abuse, use]
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
               - hx
               - phrase:
                 - word:
                     text: (
-                    quantifier: {minimum: 0, maximum: 1}
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
                 - quit
                 - alternative:
                   - phrase:
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [date, in]
+                        of:
+                        - date
+                        - in
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - link:
-                        path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                        path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
                   - phrase:
-                    - word: {text: \d+\+, matchType: Regexp}
+                    - word:
+                        matchType: Regexp
+                        text: \d+\+
                     - phrase:
-                        displayChildren: false
                         of:
                         - alternative:
-                          - word: {text: mo, morphoVariants: true}
-                          - word: {text: yr, morphoVariants: true}
+                          - word:
+                              text: mo
+                              morphoVariants: true
+                          - word:
+                              text: yr
+                              morphoVariants: true
                         - ago
+                        displayChildren: false
                 - word:
                     text: )
-                    quantifier: {minimum: 0, maximum: 1}
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+              displayChildren: false
           - phrase:
             - active
             - alternative:
               - smoking
               - phrase:
-                  displayChildren: false
                   of:
                   - tobacco
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 1}
-                      of: [abuse, use]
+                      of:
+                      - abuse
+                      - use
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  displayChildren: false
             - phrase:
               - word:
                   text: (
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - pack
               - alternative:
-                  view: {layout: list}
+                  view:
+                    layout: list
                   of:
-                  - class: {snid: numerics.decimals, pt: Decimal}
-                  - class: {snid: numerics.integers, pt: Integer}
+                  - class:
+                      snid: numerics.decimals
+                      pt: Decimal
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
               - alternative:
-                - word: {text: mo, morphoVariants: true}
-                - word: {text: yr, morphoVariants: true}
+                - word:
+                    text: mo
+                    morphoVariants: true
+                - word:
+                    text: yr
+                    morphoVariants: true
               - hx
               - word:
                   text: )
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
           - phrase:
-              displayChildren: false
               of:
               - alternative:
                 - phrase:
-                  - word: {text: have, morphoVariants: true}
+                  - word:
+                      text: have
+                      morphoVariants: true
                   - word:
                       text: now
-                      quantifier: {minimum: 0, maximum: 1}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - quit
                 - phrase:
-                    displayChildren: false
-                    of: [was, able, to, stop]
-                - phrase:
-                    displayChildren: false
                     of:
-                    - word: {text: continue, morphoVariants: true}
+                    - was
+                    - able
+                    - to
+                    - stop
+                    displayChildren: false
+                - phrase:
+                    of:
+                    - word:
+                        text: continue
+                        morphoVariants: true
                     - to
                     - abstain
                     - from
+                    displayChildren: false
               - alternative:
                 - smoking
                 - phrase:
-                    displayChildren: false
                     of:
                     - tobacco
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [abuse, use]
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
+              displayChildren: false
           - phrase:
             - phrase:
+                of:
+                - ready
+                - to
                 displayChildren: false
-                quantifier: {minimum: 0, maximum: 0}
-                of: [ready, to]
+                quantifier:
+                  maximum: 0
+                  minimum: 0
             - phrase:
-                displayChildren: false
                 of:
                 - quit
                 - alternative:
-                  - word: {text: smoke, morphoVariants: true}
+                  - word:
+                      text: smoke
+                      morphoVariants: true
                   - phrase:
-                      displayChildren: false
                       of:
                       - tobacco
                       - alternative:
-                          quantifier: {minimum: 0, maximum: 1}
-                          of: [abuse, use]
+                          of:
+                          - abuse
+                          - use
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      displayChildren: false
+                displayChildren: false
             - alternative:
-                quantifier: {minimum: 0, maximum: none}
                 of:
                 - phrase:
                   - word:
                       text: ','
-                      quantifier: {minimum: 0, maximum: 1}
-                  - link: {path: 'Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy'}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
                 - phrase:
                   - word:
                       text: '~'
-                      quantifier: {minimum: 0, maximum: 1}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - alternative:
-                      view: {height: 63, layout: list, width: 71}
+                      view:
+                        layout: list
+                        width: 71
+                        height: 63
                       of:
-                      - class: {snid: numerics.decimals, pt: Decimal}
-                      - class: {snid: numerics.integers, pt: Integer}
+                      - class:
+                          snid: numerics.decimals
+                          pt: Decimal
+                      - class:
+                          snid: numerics.integers
+                          pt: Integer
                   - phrase:
-                      quantifier: {minimum: 0, maximum: 1}
                       of:
                       - alternative:
-                        - word: {text: mo, morphoVariants: true}
-                        - word: {text: yr, morphoVariants: true}
+                        - word:
+                            text: mo
+                            morphoVariants: true
+                        - word:
+                            text: yr
+                            morphoVariants: true
                       - ago
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                quantifier:
+                  maximum: none
+                  minimum: 0
           - phrase:
             - phrase:
               - alternative:
-                - word: {text: smoke, morphoVariants: true}
+                - word:
+                    text: smoke
+                    morphoVariants: true
                 - phrase:
-                    displayChildren: false
                     of:
                     - tobacco
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [abuse, use]
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
               - phrase:
+                  of:
+                  - comment
+                  - ':'
                   displayChildren: false
-                  of: [comment, ':']
             - phrase:
-                quantifier: {minimum: 0, maximum: 1}
                 of:
                 - alternative:
-                    view: {layout: list}
+                    view:
+                      layout: list
                     of:
-                    - class: {snid: numerics.decimals, pt: Decimal}
-                    - class: {snid: numerics.integers, pt: Integer}
-                - link: {path: 'Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy'}
+                    - class:
+                        snid: numerics.decimals
+                        pt: Decimal
+                    - class:
+                        snid: numerics.integers
+                        pt: Integer
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
                 - /
                 - alternative:
-                  - word: {text: mo, morphoVariants: true}
-                  - word: {text: yr, morphoVariants: true}
+                  - word:
+                      text: mo
+                      morphoVariants: true
+                  - word:
+                      text: yr
+                      morphoVariants: true
+                quantifier:
+                  maximum: 1
+                  minimum: 0
             - word:
                 text: ;
-                quantifier: {minimum: 0, maximum: 1}
+                quantifier:
+                  maximum: 1
+                  minimum: 0
             - phrase:
               - quit
               - alternative:
                 - phrase:
                   - alternative:
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
-                      - class: {snid: numerics.decimals, pt: Decimal}
-                      - class: {snid: numerics.integers, pt: Integer}
+                      - class:
+                          snid: numerics.decimals
+                          pt: Decimal
+                      - class:
+                          snid: numerics.integers
+                          pt: Integer
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 1}
                       of:
-                      - word: {text: mo, morphoVariants: true}
-                      - word: {text: yr, morphoVariants: true}
+                      - word:
+                          text: mo
+                          morphoVariants: true
+                      - word:
+                          text: yr
+                          morphoVariants: true
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                 - link:
-                    path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                    path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
               - word:
                   text: ago
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
           - phrase:
-              displayChildren: false
               of:
               - alternative:
                 - phrase:
+                    of:
+                    - former
+                    - smoker
                     displayChildren: false
-                    of: [former, smoker]
                 - phrase:
                   - phrase:
-                      displayChildren: false
-                      quantifier: {minimum: 0, maximum: 1}
                       of:
-                      - word: {text: type, morphoVariants: true}
+                      - word:
+                          text: type
+                          morphoVariants: true
                       - ':'
-                  - link: {path: 'Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy'}
+                      displayChildren: false
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
               - phrase:
-                  displayChildren: false
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - start
                   - date
                   - ':'
                   - alternative:
                     - alternative:
-                        view: {layout: list}
+                        view:
+                          layout: list
                         of:
-                        - class: {snid: numerics.decimals, pt: Decimal}
-                        - class: {snid: numerics.integers, pt: Integer}
+                        - class:
+                            snid: numerics.decimals
+                            pt: Decimal
+                        - class:
+                            snid: numerics.integers
+                            pt: Integer
                     - link:
-                        path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                        path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+                  displayChildren: false
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - phrase:
                 - last
                 - attempt
@@ -335,486 +974,244 @@ querySnapshots:
                 - ':'
                 - alternative:
                   - alternative:
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
-                      - class: {snid: numerics.decimals, pt: Decimal}
-                      - class: {snid: numerics.integers, pt: Integer}
+                      - class:
+                          snid: numerics.decimals
+                          pt: Decimal
+                      - class:
+                          snid: numerics.integers
+                          pt: Integer
                   - link:
-                      path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
               - phrase:
                 - alternative:
-                  - word: {text: mo, morphoVariants: true}
-                  - word: {text: yr, morphoVariants: true}
+                  - word:
+                      text: mo
+                      morphoVariants: true
+                  - word:
+                      text: yr
+                      morphoVariants: true
                 - since
                 - quitting
                 - ':'
                 - alternative:
-                    view: {layout: list}
+                    view:
+                      layout: list
                     of:
-                    - class: {snid: numerics.decimals, pt: Decimal}
-                    - class: {snid: numerics.integers, pt: Integer}
-          - phrase:
+                    - class:
+                        snid: numerics.decimals
+                        pt: Decimal
+                    - class:
+                        snid: numerics.integers
+                        pt: Integer
               displayChildren: false
+          - phrase:
               of:
-              - word: {text: yr, morphoVariants: true}
+              - word:
+                  text: yr
+                  morphoVariants: true
               - since
               - quitting
               - ':'
               - alternative:
-                  view: {layout: list}
+                  view:
+                    layout: list
                   of:
-                  - class: {snid: numerics.decimals, pt: Decimal}
-                  - class: {snid: numerics.integers, pt: Integer}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-15 18:38:19'
-    query:
-      document:
-      - alternative:
-          boundaries: Exact
+                  - class:
+                      snid: numerics.decimals
+                      pt: Decimal
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
+              displayChildren: false
+          findMatches: longestOnly
           id: alternative1
-          of:
-          - word: {text: cigar, morphoVariants: true}
-          - word: {text: cigarette, morphoVariants: true}
-          - word: {text: e-cigarette, morphoVariants: true}
-          - word: {text: pipe, morphoVariants: true}
+    creationDate: '2020-06-08 21:29:46'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/frequency.i2qy:
     output:
-      columns:
-      - {id: alternative1}
       useOutputEditor: true
+      columns:
+      - id: phrase1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy
-  : version: 5.6.1
-    creationDate: '2020-09-17 19:36:16'
     query:
       document:
       - phrase:
-          id: phrase1
           of:
           - alternative:
-              quantifier: {minimum: 0, maximum: 0}
               of:
-              - word: {text: deny, morphoVariants: true}
-              - macro:
-                  snid: linguamatics_wc.WC_Negative_Word
-                  pt: negative word
-                  of:
-                  - alternative:
-                      macroPt: negative word
-                      macroSnid: linguamatics_wc.WC_Negative_Word
-                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
-                        hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
-                        nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
-                        shouldn't, wasn't, weren't, won't, wouldn't]
-          - alternative:
-              findMatches: longestOnly
-              view: {height: 1420, width: 969}
-              of:
-              - link:
-                  path: [../query_lib/quit_smoking.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy']
+              - once
+              - twice
               - phrase:
-                  displayChildren: false
-                  view: {height: 82, width: 307}
-                  of:
-                  - class: {snid: numerics.integers, pt: Integer}
-                  - PPY
-                  - smoking
-                  - hx
-              - phrase:
-                  displayChildren: false
-                  of:
-                  - alternative:
-                    - phrase:
-                        displayChildren: false
-                        of: [has, cut, down, 'on']
-                    - phrase:
-                        displayChildren: false
-                        of: [hx, of]
-                    - word: {text: smoke, morphoVariants: true}
-                    - phrase:
-                        displayChildren: false
-                        of:
-                        - word: {text: smoke, morphoVariants: true}
-                        - use
-                        - word: {text: include, morphoVariants: true}
-                    - phrase:
-                      - word: {text: type, morphoVariants: true}
-                      - ':'
-                  - phrase:
-                      quantifier: {minimum: 1, maximum: none}
-                      of:
-                      - word:
-                          text: ','
-                          quantifier: {minimum: 0, maximum: 1}
-                      - link:
-                          path: [../query_lib/tobacco_products_smoking.i2qy, 'X:/OHSU
-                              Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy']
-                      - word:
-                          text: smoking
-                          quantifier: {minimum: 0, maximum: 1}
-              - phrase:
-                  displayChildren: false
-                  of:
-                  - alternative:
-                    - phrase:
-                      - phrase:
-                          quantifier: {minimum: 0, maximum: 1}
-                          of:
-                          - link:
-                              path: [../query_lib/tobacco_products_smoking.i2qy, 'X:/OHSU
-                                  Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy']
-                      - phrase:
-                        - alternative:
-                            quantifier: {minimum: 0, maximum: 1}
-                            view: {layout: list}
-                            of: [estimated, '~', '>', <]
-                        - class: {snid: numerics.integers, pt: Integer}
-                        - phrase:
-                            quantifier: {minimum: 0, maximum: 1}
-                            of:
-                            - alternative:
-                              - word: {text: '-'}
-                              - /
-                            - class: {snid: numerics.integers, pt: Integer}
-                  - link:
-                      path: [../query_lib/tobacco_products_smoking.i2qy, 'X:/OHSU
-                          Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy']
-                  - link: {path: //ohsum01.ohsu.edu/ohsu/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/frequency.i2qy}
-              - phrase:
-                  displayChildren: false
-                  of:
-                  - phrase:
-                    - link:
-                        path: [../query_lib/tobacco_products_smoking.i2qy, 'X:/OHSU
-                            Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy']
-                  - alternative:
-                      quantifier: {minimum: 0, maximum: 1}
-                      of:
-                      - ','
-                      - phrase:
-                          displayChildren: false
-                          of: [sig, ':']
-                  - link:
-                      path: //ohsum01.ohsu.edu/ohsu/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/frequency.i2qy
-                      quantifier: {minimum: 0, maximum: 1}
-              - phrase:
-                  displayChildren: false
-                  of:
-                  - word: {text: cigarette, morphoVariants: true}
-                  - ','
-                  - phrase:
-                    - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        view: {layout: list}
-                        of: [estimated, '~', '>', <]
-                    - class: {snid: numerics.integers, pt: Integer}
-                    - ppd
-              - alternative:
-                - PPY
-                - phrase:
-                    displayChildren: false
-                    of: [packs, /, day]
-              - phrase:
-                - word: {text: smoke, morphoVariants: true}
-                - marijuana
-              - phrase:
-                - marijuana
                 - alternative:
-                  - word: {text: smoke, morphoVariants: true}
-                  - smoker
+                    view:
+                      layout: list
+                    of:
+                    - estimated
+                    - '~'
+                    - '>'
+                    - <
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+                - class:
+                    snid: numerics.integers
+                    pt: Integer
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - alternative:
+            - daily
+            - monthly
+            - phrase:
+                of:
+                - alternative:
+                  - /
+                  - a
+                  - per
+                - alternative:
+                  - day
+                  - month
+                displayChildren: false
+          id: phrase1
+    creationDate: '2020-06-15 17:57:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy:
     output:
-      columns:
-      - {id: phrase1}
       useOutputEditor: true
+      columns:
+      - id: alternative1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-03 19:35:37'
     query:
       document:
       - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          showMultipleColumns: true
-          view: {height: 437, width: 239}
           of:
-          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_query.i2qy'}
+          - word:
+              text: cigar
+              morphoVariants: true
+          - word:
+              text: cigarette
+              morphoVariants: true
+          - word:
+              text: e-cigarette
+              morphoVariants: true
+          - word:
+              text: pipe
+              morphoVariants: true
+          boundaries: Exact
+          id: alternative1
+    creationDate: '2020-06-15 18:38:19'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/CCC19/smoking_products/smoking_products_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region2
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.alternative1.col0
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.alternative1.col1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      - 3
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - phrase:
+                  of:
+                  - FAMILY
+                  - HISTORY
+                  displayChildren: false
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              id: region2
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - shadowRegion:
+                      snid: hc.specimen_id
+                      pt: Specimen Id
+                      id: shadow region1
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy
+                      id: link1
+    creationDate: '2020-05-27 17:10:02'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - itemOptions: {}
+        id: alternative1.col0
+      - itemOptions: {}
+        id: alternative1.col1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          view:
+            width: 239
+            height: 437
+          of:
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_products/smoking_products_query.i2qy
           - alternative:
               includeInQuery: false
               of:
-              - link: {path: //ohsum01.ohsu.edu/ohsu/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy}
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
               - cannabis
               - marijuana
               - nicotine
               - thc
-              - word: {text: vape, morphoVariants: true}
-    output:
-      columns:
-      - {id: alternative1.col0}
-      - {id: alternative1.col1}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_query.i2qy
-  : version: 5.6.1
+              - word:
+                  text: vape
+                  morphoVariants: true
+          findMatches: longestOnly
+          id: alternative1
+          showMultipleColumns: true
     creationDate: '2020-06-03 19:35:37'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
     query:
       document:
-      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy',
-          id: link1}
-      - phrase:
-          findMatches: longestOnly
-          id: phrase1
-          maxWordGap: -1
-          multiSentence: true
-          wordGapRestricted: false
-          of:
-          - sentence:
-              quantifier: {minimum: 0, maximum: 1}
-          - phrase:
-              maxWordGap: -1
-              multiSentence: true
-              wordGapRestricted: false
-              of:
-              - word:
-                  text: '[A-Za-z]*'
-                  caseSensitive: true
-                  matchType: Regexp
-                  quantifier: {minimum: 0, maximum: 1}
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_element_0.i2qy'}
-              - word:
-                  text: '[A-Za-z]*'
-                  caseSensitive: true
-                  matchType: Regexp
-                  quantifier: {minimum: 0, maximum: 1}
-          - sentence:
-              quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: link1.phrase1, linkItemId: link1}
-      - {id: phrase1}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy:
-    version: 5.6.1
-    creationDate: '2019-01-28 21:59:35'
-    query:
-      document:
-      - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          of:
-          - PHI_DATE
-          - phrase:
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - word: {text: \-, matchType: Regexp}
-            - word: {text: '[0-9]{1,2}', matchType: Regexp}
-            - word: {text: \-, matchType: Regexp}
-            - alternative:
-              - word: {text: '[0-9]{2}', matchType: Regexp}
-              - word: {text: '[0-9]{4}', matchType: Regexp}
-          - phrase:
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - word: {text: /, matchType: Regexp}
-            - word: {text: '[0-9]{1,2}', matchType: Regexp}
-            - word: {text: /, matchType: Regexp}
-            - alternative:
-              - word: {text: '[0-9]{2}', matchType: Regexp}
-              - word: {text: '[0-9]{4}', matchType: Regexp}
-          - phrase:
-            - macro:
-                snid: ohsu_months.months
-                pt: Month
-                of:
-                - alternative:
-                    macroPt: Month
-                    macroSnid: ohsu_months.months
-                    of: [Jan, January, Feb, February, Mar, March, Apr, April, May,
-                      Jun, June, Jul, July, Aug, August, Sep, September, Oct, October,
-                      Nov, November, Dec, December]
-            - word:
-                text: .
-                quantifier: {minimum: 0, maximum: 1}
-            - alternative:
-              - phrase:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - ','
-                - alternative:
-                  - word: {text: '[0-9]{2}', matchType: Regexp}
-                  - word: {text: '[0-9]{4}', matchType: Regexp}
-              - phrase:
-                - alternative:
-                    quantifier: {minimum: 0, maximum: 1}
-                    of: [of, ',']
-                - word: {text: '[0-9]{4}', matchType: Regexp}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/document_id_query.i2qy:
-    version: 5.6.1
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
     creationDate: '2018-05-04 13:11:41'
-    query:
-      document:
-      - region: {id: region1, snid: hc.DOCUMENT_ID}
-    output:
-      columns:
-      - {id: region1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/CCC19/i2qy/smoking_products/smoking_products_sections_wrapper.i2qy
-  : version: 5.6.1
-    creationDate: '2020-05-27 17:01:37'
-    query:
-      document:
-      - region:
-          view: {height: 156, width: 452}
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region2
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - phrase:
-                  displayChildren: false
-                  quantifier: {minimum: 0, maximum: 0}
-                  of: [FAMILY, HISTORY]
-          - region:
-              columnOptions: [Text]
-              showWholeRegion: true
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - link:
-                  path: [../../../../nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy,
-                    'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy']
-                  id: link1
-    output:
-      columns:
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: link1.alternative1.col0, linkItemId: link1}
-      - {id: link1.alternative1.col1, linkItemId: link1}
-      - {id: region2}
-      columnLocations: [3, 0, 1, 2]
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/CCC19/i2qy/smoking_products/smoking_products_specimen_description_wrapper.i2qy
-  : version: 5.6.1
-    creationDate: '2020-05-27 17:07:22'
-    query:
-      document:
-      - region:
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region2
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - phrase:
-                  displayChildren: false
-                  quantifier: {minimum: 0, maximum: 0}
-                  of: [FAMILY, HISTORY]
-          - region:
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.specimen
-                  pt: Specimen Description
-                  where:
-                  - link:
-                      path: [../../../../nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy,
-                        'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy']
-                      id: link1
-    output:
-      columns:
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: link1.alternative1.col0, linkItemId: link1}
-      - {id: link1.alternative1.col1, linkItemId: link1}
-      - {id: region2}
-      columnLocations: [3, 0, 1, 2]
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/CCC19/i2qy/smoking_products/smoking_products_specimens_wrapper.i2qy
-  : version: 5.6.1
-    creationDate: '2020-05-27 17:10:02'
-    query:
-      document:
-      - region:
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region2
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - phrase:
-                  displayChildren: false
-                  quantifier: {minimum: 0, maximum: 0}
-                  of: [FAMILY, HISTORY]
-          - region:
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.specimen
-                  pt: Specimen Description
-                  where:
-                  - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen
-                        Id}
-                  - link:
-                      path: [../../../../nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy,
-                        'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/smoking_products/smoking_products_filter_query.i2qy']
-                      id: link1
-    output:
-      columns:
-      - {id: shadow region1}
-      - {id: link1.alternative1.col0, linkItemId: link1}
-      - {id: link1.alternative1.col1, linkItemId: link1}
-      - {id: region2}
-      columnLocations: [3, 0, 1, 2]
-      useOutputEditor: true
-    creator: haglers
-  ? Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-15 18:38:19'
-    query:
-      document:
-      - alternative:
-          boundaries: Exact
-          id: alternative1
-          of:
-          - word: {text: cigar, morphoVariants: true}
-          - word: {text: cigarette, morphoVariants: true}
-          - word: {text: e-cigarette, morphoVariants: true}
-          - word: {text: pipe, morphoVariants: true}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
+    version: 6.2
+creationDate: '2018-10-26 16:08:10'
+version: 6.2

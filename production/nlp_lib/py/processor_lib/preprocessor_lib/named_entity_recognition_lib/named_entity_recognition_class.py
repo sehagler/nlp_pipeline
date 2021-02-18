@@ -8,6 +8,8 @@ Created on Mon Mar 16 10:17:40 2020
 #
 from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools import s
+import nlp_lib.py.tool_lib.query_tools_lib.karyotype_tools as karyotype_tools
+import nlp_lib.py.tool_lib.query_tools_lib.smoking_tools as smoking_tools
 
 #
 class Named_entity_recognition(Preprocessor_base):
@@ -43,8 +45,16 @@ class Named_entity_recognition(Preprocessor_base):
         self._general_command('(?i)HLA-Dr', {None : 'HLA-DR'})
         self._general_command('(?i)blasts ?(\+|and|plus) ?promonocytes', {None : 'blasts/promonocytes'})
         self._normalize_regular_initialism('(?i)minimal residual disease', 'MRD')
-        self._normalize_regular_initialism('(?i)myelodysplastic syndrome', 'MDS')
+        self._normalize_regular_initialism('(?i)myelodysplastic syndrome', 'MDS')       
         
     #
-    def process_initialisms(self):
+    def do_named_entity_recognition(self):
+        named_entity_recognition_karyotype = karyotype_tools.Named_entity_recognition(self.project_data)
+        named_entity_recognition_karyotype.push_text(self.text)
+        named_entity_recognition_karyotype.process_karyotype()
+        self.text = named_entity_recognition_karyotype.pull_text()
+        named_entity_recognition_smoking = smoking_tools.Named_entity_recognition(self.project_data)
+        named_entity_recognition_smoking.push_text(self.text)
+        named_entity_recognition_smoking.process_initialisms()
+        self.text = named_entity_recognition_smoking.pull_text()
         self._process_regular_initialisms()

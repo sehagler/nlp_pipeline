@@ -9,7 +9,8 @@ Created on Thu Apr 16 09:52:44 2020
 from nlp_lib.py.manager_lib.test_manager_class import Test_manager
 from projects_lib.BeatAML_Waves_3_And_4.py.beataml_waves_3_and_4_project_manager_class \
     import BeatAML_Waves_3_And_4_project_manager
-from projects_lib.BeatAML_Waves_3_And_4.py.data_validation_class import Data_validation
+from projects_lib.BeatAML_Waves_3_And_4.py.beataml_waves_3_and_4_validation_manager_class \
+    import BeatAML_Waves_3_And_4_validation_manager
 
 #
 class BeatAML_Waves_3_And_4_test_manager(Test_manager):
@@ -23,7 +24,5 @@ class BeatAML_Waves_3_And_4_test_manager(Test_manager):
     
     #
     def data_validation(self):
-        Data_validation(self.project_data_development['patient_list'], 
-                        self.project_data_development['directory_manager'])
-        Data_validation(self.project_data_production['patient_list'], 
-                        self.project_data_production['directory_manager'])
+        BeatAML_Waves_3_And_4_validation_manager(self.project_data_development)
+        BeatAML_Waves_3_And_4_validation_manager(self.project_data_production)

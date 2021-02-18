@@ -30,6 +30,29 @@ class Reader_base(object):
         except:
             datetime_str = ''
         return datetime_str
+    
+    #
+    def _trim_data_by_patient_identifier(self, data):
+        if 'patient_list' in self.project_data:
+            patient_list = self.project_data['patient_list']
+        else:
+            patient_list = None
+        patient_identifier = None
+        for key in self.project_data['patient_identifiers']:
+            try:
+                patient_identifier = list(set(data[key]))
+            except:
+                pass
+        if len(patient_identifier) < 2:
+            if patient_identifier_list is not None:
+                if patient_identifier[0] in patient_identifier_list:
+                    do_analysis_flg = True
+                else:
+                    do_analysis_flg = False
+            else:
+                do_analysis_flg = True
+        #print(patient_identifier)
+        return data
         
     #
     def _trim_data_by_csn(self, data):
@@ -59,4 +82,5 @@ class Reader_base(object):
         data = self._read_data_file(raw_data_files_dict, raw_data_file)
         if self.project_data['flags']['trim_data_by_csn']:
             data = self._trim_data_by_csn(data)
+        #data = self._trim_data_by_patient_identifier(data)
         return data

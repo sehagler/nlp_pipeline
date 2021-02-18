@@ -38,10 +38,13 @@ class Postprocessor(Postprocessor_base):
                     entry_tmp += entry[j+1]
                 if entry_tmp[-1] == ',':
                     entry_tmp = entry_tmp[:-1]
+                entry_tmp = re.sub('(?i)karyotype results : ', '', entry_tmp)
+                entry_tmp = re.sub('\]' , '] ', entry_tmp)
+                entry_tmp = re.sub(' +', ' ', entry_tmp)
+                entry_tmp = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_tmp)
                 entry_tmp = re.sub('[ \n]', '', entry_tmp)
-                entry_tmp = re.sub('(?i)karyotyperesults[:\.]', '', entry_tmp)
-                entry_tmp = re.sub('(?i)impressionsandrecommendations[:\.]', '', entry_tmp)
-                entry_tmp = re.sub('(?i)(all)?[0-9]+(of[0-9]+)?metaphasecell.*', '', entry_tmp)
+                entry_tmp = re.sub('&lt;', '<', entry_tmp)
+                entry_tmp = re.sub('&gt;', '>', entry_tmp)
                 try:
                     if entry_tmp[:2] == '//':
                         entry_tmp = entry_tmp[2:]

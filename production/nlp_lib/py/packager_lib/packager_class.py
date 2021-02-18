@@ -6,6 +6,7 @@ Created on Mon Mar 04 12:29:38 2019
 """
 
 #
+from json import JSONEncoder
 import os
 
 #
@@ -33,5 +34,12 @@ class Packager(object):
                 
     #
     def _save_data_json(self):
-        write_json_file(os.path.join(self.save_dir, self.project_name + '.json'), self.data)
+        data = []
+        data_json = {}
+        for key in self.data.keys():
+            data_wrapped = {}
+            data_wrapped['RECORD_ID'] = self.data[key]
+            data.append(data_wrapped)
+        data_json['NLP_DATA'] = data
+        write_json_file(os.path.join(self.save_dir, self.project_name + '.json'), data_json)
         

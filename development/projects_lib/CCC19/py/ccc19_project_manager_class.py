@@ -28,6 +28,7 @@ class CCC19_project_manager(Project_manager):
         self.project_data['datetime_identifiers'][ 'NOTE_DATE' ] = '%d-%b-%y'
         self.project_data['document_identifiers'] = [ 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.project_data['flags'] = {}
+        self.project_data['flags']['multiprocessing'] = True
         self.project_data['flags']['remove_date'] = True
         self.project_data['flags']['trim_data_by_csn'] = True
         self.project_data['json_files_key_value'] = []
@@ -36,11 +37,31 @@ class CCC19_project_manager(Project_manager):
         if False:
             self.project_data['raw_data_encoding'] = 'utf-16'
             self.project_data['raw_data_files'] = {}
-            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML'] = {}
-            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['NLP_PROCESS'] = 'NOTE'
-            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.project_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE.XML' ]
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML'] = {}
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['NLP_PROCESS'] = 'NOTE'
+            self.project_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.project_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML',
+                                                             'NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML',
+                                                             'NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML',
+                                                             'NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML',
+                                                             'NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML' ]
         else:
             self.project_data['raw_data_encoding'] = 'utf-8'
             self.project_data['raw_data_files'] = {}

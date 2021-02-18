@@ -1,54 +1,92 @@
-version: 5.5.1
-creationDate: '2019-01-25 17:47:02'
+output:
+  useOutputEditor: true
+  columns:
+  - id: phrase1
+creator: haglers
 query:
   document:
   - phrase:
-      findMatches: longestOnly
-      id: phrase1
-      view: {height: 887, width: 1756}
+      view:
+        width: 1756
+        height: 887
       of:
       - alternative:
-          view: {height: 855, width: 1742}
+          view:
+            width: 1742
+            height: 855
           of:
           - phrase:
-              view: {height: 336, width: 1842}
+              view:
+                width: 1842
+                height: 336
               of:
               - macro:
-                  quantifier: {minimum: 0, maximum: 1}
                   snid: linguamatics_wc.WC_Negative_Word
                   pt: negative word
                   of:
                   - alternative:
                       macroPt: negative word
+                      of:
+                      - aren't
+                      - can't
+                      - cannot
+                      - couldn't
+                      - didn't
+                      - doesn't
+                      - don't
+                      - hadn't
+                      - hasn't
+                      - haven't
+                      - isn't
+                      - mustn't
+                      - never
+                      - neither
+                      - 'no'
+                      - nobody
+                      - none
+                      - nor
+                      - not
+                      - nothing
+                      - nowhere
+                      - oughtn't
+                      - shan't
+                      - shouldn't
+                      - wasn't
+                      - weren't
+                      - won't
+                      - wouldn't
                       macroSnid: linguamatics_wc.WC_Negative_Word
-                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
-                        hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
-                        nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
-                        shouldn't, wasn't, weren't, won't, wouldn't]
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - evidence
                   - alternative:
-                    - {class: /prep}
+                    - class: /prep
                     - macro:
                         snid: linguamatics_wc.WC_Preposition
                         pt: preposition
                         of:
                         - alternative:
                             macroPt: preposition
-                            macroSnid: linguamatics_wc.WC_Preposition
                             of:
                             - aboard
                             - about
                             - above
                             - absent
-                            - phrase: [according, to]
+                            - phrase:
+                              - according
+                              - to
                             - across
                             - after
                             - against
-                            - phrase: [ahead, of]
-                            - phrase: [all, over]
+                            - phrase:
+                              - ahead
+                              - of
+                            - phrase:
+                              - all
+                              - over
                             - along
                             - alongside
                             - amid
@@ -58,15 +96,24 @@ query:
                             - anti
                             - around
                             - as
-                            - phrase: [as, far, as]
+                            - phrase:
+                              - as
+                              - far
+                              - as
                             - aside
-                            - phrase: [as, of]
-                            - phrase: [as, to]
+                            - phrase:
+                              - as
+                              - of
+                            - phrase:
+                              - as
+                              - to
                             - astraddle
                             - astride
                             - at
                             - atop
-                            - phrase: [because, of]
+                            - phrase:
+                              - because
+                              - of
                             - before
                             - behind
                             - below
@@ -82,40 +129,74 @@ query:
                             - down
                             - during
                             - except
-                            - phrase: [except, for]
+                            - phrase:
+                              - except
+                              - for
                             - for
                             - from
                             - given
                             - in
-                            - phrase: [in, addition, to]
-                            - phrase: [in, between]
-                            - phrase: [in, case, of]
-                            - phrase: [in, place, of]
+                            - phrase:
+                              - in
+                              - addition
+                              - to
+                            - phrase:
+                              - in
+                              - between
+                            - phrase:
+                              - in
+                              - case
+                              - of
+                            - phrase:
+                              - in
+                              - place
+                              - of
                             - inside
-                            - phrase: [in, spite, of]
-                            - phrase: [instead, of]
+                            - phrase:
+                              - in
+                              - spite
+                              - of
+                            - phrase:
+                              - instead
+                              - of
                             - into
                             - less
                             - lest
                             - like
                             - minus
                             - near
-                            - phrase: [near, to]
+                            - phrase:
+                              - near
+                              - to
                             - next
-                            - phrase: [next, to]
+                            - phrase:
+                              - next
+                              - to
                             - notwithstanding
                             - of
                             - 'off'
                             - 'on'
-                            - phrase: ['on', account, of]
-                            - phrase: ['on', top, of]
+                            - phrase:
+                              - 'on'
+                              - account
+                              - of
+                            - phrase:
+                              - 'on'
+                              - top
+                              - of
                             - onto
                             - opposite
-                            - phrase: [other, than]
+                            - phrase:
+                              - other
+                              - than
                             - out
-                            - phrase: [out, of]
+                            - phrase:
+                              - out
+                              - of
                             - outside
-                            - phrase: [outside, of]
+                            - phrase:
+                              - outside
+                              - of
                             - over
                             - past
                             - per
@@ -134,7 +215,9 @@ query:
                             - until
                             - unto
                             - up
-                            - phrase: [up, to]
+                            - phrase:
+                              - up
+                              - to
                             - upon
                             - versus
                             - vs
@@ -143,31 +226,39 @@ query:
                             - with
                             - within
                             - without
+                            macroSnid: linguamatics_wc.WC_Preposition
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - phrase:
                     - increase
                     - alternative:
-                      - {class: /prep}
+                      - class: /prep
                       - macro:
                           snid: linguamatics_wc.WC_Preposition
                           pt: preposition
                           of:
                           - alternative:
                               macroPt: preposition
-                              macroSnid: linguamatics_wc.WC_Preposition
                               of:
                               - aboard
                               - about
                               - above
                               - absent
-                              - phrase: [according, to]
+                              - phrase:
+                                - according
+                                - to
                               - across
                               - after
                               - against
-                              - phrase: [ahead, of]
-                              - phrase: [all, over]
+                              - phrase:
+                                - ahead
+                                - of
+                              - phrase:
+                                - all
+                                - over
                               - along
                               - alongside
                               - amid
@@ -177,15 +268,24 @@ query:
                               - anti
                               - around
                               - as
-                              - phrase: [as, far, as]
+                              - phrase:
+                                - as
+                                - far
+                                - as
                               - aside
-                              - phrase: [as, of]
-                              - phrase: [as, to]
+                              - phrase:
+                                - as
+                                - of
+                              - phrase:
+                                - as
+                                - to
                               - astraddle
                               - astride
                               - at
                               - atop
-                              - phrase: [because, of]
+                              - phrase:
+                                - because
+                                - of
                               - before
                               - behind
                               - below
@@ -201,40 +301,74 @@ query:
                               - down
                               - during
                               - except
-                              - phrase: [except, for]
+                              - phrase:
+                                - except
+                                - for
                               - for
                               - from
                               - given
                               - in
-                              - phrase: [in, addition, to]
-                              - phrase: [in, between]
-                              - phrase: [in, case, of]
-                              - phrase: [in, place, of]
+                              - phrase:
+                                - in
+                                - addition
+                                - to
+                              - phrase:
+                                - in
+                                - between
+                              - phrase:
+                                - in
+                                - case
+                                - of
+                              - phrase:
+                                - in
+                                - place
+                                - of
                               - inside
-                              - phrase: [in, spite, of]
-                              - phrase: [instead, of]
+                              - phrase:
+                                - in
+                                - spite
+                                - of
+                              - phrase:
+                                - instead
+                                - of
                               - into
                               - less
                               - lest
                               - like
                               - minus
                               - near
-                              - phrase: [near, to]
+                              - phrase:
+                                - near
+                                - to
                               - next
-                              - phrase: [next, to]
+                              - phrase:
+                                - next
+                                - to
                               - notwithstanding
                               - of
                               - 'off'
                               - 'on'
-                              - phrase: ['on', account, of]
-                              - phrase: ['on', top, of]
+                              - phrase:
+                                - 'on'
+                                - account
+                                - of
+                              - phrase:
+                                - 'on'
+                                - top
+                                - of
                               - onto
                               - opposite
-                              - phrase: [other, than]
+                              - phrase:
+                                - other
+                                - than
                               - out
-                              - phrase: [out, of]
+                              - phrase:
+                                - out
+                                - of
                               - outside
-                              - phrase: [outside, of]
+                              - phrase:
+                                - outside
+                                - of
                               - over
                               - past
                               - per
@@ -253,7 +387,9 @@ query:
                               - until
                               - unto
                               - up
-                              - phrase: [up, to]
+                              - phrase:
+                                - up
+                                - to
                               - upon
                               - versus
                               - vs
@@ -262,34 +398,45 @@ query:
                               - with
                               - within
                               - without
+                              macroSnid: linguamatics_wc.WC_Preposition
                   - increased
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - link:
-                  path: [../general/percentage_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy']
-                  quantifier: {minimum: 0, maximum: 0}
+                  path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
               - alternative:
                 - phrase:
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 0}
-                      of: [circulating, occasional]
+                      of:
+                      - circulating
+                      - occasional
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 1}
-                      of: [marrow, myeloid]
+                      of:
+                      - marrow
+                      - myeloid
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - link:
-                      path: [../general/blast_wrapped.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast_wrapped.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy
                 - link:
-                    path: [../general/non_blast_cells.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/non_blast_cells.i2qy']
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/non_blast_cells.i2qy
               - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - phrase:
                     - macro:
-                        quantifier: {minimum: 0, maximum: 1}
                         snid: linguamatics_wc.WC_Conjunction
                         pt: conjunction
                         of:
                         - alternative:
                             macroPt: conjunction
-                            macroSnid: linguamatics_wc.WC_Conjunction
                             of:
                             - '&'
                             - after
@@ -298,7 +445,10 @@ query:
                             - also
                             - and
                             - as
-                            - phrase: [as, far, as]
+                            - phrase:
+                              - as
+                              - far
+                              - as
                             - because
                             - before
                             - but
@@ -323,127 +473,227 @@ query:
                             - while
                             - whilst
                             - yet
-                    - {class: /vg}
+                            macroSnid: linguamatics_wc.WC_Conjunction
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - class: /vg
                   - phrase:
                     - are
                     - macro:
-                        quantifier: {minimum: 0, maximum: 1}
                         snid: linguamatics_wc.WC_Negative_Word
                         pt: negative word
                         of:
                         - alternative:
                             macroPt: negative word
+                            of:
+                            - aren't
+                            - can't
+                            - cannot
+                            - couldn't
+                            - didn't
+                            - doesn't
+                            - don't
+                            - hadn't
+                            - hasn't
+                            - haven't
+                            - isn't
+                            - mustn't
+                            - never
+                            - neither
+                            - 'no'
+                            - nobody
+                            - none
+                            - nor
+                            - not
+                            - nothing
+                            - nowhere
+                            - oughtn't
+                            - shan't
+                            - shouldn't
+                            - wasn't
+                            - weren't
+                            - won't
+                            - wouldn't
                             macroSnid: linguamatics_wc.WC_Negative_Word
-                            of: [aren't, can't, cannot, couldn't, didn't, doesn't,
-                              don't, hadn't, hasn't, haven't, isn't, mustn't, never,
-                              neither, 'no', nobody, none, nor, not, nothing, nowhere,
-                              oughtn't, shan't, shouldn't, wasn't, weren't, won't,
-                              wouldn't]
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - increased
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
                 - phrase:
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 1}
-                      of: [':', ',']
+                      of:
+                      - ':'
+                      - ','
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - link:
-                      path: [../general/percentage_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
                 - phrase:
                   - (
                   - link:
-                      path: [../general/percentage_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
                   - word:
                       text: )
-                      quantifier: {minimum: 0, maximum: 1}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - word:
                       text: immunophenotype
-                      quantifier: {minimum: 0, maximum: 0}
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
           - phrase:
-              displayChildren: false
-              view: {height: 121, width: 606}
+              view:
+                width: 606
+                height: 121
               of:
-              - word: {text: involve, morphoVariants: true}
+              - word:
+                  text: involve
+                  morphoVariants: true
               - by
               - AML
               - phrase:
                 - (
                 - link:
-                    path: [../general/percentage_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy']
+                    path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
                 - word:
                     text: )
-                    quantifier: {minimum: 0, maximum: 1}
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
                 - word:
                     text: immunophenotype
-                    quantifier: {minimum: 0, maximum: 0}
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+              displayChildren: false
           - phrase:
-              view: {height: 299, width: 613}
+              view:
+                width: 613
+                height: 299
               of:
               - word:
                   text: ':'
-                  quantifier: {minimum: 0, maximum: 0}
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
               - alternative:
                 - link:
-                    path: [../general/percentage_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy']
+                    path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
                 - increased
               - word:
                   text: increased
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
                 - phrase:
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 1}
-                      of: [marrow, myeloid]
+                      of:
+                      - marrow
+                      - myeloid
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
                   - link:
-                      path: [../general/blast_wrapped.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast_wrapped.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy
                 - link:
-                    path: [../general/non_blast_cells.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/non_blast_cells.i2qy']
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/non_blast_cells.i2qy
               - word:
                   text: ':'
-                  quantifier: {minimum: 0, maximum: 0}
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
           - phrase:
-              displayChildren: false
+              view:
+                width: 1239
+                height: 366
               maxWordGap: 1
-              view: {height: 366, width: 1239}
               of:
               - macro:
-                  quantifier: {minimum: 0, maximum: 1}
                   snid: linguamatics_wc.WC_Negative_Word
                   pt: negative word
                   of:
                   - alternative:
                       macroPt: negative word
+                      of:
+                      - aren't
+                      - can't
+                      - cannot
+                      - couldn't
+                      - didn't
+                      - doesn't
+                      - don't
+                      - hadn't
+                      - hasn't
+                      - haven't
+                      - isn't
+                      - mustn't
+                      - never
+                      - neither
+                      - 'no'
+                      - nobody
+                      - none
+                      - nor
+                      - not
+                      - nothing
+                      - nowhere
+                      - oughtn't
+                      - shan't
+                      - shouldn't
+                      - wasn't
+                      - weren't
+                      - won't
+                      - wouldn't
                       macroSnid: linguamatics_wc.WC_Negative_Word
-                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
-                        hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
-                        nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
-                        shouldn't, wasn't, weren't, won't, wouldn't]
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
-                  of: [numerous, occasional, rare, scattered]
-              - phrase:
-                  displayChildren: false
-                  quantifier: {minimum: 0, maximum: 0}
                   of:
-                  - word: {text: sheet, morphoVariants: true}
+                  - numerous
+                  - occasional
+                  - rare
+                  - scattered
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - phrase:
+                  of:
+                  - word:
+                      text: sheet
+                      morphoVariants: true
                   - alternative:
-                    - {class: /prep}
+                    - class: /prep
                     - macro:
                         snid: linguamatics_wc.WC_Preposition
                         pt: preposition
                         of:
                         - alternative:
                             macroPt: preposition
-                            macroSnid: linguamatics_wc.WC_Preposition
                             of:
                             - aboard
                             - about
                             - above
                             - absent
-                            - phrase: [according, to]
+                            - phrase:
+                              - according
+                              - to
                             - across
                             - after
                             - against
-                            - phrase: [ahead, of]
-                            - phrase: [all, over]
+                            - phrase:
+                              - ahead
+                              - of
+                            - phrase:
+                              - all
+                              - over
                             - along
                             - alongside
                             - amid
@@ -453,15 +703,24 @@ query:
                             - anti
                             - around
                             - as
-                            - phrase: [as, far, as]
+                            - phrase:
+                              - as
+                              - far
+                              - as
                             - aside
-                            - phrase: [as, of]
-                            - phrase: [as, to]
+                            - phrase:
+                              - as
+                              - of
+                            - phrase:
+                              - as
+                              - to
                             - astraddle
                             - astride
                             - at
                             - atop
-                            - phrase: [because, of]
+                            - phrase:
+                              - because
+                              - of
                             - before
                             - behind
                             - below
@@ -477,40 +736,74 @@ query:
                             - down
                             - during
                             - except
-                            - phrase: [except, for]
+                            - phrase:
+                              - except
+                              - for
                             - for
                             - from
                             - given
                             - in
-                            - phrase: [in, addition, to]
-                            - phrase: [in, between]
-                            - phrase: [in, case, of]
-                            - phrase: [in, place, of]
+                            - phrase:
+                              - in
+                              - addition
+                              - to
+                            - phrase:
+                              - in
+                              - between
+                            - phrase:
+                              - in
+                              - case
+                              - of
+                            - phrase:
+                              - in
+                              - place
+                              - of
                             - inside
-                            - phrase: [in, spite, of]
-                            - phrase: [instead, of]
+                            - phrase:
+                              - in
+                              - spite
+                              - of
+                            - phrase:
+                              - instead
+                              - of
                             - into
                             - less
                             - lest
                             - like
                             - minus
                             - near
-                            - phrase: [near, to]
+                            - phrase:
+                              - near
+                              - to
                             - next
-                            - phrase: [next, to]
+                            - phrase:
+                              - next
+                              - to
                             - notwithstanding
                             - of
                             - 'off'
                             - 'on'
-                            - phrase: ['on', account, of]
-                            - phrase: ['on', top, of]
+                            - phrase:
+                              - 'on'
+                              - account
+                              - of
+                            - phrase:
+                              - 'on'
+                              - top
+                              - of
                             - onto
                             - opposite
-                            - phrase: [other, than]
+                            - phrase:
+                              - other
+                              - than
                             - out
-                            - phrase: [out, of]
+                            - phrase:
+                              - out
+                              - of
                             - outside
-                            - phrase: [outside, of]
+                            - phrase:
+                              - outside
+                              - of
                             - over
                             - past
                             - per
@@ -529,7 +822,9 @@ query:
                             - until
                             - unto
                             - up
-                            - phrase: [up, to]
+                            - phrase:
+                              - up
+                              - to
                             - upon
                             - versus
                             - vs
@@ -538,158 +833,280 @@ query:
                             - with
                             - within
                             - without
+                            macroSnid: linguamatics_wc.WC_Preposition
+                  displayChildren: false
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
               - phrase:
                 - word:
                     text: increased
-                    quantifier: {minimum: 0, maximum: 1}
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
                 - alternative:
                   - phrase:
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [marrow, myeloid]
+                        of:
+                        - marrow
+                        - myeloid
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - link:
-                        path: [../general/blast_wrapped.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast_wrapped.i2qy']
+                        path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy
                   - link:
-                      path: [../general/non_blast_cells.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/non_blast_cells.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/non_blast_cells.i2qy
                 - phrase:
-                  - alternative: [are, is]
+                  - alternative:
+                    - are
+                    - is
                   - macro:
-                      quantifier: {minimum: 0, maximum: 1}
                       snid: linguamatics_wc.WC_Negative_Word
                       pt: negative word
                       of:
                       - alternative:
                           macroPt: negative word
+                          of:
+                          - aren't
+                          - can't
+                          - cannot
+                          - couldn't
+                          - didn't
+                          - doesn't
+                          - don't
+                          - hadn't
+                          - hasn't
+                          - haven't
+                          - isn't
+                          - mustn't
+                          - never
+                          - neither
+                          - 'no'
+                          - nobody
+                          - none
+                          - nor
+                          - not
+                          - nothing
+                          - nowhere
+                          - oughtn't
+                          - shan't
+                          - shouldn't
+                          - wasn't
+                          - weren't
+                          - won't
+                          - wouldn't
                           macroSnid: linguamatics_wc.WC_Negative_Word
-                          of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
-                            hadn't, hasn't, haven't, isn't, mustn't, never, neither,
-                            'no', nobody, none, nor, not, nothing, nowhere, oughtn't,
-                            shan't, shouldn't, wasn't, weren't, won't, wouldn't]
-                  - alternative: [identified, increased, present, seen]
-output:
-  columns:
-  - {id: phrase1}
-  useOutputEditor: true
-creator: haglers
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                    - identified
+                    - increased
+                    - present
+                    - seen
+              displayChildren: false
+      findMatches: longestOnly
+      id: phrase1
 querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy:
-    version: 5.5.1
-    creationDate: '2019-02-26 19:12:21'
+  /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
     query:
       document:
       - alternative:
-          id: alternative1
           of:
           - involvement
-          - word: {text: monoblast, morphoVariants: true}
-          - word: {text: myeloblast, morphoVariants: true}
+          - word:
+              text: monoblast
+              morphoVariants: true
+          - word:
+              text: myeloblast
+              morphoVariants: true
           - phrase:
-              displayChildren: false
               of:
               - alternative:
-                  quantifier: {minimum: 0, maximum: 0}
-                  of: [immature, leukemic, lymphoid]
+                  of:
+                  - immature
+                  - leukemic
+                  - lymphoid
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
               - word:
                   text: myeloid
-                  quantifier: {minimum: 0, maximum: 1}
-              - word: {text: blast, morphoVariants: true}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - word:
+                  text: blast
+                  morphoVariants: true
               - word:
                   text: equivalent
                   morphoVariants: true
-                  quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              displayChildren: false
+          id: alternative1
+    creationDate: '2019-02-26 19:12:21'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/non_blast_cells.i2qy:
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast_wrapped.i2qy:
-    version: 5.5.1
-    creationDate: '2019-03-12 16:42:00'
+    query:
+      document:
+      - phrase:
+        - phrase:
+            of:
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy
+            - /
+            quantifier:
+              maximum: 0
+              minimum: 0
+        - alternative:
+          - phrase:
+              of:
+              - monocytic
+              - population
+              displayChildren: false
+          - monocytosis
+          - word:
+              matchType: Regexp
+              text: monocytes?
+          - word:
+              matchType: Regexp
+              text: promonocytes?
+        - phrase:
+            of:
+            - /
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy
+            quantifier:
+              maximum: 0
+              minimum: 0
+    creationDate: '2019-04-22 18:24:37'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
     query:
       document:
       - alternative:
-          id: alternative1
           of:
           - phrase:
             - phrase:
                 unordered: true
                 of:
-                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy
                 - phrase:
                     maxWordGap: 1
-                    quantifier: {minimum: 0, maximum: none}
                     of:
-                    - alternative: [and, +, /]
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [abnormal]
+                      - and
+                      - +
+                      - /
                     - alternative:
-                      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
-                      - word: {text: promonocyte, morphoVariants: true}
-                      - word: {text: promonocytic, morphoVariants: true}
-                      - word: {text: promyelocyte, morphoVariants: true}
+                        of:
+                        - abnormal
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - alternative:
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy
+                      - word:
+                          text: promonocyte
+                          morphoVariants: true
+                      - word:
+                          text: promonocytic
+                          morphoVariants: true
+                      - word:
+                          text: promyelocyte
+                          morphoVariants: true
+                    quantifier:
+                      maximum: none
+                      minimum: 0
             - word:
                 text: population
-                quantifier: {minimum: 0, maximum: 1}
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+          id: alternative1
+    creationDate: '2019-03-12 16:42:00'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy:
     output:
-      columns:
-      - {id: alternative1}
       useOutputEditor: true
+      columns:
+      - id: phrase1
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/non_blast_cells.i2qy:
-    version: 5.5.1
-    creationDate: '2019-04-22 18:24:37'
     query:
       document:
       - phrase:
-        - phrase:
-            quantifier: {minimum: 0, maximum: 0}
-            of:
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
-            - /
-        - alternative:
-          - phrase:
-              displayChildren: false
-              of: [monocytic, population]
-          - monocytosis
-          - word: {text: 'monocytes?', matchType: Regexp}
-          - word: {text: 'promonocytes?', matchType: Regexp}
-        - phrase:
-            quantifier: {minimum: 0, maximum: 0}
-            of:
-            - /
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy:
-    version: 5.5.1
-    creationDate: '2019-02-26 17:24:53'
-    query:
-      document:
-      - phrase:
-          id: phrase1
-          view: {height: 138, width: 578}
+          view:
+            width: 578
+            height: 138
           of:
           - macro:
-              quantifier: {minimum: 0, maximum: 1}
               snid: linguamatics_wc.WC_Determiner
               pt: determiner
               of:
               - alternative:
                   macroPt: determiner
+                  of:
+                  - a
+                  - all
+                  - an
+                  - another
+                  - any
+                  - both
+                  - each
+                  - enough
+                  - every
+                  - few
+                  - fewer
+                  - less
+                  - many
+                  - more
+                  - most
+                  - much
+                  - 'no'
+                  - other
+                  - several
+                  - some
+                  - such
+                  - the
                   macroSnid: linguamatics_wc.WC_Determiner
-                  of: [a, all, an, another, any, both, each, enough, every, few, fewer,
-                    less, many, more, most, much, 'no', other, several, some, such,
-                    the]
+              quantifier:
+                maximum: 1
+                minimum: 0
           - alternative:
-              quantifier: {minimum: 0, maximum: 1}
-              view: {layout: list}
-              of: [estimated, '~', '>', <]
+              view:
+                layout: list
+              of:
+              - estimated
+              - '~'
+              - '>'
+              - <
+              quantifier:
+                maximum: 1
+                minimum: 0
           - word:
-              text: ([0-9]+(\.[0-9]+)?%\-)?[0-9]+(\.[0-9]+)?%
+              view:
+                width: 324
+                height: 55
               matchType: Regexp
-              view: {height: 55, width: 324}
-    output:
-      columns:
-      - {id: phrase1}
-      useOutputEditor: true
-    creator: haglers
+              text: ([0-9]+(\.[0-9]+)?%\-)?[0-9]+(\.[0-9]+)?%
+          id: phrase1
+    creationDate: '2019-02-26 17:24:53'
+    version: 6.2
+creationDate: '2019-01-25 17:47:02'
+version: 6.2

@@ -1,43 +1,37 @@
-version: 5.5.1
-creationDate: '2020-03-06 17:21:41'
+output:
+  useOutputEditor: true
+  columns:
+  - id: alternative1
+  outputSettings:
+    maxResults: 10000
+creator: haglers
 query:
   document:
   - alternative:
-      id: alternative1
       of:
-      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate_subject.i2qy'}
-      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject_predicate.i2qy'}
-output:
-  columns:
-  - {id: alternative1}
-  outputSettings: {maxResults: 10000}
-  useOutputEditor: true
-creator: haglers
+      - link:
+          path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate_subject.i2qy
+      - link:
+          path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject_predicate.i2qy
+      id: alternative1
 querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_base.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-23 10:07:00'
-    query:
-      document:
-      - alternative: [CK5/6, ER, HER2, Ki67, PR]
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate.i2qy
-  : version: 5.5.1
-    creationDate: '2018-05-16 13:46:36'
     query:
       document:
       - phrase:
-          boundaries: Exact
-          findMatches: longestOnly
-          id: phrase1
-          view: {height: 826, width: 1068}
+          view:
+            width: 1068
+            height: 826
           of:
           - phrase:
-              quantifier: {minimum: 1, maximum: none}
               of:
               - phrase:
                 - alternative:
-                    quantifier: {minimum: 0, maximum: 1}
                     of:
                     - macro:
                         snid: linguamatics_wc.WC_Conjunction
@@ -45,7 +39,6 @@ querySnapshots:
                         of:
                         - alternative:
                             macroPt: conjunction
-                            macroSnid: linguamatics_wc.WC_Conjunction
                             of:
                             - '&'
                             - after
@@ -54,7 +47,10 @@ querySnapshots:
                             - also
                             - and
                             - as
-                            - phrase: [as, far, as]
+                            - phrase:
+                              - as
+                              - far
+                              - as
                             - because
                             - before
                             - but
@@ -79,27 +75,34 @@ querySnapshots:
                             - while
                             - whilst
                             - yet
-                    - {class: /prep}
+                            macroSnid: linguamatics_wc.WC_Conjunction
+                    - class: /prep
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
                 - alternative:
                   - phrase:
                     - phrase:
-                        quantifier: {minimum: 1, maximum: none}
                         of:
                         - phrase:
-                            quantifier: {minimum: 0, maximum: none}
                             of:
                             - alternative:
-                                view: {layout: list}
-                                of: [completely, diffusely, focally, strong, strongly,
-                                  weak, weakly]
+                                view:
+                                  layout: list
+                                of:
+                                - completely
+                                - diffusely
+                                - focally
+                                - strong
+                                - strongly
+                                - weak
+                                - weakly
                             - macro:
-                                quantifier: {minimum: 0, maximum: 1}
                                 snid: linguamatics_wc.WC_Conjunction
                                 pt: conjunction
                                 of:
                                 - alternative:
                                     macroPt: conjunction
-                                    macroSnid: linguamatics_wc.WC_Conjunction
                                     of:
                                     - '&'
                                     - after
@@ -108,7 +111,10 @@ querySnapshots:
                                     - also
                                     - and
                                     - as
-                                    - phrase: [as, far, as]
+                                    - phrase:
+                                      - as
+                                      - far
+                                      - as
                                     - because
                                     - before
                                     - but
@@ -133,14 +139,19 @@ querySnapshots:
                                     - while
                                     - whilst
                                     - yet
+                                    macroSnid: linguamatics_wc.WC_Conjunction
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            quantifier:
+                              maximum: none
+                              minimum: 0
                         - macro:
-                            boundaries: Exact
                             snid: ohsu_test_result.test_result
                             pt: Test Result
                             of:
                             - alternative:
                                 macroPt: Test Result
-                                macroSnid: ohsu_test_result.test_result
                                 of:
                                 - absent
                                 - amplified
@@ -153,21 +164,25 @@ querySnapshots:
                                 - moderate
                                 - negative
                                 - non-amplified
-                                - phrase: [not, done]
+                                - phrase:
+                                  - not
+                                  - done
                                 - positive
                                 - present
                                 - unamplified
+                                macroSnid: ohsu_test_result.test_result
+                            boundaries: Exact
                         - word:
                             text: staining
-                            quantifier: {minimum: 0, maximum: 1}
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
                         - macro:
-                            quantifier: {minimum: 0, maximum: 1}
                             snid: linguamatics_wc.WC_Conjunction
                             pt: conjunction
                             of:
                             - alternative:
                                 macroPt: conjunction
-                                macroSnid: linguamatics_wc.WC_Conjunction
                                 of:
                                 - '&'
                                 - after
@@ -176,7 +191,10 @@ querySnapshots:
                                 - also
                                 - and
                                 - as
-                                - phrase: [as, far, as]
+                                - phrase:
+                                  - as
+                                  - far
+                                  - as
                                 - because
                                 - before
                                 - but
@@ -201,14 +219,19 @@ querySnapshots:
                                 - while
                                 - whilst
                                 - yet
+                                macroSnid: linguamatics_wc.WC_Conjunction
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        quantifier:
+                          maximum: none
+                          minimum: 1
                     - macro:
-                        quantifier: {minimum: 0, maximum: 1}
                         snid: linguamatics_wc.WC_Punctuation
                         pt: punctuation
                         of:
                         - alternative:
                             macroPt: punctuation
-                            macroSnid: linguamatics_wc.WC_Punctuation
                             of:
                             - ','
                             - ;
@@ -238,144 +261,207 @@ querySnapshots:
                             - '?'
                             - '{'
                             - '}'
-                            - word: {text: '-'}
+                            - word:
+                                text: '-'
                             - '~'
                             - '...'
                             - '***'
                             - _
                             - \
+                            macroSnid: linguamatics_wc.WC_Punctuation
                         where:
-                        - alternative: [':']
+                        - alternative:
+                          - ':'
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                   - phrase:
                     - alternative:
-                      - word: {text: '[0-4](\.\d+)?(\+)?(\/\d)?', matchType: Regexp}
-                      - word: {text: '(\d-)?\d(\+)?', matchType: Regexp}
+                      - word:
+                          matchType: Regexp
+                          text: '[0-4](\.\d+)?(\+)?(\/\d)?'
+                      - word:
+                          matchType: Regexp
+                          text: (\d-)?\d(\+)?
                     - macro:
-                        quantifier: {minimum: 0, maximum: 1}
                         snid: ohsu_test_score_quantifier.test_score_quantifier
                         pt: Test Score Quantifier
                         of:
                         - alternative:
                             macroPt: Test Score Quantifier
+                            of:
+                            - grade
+                            - intensity
+                            - point
+                            - points
+                            - score
                             macroSnid: ohsu_test_score_quantifier.test_score_quantifier
-                            of: [grade, intensity, point, points, score]
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                   - phrase:
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        view: {layout: list}
-                        of: ['>', <]
-                    - word: {text: '\d\d?\d?(-\d\d?\d?)?%', matchType: Regexp}
+                        view:
+                          layout: list
+                        of:
+                        - '>'
+                        - <
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - word:
+                        matchType: Regexp
+                        text: \d\d?\d?(-\d\d?\d?)?%
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        view: {layout: list}
-                        of: [favorable, strong]
+                        view:
+                          layout: list
+                        of:
+                        - favorable
+                        - strong
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                   - phrase:
-                    - class: {snid: numerics.numerics, pt: Numerics}
+                    - class:
+                        snid: numerics.numerics
+                        pt: Numerics
                     - /
-                    - class: {snid: numerics.numerics, pt: Numerics}
+                    - class:
+                        snid: numerics.numerics
+                        pt: Numerics
                   - alternative:
                     - phrase:
-                      - {class: /prep}
+                      - class: /prep
                       - word:
                           text: invasive
-                          quantifier: {minimum: 0, maximum: 1}
-                      - word: {text: cell, morphoVariants: true}
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - word:
+                          text: cell
+                          morphoVariants: true
                   - link:
-                      path: [../../tools/parenthetical_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy']
+                      path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: none
+                minimum: 1
           - link:
-              path: [../../tools/parenthetical_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy']
-              quantifier: {minimum: 0, maximum: 1}
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-05-16 13:46:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate_subject.i2qy:
     output:
-      columns:
-      - {id: phrase1}
       useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate_subject.i2qy
-  : version: 5.5.1
-    creationDate: '2015-12-14 15:22:31'
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        boundaries: Exact
+        allRows: true
+        allTime: true
+    creator: szhang
     query:
       document:
       - phrase:
-          findMatches: longestOnly
-          id: phrase1
           of:
           - alternative:
             - phrase:
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate.i2qy'}
-              - {class: /prep}
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject.i2qy'}
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+              - class: /prep
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
             - phrase:
               - phrase:
-                  quantifier: {minimum: 0, maximum: 0}
                   of:
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject.i2qy'}
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
                   - word:
                       text: ':'
-                      quantifier: {minimum: 0, maximum: 1}
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate.i2qy'}
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject.i2qy'}
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
           - link:
-              path: [../../tools/parenthetical_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy']
-              quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: phrase1}
-      outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
-      useOutputEditor: true
-    creator: szhang
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject.i2qy
-  : version: 5.5.1
-    creationDate: '2018-05-16 13:23:29'
-    query:
-      document:
-      - phrase:
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
           findMatches: longestOnly
           id: phrase1
-          of:
-          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_base.i2qy'}
-          - phrase:
-              quantifier: {minimum: 0, maximum: none}
-              of:
-              - alternative:
-                  quantifier: {minimum: 1, maximum: none}
-                  view: {layout: list}
-                  of: [and, or, ',', /]
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_base.i2qy'}
-    output:
-      columns:
-      - {id: phrase1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
+    creationDate: '2015-12-14 15:22:31'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject_predicate.i2qy
-  : version: 5.5.1
-    creationDate: '2018-05-21 15:26:04'
     query:
       document:
       - phrase:
-          findMatches: longestOnly
-          id: phrase1
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - alternative:
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - phrase:
           of:
           - phrase:
-              quantifier: {minimum: 0, maximum: 0}
               of:
               - alternative:
-                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate.i2qy'}
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
                 - phrase:
-                    displayChildren: false
                     of:
-                    - word: {text: internal, morphoVariants: true}
-                    - word: {text: control, morphoVariants: true}
-              - {class: /prep}
-          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_subject.i2qy'}
+                    - word:
+                        text: internal
+                        morphoVariants: true
+                    - word:
+                        text: control
+                        morphoVariants: true
+                    displayChildren: false
+              - class: /prep
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
           - macro:
-              quantifier: {minimum: 0, maximum: 0}
               snid: linguamatics_wc.WC_Conjunction
               pt: conjunction
               of:
               - alternative:
                   macroPt: conjunction
-                  macroSnid: linguamatics_wc.WC_Conjunction
                   of:
                   - '&'
                   - after
@@ -384,7 +470,10 @@ querySnapshots:
                   - also
                   - and
                   - as
-                  - phrase: [as, far, as]
+                  - phrase:
+                    - as
+                    - far
+                    - as
                   - because
                   - before
                   - but
@@ -409,33 +498,77 @@ querySnapshots:
                   - while
                   - whilst
                   - yet
+                  macroSnid: linguamatics_wc.WC_Conjunction
+              quantifier:
+                maximum: 0
+                minimum: 0
           - alternative:
-              quantifier: {minimum: 0, maximum: 1}
               of:
-              - {class: /vg}
+              - class: /vg
               - signals
+              quantifier:
+                maximum: 1
+                minimum: 0
           - word:
               text: ':'
-              quantifier: {minimum: 0, maximum: 1}
-          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersquery_lib/biomarker_predicate.i2qy'}
-    output:
-      columns:
-      - {id: phrase1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2018-05-21 15:26:04'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_base.i2qy:
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-07 15:22:51'
+    query:
+      document:
+      - alternative:
+        - CK5/6
+        - ER
+        - HER2
+        - Ki67
+        - PR
+    creationDate: '2018-05-23 10:07:00'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
     query:
       document:
       - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
           of:
-          - (
-          - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [(, )]
-          - )
-    creator: haglers
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_base.i2qy
+          - phrase:
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - and
+                  - or
+                  - ','
+                  - /
+                  quantifier:
+                    maximum: none
+                    minimum: 1
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_base.i2qy
+              quantifier:
+                maximum: none
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2018-05-16 13:23:29'
+    version: 6.2
+creationDate: '2020-03-06 17:21:41'
+version: 6.2

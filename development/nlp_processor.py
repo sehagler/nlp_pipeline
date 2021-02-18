@@ -27,6 +27,10 @@ class Nlp_processor(object):
             Pipeline_manager(password, self.operation_mode, self.project, self.root_dir_flg)
         
     #
+    def download_queries(self):
+        self.nlp_pipeline.download_queries()
+    
+    #
     def generate_training_data_sets(self):
         self.nlp_pipeline.generate_training_data_sets()
     

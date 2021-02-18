@@ -8,7 +8,7 @@ Created on Thu Apr 16 09:55:47 2020
 #
 from nlp_lib.py.manager_lib.test_manager_class import Test_manager
 from projects_lib.CCC19.py.ccc19_project_manager_class import CCC19_project_manager
-from projects_lib.CCC19.py.data_validation_class import Data_validation
+from projects_lib.CCC19.py.ccc19_validation_manager_class import CCC19_validation_manager
 
 #
 class CCC19_test_manager(Test_manager):
@@ -22,5 +22,5 @@ class CCC19_test_manager(Test_manager):
         
     #
     def data_validation(self):
-        Data_validation(self.project_data_development)
-        Data_validation(self.project_data_production)
+        CCC19_validation_manager(self.project_data_development)
+        CCC19_validation_manager(self.project_data_production)

@@ -14,6 +14,7 @@ import pickle
 import random
 
 #
+from nlp_lib.py.manager_lib.process_manager_class import Process_manager
 from nlp_lib.py.manager_lib.server_manager_class import Server_manager
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import read_json_file
@@ -25,27 +26,18 @@ class Pipeline_manager(object):
     #
     def __init__(self, password, operation_mode, project, root_dir_flg):
         import_cmd = 'from projects_lib.' + project + '.py.' + project.lower() + \
-                     '_process_manager_class import ' + project + '_process_manager'
-        exec(import_cmd)
+                     '_project_manager_class import ' + project + \
+                     '_project_manager as Project_manager'
+        exec(import_cmd, globals())
         import_cmd = 'from projects_lib.' + project + '.py.' + project.lower() + \
-                     '_project_manager_class import ' + project + '_project_manager'
-        exec(import_cmd)
-        import_cmd = 'from projects_lib.' + project + '.py.' + project.lower() + \
-                     '_test_manager_class import ' + project + '_test_manager'
-        exec(import_cmd)
+                     '_test_manager_class import ' + project + \
+                     '_test_manager as Test_manager'
+        exec(import_cmd, globals())
         user = getpass.getuser()
-        project_manager_cmd = \
-            'project_manager = ' + project + '_project_manager(operation_mode, user, root_dir_flg)'
-        exec(project_manager_cmd)
-        project_data_cmd = \
-            'self.project_data = project_manager.get_project_data()'
-        exec(project_data_cmd)
-        process_manager_cmd = \
-            'self.process_manager = ' + project + '_process_manager(self.project_data, password)'
-        exec(process_manager_cmd)
-        test_manager_cmd = \
-            'self.test_manager = ' + project + '_test_manager(self.project_data, root_dir_flg)'
-        exec(test_manager_cmd)
+        project_manager = Project_manager(operation_mode, user, root_dir_flg)
+        self.project_data = project_manager.get_project_data()
+        self.process_manager = Process_manager(self.project_data, password)
+        self.test_manager = Test_manager(self.project_data, root_dir_flg)
         self.server_manager = Server_manager(self.project_data, password)
    
     #
@@ -86,6 +78,10 @@ class Pipeline_manager(object):
         print('number of patients: %d' % num_patients)
         
     #
+    def download_queries(self):
+        self.process_manager.download_queries()
+        
+    #
     def generate_training_data_sets(self):
         doc_fraction = 0.1
         num_groups = 4
@@ -115,16 +111,13 @@ class Pipeline_manager(object):
         self.process_manager.packager()
             
     #
-    def pre_queries(self, preprocessor_start_idx=1, preprocessor_cleanup_flg=True, 
-                    preindexer_start_idx=0, preindexer_cleanup_flg=True):
+    def pre_queries(self, preprocessor_start_idx=0, preprocessor_cleanup_flg=True):
         if preprocessor_start_idx >= 0:
-            if preprocessor_start_idx > 1:
+            if preprocessor_start_idx > 0:
                 preprocessor_cleanup_flg = False
             self.process_manager.preprocessor(preprocessor_start_idx, preprocessor_cleanup_flg)
             #self._quality_control()
-        if preindexer_start_idx > 0:
-            preindexer_cleanup_flg = False
-        self.process_manager.preindexer(preindexer_start_idx, preindexer_cleanup_flg)
+        self.process_manager.preindexer()
         self.process_manager.indexer()
         self.process_manager.postindexer()
         

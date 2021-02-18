@@ -30,6 +30,8 @@ class Linguamatics_i2e_file_manager(object):
             '/api;type=xml_and_html_config_file/' + xmlconf_filename
         self.keywords_filename = \
             self.directory_manager.pull_directory('processing_data_dir') + '/' + keywords_filename
+        self.query_bundle_path = \
+            '/Repository/Saved Queries/__private__/' + project_data['user'] + '/'
         self.resource_files_dict = {}
         self.resource_files_dict['region_list'] = \
             self.directory_manager.pull_directory('processing_data_dir') + '/' + regions_filename
@@ -58,6 +60,10 @@ class Linguamatics_i2e_file_manager(object):
         return self.keywords_filename
     
     #
+    def general_queries_source_directory(self):
+        return self.directory_manager.pull_directory('general_queries_dir')
+    
+    #
     def preprocessing_data_directory(self):
         return self.directory_manager.pull_directory('preprocessing_data_out')
     
@@ -66,8 +72,12 @@ class Linguamatics_i2e_file_manager(object):
         return self.directory_manager.pull_directory('processing_data_dir')
     
     #
-    def queries_source_directory(self):
-        return self.directory_manager.pull_directory('i2e_queries')
+    def project_queries_source_directory(self):
+        return self.directory_manager.pull_directory('project_queries_dir')
+    
+    #
+    def query_bundle_path_base(self):
+        return self.query_bundle_path
     
     #
     def resource_file(self, key):

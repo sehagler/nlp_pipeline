@@ -43,6 +43,13 @@ class Metadata_manager(object):
     #
     def load_metadata(self):
         self.metadata_dict_dict = read_json_file(self.metadata_json_file)
+        
+    #
+    def merge_copy(self, metadata_manager_copy):
+        metadata_dict_dict_add = metadata_manager_copy.get_metadata_dict_dict()
+        for key in metadata_dict_dict_add.keys():
+            doc_idx = metadata_dict_dict_add[key]['NLP_DOCUMENT_IDX']
+            self.metadata_dict_dict[doc_idx] = metadata_dict_dict_add[key]
     
     #
     def read_metadata(self):

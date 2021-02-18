@@ -6,24 +6,28 @@ Created on Mon Sep 10 09:57:58 2018
 """
 
 #
-from xml.dom import minidom
-import xml.etree.ElementTree as ET
+from fnmatch import fnmatch
 import numpy as np
 import os
 import shutil
+from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
 #
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import write_general_file, write_zip_file
+from nlp_lib.py.manager_lib.server_manager_class import Server_manager
+from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import remove_file, write_general_file, write_zip_file
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools import make_ascii, make_xml_compatible
 
 #
 class Linguamatics_i2e_writer(object):
     
     #
-    def __init__(self, linguamatics_i2e_file_manager):
+    def __init__(self, project_data, linguamatics_i2e_file_manager, password):
         self.clear_keywords_text()
         self.metadata_keys = []
         self.linguamatics_i2e_file_manager = linguamatics_i2e_file_manager
+        self.project_data = project_data
+        self.server_manager = Server_manager(self.project_data, password)
         
     #
     def _append_keywords_text(self, keyword, index_flg):
@@ -32,6 +36,18 @@ class Linguamatics_i2e_writer(object):
         elif index_flg == 1: 
             self.keywords_list.append(keyword + ' \d+')
         self.keywords_list = list(set(self.keywords_list))
+        
+    #
+    def _generate_query_bundle_file_component(self, filename, queries_dir, dest_path_base):
+        max_files_per_zip = self.project_data['max_files_per_zip']
+        for path, subdirs, files in os.walk(queries_dir):
+            rel_path = os.path.relpath(path, queries_dir)
+            dest_path = os.path.join (dest_path_base, rel_path)
+            data_files = []
+            for file in files:
+                if fnmatch(file, '*.i2qy'):
+                    data_files.append(os.path.join(path, file))
+            write_zip_file(filename, data_files, dest_path, max_files_per_zip, remove_file_flg=False)
         
     #
     def _generate_xml_file(self, ctr, metadata, raw_text, rpt_text):
@@ -127,10 +143,11 @@ class Linguamatics_i2e_writer(object):
         write_general_file(self.linguamatics_i2e_file_manager.resource_file('region_list'), text)
         
     #
-    def generate_source_data_file(self, project_name, start_idx):
+    def generate_source_data_file(self, project_name):
+        max_files_per_zip = self.project_data['max_files_per_zip']
         data_dir = self.linguamatics_i2e_file_manager.preprocessing_data_directory()
         data_files = [os.path.join(data_dir, file) for file in os.listdir(data_dir) if os.path.splitext(file)[1] == '.xml']
-        write_zip_file(self.linguamatics_i2e_file_manager.resource_file('source_data'), data_files, None, start_idx)
+        write_zip_file(self.linguamatics_i2e_file_manager.resource_file('source_data'), data_files, None, max_files_per_zip)
         
     #
     def generate_xml_configuation_file(self):
@@ -181,8 +198,23 @@ class Linguamatics_i2e_writer(object):
         return ret_val
     
     #
+    def get_keywords_list(self):
+        return self.keywords_list
+    
+    #
+    def merge_copy(self, linguamatics_i2e_writer_copy):
+        self.keywords_list.extend(linguamatics_i2e_writer_copy.get_keywords_list())
+        self.keywords_list = list(set(self.keywords_list))
+    
+    #
     def prepare_keywords_file(self, keywords_tmp_file):
+        self.server_manager.open_ssh_client()
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.close_ssh_client()
         shutil.copyfile(self.linguamatics_i2e_file_manager.keywords_file(), self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.open_ssh_client()
+        self.server_manager.exec_sudo_command('chmod 644 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.close_ssh_client()
         
     #
     def prepare_keywords_file_ssh(self, keywords_tmp_file):

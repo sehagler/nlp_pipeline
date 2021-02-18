@@ -16,8 +16,9 @@ class Postprocessor(Postprocessor_base):
     
     #
     def __init__(self, csv_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, csv_file, data_key_map, 
+                                    data_value_map, None)
         self.label = label
-        Postprocessor_base.__init__(self, csv_file, data_key_map, data_value_map, None)
         self._get_cancer_stage()
         
     #
@@ -29,12 +30,15 @@ class Postprocessor(Postprocessor_base):
         switch_dict['3'] = 'III'
         switch_dict['4'] = 'IV'
         switch_dict['5'] = 'V'
-        pattern0 = re.compile('(?i)stage( is now)? [IV]{1,3}([A-Da-d][0-9]?)?( (\-|/) [IV]{1,3}([A-Da-d][0-9]?)?)?( |$)')
-        pattern1 = re.compile('(?i)stage( is now)? [0-5]([A-Da-d][0-9]?)?( (\-|/) [0-5]([A-Da-d][0-9]?)?)?( |$)')
+        pattern0 = \
+            re.compile('(?i)stage( is now)? [IV]{1,3}([A-Da-d][0-9]?)?( (\-|/) [IV]{1,3}([A-Da-d][0-9]?)?)?( |$)')
+        pattern1 = \
+            re.compile('(?i)stage( is now)? [0-5]([A-Da-d][0-9]?)?( (\-|/) [0-5]([A-Da-d][0-9]?)?)?( |$)')
         for i in range(len(self.data_dict_list)):
             for key in self.data_dict_list[i]['DATA']:
                 try:
-                    text_list = self.data_dict_list[i]['DATA'][key][self.label + ' TEXT']
+                    text_list = \
+                        self.data_dict_list[i]['DATA'][key][self.label + ' TEXT']
                 except:
                     text_list = []
                 value_list = []

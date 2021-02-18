@@ -23,7 +23,7 @@ class Diagnosis_reader(object):
             sheet = book.sheet_by_index(idx)
             diagnosis_dict[sheet.col_values(0)[0]] = {}
             diagnosis_dict[sheet.col_values(0)[0]]['abbreviation'] = sheet.col_values(1)[0]
-            diagnosis_dict[sheet.col_values(0)[0]]['specific diagnosis'] = sheet.col_values(2)
+            diagnosis_dict[sheet.col_values(0)[0]]['specific_diagnosis'] = sheet.col_values(2)
         return diagnosis_dict
     
     #

@@ -1,31 +1,45 @@
-version: 5.5.1
-creationDate: '2018-06-06 11:37:45'
+output:
+  useOutputEditor: true
+  columns:
+  - id: phrase1
+creator: haglers
 query:
   document:
   - phrase:
-      findMatches: longestOnly
-      id: phrase1
-      view: {height: 749, width: 1192}
+      view:
+        width: 1192
+        height: 749
       of:
       - alternative:
-          view: {height: 712, width: 1174}
+          view:
+            width: 1174
+            height: 712
           of:
           - phrase:
-              view: {height: 334, width: 1155}
+              view:
+                width: 1155
+                height: 334
               of:
               - phrase:
-                  quantifier: {minimum: 1, maximum: none}
                   of:
                   - phrase:
                     - alternative:
-                        view: {height: 80, layout: list, width: 97}
-                        of: [high, intermediate, low]
+                        view:
+                          layout: list
+                          width: 97
+                          height: 80
+                        of:
+                        - high
+                        - intermediate
+                        - low
                     - word:
                         text: grade
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                   - alternative:
-                      quantifier: {minimum: 0, maximum: none}
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
                       - macro:
                           snid: linguamatics_wc.WC_Conjunction
@@ -33,7 +47,6 @@ query:
                           of:
                           - alternative:
                               macroPt: conjunction
-                              macroSnid: linguamatics_wc.WC_Conjunction
                               of:
                               - '&'
                               - after
@@ -42,7 +55,10 @@ query:
                               - also
                               - and
                               - as
-                              - phrase: [as, far, as]
+                              - phrase:
+                                - as
+                                - far
+                                - as
                               - because
                               - before
                               - but
@@ -67,128 +83,205 @@ query:
                               - while
                               - whilst
                               - yet
+                              macroSnid: linguamatics_wc.WC_Conjunction
                       - to
-                      - word: {text: '-'}
+                      - word:
+                          text: '-'
+                      quantifier:
+                        maximum: none
+                        minimum: 0
+                  quantifier:
+                    maximum: none
+                    minimum: 1
               - word:
                   text: estimated
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
                 - phrase:
-                    displayChildren: false
                     of:
                     - word:
                         text: nottingham
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - alternative:
-                        view: {layout: list}
-                        of: [BR, SBR, mBR, mSBR]
-                    - alternative:
-                        quantifier: {minimum: 0, maximum: none}
-                        view: {layout: list}
+                        view:
+                          layout: list
                         of:
-                        - word: {text: grade, morphoVariants: true}
-                        - word: {text: scale, morphoVariants: true}
-                        - word: {text: score, morphoVariants: true}
+                        - BR
+                        - SBR
+                        - mBR
+                        - mSBR
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - word:
+                            text: grade
+                            morphoVariants: true
+                        - word:
+                            text: scale
+                            morphoVariants: true
+                        - word:
+                            text: score
+                            morphoVariants: true
+                        quantifier:
+                          maximum: none
+                          minimum: 0
                     - word:
                         text: ':'
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
                 - phrase:
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 0}
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
                       - alternative:
-                          view: {layout: list}
-                          of: [BR, SBR, mBR, mSBR]
+                          view:
+                            layout: list
+                          of:
+                          - BR
+                          - SBR
+                          - mBR
+                          - mSBR
                       - histologic
                       - nuclear
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
                   - alternative:
-                      quantifier: {minimum: 1, maximum: none}
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
-                      - word: {text: grade, morphoVariants: true}
-                      - word: {text: scale, morphoVariants: true}
-                      - word: {text: score, morphoVariants: true}
+                      - word:
+                          text: grade
+                          morphoVariants: true
+                      - word:
+                          text: scale
+                          morphoVariants: true
+                      - word:
+                          text: score
+                          morphoVariants: true
+                      quantifier:
+                        maximum: none
+                        minimum: 1
                   - word:
                       text: ':'
-                      quantifier: {minimum: 0, maximum: 0}
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
               - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - phrase:
-                      displayChildren: false
                       of:
                       - alternative:
-                          quantifier: {minimum: 1, maximum: none}
-                          view: {layout: list}
+                          view:
+                            layout: list
                           of:
                           - link:
-                              path: [../tools/parenthetical_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy']
+                              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
                           - link:
-                              path: [hist_diff_predicate.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/histology/histological_differentiation/hist_diff_query.i2qy']
+                              path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                          quantifier:
+                            maximum: none
+                            minimum: 1
                       - word:
                           text: ':'
-                          quantifier: {minimum: 0, maximum: 1}
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      displayChildren: false
                   - of
                   - =
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
-                  quantifier: {minimum: 0, maximum: none}
-                  view: {layout: list}
+                  view:
+                    layout: list
                   of:
                   - phrase:
                     - (
                     - phrase:
                       - phrase:
                         - alternative:
-                            quantifier: {minimum: 0, maximum: 1}
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
                             - to
-                            - word: {text: '-'}
+                            - word:
+                                text: '-'
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
                         - alternative:
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
                             - alternative:
-                                view: {layout: list}
+                                view:
+                                  layout: list
                                 of:
                                 - I
-                                - word: {text: '11', matchType: Regexp}
-                                - word: {text: '111', matchType: Regexp}
+                                - word:
+                                    matchType: Regexp
+                                    text: '11'
+                                - word:
+                                    matchType: Regexp
+                                    text: '111'
                             - NA
-                            - word: {text: '[1-9]', matchType: Regexp}
+                            - word:
+                                matchType: Regexp
+                                text: '[1-9]'
                       - phrase:
-                          quantifier: {minimum: 0, maximum: 1}
-                          view: {height: 100, width: 162}
+                          view:
+                            width: 162
+                            height: 100
                           of:
                           - alternative:
-                              view: {layout: list}
+                              view:
+                                layout: list
                               of:
                               - phrase:
                                 - word:
                                     text: out
-                                    quantifier: {minimum: 0, maximum: 1}
+                                    quantifier:
+                                      maximum: 1
+                                      minimum: 0
                                 - of
                               - /
                           - alternative:
-                              view: {layout: list}
+                              view:
+                                layout: list
                               of:
-                              - word: {text: '111', matchType: Regexp}
-                              - word: {text: (3|9), matchType: Regexp}
+                              - word:
+                                  matchType: Regexp
+                                  text: '111'
+                              - word:
+                                  matchType: Regexp
+                                  text: (3|9)
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                       - word:
                           text: point
                           morphoVariants: true
-                          quantifier: {minimum: 0, maximum: 1}
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                       - phrase:
-                          quantifier: {minimum: 0, maximum: 1}
                           of:
                           - macro:
-                              quantifier: {minimum: 0, maximum: 1}
                               snid: linguamatics_wc.WC_Punctuation
                               pt: punctuation
                               of:
                               - alternative:
                                   macroPt: punctuation
-                                  macroSnid: linguamatics_wc.WC_Punctuation
                                   of:
                                   - ','
                                   - ;
@@ -218,72 +311,111 @@ query:
                                   - '?'
                                   - '{'
                                   - '}'
-                                  - word: {text: '-'}
+                                  - word:
+                                      text: '-'
                                   - '~'
                                   - '...'
                                   - '***'
                                   - _
                                   - \
+                                  macroSnid: linguamatics_wc.WC_Punctuation
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
                           - phrase:
                             - alternative:
-                                view: {height: 80, layout: list, width: 97}
-                                of: [high, intermediate, low]
+                                view:
+                                  layout: list
+                                  width: 97
+                                  height: 80
+                                of:
+                                - high
+                                - intermediate
+                                - low
                             - word:
                                 text: grade
-                                quantifier: {minimum: 0, maximum: 1}
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                     - )
                   - phrase:
                     - phrase:
                       - alternative:
-                          quantifier: {minimum: 0, maximum: 1}
-                          view: {layout: list}
+                          view:
+                            layout: list
                           of:
                           - to
-                          - word: {text: '-'}
+                          - word:
+                              text: '-'
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                       - alternative:
-                          view: {layout: list}
+                          view:
+                            layout: list
                           of:
                           - alternative:
-                              view: {layout: list}
+                              view:
+                                layout: list
                               of:
                               - I
-                              - word: {text: '11', matchType: Regexp}
-                              - word: {text: '111', matchType: Regexp}
+                              - word:
+                                  matchType: Regexp
+                                  text: '11'
+                              - word:
+                                  matchType: Regexp
+                                  text: '111'
                           - NA
-                          - word: {text: '[1-9]', matchType: Regexp}
+                          - word:
+                              matchType: Regexp
+                              text: '[1-9]'
                     - phrase:
-                        quantifier: {minimum: 0, maximum: 1}
-                        view: {height: 100, width: 162}
+                        view:
+                          width: 162
+                          height: 100
                         of:
                         - alternative:
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
                             - phrase:
                               - word:
                                   text: out
-                                  quantifier: {minimum: 0, maximum: 1}
+                                  quantifier:
+                                    maximum: 1
+                                    minimum: 0
                               - of
                             - /
                         - alternative:
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
-                            - word: {text: '111', matchType: Regexp}
-                            - word: {text: (3|9), matchType: Regexp}
+                            - word:
+                                matchType: Regexp
+                                text: '111'
+                            - word:
+                                matchType: Regexp
+                                text: (3|9)
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - word:
                         text: point
                         morphoVariants: true
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - phrase:
-                        quantifier: {minimum: 0, maximum: 1}
                         of:
                         - macro:
-                            quantifier: {minimum: 0, maximum: 1}
                             snid: linguamatics_wc.WC_Punctuation
                             pt: punctuation
                             of:
                             - alternative:
                                 macroPt: punctuation
-                                macroSnid: linguamatics_wc.WC_Punctuation
                                 of:
                                 - ','
                                 - ;
@@ -313,142 +445,232 @@ query:
                                 - '?'
                                 - '{'
                                 - '}'
-                                - word: {text: '-'}
+                                - word:
+                                    text: '-'
                                 - '~'
                                 - '...'
                                 - '***'
                                 - _
                                 - \
+                                macroSnid: linguamatics_wc.WC_Punctuation
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
                         - phrase:
                           - alternative:
-                              view: {height: 80, layout: list, width: 97}
-                              of: [high, intermediate, low]
+                              view:
+                                layout: list
+                                width: 97
+                                height: 80
+                              of:
+                              - high
+                              - intermediate
+                              - low
                           - word:
                               text: grade
-                              quantifier: {minimum: 0, maximum: 1}
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  quantifier:
+                    maximum: none
+                    minimum: 0
           - phrase:
-              view: {height: 333, width: 853}
+              view:
+                width: 853
+                height: 333
               of:
               - word:
                   text: estimated
-                  quantifier: {minimum: 0, maximum: 1}
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
                 - phrase:
-                    displayChildren: false
                     of:
                     - word:
                         text: nottingham
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - alternative:
-                        view: {layout: list}
-                        of: [BR, SBR, mBR, mSBR]
-                    - alternative:
-                        quantifier: {minimum: 0, maximum: none}
-                        view: {layout: list}
+                        view:
+                          layout: list
                         of:
-                        - word: {text: grade, morphoVariants: true}
-                        - word: {text: scale, morphoVariants: true}
-                        - word: {text: score, morphoVariants: true}
+                        - BR
+                        - SBR
+                        - mBR
+                        - mSBR
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - word:
+                            text: grade
+                            morphoVariants: true
+                        - word:
+                            text: scale
+                            morphoVariants: true
+                        - word:
+                            text: score
+                            morphoVariants: true
+                        quantifier:
+                          maximum: none
+                          minimum: 0
                     - word:
                         text: ':'
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
                 - phrase:
                   - alternative:
-                      quantifier: {minimum: 0, maximum: 0}
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
                       - alternative:
-                          view: {layout: list}
-                          of: [BR, SBR, mBR, mSBR]
+                          view:
+                            layout: list
+                          of:
+                          - BR
+                          - SBR
+                          - mBR
+                          - mSBR
                       - histologic
                       - nuclear
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
                   - alternative:
-                      quantifier: {minimum: 1, maximum: none}
-                      view: {layout: list}
+                      view:
+                        layout: list
                       of:
-                      - word: {text: grade, morphoVariants: true}
-                      - word: {text: scale, morphoVariants: true}
-                      - word: {text: score, morphoVariants: true}
+                      - word:
+                          text: grade
+                          morphoVariants: true
+                      - word:
+                          text: scale
+                          morphoVariants: true
+                      - word:
+                          text: score
+                          morphoVariants: true
+                      quantifier:
+                        maximum: none
+                        minimum: 1
                   - word:
                       text: ':'
-                      quantifier: {minimum: 0, maximum: 0}
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
               - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - phrase:
-                      displayChildren: false
                       of:
                       - alternative:
-                          quantifier: {minimum: 1, maximum: none}
-                          view: {layout: list}
+                          view:
+                            layout: list
                           of:
                           - link:
-                              path: [../tools/parenthetical_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy']
+                              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
                           - link:
-                              path: [hist_diff_predicate.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/histology/histological_differentiation/hist_diff_query.i2qy']
+                              path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                          quantifier:
+                            maximum: none
+                            minimum: 1
                       - word:
                           text: ':'
-                          quantifier: {minimum: 0, maximum: 1}
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      displayChildren: false
                   - of
                   - =
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
               - alternative:
-                  quantifier: {minimum: 1, maximum: none}
-                  view: {layout: list}
+                  view:
+                    layout: list
                   of:
                   - phrase:
                     - (
                     - phrase:
                       - phrase:
                         - alternative:
-                            quantifier: {minimum: 0, maximum: 1}
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
                             - to
-                            - word: {text: '-'}
+                            - word:
+                                text: '-'
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
                         - alternative:
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
                             - alternative:
-                                view: {layout: list}
+                                view:
+                                  layout: list
                                 of:
                                 - I
-                                - word: {text: '11', matchType: Regexp}
-                                - word: {text: '111', matchType: Regexp}
+                                - word:
+                                    matchType: Regexp
+                                    text: '11'
+                                - word:
+                                    matchType: Regexp
+                                    text: '111'
                             - NA
-                            - word: {text: '[1-9]', matchType: Regexp}
+                            - word:
+                                matchType: Regexp
+                                text: '[1-9]'
                       - phrase:
-                          quantifier: {minimum: 0, maximum: 1}
-                          view: {height: 100, width: 162}
+                          view:
+                            width: 162
+                            height: 100
                           of:
                           - alternative:
-                              view: {layout: list}
+                              view:
+                                layout: list
                               of:
                               - phrase:
                                 - word:
                                     text: out
-                                    quantifier: {minimum: 0, maximum: 1}
+                                    quantifier:
+                                      maximum: 1
+                                      minimum: 0
                                 - of
                               - /
                           - alternative:
-                              view: {layout: list}
+                              view:
+                                layout: list
                               of:
-                              - word: {text: '111', matchType: Regexp}
-                              - word: {text: (3|9), matchType: Regexp}
+                              - word:
+                                  matchType: Regexp
+                                  text: '111'
+                              - word:
+                                  matchType: Regexp
+                                  text: (3|9)
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                       - word:
                           text: point
                           morphoVariants: true
-                          quantifier: {minimum: 0, maximum: 1}
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                       - phrase:
-                          quantifier: {minimum: 0, maximum: 1}
                           of:
                           - macro:
-                              quantifier: {minimum: 0, maximum: 1}
                               snid: linguamatics_wc.WC_Punctuation
                               pt: punctuation
                               of:
                               - alternative:
                                   macroPt: punctuation
-                                  macroSnid: linguamatics_wc.WC_Punctuation
                                   of:
                                   - ','
                                   - ;
@@ -478,72 +700,111 @@ query:
                                   - '?'
                                   - '{'
                                   - '}'
-                                  - word: {text: '-'}
+                                  - word:
+                                      text: '-'
                                   - '~'
                                   - '...'
                                   - '***'
                                   - _
                                   - \
+                                  macroSnid: linguamatics_wc.WC_Punctuation
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
                           - phrase:
                             - alternative:
-                                view: {height: 80, layout: list, width: 97}
-                                of: [high, intermediate, low]
+                                view:
+                                  layout: list
+                                  width: 97
+                                  height: 80
+                                of:
+                                - high
+                                - intermediate
+                                - low
                             - word:
                                 text: grade
-                                quantifier: {minimum: 0, maximum: 1}
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                     - )
                   - phrase:
                     - phrase:
                       - alternative:
-                          quantifier: {minimum: 0, maximum: 1}
-                          view: {layout: list}
+                          view:
+                            layout: list
                           of:
                           - to
-                          - word: {text: '-'}
+                          - word:
+                              text: '-'
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
                       - alternative:
-                          view: {layout: list}
+                          view:
+                            layout: list
                           of:
                           - alternative:
-                              view: {layout: list}
+                              view:
+                                layout: list
                               of:
                               - I
-                              - word: {text: '11', matchType: Regexp}
-                              - word: {text: '111', matchType: Regexp}
+                              - word:
+                                  matchType: Regexp
+                                  text: '11'
+                              - word:
+                                  matchType: Regexp
+                                  text: '111'
                           - NA
-                          - word: {text: '[1-9]', matchType: Regexp}
+                          - word:
+                              matchType: Regexp
+                              text: '[1-9]'
                     - phrase:
-                        quantifier: {minimum: 0, maximum: 1}
-                        view: {height: 100, width: 162}
+                        view:
+                          width: 162
+                          height: 100
                         of:
                         - alternative:
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
                             - phrase:
                               - word:
                                   text: out
-                                  quantifier: {minimum: 0, maximum: 1}
+                                  quantifier:
+                                    maximum: 1
+                                    minimum: 0
                               - of
                             - /
                         - alternative:
-                            view: {layout: list}
+                            view:
+                              layout: list
                             of:
-                            - word: {text: '111', matchType: Regexp}
-                            - word: {text: (3|9), matchType: Regexp}
+                            - word:
+                                matchType: Regexp
+                                text: '111'
+                            - word:
+                                matchType: Regexp
+                                text: (3|9)
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - word:
                         text: point
                         morphoVariants: true
-                        quantifier: {minimum: 0, maximum: 1}
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
                     - phrase:
-                        quantifier: {minimum: 0, maximum: 1}
                         of:
                         - macro:
-                            quantifier: {minimum: 0, maximum: 1}
                             snid: linguamatics_wc.WC_Punctuation
                             pt: punctuation
                             of:
                             - alternative:
                                 macroPt: punctuation
-                                macroSnid: linguamatics_wc.WC_Punctuation
                                 of:
                                 - ','
                                 - ;
@@ -573,28 +834,43 @@ query:
                                 - '?'
                                 - '{'
                                 - '}'
-                                - word: {text: '-'}
+                                - word:
+                                    text: '-'
                                 - '~'
                                 - '...'
                                 - '***'
                                 - _
                                 - \
+                                macroSnid: linguamatics_wc.WC_Punctuation
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
                         - phrase:
                           - alternative:
-                              view: {height: 80, layout: list, width: 97}
-                              of: [high, intermediate, low]
+                              view:
+                                layout: list
+                                width: 97
+                                height: 80
+                              of:
+                              - high
+                              - intermediate
+                              - low
                           - word:
                               text: grade
-                              quantifier: {minimum: 0, maximum: 1}
-output:
-  columns:
-  - {id: phrase1}
-  useOutputEditor: true
-creator: haglers
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  quantifier:
+                    maximum: none
+                    minimum: 1
+      findMatches: longestOnly
+      id: phrase1
 querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-07 15:22:51'
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
+    creator: haglers
     query:
       document:
       - phrase:
@@ -603,29 +879,37 @@ querySnapshots:
           of:
           - (
           - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [(, )]
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
           - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/histology/histological_differentiation/hist_diff_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-10 13:54:46'
     query:
       document:
       - phrase:
-          boundaries: Exact
-          findMatches: longestOnly
-          id: phrase1
           of:
           - alternative:
-              view: {height: 535, width: 411}
+              view:
+                width: 411
+                height: 535
               of:
               - phrase:
+                  view:
+                    width: 392
+                    height: 370
                   allowOverlap: true
-                  view: {height: 370, width: 392}
                   of:
                   - phrase:
-                      quantifier: {minimum: 0, maximum: none}
                       of:
                       - alternative:
                         - macro:
@@ -634,14 +918,15 @@ querySnapshots:
                             of:
                             - alternative:
                                 macroPt: adverb
-                                macroSnid: linguamatics_wc.WC_Adverb
                                 of:
                                 - additionally
                                 - after
                                 - afterwards
                                 - again
                                 - ago
-                                - phrase: [all, over]
+                                - phrase:
+                                  - all
+                                  - over
                                 - almost
                                 - already
                                 - also
@@ -650,7 +935,9 @@ querySnapshots:
                                 - anyway
                                 - anywhere
                                 - approximately
-                                - phrase: [as, well]
+                                - phrase:
+                                  - as
+                                  - well
                                 - back
                                 - before
                                 - beforehand
@@ -675,7 +962,9 @@ querySnapshots:
                                 - however
                                 - indeed
                                 - immediately
-                                - phrase: [in, particular]
+                                - phrase:
+                                  - in
+                                  - particular
                                 - instead
                                 - just
                                 - late
@@ -742,22 +1031,23 @@ querySnapshots:
                                 - 'yes'
                                 - yet
                                 - yesterday
+                                macroSnid: linguamatics_wc.WC_Adverb
                         - moderately
                         - poorly
                         - squamous
                         - well
                       - alternative:
-                          quantifier: {minimum: 0, maximum: 1}
-                          view: {height: 135, width: 136}
+                          view:
+                            width: 136
+                            height: 135
                           of:
-                          - {class: /prep}
+                          - class: /prep
                           - macro:
                               snid: linguamatics_wc.WC_Conjunction
                               pt: conjunction
                               of:
                               - alternative:
                                   macroPt: conjunction
-                                  macroSnid: linguamatics_wc.WC_Conjunction
                                   of:
                                   - '&'
                                   - after
@@ -766,7 +1056,10 @@ querySnapshots:
                                   - also
                                   - and
                                   - as
-                                  - phrase: [as, far, as]
+                                  - phrase:
+                                    - as
+                                    - far
+                                    - as
                                   - because
                                   - before
                                   - but
@@ -791,17 +1084,36 @@ querySnapshots:
                                   - while
                                   - whilst
                                   - yet
-                  - word: {text: differentiated, matchType: Wildcard}
+                                  macroSnid: linguamatics_wc.WC_Conjunction
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 0
+                  - word:
+                      matchType: Wildcard
+                      text: differentiated
               - phrase:
+                  view:
+                    width: 199
+                    height: 118
                   allowOverlap: true
-                  view: {height: 118, width: 199}
                   of:
                   - alternative:
-                      view: {layout: list}
-                      of: [lobular, globular, tubular]
-                  - word: {text: differentiation, matchType: Wildcard}
-    output:
-      columns:
-      - {id: phrase1}
-      useOutputEditor: true
-    creator: haglers
+                      view:
+                        layout: list
+                      of:
+                      - lobular
+                      - globular
+                      - tubular
+                  - word:
+                      matchType: Wildcard
+                      text: differentiation
+          findMatches: longestOnly
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-05-10 13:54:46'
+    version: 6.2
+creationDate: '2018-06-06 11:37:45'
+version: 6.2

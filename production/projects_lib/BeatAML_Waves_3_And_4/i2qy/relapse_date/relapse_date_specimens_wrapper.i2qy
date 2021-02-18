@@ -1,0 +1,425 @@
+version: 5.6.1
+creationDate: '2018-10-26 16:03:06'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen
+                    Id}
+              - link:
+                  path: [../../../../nlp_lib/i2qy/date/relapse_date/relapse_date_query.i2qy,
+                    'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/date/relapse_date/relapse_date_query.i2qy']
+                  id: link2
+  - link:
+      path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
+output:
+  columns:
+  - {id: shadow region1}
+  - {id: region1}
+  - {id: link2.phrase1, linkItemId: link2}
+  columnLocations: [1, 0, 2]
+  useOutputEditor: true
+creator: haglers
+querySnapshots:
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/date/relapse_date/relapse_date_query.i2qy
+  : version: 5.6.1
+    creationDate: '2019-01-29 23:09:08'
+    query:
+      document:
+      - phrase:
+          findMatches: longestOnly
+          id: phrase1
+          view: {height: 682, width: 527}
+          of:
+          - alternative:
+            - phrase:
+              - alternative:
+                - word: {text: recur, morphoVariants: true}
+                - recurrent
+                - word: {text: relapse, morphoVariants: true}
+              - word:
+                  text: disease
+                  quantifier: {minimum: 0, maximum: 1}
+            - recurrence
+          - alternative:
+              findMatches: longestOnly
+              view: {height: 645, width: 305}
+              of:
+              - alternative:
+                - phrase:
+                  - alternative:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - macro:
+                          snid: linguamatics_wc.WC_Preposition
+                          pt: preposition
+                          of:
+                          - alternative:
+                              macroPt: preposition
+                              macroSnid: linguamatics_wc.WC_Preposition
+                              of:
+                              - aboard
+                              - about
+                              - above
+                              - absent
+                              - phrase: [according, to]
+                              - across
+                              - after
+                              - against
+                              - phrase: [ahead, of]
+                              - phrase: [all, over]
+                              - along
+                              - alongside
+                              - amid
+                              - amidst
+                              - among
+                              - amongst
+                              - anti
+                              - around
+                              - as
+                              - phrase: [as, far, as]
+                              - aside
+                              - phrase: [as, of]
+                              - phrase: [as, to]
+                              - astraddle
+                              - astride
+                              - at
+                              - atop
+                              - phrase: [because, of]
+                              - before
+                              - behind
+                              - below
+                              - beneath
+                              - beside
+                              - besides
+                              - between
+                              - beyond
+                              - but
+                              - by
+                              - circa
+                              - despite
+                              - down
+                              - during
+                              - except
+                              - phrase: [except, for]
+                              - for
+                              - from
+                              - given
+                              - in
+                              - phrase: [in, addition, to]
+                              - phrase: [in, between]
+                              - phrase: [in, case, of]
+                              - phrase: [in, place, of]
+                              - inside
+                              - phrase: [in, spite, of]
+                              - phrase: [instead, of]
+                              - into
+                              - less
+                              - lest
+                              - like
+                              - minus
+                              - near
+                              - phrase: [near, to]
+                              - next
+                              - phrase: [next, to]
+                              - notwithstanding
+                              - of
+                              - 'off'
+                              - 'on'
+                              - phrase: ['on', account, of]
+                              - phrase: ['on', top, of]
+                              - onto
+                              - opposite
+                              - phrase: [other, than]
+                              - out
+                              - phrase: [out, of]
+                              - outside
+                              - phrase: [outside, of]
+                              - over
+                              - past
+                              - per
+                              - plus
+                              - save
+                              - since
+                              - through
+                              - throughout
+                              - till
+                              - to
+                              - toward
+                              - towards
+                              - under
+                              - underneath
+                              - unlike
+                              - until
+                              - unto
+                              - up
+                              - phrase: [up, to]
+                              - upon
+                              - versus
+                              - vs
+                              - vs.
+                              - via
+                              - with
+                              - within
+                              - without
+                      - {class: /prep}
+                  - link:
+                      path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                - phrase:
+                    maxWordGap: -1
+                    wordGapRestricted: false
+                    of:
+                    - (
+                    - link:
+                        path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                    - )
+              - alternative:
+                - phrase:
+                    view: {height: 172, width: 227}
+                    of:
+                    - alternative:
+                        quantifier: {minimum: 0, maximum: 1}
+                        of:
+                        - macro:
+                            snid: linguamatics_wc.WC_Preposition
+                            pt: preposition
+                            of:
+                            - alternative:
+                                macroPt: preposition
+                                macroSnid: linguamatics_wc.WC_Preposition
+                                of:
+                                - aboard
+                                - about
+                                - above
+                                - absent
+                                - phrase: [according, to]
+                                - across
+                                - after
+                                - against
+                                - phrase: [ahead, of]
+                                - phrase: [all, over]
+                                - along
+                                - alongside
+                                - amid
+                                - amidst
+                                - among
+                                - amongst
+                                - anti
+                                - around
+                                - as
+                                - phrase: [as, far, as]
+                                - aside
+                                - phrase: [as, of]
+                                - phrase: [as, to]
+                                - astraddle
+                                - astride
+                                - at
+                                - atop
+                                - phrase: [because, of]
+                                - before
+                                - behind
+                                - below
+                                - beneath
+                                - beside
+                                - besides
+                                - between
+                                - beyond
+                                - but
+                                - by
+                                - circa
+                                - despite
+                                - down
+                                - during
+                                - except
+                                - phrase: [except, for]
+                                - for
+                                - from
+                                - given
+                                - in
+                                - phrase: [in, addition, to]
+                                - phrase: [in, between]
+                                - phrase: [in, case, of]
+                                - phrase: [in, place, of]
+                                - inside
+                                - phrase: [in, spite, of]
+                                - phrase: [instead, of]
+                                - into
+                                - less
+                                - lest
+                                - like
+                                - minus
+                                - near
+                                - phrase: [near, to]
+                                - next
+                                - phrase: [next, to]
+                                - notwithstanding
+                                - of
+                                - 'off'
+                                - 'on'
+                                - phrase: ['on', account, of]
+                                - phrase: ['on', top, of]
+                                - onto
+                                - opposite
+                                - phrase: [other, than]
+                                - out
+                                - phrase: [out, of]
+                                - outside
+                                - phrase: [outside, of]
+                                - over
+                                - past
+                                - per
+                                - plus
+                                - save
+                                - since
+                                - through
+                                - throughout
+                                - till
+                                - to
+                                - toward
+                                - towards
+                                - under
+                                - underneath
+                                - unlike
+                                - until
+                                - unto
+                                - up
+                                - phrase: [up, to]
+                                - upon
+                                - versus
+                                - vs
+                                - vs.
+                                - via
+                                - with
+                                - within
+                                - without
+                        - {class: /prep}
+                    - word: {text: '[0-9]{4}', matchType: Regexp}
+                - phrase:
+                    maxWordGap: -1
+                    wordGapRestricted: false
+                    of:
+                    - (
+                    - word: {text: '[0-9]{4}', matchType: Regexp}
+                    - )
+    output:
+      columns:
+      - {id: phrase1}
+      useOutputEditor: true
+    creator: haglers
+  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy:
+    version: 5.6.1
+    creationDate: '2019-01-28 21:59:35'
+    query:
+      document:
+      - alternative:
+          findMatches: longestOnly
+          id: alternative1
+          of:
+          - PHI_DATE
+          - phrase:
+            - phrase:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - word: {text: '[0-9]{1,2}', matchType: Regexp}
+                - word: {text: \-, matchType: Regexp}
+            - word: {text: '[0-9]{1,2}', matchType: Regexp}
+            - word: {text: \-, matchType: Regexp}
+            - alternative:
+              - word: {text: '[0-9]{2}', matchType: Regexp}
+              - word: {text: '[0-9]{4}', matchType: Regexp}
+          - phrase:
+            - phrase:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - word: {text: '[0-9]{1,2}', matchType: Regexp}
+                - word: {text: /, matchType: Regexp}
+            - word: {text: '[0-9]{1,2}', matchType: Regexp}
+            - word: {text: /, matchType: Regexp}
+            - alternative:
+              - word: {text: '[0-9]{2}', matchType: Regexp}
+              - word: {text: '[0-9]{4}', matchType: Regexp}
+          - phrase:
+            - macro:
+                snid: ohsu_months.months
+                pt: Month
+                of:
+                - alternative:
+                    macroPt: Month
+                    macroSnid: ohsu_months.months
+                    of: [Jan, January, Feb, February, Mar, March, Apr, April, May,
+                      Jun, June, Jul, July, Aug, August, Sep, September, Oct, October,
+                      Nov, November, Dec, December]
+            - word:
+                text: .
+                quantifier: {minimum: 0, maximum: 1}
+            - alternative:
+              - phrase:
+                - word: {text: '[0-9]{1,2}', matchType: Regexp}
+                - ','
+                - alternative:
+                  - word: {text: '[0-9]{2}', matchType: Regexp}
+                  - word: {text: '[0-9]{4}', matchType: Regexp}
+              - phrase:
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [of, ',']
+                - word: {text: '[0-9]{4}', matchType: Regexp}
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers
+  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy
+  : version: 5.6.1
+    creationDate: '2019-01-30 22:16:19'
+    query:
+      document:
+      - alternative:
+          id: alternative1
+          of:
+          - region:
+              view: {height: 336, width: 316}
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  view: {height: 82, width: 96}
+                  snid: hc.section_title
+                  pt: Section Title
+                  where: [SUMMARY]
+              - region:
+                  columnOptions: [Text]
+                  showWholeRegion: true
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - alternative:
+                    - phrase:
+                        displayChildren: false
+                        of: [bone, marrow]
+                    - CSF
+                    - phrase:
+                        displayChildren: false
+                        of:
+                        - word:
+                            text: peripheral
+                            quantifier: {minimum: 0, maximum: 1}
+                        - blood
+    output:
+      columns:
+      - {id: alternative1}
+      useOutputEditor: true
+    creator: haglers

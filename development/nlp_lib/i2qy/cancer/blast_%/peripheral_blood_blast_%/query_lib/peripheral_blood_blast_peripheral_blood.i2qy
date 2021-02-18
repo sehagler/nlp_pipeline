@@ -1,52 +1,89 @@
-version: 5.4
-creationDate: '2019-04-24 20:28:59'
+output:
+  useOutputEditor: true
+  columns:
+  - id: phrase1
+creator: haglers
 query:
   document:
   - phrase:
-      id: phrase1
       of:
       - link:
-          path: [../general/percentage_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy']
+          path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
       - of
       - alternative:
-        - word: {text: WBC, morphoVariants: true}
-        - word: {text: cell, morphoVariants: true}
-output:
-  columns:
-  - {id: phrase1}
-  useOutputEditor: true
-creator: haglers
+        - word:
+            text: WBC
+            morphoVariants: true
+        - word:
+            text: cell
+            morphoVariants: true
+      id: phrase1
 querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/percentage_query.i2qy:
-    version: 5.4
-    creationDate: '2019-02-26 17:24:53'
+  /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
     query:
       document:
       - phrase:
-          id: phrase1
-          view: {height: 138, width: 578}
+          view:
+            width: 578
+            height: 138
           of:
           - macro:
-              quantifier: {minimum: 0, maximum: 1}
               snid: linguamatics_wc.WC_Determiner
               pt: determiner
               of:
               - alternative:
                   macroPt: determiner
+                  of:
+                  - a
+                  - all
+                  - an
+                  - another
+                  - any
+                  - both
+                  - each
+                  - enough
+                  - every
+                  - few
+                  - fewer
+                  - less
+                  - many
+                  - more
+                  - most
+                  - much
+                  - 'no'
+                  - other
+                  - several
+                  - some
+                  - such
+                  - the
                   macroSnid: linguamatics_wc.WC_Determiner
-                  of: [a, all, an, another, any, both, each, enough, every, few, fewer,
-                    less, many, more, most, much, 'no', other, several, some, such,
-                    the]
+              quantifier:
+                maximum: 1
+                minimum: 0
           - alternative:
-              quantifier: {minimum: 0, maximum: 1}
-              view: {layout: list}
-              of: [estimated, '~', '>', <]
+              view:
+                layout: list
+              of:
+              - estimated
+              - '~'
+              - '>'
+              - <
+              quantifier:
+                maximum: 1
+                minimum: 0
           - word:
-              text: ([0-9]+(\.[0-9]+)?%\-)?[0-9]+(\.[0-9]+)?%
+              view:
+                width: 324
+                height: 55
               matchType: Regexp
-              view: {height: 55, width: 324}
-    output:
-      columns:
-      - {id: phrase1}
-      useOutputEditor: true
-    creator: haglers
+              text: ([0-9]+(\.[0-9]+)?%\-)?[0-9]+(\.[0-9]+)?%
+          id: phrase1
+    creationDate: '2019-02-26 17:24:53'
+    version: 6.2
+creationDate: '2019-04-24 20:28:59'
+version: 6.2
