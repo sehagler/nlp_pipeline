@@ -38,7 +38,7 @@ class Specimens(Specimens_jsons):
                         if len(diagnoses) == 1:
                             value = diagnoses[0]
                         elif len(diagnoses) > 1:
-                            value = 'MULTIPLE VALUES'
+                            value = self.multiple_values
                         else:
                             value = None
                         if value is not None:
@@ -111,7 +111,7 @@ class Specimens(Specimens_jsons):
                         if len(diagnoses) == 1:
                             value = diagnoses[0]
                         elif len(diagnoses) > 1:
-                            value = 'MULTIPLE VALUES'
+                            value = self.multiple_values
                         else:
                             value = None
                         if value is not None:
@@ -134,7 +134,7 @@ class Specimens(Specimens_jsons):
                         if len(antigens) == 1:
                             value = antigens[0]
                         elif len(antigens) > 1:
-                            value = 'MULTIPLE VALUES'
+                            value = self.multiple_values
                         else:
                             value = None
                         if value is not None:
@@ -168,15 +168,15 @@ class Specimens(Specimens_jsons):
     def _process_data(self, data_in):
         data_out = {}
         data_out = self._get_data_value(data_in, data_out, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES TESTED TEXT', 'Antibodies.Tested')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE MARROW BLAST % VALUE', '%.Blasts.in.BM')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'DIAGNOSIS', 'dx')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE MARROW BLAST VALUE', '%.Blasts.in.BM')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'DIAGNOSIS VALUE', 'dx')
         data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'DIAGNOSIS DATE VALUE', 'dx.Date')
         data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'EXTRAMEDULLARY DISEASE TEXT', 'Extramedullary.dx')
         data_out = self._get_data_value(data_in, data_out, [ 'COMMENT', 'BONE MARROW' ], 'FAB CLASSIFICATION VALUE', 'FAB/Blast.Morphology')
         data_out = self._get_data_value(data_in, data_out, [ 'FISH ANALYSIS SUMMARY' ], 'FISH ANALYSIS SUMMARY TEXT', 'FISH.Analysis.Summary')
         data_out = self._get_data_value(data_in, data_out, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE TEXT', 'Karyotype')
         data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'RELAPSE DATE VALUE', 'Relapse.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'PERIPHERAL BLOOD' ], 'PERIPHERAL BLOOD BLAST % VALUE', '%.Blasts.in.PB')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'PERIPHERAL BLOOD' ], 'PERIPHERAL BLOOD BLAST VALUE', '%.Blasts.in.PB')
         data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'RESIDUAL DISEASE TEXT', 'Residual.dx')
         data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SPECIFIC DIAGNOSIS TEXT', 'specificDx')
         data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SURFACE ANTIGENS TEXT', 'Surface.Antigens.(Immunohistochemical.Stains)')
@@ -195,7 +195,7 @@ class Specimens(Specimens_jsons):
             proc_nm = json_tmp['METADATA']['PROC_NM']
             result_date = json_tmp['METADATA']['RESULT_COMPLETED_DT']
             specimen_date = json_tmp['METADATA']['SPECIMEN_COLL_DT']
-            data_in = json_tmp['DATA']
+            data_in = json_tmp[self.nlp_data_key]
             data_out = self._process_data(data_in)
             if data_out is not None:
                 doc_label = ''

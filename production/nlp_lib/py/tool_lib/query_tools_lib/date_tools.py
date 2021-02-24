@@ -18,18 +18,17 @@ from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, csv_file, data_key_map, data_value_map, label):
-        self.label = label
-        Postprocessor_base.__init__(self, csv_file, data_key_map, data_value_map, None)
+    def __init__(self, data_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, label, data_file, data_key_map, data_value_map)
         self._get_date()
         
     #
     def _get_date(self):
         for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i]['DATA']:
+            for key in self.data_dict_list[i][self.nlp_data_key]:
                 value_list = []
                 try:
-                    text_list = self.data_dict_list[i]['DATA'][key][self.label + ' TEXT']
+                    text_list = self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
                 except:
                     text_list = []
                 for text in text_list:
@@ -53,7 +52,7 @@ class Postprocessor(Postprocessor_base):
                     elif match1 is not None:
                         value_tmp = match1.group(0)
                         value_list.append(value_tmp)
-                self.data_dict_list[i]['DATA'][key][self.label + ' VALUE'] = value_list
+                self._append_data(i, key, value_list)
     
 #
 class Tokenizer(Preprocessor_base):

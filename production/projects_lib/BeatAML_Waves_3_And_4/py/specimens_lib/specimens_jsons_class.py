@@ -24,6 +24,7 @@ class Specimens_jsons(Specimens_base):
     
     #
     def __init__(self, directory_manager, nlp_data):
+        Specimens_base.__init__(self)
         self.directory_manager = directory_manager
         self.metadata_json_file = \
             self.directory_manager.pull_directory('metadata_dir') + '/metadata.json'
@@ -108,7 +109,7 @@ class Specimens_jsons(Specimens_base):
                         self._merge_documents(documents)
                 else:
                     corrected_data_json[correction_patientIds[i]][correction_labIds[i]] = \
-                        'MULTIPLE SPECIMENS'
+                        self.multiple_specimens
         else:
             corrected_data_json = {}
         return corrected_data_json
@@ -126,7 +127,7 @@ class Specimens_jsons(Specimens_base):
                         if len(values) == 1:
                             value = values[0]
                         elif len(values) > 1:
-                            value = 'MULTIPLE VALUES'
+                            value = self.multiple_values
                         else:
                             value = None
                         if value is not None:

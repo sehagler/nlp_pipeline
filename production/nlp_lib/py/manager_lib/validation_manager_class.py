@@ -7,18 +7,19 @@ Created on Wed Feb  3 16:29:37 2021
 
 #
 import collections
-import os
 
 #
+from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
 from nlp_lib.py.logger_lib.logger_class import Logger
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import read_json_file
     
 #
-class Validation_manager(object):
+class Validation_manager(Packager_base):
     
     #
     def __init__(self, project_data):
+        Packager_base.__init__(self)
         self.directory_manager = project_data['directory_manager']
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
@@ -114,25 +115,3 @@ class Validation_manager(object):
         print(f'\tprecision: {P:.3f}')
         print(f'\trecall:    {R:.3f}')
         print(f'\tF1:        {F1:.3f}')
-    
-    #
-    def _read_nlp_data(self, project_data):
-        directory_manager = project_data['directory_manager']
-        patient_identifiers = project_data['patient_identifiers']
-        patient_list = project_data['patient_list']
-        project_name = project_data['project_name']
-        nlp_data = {}
-        data_dir = directory_manager.pull_directory('processing_data_dir')
-        nlp_data_tmp = \
-            read_json_file(os.path.join(data_dir, project_name + '.json'))
-        nlp_data_tmp = nlp_data_tmp['NLP_DATA']
-        for item in nlp_data_tmp:
-            for patient_identifier in patient_identifiers:
-                try:
-                    patient = item['RECORD_ID']['METADATA'][patient_identifier]
-                except:
-                    pass
-            document_idx = item['RECORD_ID']['METADATA']['NLP_DOCUMENT_IDX']
-            if patient in patient_list:
-                nlp_data[document_idx] = item['RECORD_ID']
-        return nlp_data

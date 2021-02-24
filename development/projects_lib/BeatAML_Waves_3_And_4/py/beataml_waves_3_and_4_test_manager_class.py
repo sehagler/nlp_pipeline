@@ -24,5 +24,5 @@ class BeatAML_Waves_3_And_4_test_manager(Test_manager):
     
     #
     def data_validation(self):
-        BeatAML_Waves_3_And_4_validation_manager(self.project_data_development)
+        #BeatAML_Waves_3_And_4_validation_manager(self.project_data_development)
         BeatAML_Waves_3_And_4_validation_manager(self.project_data_production)

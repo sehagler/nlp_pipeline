@@ -10,7 +10,8 @@ import os
 
 #
 from nlp_lib.py.manager_lib.validation_manager_class import Validation_manager
-from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools import compare_texts
+from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools \
+    import compare_texts
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
 from nlp_lib.py.tool_lib.query_tools_lib.date_tools import compare_dates
@@ -50,15 +51,15 @@ class CCC19_validation_manager(Validation_manager):
             for item in nlp_data:
                 if nlp_data[item]['METADATA']['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
                     nlp_cancer_stage_value = \
-                        self._find_data_value(nlp_data[item]['DATA'], 'CANCER STAGE VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'CANCER STAGE VALUE')
                     nlp_ecog_score_value = \
-                        self._find_data_value(nlp_data[item]['DATA'], 'ECOG SCORE VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'ECOG SCORE VALUE')
                     nlp_smoking_history_value = \
-                        self._find_data_value(nlp_data[item]['DATA'], 'SMOKING HISTORY VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING HISTORY VALUE')
                     nlp_smoking_products_value = \
-                        self._find_data_value(nlp_data[item]['DATA'], 'SMOKING PRODUCTS VALUE', mode_flg='multiple_values')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING PRODUCTS VALUE', mode_flg='multiple_values')
                     nlp_smoking_status_value = \
-                        self._find_data_value(nlp_data[item]['DATA'], 'SMOKING STATUS VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING STATUS VALUE')
             for item in validation_data:
                 if item[2] == csn:
                     validation_cancer_stage_value = self._process_validation_item(item[3])
@@ -159,7 +160,7 @@ class CCC19_validation_manager(Validation_manager):
             elif len(self.data_value) == 1:
                 self.data_value = self.data_value[0]
             elif len(self.data_value) > 1:
-                self.data_value = 'MULTIPLE_VALUES'
+                self.data_value = self.multiple_values
         return self.data_value
         
     #

@@ -7,14 +7,21 @@ Created on Fri Oct 26 13:39:32 2018
 
 #
 import csv
+import re
 
-class Postprocessor_base(object):
+#
+from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
+
+#
+class Postprocessor_base(Packager_base):
     
     #
-    def __init__(self, csv_file, data_key_map, data_value_map, data_text_map):
+    def __init__(self, label, data_file, data_key_map, data_value_map):
+        Packager_base.__init__(self)
+        self.label = label
         self.data_csv = {}
         try:
-            with open(csv_file,'r') as f:
+            with open(data_file,'r') as f:
                 csv_reader = csv.reader(f, delimiter=',')
                 line_count = 0
                 for row in csv_reader:
@@ -38,11 +45,23 @@ class Postprocessor_base(object):
                     self.data_labels.append(self.data_key_map[key])
         if data_value_map is not None:
             self.data_value_map = data_value_map
-        if data_text_map is not None:
-            self.data_text_map = data_text_map
         if data_key_map is not None:
             self._build_json_structure()
         
+    #
+    def _append_data(self, idx, key, value_list):
+        if len(value_list) > 0:
+            value_list = list(set(value_list))
+            self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_value_key] \
+                = value_list
+        self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_query_key] \
+            = self.label
+        self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_section_key] \
+            = key[0]
+        if key[1]:
+            self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_specimen_key] \
+                = key[1]
+    
     #
     def _build_data_dictionary(self):
         for key in self.data_csv.keys():
@@ -68,10 +87,8 @@ class Postprocessor_base(object):
     
     #
     def _build_json_structure(self):
-        text_key = self.data_key_map['EXTRACTED_TEXT']
-        object_key = self.data_key_map['EXTRACTED_TEXT'] + ' ELEMENT '
         for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i]['DATA'] = {}
+            self.data_dict_list[i][self.nlp_data_key] = {}
             for j in range(len(self.data_dict_list[i]['DOCUMENT_FRAME'])):
                 key = self.data_dict_list[i]['DOCUMENT_FRAME'][j][0]
                 text = self.data_dict_list[i]['DOCUMENT_FRAME'][j][1]
@@ -79,15 +96,29 @@ class Postprocessor_base(object):
                     elements = self.data_dict_list[i]['DOCUMENT_FRAME'][j][2:]
                 else:
                     elements = []
-                if key not in self.data_dict_list[i]['DATA'].keys():
-                    self.data_dict_list[i]['DATA'][key] = {}
-                if text_key not in self.data_dict_list[i]['DATA'][key].keys():
-                    self.data_dict_list[i]['DATA'][key][text_key] = []
-                self.data_dict_list[i]['DATA'][key][text_key].append(text)
+                if key not in self.data_dict_list[i][self.nlp_data_key].keys():
+                    self.data_dict_list[i][self.nlp_data_key][key] = {}
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
+                if self.nlp_text_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label].keys():
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
+                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(text)
                 for j in range(len(elements)):
-                    if object_key+str(j) not in self.data_dict_list[i]['DATA'][key].keys():
-                        self.data_dict_list[i]['DATA'][key][object_key+str(j)] = []
-                    self.data_dict_list[i]['DATA'][key][object_key+str(j)].append(elements[j])
+                    if self.nlp_text_element_key+str(j) not in self.data_dict_list[i][self.nlp_data_key][key][self.label].keys():
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key+str(j)] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key+str(j)].append(elements[j])
+                    
+    #
+    def _create_data_structure(self, match_str):
+        for i in range(len(self.data_dict_list)):
+            for entry in self.data_dict_list[i]['DOCUMENT_FRAME']:
+                if re.match(match_str, entry[0][0]):
+                    key = (entry[0][0], '')
+                    entry_text = entry[1]
+                    if key not in self.data_dict_list[i][self.nlp_data_key]:
+                        self.data_dict_list[i][self.nlp_data_key][key] = {}
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(entry_text)
     
     #
     def get_data_dict_base_keys_list(self):

@@ -16,22 +16,24 @@ from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, json_file, data_key_map, data_value_map, label):
-        self.label = label
-        Postprocessor_base.__init__(self, json_file, data_key_map, data_value_map, None)
+    def __init__(self, data_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, label, data_file, data_key_map, 
+                                    data_value_map)
         self._get_ecog_status()
         
     #
     def _get_ecog_status(self):
         pattern = re.compile('[0-9]{1,3}%?(( ?\- ?| / )[0-9]{1,6}%?)?')
         for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i]['DATA']:
+            for key in self.data_dict_list[i][self.nlp_data_key]:
                 try:
-                    score_list = self.data_dict_list[i]['DATA'][key][self.label + ' TEXT ELEMENT 0']
+                    score_list = \
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key  + '0']
                 except:
                     score_list = []
                 try:
-                    test_list = self.data_dict_list[i]['DATA'][key][self.label + ' TEXT ELEMENT 1']
+                    test_list = \
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key + '1']
                 except:
                     test_list = []
                 value_list = []
@@ -58,9 +60,7 @@ class Postprocessor(Postprocessor_base):
                                 if test in [ 'karnofsky', 'lansky' ]:
                                     value = self._map_to_zubrod(value)
                             value_list.append(value)
-                if len(value_list) > 0:
-                    value_list = list(set(value_list))
-                    self.data_dict_list[i]['DATA'][key][self.label + ' VALUE']  = value_list
+                self._append_data(i, key, value_list)
                     
     # map karnofsky and lansky value to zubrod values per
     # https://oncologypro.esmo.org/oncology-in-practice/practice-tools/performance-scales

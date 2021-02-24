@@ -15,9 +15,9 @@ from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_bas
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, csv_file, data_key_map, data_value_map, label):
-        self.label = label
-        Postprocessor_base.__init__(self, csv_file, data_key_map, data_value_map, None)
+    def __init__(self, data_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, label, data_file, data_key_map, 
+                                    data_value_map)
         self._get_cancer_stage()
         
     #
@@ -29,12 +29,15 @@ class Postprocessor(Postprocessor_base):
         switch_dict['3'] = 'III'
         switch_dict['4'] = 'IV'
         switch_dict['5'] = 'V'
-        pattern0 = re.compile('(?i)stage( is now)? [IV]{1,3}([A-Da-d][0-9]?)?( (\-|/) [IV]{1,3}([A-Da-d][0-9]?)?)?( |$)')
-        pattern1 = re.compile('(?i)stage( is now)? [0-5]([A-Da-d][0-9]?)?( (\-|/) [0-5]([A-Da-d][0-9]?)?)?( |$)')
+        pattern0 = \
+            re.compile('(?i)stage( is now)? [IV]{1,3}([A-Da-d][0-9]?)?( (\-|/) [IV]{1,3}([A-Da-d][0-9]?)?)?( |$)')
+        pattern1 = \
+            re.compile('(?i)stage( is now)? [0-5]([A-Da-d][0-9]?)?( (\-|/) [0-5]([A-Da-d][0-9]?)?)?( |$)')
         for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i]['DATA']:
+            for key in self.data_dict_list[i][self.nlp_data_key]:
                 try:
-                    text_list = self.data_dict_list[i]['DATA'][key][self.label + ' TEXT']
+                    text_list = \
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
                 except:
                     text_list = []
                 value_list = []
@@ -68,6 +71,4 @@ class Postprocessor(Postprocessor_base):
                         value_list.append('end')
                     elif re.search('(?i)extensive stage', text) is not None:
                         value_list.append('extensive')
-                if len(value_list) > 0:
-                    value_list = list(set(value_list))
-                    self.data_dict_list[i]['DATA'][key][self.label + ' VALUE']  = value_list
+                self._append_data(i, key, value_list)

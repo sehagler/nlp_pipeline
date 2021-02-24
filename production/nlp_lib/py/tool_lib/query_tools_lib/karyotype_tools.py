@@ -23,47 +23,49 @@ class Named_entity_recognition(Preprocessor_base):
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, csv_file):
-        Postprocessor_base.__init__(self, csv_file, None, None, None)
+    def __init__(self, data_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, label, data_file, None, None)
         for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i]['DATA'] = {}
+            self.data_dict_list[i][self.nlp_data_key] = {}
+        self._create_data_structure('(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')
         self._get_karyotype()
         
     #
     def _get_karyotype(self):
         for i in range(len(self.data_dict_list)):
-            for entry in self.data_dict_list[i]['DOCUMENT_FRAME']:
-                entry_tmp = ''
-                for j in range(len(entry)-1):
-                    entry_tmp += entry[j+1]
-                if entry_tmp[-1] == ',':
-                    entry_tmp = entry_tmp[:-1]
-                entry_tmp = re.sub('(?i)karyotype results : ', '', entry_tmp)
-                entry_tmp = re.sub('\]' , '] ', entry_tmp)
-                entry_tmp = re.sub(' +', ' ', entry_tmp)
-                entry_tmp = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_tmp)
-                entry_tmp = re.sub('[ \n]', '', entry_tmp)
-                entry_tmp = re.sub('&lt;', '<', entry_tmp)
-                entry_tmp = re.sub('&gt;', '>', entry_tmp)
+            del_keys = []
+            for key in self.data_dict_list[i][self.nlp_data_key]:
+                entry_text = \
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key][0]
+                if entry_text[-1] == ',':
+                    entry_text = entry_text[:-1]
+                entry_text = re.sub('(?i)karyotype results : ', '', entry_text)
+                entry_text = re.sub('\]' , '] ', entry_text)
+                entry_text = re.sub(' +', ' ', entry_text)
+                entry_text = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_text)
+                entry_text = re.sub('[ \n]', '', entry_text)
+                entry_text = re.sub('&lt;', '<', entry_text)
+                entry_text = re.sub('&gt;', '>', entry_text)
                 try:
-                    if entry_tmp[:2] == '//':
-                        entry_tmp = entry_tmp[2:]
+                    if entry_text[:2] == '//':
+                        entry_text = entry_text[2:]
                 except:
                     pass
-                if re.match('KARYOTYPE \d', entry[0][0]) or re.match('IMPRESSIONS AND RECOMMENDATIONS \d', entry[0][0]):
-                    match_str = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
-                    match = re.search(match_str, entry_tmp)
-                    if match is not None:
-                        key = entry[0]
-                        #atomized_karyotype = atomize_karyotype(match)
-                        if key not in self.data_dict_list[i]['DATA'].keys():
-                            self.data_dict_list[i]['DATA'][key] = {}
-                        if 'KARYOTYPE TEXT' not in self.data_dict_list[i]['DATA'][key].keys():
-                            self.data_dict_list[i]['DATA'][key]['KARYOTYPE TEXT'] = []
-                        self.data_dict_list[i]['DATA'][key]['KARYOTYPE TEXT'].append(entry_tmp)
-                        #if 'KARYOTYPE VALUE' not in self.data_dict_list[i]['DATA'][key].keys():
-                        #    self.data_dict_list[i]['DATA'][key]['KARYOTYPE VALUE'] = []
-                        #self.data_dict_list[i]['DATA'][key]['KARYOTYPE VALUE'].append(atomized_karyotype)
+                match_str = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
+                match = re.search(match_str, entry_text)
+                if match is not None:
+                    karyotype = match.group(0)
+                    try:
+                        atomized_karyotype = atomize_karyotype(karyotype)
+                    except:
+                        atomized_karyotype = ''
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(entry_text)
+                    self._append_data(i, key, atomized_karyotype)
+                else:
+                    del_keys.append(key)
+            for key in del_keys:
+                del self.data_dict_list[i][self.nlp_data_key][key]
 
 #
 class Posttokenizer(Preprocessor_base):

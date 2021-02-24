@@ -13,6 +13,7 @@ import sys
 import urllib3
 
 #
+from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
 from nlp_lib.py.manager_lib.metadata_manager_class import Metadata_manager
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_xml_file, write_json_file
 
@@ -20,10 +21,11 @@ from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_
 urllib3.disable_warnings()
 
 #
-class Output_manager(object):
+class Output_manager(Packager_base):
 
     #
     def __init__(self, project_name, metadata_manager):
+        Packager_base.__init__(self)
         self.password = ''
         self.project_name = project_name
         self.user = ''
@@ -79,8 +81,8 @@ class Output_manager(object):
     #
     def create_json_files(self):
         for data_dict in self.merged_data_dict_list:
-            if 'DATA' in data_dict.keys():
-                if bool(data_dict['DATA']):
+            if self.nlp_data_key in data_dict.keys():
+                if bool(data_dict[self.nlp_data_key]):
                     outdir = self.data_out
                     filename = data_dict['DOCUMENT_ID'] + '.json'
                     data_dict.pop('DOCUMENT_ID', None)
@@ -96,7 +98,7 @@ class Output_manager(object):
         self.metadata_dict_dict, self.metadata_keys = self.metadata_manager.read_metadata()
         for i in range(len(self.merged_data_dict_list)):
             document_id = self.merged_data_dict_list[i]['DOCUMENT_ID']
-            self.merged_data_dict_list[i]['METADATA'] = \
+            self.merged_data_dict_list[i][self.metadata_key] = \
                 self.metadata_dict_dict[document_id]
     
     #
@@ -107,12 +109,15 @@ class Output_manager(object):
             i2e_version = response.headers['X-Version']
         except:
             i2e_version = 'FAILED_TO_CONNECT'
-        python_version = str(sys.version_info[0]) + '.' + str(sys.version_info[1]) + '.' + str(sys.version_info[2])
+        python_version = \
+            str(sys.version_info[0]) + '.' + \
+            str(sys.version_info[1]) + '.' + \
+            str(sys.version_info[2])
         for i in range(len(self.merged_data_dict_list)):
-            self.merged_data_dict_list[i]['SYSTEM_INFO'] = {}
-            self.merged_data_dict_list[i]['SYSTEM_INFO']['I2E_VERSION'] = \
+            self.merged_data_dict_list[i][self.nlp_metadata_key] = {}
+            self.merged_data_dict_list[i][self.nlp_metadata_key]['I2E_VERSION'] = \
                 i2e_version
-            self.merged_data_dict_list[i]['SYSTEM_INFO']['PYTHON_VERSION'] = \
+            self.merged_data_dict_list[i][self.nlp_metadata_key]['PYTHON_VERSION'] = \
                 python_version
         pass
     
@@ -134,18 +139,18 @@ class Output_manager(object):
         for document_id in document_ids:
             merged_dict = {}
             merged_dict['DOCUMENT_ID'] = document_id
-            merged_dict['DATA'] = {}
+            merged_dict[self.nlp_data_key] = {}
             for data_dict_class in self.data_dict_classes_list:
                 data_dict_list = data_dict_class.get_data_dict_list()
                 for data_dict in data_dict_list:
                     if data_dict['DOCUMENT_ID'] == document_id:
-                        data_keys_x = data_dict['DATA'].keys()
+                        data_keys_x = data_dict[self.nlp_data_key].keys()
                         for data_key in data_keys_x:
-                            if str(data_key) not in merged_dict['DATA'].keys():
-                                merged_dict['DATA'][str(data_key)] = {}
-                            merged_dict['DATA'][str(data_key)] = \
-                                self._merge_two_dicts(merged_dict['DATA'][str(data_key)],
-                                                      data_dict['DATA'][data_key])
+                            if str(data_key) not in merged_dict[self.nlp_data_key].keys():
+                                merged_dict[self.nlp_data_key][str(data_key)] = {}
+                            merged_dict[self.nlp_data_key][str(data_key)] = \
+                                self._merge_two_dicts(merged_dict[self.nlp_data_key][str(data_key)],
+                                                      data_dict[self.nlp_data_key][data_key])
             merged_data_dict_list.append(merged_dict)
         self.merged_data_dict_list = merged_data_dict_list
         

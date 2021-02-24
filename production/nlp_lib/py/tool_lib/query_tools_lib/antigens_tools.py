@@ -16,38 +16,31 @@ from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, csv_file):
-        Postprocessor_base.__init__(self, csv_file, None, None, None)
+    def __init__(self, data_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, label, data_file, None, None)
         for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i]['DATA'] = {}
+            self.data_dict_list[i][self.nlp_data_key] = {}
+        self._create_data_structure('ANTIBODIES TESTED \d')
         self._get_antibodies_tested_list()
-
+                    
     #
     def _get_antibodies_tested_list(self):
         for i in range(len(self.data_dict_list)):
-            for entry in self.data_dict_list[i]['DOCUMENT_FRAME']:
-                if re.match('ANTIBODIES TESTED \d', entry[0][0]):
-                    key = 'ANTIBODIES TESTED' #entry[0]
-                    entry_text = entry[1]
-                    entry_text_tmp = re.sub('/', ' ', entry_text)
-                    antibodies = list(set(entry_text_tmp.split()))
-                    nonantibodies = []
-                    for element in antibodies:
-                        if not is_antibody(element):
-                            nonantibodies.append(element)
-                    nonantibodies = list(set(nonantibodies))
-                    for nonantibody in nonantibodies:
-                        antibodies.remove(nonantibody)
-                    antibodies.sort()
-                    if antibodies != []:
-                        if key not in self.data_dict_list[i]['DATA'].keys():
-                            self.data_dict_list[i]['DATA'][key] = {}
-                        if 'ANTIBODIES TESTED TEXT' not in self.data_dict_list[i]['DATA'][key].keys():
-                            self.data_dict_list[i]['DATA'][key]['ANTIBODIES TESTED TEXT'] = []
-                        if 'ANTIBODIES TESTED VALUE' not in self.data_dict_list[i]['DATA'][key].keys():
-                            self.data_dict_list[i]['DATA'][key]['ANTIBODIES TESTED VALUE'] = []
-                        self.data_dict_list[i]['DATA'][key]['ANTIBODIES TESTED TEXT'].append(entry_text)
-                        self.data_dict_list[i]['DATA'][key]['ANTIBODIES TESTED VALUE'].append(antibodies)
+            for key in self.data_dict_list[i][self.nlp_data_key]:
+                entry_text = \
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
+                entry_text_tmp = re.sub('/', ' ', entry_text[0])
+                antibodies = list(set(entry_text_tmp.split()))
+                nonantibodies = []
+                for element in antibodies:
+                    if not is_antibody(element):
+                        nonantibodies.append(element)
+                nonantibodies = list(set(nonantibodies))
+                for nonantibody in nonantibodies:
+                    antibodies.remove(nonantibody)
+                antibodies.sort()
+                if antibodies != []:
+                    self._append_data(i, key, antibodies)
 
 #
 class Posttokenizer(Preprocessor_base):

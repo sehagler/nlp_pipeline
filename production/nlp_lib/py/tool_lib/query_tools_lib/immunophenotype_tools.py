@@ -13,19 +13,19 @@ from nlp_lib.py.tool_lib.query_tools_lib.antigens_tools import correct_antibodie
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, csv_file, data_key_map, data_value_map):
-        self.data_key_map = data_key_map
-        Postprocessor_base.__init__(self, csv_file, data_key_map, data_value_map, None)
+    def __init__(self, data_file, data_key_map, data_value_map, label):
+        Postprocessor_base.__init__(self, label, data_file, data_key_map,
+                                    data_value_map)
         self._cleanup_antigens()
 
     #
     def _cleanup_antigens(self):
         for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i]['DATA']:
-                if self.data_key_map['EXTRACTED_TEXT'] in self.data_dict_list[i]['DATA'][key].keys():
-                    antigens = self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']]
-                    #antigens = self._prune_surface_antigens(antigens)
-                    antigens_tmp = []
-                    for antigen_str in antigens:
-                        antigens_tmp.extend([correct_antibodies(antigen_str)])
-                    self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']] = antigens_tmp
+            for key in self.data_dict_list[i][self.nlp_data_key]:
+                antigens = \
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
+                #antigens = self._prune_surface_antigens(antigens)
+                value_list = []
+                for antigen_str in antigens:
+                    value_list.extend([correct_antibodies(antigen_str)])
+                self._append_data(i, key, value_list)
