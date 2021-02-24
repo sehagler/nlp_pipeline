@@ -44,7 +44,7 @@ class BeatAML_Waves_3_And_4_postprocessor(Postprocessor):
         directory_manager = project_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
         diagnosis_reader = Diagnosis_reader(os.path.join(directory_manager.pull_directory('raw_data_dir'),'diagnoses.xlsx'))
-        data_key_map, data_value_map = self._business_rules('BONE MARROW BLAST % TEXT')
+        data_key_map, data_value_map = self._business_rules('BONE MARROW BLAST TEXT')
         self.output_manager.append(Postprocessor_blasts(os.path.join(data_dir, 'bone_marrow_blast.csv'),
                                                         data_key_map,  data_value_map,
                                                         'BONE MARROW BLAST'))
@@ -58,7 +58,7 @@ class BeatAML_Waves_3_And_4_postprocessor(Postprocessor):
                                                       'DIAGNOSIS DATE'))
         data_key_map, data_value_map = self._business_rules('EXTRAMEDULLARY DISEASE TEXT')
         self.output_manager.append(General_postprocessor(os.path.join(data_dir, 'extramedullary_disease.csv'),
-                                                         data_key_map, data_value_map, None,
+                                                         data_key_map, data_value_map,
                                                          'EXTRAMEDULARY DISEASE'))
         data_key_map, data_value_map = self._business_rules('FAB CLASSIFICATION TEXT')
         self.output_manager.append(Postprocessor_fab_classification(os.path.join(data_dir, 'fab_classification.csv'),
@@ -67,8 +67,8 @@ class BeatAML_Waves_3_And_4_postprocessor(Postprocessor):
         data_key_map, data_value_map = self._business_rules('SURFACE ANTIGENS TEXT')
         self.output_manager.append(Postprocessor_immunophenotype(os.path.join(data_dir, 'immunophenotype.csv'),
                                                                  data_key_map, data_value_map,
-                                                                 'SURFACE ANTIGENS TEXT'))
-        data_key_map, data_value_map = self._business_rules('PERIPHERAL BLOOD BLAST % TEXT')
+                                                                 'SURFACE ANTIGENS'))
+        data_key_map, data_value_map = self._business_rules('PERIPHERAL BLOOD BLAST TEXT')
         self.output_manager.append(Postprocessor_blasts(os.path.join(data_dir, 'peripheral_blood_blast.csv'),
                                                         data_key_map, data_value_map,
                                                         'PERIPHERAL BLOOD BLAST'))
@@ -77,7 +77,7 @@ class BeatAML_Waves_3_And_4_postprocessor(Postprocessor):
                                                       data_key_map, data_value_map, 'RELAPSE DATE'))
         data_key_map, data_value_map = self._business_rules('RESIDUAL DISEASE TEXT')
         self.output_manager.append(General_postprocessor(os.path.join(data_dir, 'residual_disease.csv'),
-                                                         data_key_map, data_value_map, None, 
+                                                         data_key_map, data_value_map, 
                                                          'RESIDUAL DISEASE'))
         self.output_manager.append(Postprocessor_antigens(os.path.join(data_dir, 'sections.csv'),
                                                           None, None, 'ANTIBODIES TESTED'))

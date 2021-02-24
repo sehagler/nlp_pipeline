@@ -190,14 +190,14 @@ class Specimens(Specimens_jsons):
         for key in nlp_data.keys():
             json_tmp = nlp_data[key]
             doc_name = str(key)
-            mrn = json_tmp['METADATA']['MRN']
-            preprocessed_text = json_tmp['PREPROCESSED_TEXT']
-            if 'PROC_NM' in json_tmp['METADATA'].keys():
-                proc_nm = json_tmp['METADATA']['PROC_NM']
+            mrn = json_tmp[self.metadata_key]['MRN']
+            preprocessed_text = json_tmp[self.nlp_source_text_key]
+            if 'PROC_NM' in json_tmp[self.metadata_key].keys():
+                proc_nm = json_tmp[self.metadata_key]['PROC_NM']
             else:
-                proc_nm = json_tmp['METADATA']['PROC_NAME']
-            result_date = json_tmp['METADATA']['RESULT_COMPLETED_DT']
-            specimen_date = json_tmp['METADATA']['SPECIMEN_COLL_DT']
+                proc_nm = json_tmp[self.metadata_key]['PROC_NAME']
+            result_date = json_tmp[self.metadata_key]['RESULT_COMPLETED_DT']
+            specimen_date = json_tmp[self.metadata_key]['SPECIMEN_COLL_DT']
             data_in = json_tmp[self.nlp_data_key]
             data_out = self._process_data(data_in)
             if data_out is not None:

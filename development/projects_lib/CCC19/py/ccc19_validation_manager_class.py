@@ -49,7 +49,7 @@ class CCC19_validation_manager(Validation_manager):
             nlp_smoking_products_value = []
             nlp_smoking_status_value = None
             for item in nlp_data:
-                if nlp_data[item]['METADATA']['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
+                if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
                     nlp_cancer_stage_value = \
                         self._find_data_value(nlp_data[item][self.nlp_data_key], 'CANCER STAGE VALUE')
                     nlp_ecog_score_value = \

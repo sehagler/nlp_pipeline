@@ -79,8 +79,12 @@ class Packager_base(object):
                         if key_1 not in [self.nlp_query_key,
                                          self.nlp_section_key,
                                          self.nlp_specimen_key]:
-                            data[key_0][nlp_query_key + ' ' + key_1] = \
-                                item[self.nlp_datum_key][key_1]
+                            if key_1 == 'DIAGNOSIS':
+                                data[key_0]['DIAGNOSIS VALUE'] = \
+                                    item[self.nlp_datum_key][key_1]
+                            else:
+                                data[key_0][nlp_query_key + ' ' + key_1] = \
+                                    item[self.nlp_datum_key][key_1]
                 nlp_data[document_idx][self.nlp_data_key] = data
         return nlp_data
     

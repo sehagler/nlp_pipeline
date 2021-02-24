@@ -30,11 +30,11 @@ class Validation_manager(Packager_base):
     def _compare_lists(self, x, y):
         display_data_flg = False
         try:
-            if 'MULTIPLE VALUES' in x:
-                x = 'MULTIPLE VALUES'
+            if self.multiple_values in x:
+                x = self.multiple_values
         except:
             pass
-        if x is not 'MULTIPLE_VALUES':
+        if x is not self.multiple_values:
             if y is not None:
                 if len(x) > 0:
                     if collections.Counter(x) == collections.Counter(y):
@@ -62,11 +62,11 @@ class Validation_manager(Packager_base):
     def _compare_values(self, x, y):
         display_data_flg = False
         try:
-            if 'MULTIPLE VALUES' in x:
-                x = 'MULTIPLE VALUES'
+            if self.multiple_values in x:
+                x = self.multiple_values
         except:
             pass
-        if x is not 'MULTIPLE VALUES':
+        if x is not self.multiple_values:
             if y is not None:
                 if x is not None:
                     if str(x) == str(y):
