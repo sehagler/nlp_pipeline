@@ -14,7 +14,8 @@ from nlp_lib.py.manager_lib.network_manager_class import Network_manager
 class Project_manager(object):
     
     #
-    def __init__(self, project_name, operation_mode, user, root_dir_flg):
+    def __init__(self, operation_mode, project_name, project_subdir, user,
+                 root_dir_flg):
         network = Network_manager()
         self.project_data = {}
         self.project_data['acc_server'] = network.pull_server(operation_mode)
@@ -23,8 +24,10 @@ class Project_manager(object):
         self.project_data['header_key'] = 'REPORT_HEADER'
         self.project_data['max_files_per_zip'] = 10000
         self.project_data['mrn_list'] = None
-        self.project_data['num_processes'] = 10
+        self.project_data['num_processes'] = 15
+        self.project_data['operation_mode'] = operation_mode
         self.project_data['project_name'] = project_name
+        self.project_data['project_subdir'] = project_subdir
         self.project_data['raw_data_files_case_number'] = None
         self.project_data['root_dir_flg'] = root_dir_flg
         self.project_data['user'] = user
@@ -36,7 +39,7 @@ class Project_manager(object):
     #
     def _create_managers(self, server, user, root_dir_flg):
         self.project_data['directory_manager'] = Directory_manager(self.project_data, root_dir_flg)
-        self.project_data['metadata_manager'] = Metadata_manager(self.project_data['directory_manager'])
+        self.project_data['metadata_manager'] = Metadata_manager(self.project_data)
         
     #
     def _create_processors(self):
@@ -46,8 +49,7 @@ class Project_manager(object):
         exec(postprocessor_cmd)
         postprocessor_cmd = 'self.project_data[\'report_postprocessor\'] = ' + \
                             self.project_data['project_name'] + \
-                            '_postprocessor(\'' + self.project_data['project_name'] + \
-                            '\', self.project_data[\'metadata_manager\'])'
+                            '_postprocessor(self.project_data, self.project_data[\'metadata_manager\'])'
         exec(postprocessor_cmd)
         
     #

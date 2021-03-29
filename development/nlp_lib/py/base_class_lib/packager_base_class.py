@@ -16,15 +16,21 @@ from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
 class Packager_base(object):
     
     #
-    def __init__(self):
+    def __init__(self, project_data):
+        self.project_data = project_data
+        self.directory_manager = project_data['directory_manager']
+        self.project_name = project_data['project_name']
+        self.save_dir = self.directory_manager.pull_directory('processing_data_dir')
         self.document_wrapper_key = 'DOCUMENT'
         self.documents_wrapper_key = 'DOCUMENTS'
         self.metadata_key = 'METADATA'
         self.multiple_specimens = 'MULTIPLE_SPECIMENS'
         self.multiple_values = 'MULTIPLE_VALUES'
         self.nlp_data_key = 'NLP_DATA'
+        self.nlp_datetime_key = 'DATETIME'
         self.nlp_datum_key = 'NLP_ELEMENT'
         self.nlp_metadata_key = 'NLP_METADATA'
+        self.nlp_performance_key = 'NLP_PERFORMANCE'
         self.nlp_query_key = 'QUERY'
         self.nlp_section_key = 'SECTION'
         self.nlp_specimen_key = 'SPECIMEN'
@@ -32,18 +38,23 @@ class Packager_base(object):
         self.nlp_text_element_key = 'TEXT_ELEMENT_'
         self.nlp_text_key = 'TEXT'
         self.nlp_value_key = 'VALUE'
+        
+    #
+    def _load_data_json(self, project_data):
+        project_name = project_data['project_name']
+        directory_manager = project_data['directory_manager']
+        data_dir = directory_manager.pull_directory('processing_data_dir')
+        nlp_data = \
+            read_json_file(os.path.join(data_dir, project_name + '.json'))
+        return nlp_data
     
     #
     def _read_nlp_data(self, project_data):
-        directory_manager = project_data['directory_manager']
+        nlp_data_tmp = self._load_data_json(project_data)
         patient_identifiers = project_data['patient_identifiers']
         patient_list = project_data['patient_list']
-        project_name = project_data['project_name']
-        nlp_data = {}
-        data_dir = directory_manager.pull_directory('processing_data_dir')
-        nlp_data_tmp = \
-            read_json_file(os.path.join(data_dir, project_name + '.json'))
         nlp_data_tmp = nlp_data_tmp[self.documents_wrapper_key]
+        nlp_data = {}
         for item in nlp_data_tmp:
             for patient_identifier in patient_identifiers:
                 try:
@@ -93,18 +104,6 @@ class Packager_base(object):
         documents = []
         for key_0 in self.data.keys():
             document_in = self.data[key_0]
-            document_in[self.nlp_metadata_key]['FILENAME'] = \
-                document_in[self.metadata_key]['FILENAME']
-            del document_in[self.metadata_key]['FILENAME']
-            document_in[self.nlp_metadata_key]['NLP_DOCUMENT_IDX'] = \
-                document_in[self.metadata_key]['NLP_DOCUMENT_IDX']
-            del document_in[self.metadata_key]['NLP_DOCUMENT_IDX']
-            document_in[self.nlp_metadata_key]['NLP_MODE'] = \
-                document_in[self.metadata_key]['NLP_MODE']
-            del document_in[self.metadata_key]['NLP_MODE']
-            document_in[self.nlp_metadata_key]['NLP_PROCESS'] = \
-                document_in[self.metadata_key]['NLP_PROCESS']
-            del document_in[self.metadata_key]['NLP_PROCESS']
             document = {}
             for key_1 in document_in.keys():
                 if key_1 != 'RAW_TEXT':
@@ -124,5 +123,24 @@ class Packager_base(object):
             documents.append(document_wrapper)
         documents_wrapper = {}
         documents_wrapper[self.documents_wrapper_key] = documents
+        write_json_file(os.path.join(self.save_dir, self.project_name + '.json'),
+                        documents_wrapper)
+        
+    #
+    def _write_performance_data(self, performance_statistics_list):
+        documents_wrapper = self._load_data_json(self.project_data)
+        for i in range(len(documents_wrapper[self.documents_wrapper_key])):
+            nlp_data = \
+                documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_data_key]
+            query_list = []
+            for nlp_datum in nlp_data:
+                query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
+            query_list = list(set(query_list))
+            performance_statistics_list_tmp = []
+            for item in performance_statistics_list:
+                if item[self.nlp_query_key] in query_list:
+                    performance_statistics_list_tmp.append(item)
+            documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
+                performance_statistics_list_tmp
         write_json_file(os.path.join(self.save_dir, self.project_name + '.json'),
                         documents_wrapper)

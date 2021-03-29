@@ -6,40 +6,27 @@ Created on Fri Apr 17 13:22:11 2020
 """
 
 #
-from nlp_lib.py.processor_lib.preprocessor_lib.worker_lib.preprocessing_worker_class \
+from nlp_lib.py.document_preprocessing_lib.document_preprocessing_manager_class \
+    import Document_preprocessing_manager
+from nlp_lib.py.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
-from projects_lib.BeatAML_Waves_1_And_2.py.cytogenetics_report_preprocessor_class \
-    import Cytogenetics_report_preprocessor
-from projects_lib.BeatAML_Waves_1_And_2.py.hematopathology_report_preprocessor_class \
-    import Hematopathology_report_preprocessor
-from projects_lib.BeatAML_Waves_1_And_2.py.beataml_waves_1_and_2_report_preprocessor_class \
-    import BeatAML_Waves_1_And_2_report_preprocessor
 
 #
 class BeatAML_Waves_1_And_2_preprocessing_worker(Preprocessing_worker):
     
     #
-    def __init__(self, project_data, preprocess_files_flg):
-        Preprocessing_worker.__init__(self, project_data, preprocess_files_flg)
-        self.beataml_report_preprocessor = BeatAML_Waves_1_And_2_report_preprocessor(project_data, 'formatted')
-        self.cytogenetics_report_preprocessor = Cytogenetics_report_preprocessor(project_data, 'formatted')
-        self.hematopathology_report_preprocessor = Hematopathology_report_preprocessor(project_data, 'formatted')
-        
-    #
-    def _preprocess_documents(self, raw_data_reader, start_idx, document_ctr, 
-                              fail_ctr):
-        document_value_dict = raw_data_reader.get_document_values()
-        for data_file in document_value_dict:
-            for document_value_key in sorted(document_value_dict[data_file].keys()):
-                for document_value in sorted(document_value_dict[data_file][document_value_key]):
-                    data_tmp = raw_data_reader.get_data_by_document_value(data_file,
-                                                                          document_value_key,
-                                                                          document_value)
-                    document_ctr, fail_ctr = \
-                        self._preprocess_document(raw_data_reader, data_tmp, 
-                                                  start_idx, document_ctr, 
-                                                  fail_ctr)
-        return document_ctr, fail_ctr
+    def __init__(self, project_data, preprocess_files_flg, password):
+        Preprocessing_worker.__init__(self, project_data, preprocess_files_flg,
+                                      password)
+        self.beataml_report_preprocessor = Document_preprocessing_manager()
+        self.beataml_report_preprocessor.beataml_report_preprocessor(project_data, 'formatted')
+        self.cytogenetics_report_preprocessor = \
+            Document_preprocessing_manager()
+        self.cytogenetics_report_preprocessor.cytogenetics_report_preprocessor(project_data, 'formatted')
+        self.hematopathology_report_preprocessor = \
+            Document_preprocessing_manager()
+        self.hematopathology_report_preprocessor.hematopathology_report_preprocessor(project_data, 'formatted')
+        self.raw_data_manager_mode_flg = 'get_data_by_document_value'
     
     #
     def _report_preprocessor(self, xml_metadata):

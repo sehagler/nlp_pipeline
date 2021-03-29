@@ -23,14 +23,12 @@ from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_base_class \
 class Specimens_jsons(Specimens_base):
     
     #
-    def __init__(self, directory_manager, nlp_data):
-        Specimens_base.__init__(self)
-        self.directory_manager = directory_manager
-        self.metadata_json_file = \
-            self.directory_manager.pull_directory('metadata_dir') + '/metadata.json'
+    def __init__(self, project_data, nlp_data):
+        Specimens_base.__init__(self, project_data)
+        self.directory_manager = project_data['directory_manager']
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
-        self._read_metadata(self.metadata_json_file)
+        self._read_metadata(nlp_data)
         data_json = self._read_data(nlp_data)
         specimen_tree = self._identify_documents_with_same_proc_nm(deepcopy(data_json))
         specimen_tree = self._identify_documents_for_same_specimen(specimen_tree)
@@ -57,9 +55,9 @@ class Specimens_jsons(Specimens_base):
                     for key2 in specimen_tree_in[key0].keys():
                         documents = specimen_tree_in[key0][key2]
                         for document in documents:
-                            proc_nm = self.metadata_dict_dict[document.split('_')[0]]['PROC_NM']
+                            proc_nm = self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NM']
                             for document in documents:
-                                if self.metadata_dict_dict[document.split('_')[0]]['PROC_NM'] == proc_nm:
+                                if self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NM'] == proc_nm:
                                     doc_label = document.split('_')[1]
                                     lower_bound_days, upper_bound_days = self._get_days_window(proc_nm)
                                     date_diff = get_date_difference(key2, key1)
@@ -222,10 +220,48 @@ class Specimens_jsons(Specimens_base):
         return document
     
     #
-    def _read_metadata(self, filename):
+    def _read_data(self, nlp_data):
+        data_json = {}
+        for key in nlp_data.keys():
+            json_tmp = nlp_data[key]
+            doc_name = str(key)
+            mrn = json_tmp[self.metadata_key]['MRN']
+            preprocessed_text = json_tmp[self.nlp_source_text_key]
+            proc_nm = json_tmp[self.metadata_key]['PROC_NM']
+            result_date = json_tmp[self.metadata_key]['RESULT_COMPLETED_DT']
+            specimen_date = json_tmp[self.metadata_key]['SPECIMEN_COLL_DT']
+            data_in = json_tmp[self.nlp_data_key]
+            data_out = self._process_data(data_in)
+            if data_out is not None:
+                doc_label = ''
+                if 'bone marrow' in preprocessed_text.lower():
+                    doc_label += 'BLD'
+                elif 'peripheral blood' in preprocessed_text.lower():
+                    doc_label += 'BLD'
+                if 'CSF' in preprocessed_text:
+                    doc_label += 'CSF'
+                if doc_label == '':
+                    doc_label = 'NA'
+                if mrn not in data_json:
+                    data_json[mrn] = {}
+                if specimen_date not in data_json[mrn]:
+                    data_json[mrn][specimen_date] = {}
+                if proc_nm not in data_json[mrn][specimen_date]:
+                    data_json[mrn][specimen_date][proc_nm] = {}
+                if doc_name not in data_json[mrn][specimen_date][proc_nm].keys():
+                    data_json[mrn][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
+        return data_json
+    
+    #
+    def _read_metadata(self, nlp_data):
         self.metadata_keys = []
-        with open(filename, 'r') as f:
-            self.metadata_dict_dict = json.load(f)
+        self.metadata_dict_dict = {}
+        for key in nlp_data.keys():
+            self.metadata_dict_dict[key] = {}
+            self.metadata_dict_dict[key]['METADATA'] = \
+                nlp_data[key]['METADATA']
+            self.metadata_dict_dict[key]['NLP_METADATA'] = \
+                nlp_data[key]['NLP_METADATA']
         for metadata_key in self.metadata_dict_dict.keys():
             for key in self.metadata_dict_dict[metadata_key].keys():
                 if key not in self.metadata_keys:

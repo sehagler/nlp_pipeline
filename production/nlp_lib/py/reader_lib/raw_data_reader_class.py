@@ -6,11 +6,18 @@ Created on Fri Apr 17 12:06:14 2020
 """
 
 #
+import datetime
 import os
+import requests
+import sys
 
 #
 from nlp_lib.py.reader_lib.readers_lib.xml_reader_class import Xml_reader
 from nlp_lib.py.reader_lib.readers_lib.xlsx_reader_class import Xlsx_reader
+from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+    import remove_repeated_substrings
+from nlp_lib.py.tool_lib.processing_tools_lib.variable_processing_tools \
+    import delete_key
 
 #
 class Raw_data_reader(object):
@@ -63,7 +70,7 @@ class Raw_data_reader(object):
                 num_entries = len(data[i][keys[0]])
                 for j in range(num_entries):
                     idx = j % num_processes
-                    partitioned_data[idx][i]['NLP_DOCUMENT_IDX'].append(doc_idx)
+                    partitioned_data[idx][i]['NLP_DOCUMENT_IDX'].append(str(doc_idx))
                     for key in data[i].keys():
                         partitioned_data[idx][i][key].append(data[i][key][j])
                     doc_idx += 1
@@ -145,3 +152,144 @@ class Raw_data_reader(object):
     #
     def select_process(self, process_idx):
         self.data = self.data[process_idx]
+        
+#
+def _get_nlp_metadata(server, user, password):
+    auth_values = (user, password)
+    with requests.get(server + '/api', auth=auth_values, verify=False) as r:
+        try:
+            i2e_version = r.headers['X-Version']
+        except:
+            i2e_version = 'FAILED_TO_CONNECT'
+    python_version = \
+        str(sys.version_info[0]) + '.' + \
+        str(sys.version_info[1]) + '.' + \
+        str(sys.version_info[2])
+    now = datetime.datetime.now()
+    now_str = now.strftime("%d-%b-%y %H:%M:%S")
+    nlp_metadata = {}
+    nlp_metadata['I2E_VERSION'] = i2e_version
+    nlp_metadata['PYTHON_VERSION'] = python_version
+    nlp_metadata['PREPROCESSING_DATETIME'] = now_str.upper()
+    return nlp_metadata
+        
+#
+def _prune_metadata(metadata):
+    delete_key(metadata, 'RAW_TEXT')
+    delete_key(metadata, 'REPORT_GROUP')
+    delete_key(metadata, 'REPORT_HEADER')
+    delete_key(metadata, 'REPORT_LINE')
+    return metadata
+        
+#
+def read_beakerap_data(data_tmp, server, user, password):
+    
+    # initialize lists
+    metadata_list = []
+    raw_text_list = []
+    rpt_text_list = []
+    
+    # iterate through filtered data by result IDs
+    RESULT_IDS = sorted(set(data_tmp['RESULT_ID']))
+    for result_id in RESULT_IDS:
+        
+        # filter filtered data by result ID
+        data_tmp_tmp = {}
+        idxs = [i for i, x in enumerate(data_tmp['RESULT_ID']) \
+                if x == result_id]
+        for key in data_tmp.keys():
+            data_tmp_tmp[key] = [data_tmp[key][i] for i in idxs]
+
+        # iterate through filtered filtered data by report groups
+        REPORT_GROUPS = sorted(set(data_tmp_tmp['REPORT_GROUP']))
+        for report_group in REPORT_GROUPS:
+            
+            #
+            idxs = [i for i, x in enumerate(data_tmp_tmp['REPORT_GROUP']) \
+                    if x == report_group]
+            REPORT_LINE = [data_tmp_tmp['REPORT_LINE'][i] for i in idxs]
+            LINE = [data_tmp_tmp['RAW_TEXT'][i] for i in idxs]
+            raw_text = []
+            for i in range(len(REPORT_LINE)):
+                idxss = [j for j, x in enumerate(REPORT_LINE) if x == i+1]
+                if len(idxss) == 1:
+                    idx = idxss[0]
+                    raw_text.append(LINE[idx])
+                    
+            #
+            raw_text = ''.join(raw_text)
+            raw_text = remove_repeated_substrings(raw_text)
+            rpt_text = raw_text
+            
+            #
+            source_metadata = {}
+            for key in data_tmp_tmp.keys():
+                metadata[key] = data_tmp_tmp[key][0]
+            source_metadata = _prune_metadata(source_metadata)
+            
+            #
+            source_metadata_list.append(source_metadata)
+            raw_text_list.append(raw_text)
+            rpt_text_list.append(rpt_text)
+            
+    #
+    nlp_metadata_list = []
+    for i in range(len(source_metadata_list)):
+        nlp_metadata = s_get_nlp_metadata(server, user, password)
+        nlp_metadata['FILENAME'] = source_metadata_list[i]['FILENAME']
+        del source_metadata_list[i]['FILENAME']
+        nlp_metadata['NLP_DOCUMENT_IDX'] = \
+            source_metadata_list[i]['NLP_DOCUMENT_IDX']
+        del source_metadata_list[i]['NLP_DOCUMENT_IDX']
+        nlp_metadata['NLP_MODE'] = source_metadata_list[i]['NLP_MODE']
+        del source_metadata_list[i]['NLP_MODE']
+        nlp_metadata['NLP_PROCESS'] = \
+            source_metadata_list[i]['NLP_PROCESS']
+        del source_metadata_list[i]['NLP_PROCESS']
+        try:
+            nlp_metadata['NOTE_TYPE'] = \
+                source_metadata_list[i]['NOTE_TYPE']
+            xml_metadata_keys = ['NLP_PROCESS', 'NOTE_TYPE']
+        except:
+            xml_metadata_keys = ['NLP_PROCESS' ]
+        nlp_metadata_list.append(nlp_metadata)
+            
+    #
+    return source_metadata_list, nlp_metadata_list, raw_text_list, \
+           rpt_text_list, xml_metadata_keys
+
+#
+def read_data(data_tmp, server, user, password):
+    if 'RAW_TEXT' in data_tmp.keys() and \
+       data_tmp['RAW_TEXT'][0] is not None:
+        raw_text = data_tmp['RAW_TEXT']
+        raw_text = ''.join(raw_text)
+        raw_text = remove_repeated_substrings(raw_text)
+        rpt_text = raw_text
+    else:
+        raw_text = None
+        rpt_text = None
+    source_metadata = {}
+    for key in data_tmp.keys():
+        source_metadata[key] = data_tmp[key][0]
+    source_metadata = _prune_metadata(source_metadata)
+    nlp_metadata = {}
+    nlp_metadata = _get_nlp_metadata(server, user, password)
+    nlp_metadata['FILENAME'] = source_metadata['FILENAME']
+    del source_metadata['FILENAME']
+    nlp_metadata['NLP_DOCUMENT_IDX'] = \
+        source_metadata['NLP_DOCUMENT_IDX']
+    del source_metadata['NLP_DOCUMENT_IDX']
+    nlp_metadata['NLP_MODE'] = source_metadata['NLP_MODE']
+    del source_metadata['NLP_MODE']
+    nlp_metadata['NLP_PROCESS'] = \
+        source_metadata['NLP_PROCESS']
+    del source_metadata['NLP_PROCESS']
+    try:
+        nlp_metadata['NOTE_TYPE'] = \
+            source_metadata['NOTE_TYPE']
+        xml_metadata_keys = ['NLP_PROCESS', 'NOTE_TYPE']
+    except:
+        xml_metadata_keys = ['NLP_PROCESS' ]
+    return [source_metadata], [nlp_metadata], [raw_text], [rpt_text], \
+           xml_metadata_keys

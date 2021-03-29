@@ -1,0 +1,707 @@
+output:
+  useOutputEditor: true
+  columns:
+  - id: alternative1
+  - id: phrase1
+creator: haglers
+query:
+  document:
+  - alternative:
+      of:
+      - link:
+          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy
+      - phrase:
+          of:
+          - class:
+              snid: numerics.integers
+              pt: Integer
+          - alternative:
+            - mos
+            - yrs
+          - smoking
+          - hx
+          displayChildren: false
+      findMatches: longestOnly
+      id: alternative1
+  - phrase:
+      multiSentence: true
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - sentence:
+          quantifier:
+            maximum: 1
+            minimum: 0
+      - phrase:
+          multiSentence: true
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - word:
+              caseSensitive: true
+              matchType: Regexp
+              text: '[A-Za-z]*'
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - alternative:
+              of:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy
+              - phrase:
+                  of:
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
+                  - alternative:
+                    - mos
+                    - yrs
+                  - smoking
+                  - hx
+                  displayChildren: false
+              findMatches: longestOnly
+          - word:
+              caseSensitive: true
+              matchType: Regexp
+              text: '[A-Za-z]*'
+              quantifier:
+                maximum: 1
+                minimum: 0
+      - sentence:
+          quantifier:
+            maximum: 1
+            minimum: 0
+      findMatches: longestOnly
+      id: phrase1
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - PHI_DATE
+          - phrase:
+            - phrase:
+                of:
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{1,2}'
+                - word:
+                    matchType: Regexp
+                    text: \-
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - word:
+                matchType: Regexp
+                text: '[0-9]{1,2}'
+            - word:
+                matchType: Regexp
+                text: \-
+            - alternative:
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{2}'
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{4}'
+          - phrase:
+            - phrase:
+                of:
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{1,2}'
+                - word:
+                    matchType: Regexp
+                    text: /
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - word:
+                matchType: Regexp
+                text: '[0-9]{1,2}'
+            - word:
+                matchType: Regexp
+                text: /
+            - alternative:
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{2}'
+              - word:
+                  matchType: Regexp
+                  text: '[0-9]{4}'
+          - phrase:
+            - macro:
+                snid: ohsu_months.months
+                pt: Month
+                of:
+                - alternative:
+                    macroPt: Month
+                    of:
+                    - Jan
+                    - January
+                    - Feb
+                    - February
+                    - Mar
+                    - March
+                    - Apr
+                    - April
+                    - May
+                    - Jun
+                    - June
+                    - Jul
+                    - July
+                    - Aug
+                    - August
+                    - Sep
+                    - September
+                    - Oct
+                    - October
+                    - Nov
+                    - November
+                    - Dec
+                    - December
+                    macroSnid: ohsu_months.months
+            - word:
+                text: .
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - alternative:
+              - phrase:
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{1,2}'
+                - ','
+                - alternative:
+                  - word:
+                      matchType: Regexp
+                      text: '[0-9]{2}'
+                  - word:
+                      matchType: Regexp
+                      text: '[0-9]{4}'
+              - phrase:
+                - alternative:
+                    of:
+                    - of
+                    - ','
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]{4}'
+          findMatches: longestOnly
+          id: alternative1
+    creationDate: '2019-01-28 21:59:35'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - phrase:
+              of:
+              - alternative:
+                - h/o
+                - hx
+              - alternative:
+                - smoking
+                - phrase:
+                    of:
+                    - tobacco
+                    - alternative:
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
+              - phrase:
+                  of:
+                  - word:
+                      text: ':'
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - quit
+                  - word:
+                      text: date
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  displayChildren: false
+              displayChildren: false
+          - phrase:
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - class:
+                      snid: numerics.decimals
+                      pt: Decimal
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
+              - word:
+                  text: pack
+                  morphoVariants: true
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - alternative:
+                - word:
+                    text: mo
+                    morphoVariants: true
+                - word:
+                    text: yr
+                    morphoVariants: true
+              - alternative:
+                - smoking
+                - phrase:
+                    of:
+                    - tobacco
+                    - alternative:
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
+              - hx
+              - phrase:
+                - word:
+                    text: (
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+                - quit
+                - alternative:
+                  - phrase:
+                    - alternative:
+                        of:
+                        - date
+                        - in
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - link:
+                        path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+                  - phrase:
+                    - word:
+                        matchType: Regexp
+                        text: \d+\+
+                    - phrase:
+                        of:
+                        - alternative:
+                          - word:
+                              text: mo
+                              morphoVariants: true
+                          - word:
+                              text: yr
+                              morphoVariants: true
+                        - ago
+                        displayChildren: false
+                - word:
+                    text: )
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+              displayChildren: false
+          - phrase:
+            - active
+            - alternative:
+              - smoking
+              - phrase:
+                  of:
+                  - tobacco
+                  - alternative:
+                      of:
+                      - abuse
+                      - use
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  displayChildren: false
+            - phrase:
+              - word:
+                  text: (
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - pack
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - class:
+                      snid: numerics.decimals
+                      pt: Decimal
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
+              - alternative:
+                - word:
+                    text: mo
+                    morphoVariants: true
+                - word:
+                    text: yr
+                    morphoVariants: true
+              - hx
+              - word:
+                  text: )
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+          - phrase:
+              of:
+              - alternative:
+                - phrase:
+                  - word:
+                      text: have
+                      morphoVariants: true
+                  - word:
+                      text: now
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - quit
+                - phrase:
+                    of:
+                    - was
+                    - able
+                    - to
+                    - stop
+                    displayChildren: false
+                - phrase:
+                    of:
+                    - word:
+                        text: continue
+                        morphoVariants: true
+                    - to
+                    - abstain
+                    - from
+                    displayChildren: false
+              - alternative:
+                - smoking
+                - phrase:
+                    of:
+                    - tobacco
+                    - alternative:
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
+              displayChildren: false
+          - phrase:
+            - phrase:
+                of:
+                - ready
+                - to
+                displayChildren: false
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+            - phrase:
+                of:
+                - quit
+                - alternative:
+                  - word:
+                      text: smoke
+                      morphoVariants: true
+                  - phrase:
+                      of:
+                      - tobacco
+                      - alternative:
+                          of:
+                          - abuse
+                          - use
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      displayChildren: false
+                displayChildren: false
+            - alternative:
+                of:
+                - phrase:
+                  - word:
+                      text: ','
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+                - phrase:
+                  - word:
+                      text: '~'
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                      view:
+                        layout: list
+                        width: 71
+                        height: 63
+                      of:
+                      - class:
+                          snid: numerics.decimals
+                          pt: Decimal
+                      - class:
+                          snid: numerics.integers
+                          pt: Integer
+                  - phrase:
+                      of:
+                      - alternative:
+                        - word:
+                            text: mo
+                            morphoVariants: true
+                        - word:
+                            text: yr
+                            morphoVariants: true
+                      - ago
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                quantifier:
+                  maximum: none
+                  minimum: 0
+          - phrase:
+            - phrase:
+              - alternative:
+                - word:
+                    text: smoke
+                    morphoVariants: true
+                - phrase:
+                    of:
+                    - tobacco
+                    - alternative:
+                        of:
+                        - abuse
+                        - use
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    displayChildren: false
+              - phrase:
+                  of:
+                  - comment
+                  - ':'
+                  displayChildren: false
+            - phrase:
+                of:
+                - alternative:
+                    view:
+                      layout: list
+                    of:
+                    - class:
+                        snid: numerics.decimals
+                        pt: Decimal
+                    - class:
+                        snid: numerics.integers
+                        pt: Integer
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+                - /
+                - alternative:
+                  - word:
+                      text: mo
+                      morphoVariants: true
+                  - word:
+                      text: yr
+                      morphoVariants: true
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - word:
+                text: ;
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - phrase:
+              - quit
+              - alternative:
+                - phrase:
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - class:
+                          snid: numerics.decimals
+                          pt: Decimal
+                      - class:
+                          snid: numerics.integers
+                          pt: Integer
+                  - alternative:
+                      of:
+                      - word:
+                          text: mo
+                          morphoVariants: true
+                      - word:
+                          text: yr
+                          morphoVariants: true
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+              - word:
+                  text: ago
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+          - phrase:
+              of:
+              - alternative:
+                - phrase:
+                    of:
+                    - former
+                    - smoker
+                    displayChildren: false
+                - phrase:
+                  - phrase:
+                      of:
+                      - word:
+                          text: type
+                          morphoVariants: true
+                      - ':'
+                      displayChildren: false
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
+              - phrase:
+                  of:
+                  - start
+                  - date
+                  - ':'
+                  - alternative:
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - class:
+                            snid: numerics.decimals
+                            pt: Decimal
+                        - class:
+                            snid: numerics.integers
+                            pt: Integer
+                    - link:
+                        path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+                  displayChildren: false
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - phrase:
+                - last
+                - attempt
+                - to
+                - quit
+                - ':'
+                - alternative:
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - class:
+                          snid: numerics.decimals
+                          pt: Decimal
+                      - class:
+                          snid: numerics.integers
+                          pt: Integer
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy
+              - phrase:
+                - alternative:
+                  - word:
+                      text: mo
+                      morphoVariants: true
+                  - word:
+                      text: yr
+                      morphoVariants: true
+                - since
+                - quitting
+                - ':'
+                - alternative:
+                    view:
+                      layout: list
+                    of:
+                    - class:
+                        snid: numerics.decimals
+                        pt: Decimal
+                    - class:
+                        snid: numerics.integers
+                        pt: Integer
+              displayChildren: false
+          - phrase:
+              of:
+              - word:
+                  text: yr
+                  morphoVariants: true
+              - since
+              - quitting
+              - ':'
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - class:
+                      snid: numerics.decimals
+                      pt: Decimal
+                  - class:
+                      snid: numerics.integers
+                      pt: Integer
+              displayChildren: false
+          findMatches: longestOnly
+          id: alternative1
+    creationDate: '2020-06-08 21:29:46'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - word:
+              text: cigar
+              morphoVariants: true
+          - word:
+              text: cigarette
+              morphoVariants: true
+          - word:
+              text: e-cigarette
+              morphoVariants: true
+          - word:
+              text: pipe
+              morphoVariants: true
+          boundaries: Exact
+          id: alternative1
+    creationDate: '2020-06-15 18:38:19'
+    version: 6.2
+creationDate: '2020-06-03 17:12:59'
+version: 6.2

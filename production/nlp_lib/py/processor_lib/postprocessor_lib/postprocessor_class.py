@@ -40,15 +40,8 @@ class Postprocessor(object):
         self._import_reports_body(project_data)
         self.output_manager.merge_data_dict_lists()
         self.output_manager.include_metadata()
-        self.output_manager.include_software_info()
         self.output_manager.include_text()
         self.merged_dict_list = self.output_manager.get_data()
-        
-    #
-    def set_credentials(self, project_data, password):
-        server = project_data['acc_server']
-        user = project_data['user']
-        self.output_manager.set_credentials(server[2], user, password)
         
     #
     def set_data_dirs(self, project_data):

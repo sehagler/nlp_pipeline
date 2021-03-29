@@ -22,14 +22,17 @@ class CCC19_preprocessing_worker(Preprocessing_worker):
         
     #
     def _preprocess_documents(self, raw_data_reader, start_idx,
-                              document_ctr, fail_ctr):
+                              document_ctr, fail_ctr, password):
         document_numbers = raw_data_reader.get_document_numbers()
         for document_number in document_numbers:
             data_tmp = raw_data_reader.get_data_by_document_number(document_number)
             if bool(data_tmp):
                 document_ctr, fail_ctr = self._preprocess_document(raw_data_reader, 
-                                                                   data_tmp, start_idx, 
-                                                                   document_ctr, fail_ctr)
+                                                                   data_tmp,
+                                                                   start_idx, 
+                                                                   document_ctr,
+                                                                   fail_ctr,
+                                                                   password)
         return document_ctr, fail_ctr
     
     #

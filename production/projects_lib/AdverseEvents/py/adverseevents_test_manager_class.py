@@ -15,9 +15,12 @@ class AdverseEvents_test_manager(Test_manager):
     
     #
     def __init__(self, project_data, root_dir_flg):
+        project_subdir = project_data['project_subdir']
         user = project_data['user']
-        project_manager_development = AdverseEvents_project_manager('development', user, root_dir_flg)
-        project_manager_production = AdverseEvents_project_manager('production', user, root_dir_flg)
+        project_manager_development = \
+            AdverseEvents_project_manager('development', project_subdir, user, root_dir_flg)
+        project_manager_production = \
+            AdverseEvents_project_manager('production', project_subdir, user, root_dir_flg)
         Test_manager.__init__(self, project_manager_development, project_manager_production)
         
     #

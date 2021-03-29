@@ -16,8 +16,10 @@ from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_bas
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, data_file, data_key_map, data_value_map, label, diagnosis_reader):
-        Postprocessor_base.__init__(self, label, data_file, None, None)
+    def __init__(self, project_data, data_file, data_key_map, data_value_map,
+                 label, diagnosis_reader):
+        Postprocessor_base.__init__(self, project_data, label, data_file, None,
+                                    None)
         self.diagnosis_reader = diagnosis_reader
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}

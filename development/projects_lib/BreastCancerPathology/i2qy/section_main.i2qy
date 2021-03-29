@@ -1,9 +1,179 @@
-version: 6.2
-creationDate: '2018-10-26 16:08:10'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - Union: [section/section_specimens_wrapper.i2qy, section/section_no_specimens_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/section/section_specimens_wrapper.i2qy
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/section/section_no_specimens_wrapper.i2qy
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/section/section_no_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.alternative1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - SUMMARY
+              id: region1
+          - region:
+              snid: hc.section_body
+              showWholeRegion: true
+              pt: Section Body
+              columnOptions:
+              - Text
+              where:
+              - region:
+                  snid: hc.specimen
+                  pt: Specimen Description
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/tools/sections_query.i2qy
+                  id: link2
+    creationDate: '2018-10-26 15:56:12'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/section/section_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.alternative1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - SUMMARY
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - shadowRegion:
+                      snid: hc.specimen_id
+                      pt: Specimen Id
+                      id: shadow region1
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/sections_query.i2qy
+                      id: link2
+    creationDate: '2018-10-26 16:03:06'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/sections_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - phrase:
+              multiSentence: true
+              maxWordGap: -1
+              wordGapRestricted: false
+              of:
+              - word:
+                  matchType: Regexp
+                  text: .*
+              - word:
+                  matchType: Regexp
+                  text: .*
+              findMatches: longestOnly
+              maxSentenceGap: -1
+          - word:
+              matchType: Regexp
+              text: .*
+          findMatches: longestOnly
+          id: alternative1
+    creationDate: '2020-03-04 23:34:51'
+    version: 6.2
+creationDate: '2018-10-26 16:08:10'
+version: 6.2

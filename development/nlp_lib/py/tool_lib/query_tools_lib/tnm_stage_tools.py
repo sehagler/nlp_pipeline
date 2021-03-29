@@ -16,7 +16,7 @@ from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
 class Postprocessor(Postprocessor_base):
 
     #
-    def __init__(self, csv_file):
+    def __init__(self, project_data, data_file, label):
         data_key_map = {}
         data_key_map['EXTRACTED_TEXT'] = 'TNM Stage Text'
         data_key_map['0'] = 'T Stage'
@@ -24,10 +24,11 @@ class Postprocessor(Postprocessor_base):
         data_key_map['2'] = 'M stage'
         data_value_map = {}
         data_text_map = get_data_text_map()
-        Postprocessor_base.__init__(self, csv_file, data_key_map, data_value_map, None)
+        Postprocessor_base.__init__(self, project_data, label, data_file,
+                                    data_key_map, data_value_map)
         #self._find_text_instances()
-        self._remove_commas_from_extracted_text()
-        self._atomize_tnm_stage()
+        #self._remove_commas_from_extracted_text()
+        #self._atomize_tnm_stage()
   
     #
     def _atomize_tnm_stage(self):

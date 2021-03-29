@@ -1,9 +1,1306 @@
-version: 6.2
-creationDate: '2018-05-10 08:49:25'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - Union: [tumor_size/tumor_size_specimens_wrapper.i2qy, tumor_size/tumor_size_no_specimens_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/tumor_size/tumor_size_specimens_wrapper.i2qy
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/tumor_size/tumor_size_no_specimens_wrapper.i2qy
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_dim_tag.i2qy:
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          view:
+            width: 203
+            height: 170
+          of:
+          - alternative:
+              view:
+                layout: list
+              of:
+              - aggregate
+              - contiguous
+              - estimated
+              - greatest
+              - largest
+              - maximum
+              quantifier:
+                maximum: none
+                minimum: 0
+          - alternative:
+              view:
+                layout: list
+              of:
+              - word:
+                  text: diameter
+                  morphoVariants: true
+              - word:
+                  text: dimension
+                  morphoVariants: true
+              - word:
+                  text: extent
+                  morphoVariants: true
+              - word:
+                  text: length
+                  morphoVariants: true
+              - word:
+                  text: size
+                  morphoVariants: true
+    creationDate: '2018-05-02 14:21:27'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+              view:
+                layout: list
+              of:
+              - measuring
+              - spanning
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - alternative:
+              view:
+                layout: list
+              of:
+              - phrase:
+                  of:
+                  - at
+                  - least
+                  displayChildren: false
+              - about
+              - apparently
+              - approximately
+              - estimated
+              - within
+              quantifier:
+                maximum: none
+                minimum: 0
+          - phrase:
+              of:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_dim_tag.i2qy
+              - class:
+                  snid: /prep
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - alternative:
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_single_predicate.i2qy
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_double_predicate.i2qy
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_multidimensional_predicate.i2qy
+          - phrase:
+              of:
+              - class:
+                  snid: /prep
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_dim_tag.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-05-09 10:05:31'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/tumor_size/tumor_size_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - SUMMARY
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  pt: Specimen Description
+                  where:
+                  - shadowRegion:
+                      snid: hc.specimen_id
+                      pt: Specimen Id
+                      id: shadow region1
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/tumor_size_query.i2qy
+                      id: link2
+    creationDate: '2018-05-11 09:29:55'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - class:
+              snid: snomed.76752008
+              pt: Breast structure
+          - class:
+              snid: snomed.69031006
+              pt: Excision of breast tissue
+          - mastectomy
+          - breast
+          id: alternative1
+    creationDate: '2018-05-11 10:17:50'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - alternative:
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/tumor_size/tumor_size_no_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - SUMMARY
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  pt: Specimen Description
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/tumor_size_query.i2qy
+                  id: link1
+    creationDate: '2018-05-11 09:19:34'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_double_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase2
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          view:
+            width: 1117
+            height: 283
+          of:
+          - phrase:
+              of:
+              - ranging
+              - class: /prep
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - alternative:
+              view:
+                width: 378
+                height: 246
+              of:
+              - phrase:
+                - word:
+                    text: x
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+                - word:
+                    text: x
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+              - phrase:
+                - phrase:
+                    of:
+                    - class:
+                        snid: numerics.numerics
+                        pt: Numerics
+                    - ':'
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+                - class:
+                    snid: numerics.numerics
+                    pt: Numerics
+          - alternative:
+            - macro:
+                snid: linguamatics_wc.WC_Conjunction
+                pt: conjunction
+                of:
+                - alternative:
+                    macroPt: conjunction
+                    of:
+                    - '&'
+                    - after
+                    - albeit
+                    - although
+                    - also
+                    - and
+                    - as
+                    - phrase:
+                      - as
+                      - far
+                      - as
+                    - because
+                    - before
+                    - but
+                    - either
+                    - if
+                    - moreover
+                    - neither
+                    - nor
+                    - once
+                    - or
+                    - so
+                    - than
+                    - though
+                    - unless
+                    - versus
+                    - vs
+                    - vs.
+                    - when
+                    - whereas
+                    - whereby
+                    - whether
+                    - while
+                    - whilst
+                    - yet
+                    macroSnid: linguamatics_wc.WC_Conjunction
+            - class: /prep
+          - phrase:
+            - word:
+                text: x
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+            - word:
+                text: x
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+          id: phrase2
+    creationDate: '2018-05-09 12:47:01'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_multidimensional_predicate.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - word:
+              text: x
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - alternative:
+            - phrase:
+                of:
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy
+                - x
+                displayChildren: false
+            - phrase:
+                of:
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy
+                - x
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy
+                - x
+                label: tumour size
+                displayChildren: false
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+          - word:
+              text: x
+              quantifier:
+                maximum: 0
+                minimum: 0
+          id: phrase1
+    creationDate: '2018-09-13 16:45:43'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_optional.i2qy:
+    output:
+      useOutputEditor: true
+    creator: haglers
+    query:
+      document:
+      - phrase:
+        - alternative:
+            of:
+            - <
+            - '>'
+            quantifier:
+              maximum: 1
+              minimum: 0
+        - alternative:
+          - class:
+              unit: length.meter
+              snid: measurement.length
+              pt: Length (m)
+          - class:
+              snid: numerics.numerics
+              pt: Numerics
+        - phrase:
+            of:
+            - word:
+                text: (
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - AP
+                - ML
+                - RL
+                - SI
+            - word:
+                text: )
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            quantifier:
+              maximum: 1
+              minimum: 0
+        - alternative:
+            of:
+            - class:
+                snid: unit.length
+                pt: Length
+            quantifier:
+              maximum: 1
+              minimum: 0
+    creationDate: '2018-04-30 10:18:42'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/tumor_size_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - phrase:
+              unordered: true
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - closest
+                  - definitive
+                  - final
+                  - nearest
+                  - other
+                  quantifier:
+                    maximum: none
+                    minimum: 0
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - macro:
+                      snid: ohsu_anatomical_location.anatomical_direction
+                      pt: Anatomical Location
+                      of:
+                      - alternative:
+                          macroPt: Anatomical Location
+                          of:
+                          - anterior
+                          - phrase:
+                            - anterior
+                            - dorsal
+                          - phrase:
+                            - anterior
+                            - inferior
+                          - phrase:
+                            - anterior
+                            - lateral
+                          - phrase:
+                            - anterior
+                            - medial
+                          - phrase:
+                            - anterior
+                            - posterior
+                          - phrase:
+                            - anterior
+                            - superior
+                          - anterior/dorsal
+                          - anterior/inferior
+                          - anterior/lateral
+                          - anterior/medial
+                          - anterior/posterior
+                          - anterior/superior
+                          - anterior-dorsal
+                          - anterior-inferior
+                          - anterior-lateral
+                          - anterior-medial
+                          - anterior-posterior
+                          - anterior-superior
+                          - anterodorsal
+                          - anteroinferior
+                          - anterolateral
+                          - anteromedial
+                          - anteroposterior
+                          - anterosuperior
+                          - central
+                          - deep
+                          - distal
+                          - dorsal
+                          - inferior
+                          - lateral
+                          - medial
+                          - phrase:
+                            - medial
+                            - lateral
+                          - mediolateral
+                          - peripheral
+                          - posterior
+                          - phrase:
+                            - posterior
+                            - dorsal
+                          - phrase:
+                            - posterior
+                            - lateral
+                          - phrase:
+                            - posterior
+                            - medial
+                          - posterior/dorsal
+                          - posterior/lateral
+                          - posterior/medial
+                          - posterior-dorsal
+                          - posterior-lateral
+                          - posterior-medial
+                          - posterodorsal
+                          - posterolateral
+                          - posteromedial
+                          - proximal
+                          - superficial
+                          - superior
+                          - phrase:
+                            - superior
+                            - dorsal
+                          - phrase:
+                            - superior
+                            - inferior
+                          - phrase:
+                            - superior
+                            - lateral
+                          - phrase:
+                            - superior
+                            - medial
+                          - superior/dorsal
+                          - superior/inferior
+                          - superior/lateral
+                          - superior/medial
+                          - superior-dorsal
+                          - superior-inferior
+                          - superior-lateral
+                          - superior-medial
+                          - superodorsal
+                          - superoinferior
+                          - superolateral
+                          - superomedial
+                          macroSnid: ohsu_anatomical_location.anatomical_direction
+                  - macro:
+                      snid: ohsu_margin_decriptor.margin_descriptor
+                      pt: Margin Descriptor
+                      of:
+                      - alternative:
+                          macroPt: Margin Descriptor
+                          of:
+                          - biopsy
+                          - cauterized
+                          - deep
+                          - excision
+                          - inked
+                          - new
+                          - resection
+                          - revised
+                          - sectioned
+                          - specimen
+                          - surgical
+                          macroSnid: ohsu_margin_decriptor.margin_descriptor
+                  - alternative:
+                    - word:
+                        text: edge
+                        morphoVariants: true
+                    - word:
+                        text: margin
+                        morphoVariants: true
+              - alternative:
+                  of:
+                  - class: /vg
+                  - ':'
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - class:
+                  snid: /prep
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_predicate.i2qy
+          - phrase:
+              of:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              - alternative:
+                - phrase:
+                  - word:
+                      text: distance
+                      morphoVariants: true
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - class: /prep
+                  - macro:
+                      snid: ohsu_determiner.determiner
+                      pt: Determiner
+                      of:
+                      - alternative:
+                          macroPt: Determiner
+                          of:
+                          - a
+                          - all
+                          - phrase:
+                            - all
+                            - other
+                          - an
+                          - another
+                          - any
+                          - both
+                          - each
+                          - enough
+                          - every
+                          - few
+                          - fewer
+                          - her
+                          - his
+                          - its
+                          - less
+                          - little
+                          - many
+                          - much
+                          - more
+                          - most
+                          - multiple
+                          - my
+                          - other
+                          - our
+                          - several
+                          - some
+                          - such
+                          - sufficient
+                          - that
+                          - the
+                          - their
+                          - these
+                          - this
+                          - those
+                          - what
+                          - whatever
+                          - which
+                          - whichever
+                          - whose
+                          - your
+                          macroSnid: ohsu_determiner.determiner
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - closest
+                      - definitive
+                      - final
+                      - nearest
+                      - other
+                      quantifier:
+                        maximum: none
+                        minimum: 0
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - macro:
+                          snid: ohsu_anatomical_location.anatomical_location
+                          pt: Anatomical Location
+                          of:
+                          - alternative:
+                              macroPt: Anatomical Location
+                              of:
+                              - central
+                              - deep
+                              - distal
+                              - peripheral
+                              - proximal
+                              - superficial
+                              - anterior
+                              - dorsal
+                              - inferior
+                              - lateral
+                              - medial
+                              - posterial
+                              - superior
+                              - phrase:
+                                - anterior
+                                - dorsal
+                              - anterior/dorsal
+                              - anterior-dorsal
+                              - phrase:
+                                - anterior
+                                - inferior
+                              - anterior/inferior
+                              - anterior-inferior
+                              - phrase:
+                                - anterior
+                                - lateral
+                              - anterior/lateral
+                              - anterior-lateral
+                              - phrase:
+                                - anterior
+                                - medial
+                              - anterior/medial
+                              - anterior-medial
+                              - phrase:
+                                - anterior
+                                - posterial
+                              - anterior/posterial
+                              - anterior-posterial
+                              - phrase:
+                                - anterior
+                                - superior
+                              - anterior/superior
+                              - anterior-superior
+                              - phrase:
+                                - dorsal
+                                - anterior
+                              - dorsal/anterior
+                              - dorsal-anterior
+                              - phrase:
+                                - dorsal
+                                - inferior
+                              - dorsal/inferior
+                              - dorsal-inferior
+                              - phrase:
+                                - dorsal
+                                - lateral
+                              - dorsal/lateral
+                              - dorsal-lateral
+                              - phrase:
+                                - dorsal
+                                - medial
+                              - dorsal/medial
+                              - dorsal-medial
+                              - phrase:
+                                - dorsal
+                                - posterial
+                              - dorsal/posterial
+                              - dorsal-posterial
+                              - phrase:
+                                - dorsal
+                                - superior
+                              - dorsal/superior
+                              - dorsal-superior
+                              - phrase:
+                                - inferior
+                                - anterior
+                              - inferior/anterior
+                              - inferior-anterior
+                              - phrase:
+                                - inferior
+                                - dorsal
+                              - inferior/dorsal
+                              - inferior-dorsal
+                              - phrase:
+                                - inferior
+                                - lateral
+                              - inferior/lateral
+                              - inferior-lateral
+                              - phrase:
+                                - inferior
+                                - medial
+                              - inferior/medial
+                              - inferior-medial
+                              - phrase:
+                                - inferior
+                                - posterial
+                              - inferior/posterial
+                              - inferior-posterial
+                              - phrase:
+                                - inferior
+                                - superior
+                              - inferior/superior
+                              - inferior-superior
+                              - phrase:
+                                - lateral
+                                - anterior
+                              - lateral/anterior
+                              - lateral-anterior
+                              - phrase:
+                                - lateral
+                                - dorsal
+                              - lateral/dorsal
+                              - lateral-dorsal
+                              - phrase:
+                                - lateral
+                                - inferior
+                              - lateral/inferior
+                              - lateral-inferior
+                              - phrase:
+                                - lateral
+                                - medial
+                              - lateral/medial
+                              - lateral-medial
+                              - phrase:
+                                - lateral
+                                - posterial
+                              - lateral/posterial
+                              - lateral-posterial
+                              - phrase:
+                                - lateral
+                                - superior
+                              - lateral/superior
+                              - lateral-superior
+                              - phrase:
+                                - medial
+                                - anterior
+                              - medial/anterior
+                              - medial-anterior
+                              - phrase:
+                                - medial
+                                - dorsal
+                              - medial/dorsal
+                              - medial-dorsal
+                              - phrase:
+                                - medial
+                                - inferior
+                              - medial/inferior
+                              - medial-inferior
+                              - phrase:
+                                - medial
+                                - lateral
+                              - medial/lateral
+                              - medial-lateral
+                              - phrase:
+                                - medial
+                                - posterial
+                              - medial/posterial
+                              - medial-posterial
+                              - phrase:
+                                - medial
+                                - superior
+                              - medial/superior
+                              - medial-superior
+                              - phrase:
+                                - posterial
+                                - anterior
+                              - posterial/anterior
+                              - posterial-anterior
+                              - phrase:
+                                - posterial
+                                - dorsal
+                              - posterial/dorsal
+                              - posterial-dorsal
+                              - phrase:
+                                - posterial
+                                - inferior
+                              - posterial/inferior
+                              - posterial-inferior
+                              - phrase:
+                                - posterial
+                                - lateral
+                              - posterial/lateral
+                              - posterial-lateral
+                              - phrase:
+                                - posterial
+                                - medial
+                              - posterial/medial
+                              - posterial-medial
+                              - phrase:
+                                - posterial
+                                - superior
+                              - posterial/superior
+                              - posterial-superior
+                              - phrase:
+                                - superior
+                                - anterior
+                              - superior/anterior
+                              - superior-anterior
+                              - phrase:
+                                - superior
+                                - dorsal
+                              - superior/dorsal
+                              - superior-dorsal
+                              - phrase:
+                                - superior
+                                - inferior
+                              - superior/inferior
+                              - superior-inferior
+                              - phrase:
+                                - superior
+                                - lateral
+                              - superior/lateral
+                              - superior-lateral
+                              - phrase:
+                                - superior
+                                - medial
+                              - superior/medial
+                              - superior-medial
+                              - phrase:
+                                - superior
+                                - posterial
+                              - superior/posterial
+                              - superior-posterial
+                              - anterodorsal
+                              - antero-dorsal
+                              - anteroinferior
+                              - antero-inferior
+                              - anterolateral
+                              - antero-lateral
+                              - anteromedial
+                              - antero-medial
+                              - anteroposterial
+                              - antero-posterial
+                              - anterosuperior
+                              - antero-superior
+                              - dorsoanterior
+                              - dorso-anterior
+                              - dorsoinferior
+                              - dorso-inferior
+                              - dorsolateral
+                              - dorso-lateral
+                              - dorsomedial
+                              - dorso-medial
+                              - dorsoposterial
+                              - dorso-posterial
+                              - dorsosuperior
+                              - dorso-superior
+                              - inferoanterior
+                              - infero-anterior
+                              - inferodorsal
+                              - infero-dorsal
+                              - inferolateral
+                              - infero-lateral
+                              - inferomedial
+                              - infero-medial
+                              - inferoposterial
+                              - infero-posterial
+                              - inferosuperior
+                              - infero-superior
+                              - lateroanterior
+                              - latero-anterior
+                              - laterodorsal
+                              - latero-dorsal
+                              - lateroinferior
+                              - latero-inferior
+                              - lateromedial
+                              - latero-medial
+                              - lateroposterial
+                              - latero-posterial
+                              - laterosuperior
+                              - latero-superior
+                              - medioanterior
+                              - medio-anterior
+                              - mediodorsal
+                              - medio-dorsal
+                              - medioinferior
+                              - medio-inferior
+                              - mediolateral
+                              - medio-lateral
+                              - medioposterial
+                              - medio-posterial
+                              - mediosuperior
+                              - medio-superior
+                              - posteroanterior
+                              - postero-anterior
+                              - posterodorsal
+                              - postero-dorsal
+                              - posteroinferior
+                              - postero-inferior
+                              - posterolateral
+                              - postero-lateral
+                              - posteromedial
+                              - postero-medial
+                              - posterosuperior
+                              - postero-superior
+                              - superoanterior
+                              - supero-anterior
+                              - superodorsal
+                              - supero-dorsal
+                              - superoinferior
+                              - supero-inferior
+                              - superolateral
+                              - supero-lateral
+                              - superomedial
+                              - supero-medial
+                              - superoposterial
+                              - supero-posterial
+                              macroSnid: ohsu_anatomical_location.anatomical_location
+                      - macro:
+                          snid: ohsu_margin_decriptor.margin_descriptor
+                          pt: Margin Descriptor
+                          of:
+                          - alternative:
+                              macroPt: Margin Descriptor
+                              of:
+                              - biopsy
+                              - cauterized
+                              - deep
+                              - excision
+                              - inked
+                              - new
+                              - resection
+                              - revised
+                              - sectioned
+                              - specimen
+                              - surgical
+                              macroSnid: ohsu_margin_decriptor.margin_descriptor
+                      - alternative:
+                        - word:
+                            text: edge
+                            morphoVariants: true
+                        - word:
+                            text: margin
+                            morphoVariants: true
+                      quantifier:
+                        maximum: none
+                        minimum: 1
+                - phrase:
+                    of:
+                    - field
+                    - diameter
+                    displayChildren: false
+                - fn
+              quantifier:
+                maximum: 0
+                minimum: 0
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-10-02 16:08:25'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+        - alternative:
+            of:
+            - <
+            - '>'
+            quantifier:
+              maximum: 1
+              minimum: 0
+        - alternative:
+            of:
+            - phrase:
+              - alternative:
+                - phrase:
+                  - class:
+                      unit: length.meter
+                      snid: measurement.length
+                      pt: Length (m)
+                  - phrase:
+                      of:
+                      - word:
+                          text: (
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - AP
+                          - ML
+                          - RL
+                          - SI
+                      - word:
+                          text: )
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                - phrase:
+                  - class:
+                      snid: numerics.numerics
+                      pt: Numerics
+                  - phrase:
+                    - word:
+                        text: (
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - AP
+                        - ML
+                        - RL
+                        - SI
+                    - word:
+                        text: )
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - class:
+                      snid: unit.length
+                      pt: Length
+              - word:
+                  text: focus
+                  morphoVariants: true
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+            - phrase:
+              - alternative:
+                - phrase:
+                  - class:
+                      snid: numerics.numerics
+                      pt: Numerics
+                  - word:
+                      text: microscopic
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                - phrase:
+                  - class:
+                      snid: numerics.numerics
+                      pt: Numerics
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - microscopic
+              - word:
+                  text: focus
+                  morphoVariants: true
+            id: alternative1
+    creationDate: '2018-04-30 10:48:27'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_single_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase2
+        title: tumor size phrase
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - phrase:
+              of:
+              - phrase:
+                - word:
+                    text: x
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+                - word:
+                    text: x
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - +
+                  - and
+                  - but
+                  - to
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - phrase:
+            - word:
+                text: x
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+            - word:
+                text: x
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+          - phrase:
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - +
+                  - and
+                  - but
+                  - to
+              - phrase:
+                - word:
+                    text: x
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/query_lib/tumor_size_base_units_required.i2qy
+                - word:
+                    text: x
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+              quantifier:
+                maximum: 0
+                minimum: 0
+          id: phrase2
+    creationDate: '2018-05-08 14:57:34'
+    version: 6.2
+creationDate: '2018-05-10 08:49:25'
+version: 6.2

@@ -14,7 +14,11 @@ class Directory_manager(object):
     
     #
     def __init__(self, project_data, root_dir_flg, create_dir_flg=True):
-        project_name = project_data['project_name']
+        project_dir = project_data['project_name']
+        try:
+            project_subdir = project_data['project_subdir']
+        except:
+            project_subdir = 'ZZZ'
         server = project_data['acc_server'][0]
         user = project_data['user']
         self.create_dir_flg = create_dir_flg
@@ -44,18 +48,22 @@ class Directory_manager(object):
         nlp_sandbox_root_dir = software_root_dir + '/NLP_Sandbox/' + user
         nlp_data_processing_root_dir = nlp_sandbox_root_dir + '/NLP_Data_Processing'
         nlp_software_root_dir = nlp_sandbox_root_dir + '/NLP_Software'
-        nlp_source_data_root_dir = source_data_root_dir + '/NLP_Source_Data/' + project_name
+        nlp_source_data_root_dir = source_data_root_dir + '/NLP_Source_Data/' + \
+                                   project_dir + '/' + project_subdir
         self.directory_dict = {}
         self.directory_dict['acc_user_dir'] = acc_user_dir
         self._create_directory(nlp_data_processing_root_dir)
         tmp_dir = os.path.join(nlp_data_processing_root_dir, server)
         self._create_directory(tmp_dir)
-        self.directory_dict['processing_data_dir'] = os.path.join(tmp_dir, project_name)
+        processing_tmp_dir = os.path.join(tmp_dir, project_dir)
+        self._create_directory(processing_tmp_dir)
+        self.directory_dict['processing_data_dir'] = \
+            os.path.join(processing_tmp_dir, project_subdir)
         self._create_directory(self.directory_dict['processing_data_dir'])
         self.directory_dict['general_queries_dir'] = \
-            nlp_software_root_dir + '/' + server + '/nlp_lib/i2qy'
+            nlp_software_root_dir + '/' + server + '/linguamatics_i2e_lib/i2qy'
         self.directory_dict['project_queries_dir'] = \
-            nlp_software_root_dir + '/' + server + '/projects_lib/' + project_name + '/i2qy'
+            nlp_software_root_dir + '/' + server + '/projects_lib/' + project_dir + '/i2qy'
         self.directory_dict['raw_data_dir'] = nlp_source_data_root_dir
         self.directory_dict['log_dir'] = \
             os.path.join(self.directory_dict['processing_data_dir'], 'log')

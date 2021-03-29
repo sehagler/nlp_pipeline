@@ -16,8 +16,9 @@ from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
 class Postprocessor_base(Packager_base):
     
     #
-    def __init__(self, label, data_file, data_key_map, data_value_map):
-        Packager_base.__init__(self)
+    def __init__(self, project_data, label, data_file, data_key_map,
+                 data_value_map):
+        Packager_base.__init__(self, project_data)
         self.label = label
         self.data_csv = {}
         try:
@@ -77,12 +78,13 @@ class Postprocessor_base(Packager_base):
         document_frame = []
         for item in data_list:
             entry = []
-            entry.append(tuple([item[1], item[3]]))
-            entry.append(item[4])
+            entry.append(tuple([item[2], item[4]]))
+            entry.append(item[0])
+            entry.append(item[5])
             document_frame.append(entry)
-            num_elements = len(item) - 14
+            num_elements = len(item) - 15
             for i in range(num_elements):
-                entry.append(item[5+i])
+                entry.append(item[6+i])
         return(document_frame)
     
     #
@@ -91,16 +93,19 @@ class Postprocessor_base(Packager_base):
             self.data_dict_list[i][self.nlp_data_key] = {}
             for j in range(len(self.data_dict_list[i]['DOCUMENT_FRAME'])):
                 key = self.data_dict_list[i]['DOCUMENT_FRAME'][j][0]
-                text = self.data_dict_list[i]['DOCUMENT_FRAME'][j][1]
-                if len(self.data_dict_list[i]['DOCUMENT_FRAME'][j]) > 2:
-                    elements = self.data_dict_list[i]['DOCUMENT_FRAME'][j][2:]
+                datetime = self.data_dict_list[i]['DOCUMENT_FRAME'][j][1]
+                text = self.data_dict_list[i]['DOCUMENT_FRAME'][j][2]
+                if len(self.data_dict_list[i]['DOCUMENT_FRAME'][j]) > 3:
+                    elements = self.data_dict_list[i]['DOCUMENT_FRAME'][j][3:]
                 else:
                     elements = []
                 if key not in self.data_dict_list[i][self.nlp_data_key].keys():
                     self.data_dict_list[i][self.nlp_data_key][key] = {}
                     self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
                 if self.nlp_text_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label].keys():
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_datetime_key] = []
                     self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
+                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_datetime_key].append(datetime)
                 self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(text)
                 for j in range(len(elements)):
                     if self.nlp_text_element_key+str(j) not in self.data_dict_list[i][self.nlp_data_key][key][self.label].keys():
@@ -113,7 +118,7 @@ class Postprocessor_base(Packager_base):
             for entry in self.data_dict_list[i]['DOCUMENT_FRAME']:
                 if re.match(match_str, entry[0][0]):
                     key = (entry[0][0], '')
-                    entry_text = entry[1]
+                    entry_text = entry[2]
                     if key not in self.data_dict_list[i][self.nlp_data_key]:
                         self.data_dict_list[i][self.nlp_data_key][key] = {}
                         self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}

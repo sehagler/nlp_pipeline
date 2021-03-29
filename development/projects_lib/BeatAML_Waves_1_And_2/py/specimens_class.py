@@ -19,11 +19,12 @@ from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_jsons_class \
 #
 class Specimens(Specimens_jsons):
     
-    #
-    def __init__(self, directory_manager, nlp_data):
+        #
+    def __init__(self, project_data, nlp_data):
+        directory_manager = project_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
-        Specimens_jsons.__init__(self, directory_manager, nlp_data)
+        Specimens_jsons.__init__(self, project_data, nlp_data)
     
     #                 
     def _evaluate_antibodies_tested(self):
@@ -183,36 +184,3 @@ class Specimens(Specimens_jsons):
         if not data_out:
             data_out = None
         return data_out
-
-    #
-    def _read_data(self, nlp_data):
-        data_json = {}
-        for key in nlp_data.keys():
-            json_tmp = nlp_data[key]
-            doc_name = str(key)
-            mrn = json_tmp[self.metadata_key]['MRN']
-            preprocessed_text = json_tmp[self.nlp_source_text_key]
-            proc_nm = json_tmp[self.metadata_key]['PROC_NM']
-            result_date = json_tmp[self.metadata_key]['RESULT_COMPLETED_DT']
-            specimen_date = json_tmp[self.metadata_key]['SPECIMEN_COLL_DT']
-            data_in = json_tmp[self.nlp_data_key]
-            data_out = self._process_data(data_in)
-            if data_out is not None:
-                doc_label = ''
-                if 'bone marrow' in preprocessed_text.lower():
-                    doc_label += 'BLD'
-                elif 'peripheral blood' in preprocessed_text.lower():
-                    doc_label += 'BLD'
-                if 'CSF' in preprocessed_text:
-                    doc_label += 'CSF'
-                if doc_label == '':
-                    doc_label = 'NA'
-                if mrn not in data_json:
-                    data_json[mrn] = {}
-                if specimen_date not in data_json[mrn]:
-                    data_json[mrn][specimen_date] = {}
-                if proc_nm not in data_json[mrn][specimen_date]:
-                    data_json[mrn][specimen_date][proc_nm] = {}
-                if doc_name not in data_json[mrn][specimen_date][proc_nm].keys():
-                    data_json[mrn][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
-        return data_json

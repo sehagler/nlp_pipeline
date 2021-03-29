@@ -9,14 +9,16 @@ Created on Thu Nov 15 12:12:23 2018
 import os
 
 #
+from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
 from nlp_lib.py.manager_lib.directory_manager_class import Directory_manager
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_json_file, write_json_file
 
 #
-class Metadata_manager(object):
+class Metadata_manager(Packager_base):
     
     #
     def __init__(self, directory_manager):
+        Packager_base.__init__(self)
         self.metadata_json_file = \
             os.path.join(directory_manager.pull_directory('metadata_dir'), 'metadata.json')
         self.metadata_dict_dict = {}
@@ -29,8 +31,13 @@ class Metadata_manager(object):
             self.metadata_dict_dict[key] = metadata_dict_dict_tmp[key]
         
     #
-    def append_metadata_dict(self, metadata_dict_key, metadata_dict):
-        self.metadata_dict_dict[metadata_dict_key] = metadata_dict
+    def append_metadata_dicts(self, metadata_dict_key, source_metadata_dict, 
+                             nlp_metadata_dict):
+        self.metadata_dict_dict[metadata_dict_key] = {}
+        self.metadata_dict_dict[metadata_dict_key][self.metadata_key] = \
+            source_metadata_dict
+        self.metadata_dict_dict[metadata_dict_key][self.nlp_metadata_key] = \
+            nlp_metadata_dict
             
     #
     def get_metadata_dict_dict(self):
@@ -48,7 +55,8 @@ class Metadata_manager(object):
     def merge_copy(self, metadata_manager_copy):
         metadata_dict_dict_add = metadata_manager_copy.get_metadata_dict_dict()
         for key in metadata_dict_dict_add.keys():
-            doc_idx = metadata_dict_dict_add[key]['NLP_DOCUMENT_IDX']
+            doc_idx = \
+                metadata_dict_dict_add[key][self.nlp_metadata_key]['NLP_DOCUMENT_IDX']
             self.metadata_dict_dict[doc_idx] = metadata_dict_dict_add[key]
     
     #

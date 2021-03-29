@@ -93,18 +93,6 @@ class Packager_base(object):
         documents = []
         for key_0 in self.data.keys():
             document_in = self.data[key_0]
-            document_in[self.nlp_metadata_key]['FILENAME'] = \
-                document_in[self.metadata_key]['FILENAME']
-            del document_in[self.metadata_key]['FILENAME']
-            document_in[self.nlp_metadata_key]['NLP_DOCUMENT_IDX'] = \
-                document_in[self.metadata_key]['NLP_DOCUMENT_IDX']
-            del document_in[self.metadata_key]['NLP_DOCUMENT_IDX']
-            document_in[self.nlp_metadata_key]['NLP_MODE'] = \
-                document_in[self.metadata_key]['NLP_MODE']
-            del document_in[self.metadata_key]['NLP_MODE']
-            document_in[self.nlp_metadata_key]['NLP_PROCESS'] = \
-                document_in[self.metadata_key]['NLP_PROCESS']
-            del document_in[self.metadata_key]['NLP_PROCESS']
             document = {}
             for key_1 in document_in.keys():
                 if key_1 != 'RAW_TEXT':

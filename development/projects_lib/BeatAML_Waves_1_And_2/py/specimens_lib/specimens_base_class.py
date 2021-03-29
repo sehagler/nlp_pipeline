@@ -17,8 +17,8 @@ from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
 class Specimens_base(Packager_base):
     
     #
-    def __init__(self):
-        Packager_base.__init__(self)
+    def __init__(self, project_data):
+        Packager_base.__init__(self, project_data)
     
     #
     def _get_deidentifier_keys(self):

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 """
+Created on Tue Mar  2 10:02:08 2021
+
+@author: haglers
+"""
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Jan 04 10:50:12 2019
 
 @author: haglers
@@ -12,7 +18,10 @@ from i2e.wsapi.serialize import Resource
 from i2e.wsapi.task import MakeIndexConfiguration, TaskLauncher
 import json
 import os
+import shutil
+import sys
 import time
+import urllib
 
 #
 class Linguamatics_i2e_client_manager(object):
@@ -24,58 +33,90 @@ class Linguamatics_i2e_client_manager(object):
         self.username = project_data['user']
         self.user = I2EUser(self.username, password)
         self.connection_settings = ClientConnectionSettings.create()
+        self.conn = I2EConnection(self.server, self.user, connection_settings=self.connection_settings,license_pool='admin')
+        
+    #
+    def _folder_downloader(self, request_maker, folder_name, parent_folder, download_folder):
+        folder_content = request_maker.list_resource(folder_name)
+        try:
+            local_folder = os.path.normpath(download_folder + '/' + urllib.parse.unquote(folder_name.uri.replace(parent_folder,'')))
+            os.mkdir(local_folder)
+        except FileExistsError:
+            selection = input('The folder ' + local_folder + ' already exists on your filesystem. Would you like to overwrite (Yes/No)? ')
+            if selection.lower() == 'yes':
+                pass
+            else:
+                sys.exit()
+        for child in folder_content:
+            if child.uri.endswith('.i2qy'):
+                local_filename = os.path.normpath(download_folder + '/' + urllib.parse.unquote(child.uri.replace(parent_folder,'')))
+                with request_maker.read_resource(child, "*/*") as response:
+                    with open(local_filename, "wb") as output:
+                        shutil.copyfileobj(response, output)
+            else:
+                self._folder_downloader(request_maker, child, parent_folder, download_folder)
 
     #
-    def create_resource(self, project_name, resource_type, resource_file):   
-        with I2EConnection(self.server, self.user, connection_settings=self.connection_settings) as conn:
-            conn.login()
-            resource = "/api;type=" + resource_type + "/%s"
-            if project_name is None:
-                source_data_path = Resource(resource %
-                                            os.path.basename(resource_file))
-            else:
-                source_data_path = Resource(resource %
-                                            project_name + '/' + os.path.basename(resource_file))
-            request_maker = RequestMaker(conn)
-            with open(resource_file, 'rb') as source_data:
-                request_maker.create_resource(source_data_path,
-                                              "text/plain", source_data)
+    def create_resource(self, project_name, resource_type, resource_file): 
+        print('Creating I2E resource ' + resource_file)
+        resource = "/api;type=" + resource_type + "/%s"
+        if project_name is None:
+            source_data_path = Resource(resource %
+                                        os.path.basename(resource_file))
+        else:
+            source_data_path = Resource(resource %
+                                        project_name + '/' + os.path.basename(resource_file))
+        request_maker = RequestMaker(self.conn)
+        with open(resource_file, 'rb') as source_data:
+            request_maker.create_resource(source_data_path,
+                                          "text/plain", source_data)
 
     #
     def delete_resource(self, resource):
+        print('Deleting I2E resource ' + resource)
         resource = Resource(resource)
-        with I2EConnection(self.server, self.user, connection_settings=self.connection_settings) as conn:
-            conn.login()
-            request_maker = RequestMaker(conn)
-            request_maker.delete_resource(resource)
+        request_maker = RequestMaker(self.conn)
+        request_maker.delete_resource(resource)
+
+    #
+    def folder_downloader(self, query_folder, local_destination):
+        folder = Resource(query_folder)
+        parent = folder.uri.replace(os.path.basename(os.path.normpath(folder.uri)),'')
+        download_path = os.path.normpath(local_destination) if local_destination is not None else os.path.normpath(os.getcwd())
+        request_maker = RequestMaker(self.conn)
+        self._folder_downloader(request_maker, folder, parent, download_path)
+        
+    #
+    def login(self):
+        self.conn.login()
+        
+    #
+    def logout(self):
+        self.conn.logout()
 
     #
     def make_index_runner(self, index_template, project_name):
+        print('Making I2E index ' + project_name)
         template = Resource(index_template)
-        with I2EConnection(self.server, self.user, connection_settings=self.connection_settings) as conn:
-            conn.login()
-            source_data_path = Resource("/api;type=source_data/%s" %
-                                        project_name)
-            task_launcher = TaskLauncher(conn)
-            index_config = task_launcher.create_index_configuration()
-            index_config.set_source_data(source_data_path)
-            monitor = task_launcher.make_index(template, index_config)
-            while monitor.is_running():
-                time.sleep(5)
-            print("Task status is %s" % monitor.get_status())
+        source_data_path = Resource("/api;type=source_data/%s" %
+                                    project_name)
+        task_launcher = TaskLauncher(self.conn)
+        index_config = task_launcher.create_index_configuration()
+        index_config.set_source_data(source_data_path)
+        monitor = task_launcher.make_index(template, index_config)
+        while monitor.is_running():
+            time.sleep(5)
+        print("Task status is %s" % monitor.get_status())
             
     #
     def set_index_configuration(self, project_name):
-        with I2EConnection(self.server, self.user, connection_settings=self.connection_settings) as conn:
-            conn.login()
-            index_config = MakeIndexConfiguration()
-            index_config.set_source_data("/api;type=source_data/" + project_name)
+        index_config = MakeIndexConfiguration()
+        index_config.set_source_data("/api;type=source_data/" + project_name)
             
     #
     def upload_bundle(self, bundle):
-        with I2EConnection(self.server, self.user, connection_settings=self.connection_settings) as conn:
-            conn.login()
-            request_maker = RequestMaker(conn)
+        print('Uploading I2E bundle ' + bundle)
+        request_maker = RequestMaker(self.conn)
             
         head, tail = os.path.split(bundle)
     
@@ -101,7 +142,7 @@ class Linguamatics_i2e_client_manager(object):
         ## Step 3: Submit the bundle install task
         # Create a barebones "template" containing a references to my repository bundle
         template = {"bundleHandle": unzip_location, "forceUpdate": True, "host": 'localhost', "user": self.username}
-        request_maker2 = RequestMaker(conn)
+        request_maker2 = RequestMaker(self.conn)
         request_config2 = RequestConfiguration()
         request_config2.add_parameter(RequestConfiguration.QueryParameter.BASE, tail)
         install = request_maker2.create_resource(bundle_task_uri, "application/json", json.dumps(template), request_config2)

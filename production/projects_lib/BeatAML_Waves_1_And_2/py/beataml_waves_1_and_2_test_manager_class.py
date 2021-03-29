@@ -17,12 +17,15 @@ class BeatAML_Waves_1_And_2_test_manager(Test_manager):
     
     #
     def __init__(self, project_data, root_dir_flg):
+        project_subdir = project_data['project_subdir']
         user = project_data['user']
-        project_manager_development = BeatAML_Waves_1_And_2_project_manager('development', user, root_dir_flg)
-        project_manager_production = BeatAML_Waves_1_And_2_project_manager('production', user, root_dir_flg)
+        project_manager_development = \
+            BeatAML_Waves_1_And_2_project_manager('development', project_subdir, user, root_dir_flg)
+        project_manager_production = \
+            BeatAML_Waves_1_And_2_project_manager('production', project_subdir, user, root_dir_flg)
         Test_manager.__init__(self, project_manager_development, project_manager_production)
     
     #
-    def data_validation(self):
+    def calculate_performance(self):
         #BeatAML_Waves_1_And_2_validation_manager(self.project_data_development)
         BeatAML_Waves_1_And_2_validation_manager(self.project_data_production)

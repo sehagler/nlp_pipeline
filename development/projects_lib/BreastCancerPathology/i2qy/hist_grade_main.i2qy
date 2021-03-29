@@ -1,9 +1,1875 @@
-version: 6.2
-creationDate: '2018-10-02 19:19:42'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - Union: [hist_grade/hist_grade_phrase_specimens_wrapper.i2qy, hist_grade/hist_grade_phrase_no_specimens_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_grade/hist_grade_phrase_specimens_wrapper.i2qy
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_grade/hist_grade_phrase_no_specimens_wrapper.i2qy
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_mitoses_base.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase2
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+              view:
+                width: 678
+                height: 846
+              of:
+              - phrase:
+                - mitoses
+                - =
+                - alternative:
+                    of:
+                    - phrase:
+                      - (
+                      - phrase:
+                        - word:
+                            matchType: Regexp
+                            text: '[0-3]'
+                        - word:
+                            text: point
+                            morphoVariants: true
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - phrase:
+                            of:
+                            - of
+                            - word:
+                                matchType: Regexp
+                                text: '[0-3]'
+                            - word:
+                                text: point
+                                morphoVariants: true
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                      - )
+                    - phrase:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - phrase:
+                          of:
+                          - of
+                          - word:
+                              matchType: Regexp
+                              text: '[0-3]'
+                          - word:
+                              text: point
+                              morphoVariants: true
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                    - phrase:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - /
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                    - phrase:
+                        of:
+                        - word:
+                            matchType: Regexp
+                            text: '[0-9]*'
+                        - mitoses
+                        - per
+                        - word:
+                            matchType: Regexp
+                            text: '[0-9]*'
+                        - alternative:
+                            view:
+                              layout: list
+                            of:
+                            - hp
+                            - HPF
+                        displayChildren: false
+                    - macro:
+                        snid: ohsu_test_result.test_result
+                        pt: Test Result
+                        of:
+                        - alternative:
+                            macroPt: Test Result
+                            of:
+                            - absent
+                            - amplified
+                            - borderline
+                            - equivocal
+                            - high
+                            - low
+                            - marked
+                            - minimal
+                            - moderate
+                            - negative
+                            - non-amplified
+                            - phrase:
+                              - not
+                              - done
+                            - positive
+                            - present
+                            - unamplified
+                            macroSnid: ohsu_test_result.test_result
+                    - =
+                    quantifier:
+                      maximum: none
+                      minimum: 1
+              - phrase:
+                - alternative:
+                  - phrase:
+                    - word:
+                        text: /
+                        quantifier:
+                          maximum: 0
+                          minimum: 0
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - phrase:
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - /
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                - for
+                - mitoses
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase2
+    creationDate: '2018-09-27 21:22:52'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_sbr_base.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          view:
+            width: 1192
+            height: 749
+          of:
+          - alternative:
+              view:
+                width: 1174
+                height: 712
+              of:
+              - phrase:
+                  view:
+                    width: 1155
+                    height: 334
+                  of:
+                  - phrase:
+                      of:
+                      - phrase:
+                        - alternative:
+                            view:
+                              layout: list
+                              width: 97
+                              height: 80
+                            of:
+                            - high
+                            - intermediate
+                            - low
+                        - word:
+                            text: grade
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - macro:
+                              snid: linguamatics_wc.WC_Conjunction
+                              pt: conjunction
+                              of:
+                              - alternative:
+                                  macroPt: conjunction
+                                  of:
+                                  - '&'
+                                  - after
+                                  - albeit
+                                  - although
+                                  - also
+                                  - and
+                                  - as
+                                  - phrase:
+                                    - as
+                                    - far
+                                    - as
+                                  - because
+                                  - before
+                                  - but
+                                  - either
+                                  - if
+                                  - moreover
+                                  - neither
+                                  - nor
+                                  - once
+                                  - or
+                                  - so
+                                  - than
+                                  - though
+                                  - unless
+                                  - versus
+                                  - vs
+                                  - vs.
+                                  - when
+                                  - whereas
+                                  - whereby
+                                  - whether
+                                  - while
+                                  - whilst
+                                  - yet
+                                  macroSnid: linguamatics_wc.WC_Conjunction
+                          - to
+                          - word:
+                              text: '-'
+                          quantifier:
+                            maximum: none
+                            minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 1
+                  - word:
+                      text: estimated
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                    - phrase:
+                        of:
+                        - word:
+                            text: nottingham
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - alternative:
+                            view:
+                              layout: list
+                            of:
+                            - BR
+                            - SBR
+                            - mBR
+                            - mSBR
+                        - alternative:
+                            view:
+                              layout: list
+                            of:
+                            - word:
+                                text: grade
+                                morphoVariants: true
+                            - word:
+                                text: scale
+                                morphoVariants: true
+                            - word:
+                                text: score
+                                morphoVariants: true
+                            quantifier:
+                              maximum: none
+                              minimum: 0
+                        - word:
+                            text: ':'
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        displayChildren: false
+                    - phrase:
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - BR
+                              - SBR
+                              - mBR
+                              - mSBR
+                          - histologic
+                          - nuclear
+                          quantifier:
+                            maximum: 0
+                            minimum: 0
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - word:
+                              text: grade
+                              morphoVariants: true
+                          - word:
+                              text: scale
+                              morphoVariants: true
+                          - word:
+                              text: score
+                              morphoVariants: true
+                          quantifier:
+                            maximum: none
+                            minimum: 1
+                      - word:
+                          text: ':'
+                          quantifier:
+                            maximum: 0
+                            minimum: 0
+                  - alternative:
+                      of:
+                      - phrase:
+                          of:
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - link:
+                                  path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+                              - link:
+                                  path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                              quantifier:
+                                maximum: none
+                                minimum: 1
+                          - word:
+                              text: ':'
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          displayChildren: false
+                      - of
+                      - =
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - phrase:
+                        - (
+                        - phrase:
+                          - phrase:
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - to
+                                - word:
+                                    text: '-'
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - alternative:
+                                    view:
+                                      layout: list
+                                    of:
+                                    - I
+                                    - word:
+                                        matchType: Regexp
+                                        text: '11'
+                                    - word:
+                                        matchType: Regexp
+                                        text: '111'
+                                - NA
+                                - word:
+                                    matchType: Regexp
+                                    text: '[1-9]'
+                          - phrase:
+                              view:
+                                width: 162
+                                height: 100
+                              of:
+                              - alternative:
+                                  view:
+                                    layout: list
+                                  of:
+                                  - phrase:
+                                    - word:
+                                        text: out
+                                        quantifier:
+                                          maximum: 1
+                                          minimum: 0
+                                    - of
+                                  - /
+                              - alternative:
+                                  view:
+                                    layout: list
+                                  of:
+                                  - word:
+                                      matchType: Regexp
+                                      text: '111'
+                                  - word:
+                                      matchType: Regexp
+                                      text: (3|9)
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          - word:
+                              text: point
+                              morphoVariants: true
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          - phrase:
+                              of:
+                              - macro:
+                                  snid: linguamatics_wc.WC_Punctuation
+                                  pt: punctuation
+                                  of:
+                                  - alternative:
+                                      macroPt: punctuation
+                                      of:
+                                      - ','
+                                      - ;
+                                      - ':'
+                                      - .
+                                      - ''''
+                                      - ''''''
+                                      - '"'
+                                      - “
+                                      - ”
+                                      - «
+                                      - »
+                                      - ‘
+                                      - ’
+                                      - ‚
+                                      - ‛
+                                      - „
+                                      - ‟
+                                      - ‹
+                                      - ›
+                                      - (
+                                      - )
+                                      - '['
+                                      - ']'
+                                      - /
+                                      - '!'
+                                      - '?'
+                                      - '{'
+                                      - '}'
+                                      - word:
+                                          text: '-'
+                                      - '~'
+                                      - '...'
+                                      - '***'
+                                      - _
+                                      - \
+                                      macroSnid: linguamatics_wc.WC_Punctuation
+                                  quantifier:
+                                    maximum: 1
+                                    minimum: 0
+                              - phrase:
+                                - alternative:
+                                    view:
+                                      layout: list
+                                      width: 97
+                                      height: 80
+                                    of:
+                                    - high
+                                    - intermediate
+                                    - low
+                                - word:
+                                    text: grade
+                                    quantifier:
+                                      maximum: 1
+                                      minimum: 0
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                        - )
+                      - phrase:
+                        - phrase:
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - to
+                              - word:
+                                  text: '-'
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - alternative:
+                                  view:
+                                    layout: list
+                                  of:
+                                  - I
+                                  - word:
+                                      matchType: Regexp
+                                      text: '11'
+                                  - word:
+                                      matchType: Regexp
+                                      text: '111'
+                              - NA
+                              - word:
+                                  matchType: Regexp
+                                  text: '[1-9]'
+                        - phrase:
+                            view:
+                              width: 162
+                              height: 100
+                            of:
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - phrase:
+                                  - word:
+                                      text: out
+                                      quantifier:
+                                        maximum: 1
+                                        minimum: 0
+                                  - of
+                                - /
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - word:
+                                    matchType: Regexp
+                                    text: '111'
+                                - word:
+                                    matchType: Regexp
+                                    text: (3|9)
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - word:
+                            text: point
+                            morphoVariants: true
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - phrase:
+                            of:
+                            - macro:
+                                snid: linguamatics_wc.WC_Punctuation
+                                pt: punctuation
+                                of:
+                                - alternative:
+                                    macroPt: punctuation
+                                    of:
+                                    - ','
+                                    - ;
+                                    - ':'
+                                    - .
+                                    - ''''
+                                    - ''''''
+                                    - '"'
+                                    - “
+                                    - ”
+                                    - «
+                                    - »
+                                    - ‘
+                                    - ’
+                                    - ‚
+                                    - ‛
+                                    - „
+                                    - ‟
+                                    - ‹
+                                    - ›
+                                    - (
+                                    - )
+                                    - '['
+                                    - ']'
+                                    - /
+                                    - '!'
+                                    - '?'
+                                    - '{'
+                                    - '}'
+                                    - word:
+                                        text: '-'
+                                    - '~'
+                                    - '...'
+                                    - '***'
+                                    - _
+                                    - \
+                                    macroSnid: linguamatics_wc.WC_Punctuation
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            - phrase:
+                              - alternative:
+                                  view:
+                                    layout: list
+                                    width: 97
+                                    height: 80
+                                  of:
+                                  - high
+                                  - intermediate
+                                  - low
+                              - word:
+                                  text: grade
+                                  quantifier:
+                                    maximum: 1
+                                    minimum: 0
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 0
+              - phrase:
+                  view:
+                    width: 853
+                    height: 333
+                  of:
+                  - word:
+                      text: estimated
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                    - phrase:
+                        of:
+                        - word:
+                            text: nottingham
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - alternative:
+                            view:
+                              layout: list
+                            of:
+                            - BR
+                            - SBR
+                            - mBR
+                            - mSBR
+                        - alternative:
+                            view:
+                              layout: list
+                            of:
+                            - word:
+                                text: grade
+                                morphoVariants: true
+                            - word:
+                                text: scale
+                                morphoVariants: true
+                            - word:
+                                text: score
+                                morphoVariants: true
+                            quantifier:
+                              maximum: none
+                              minimum: 0
+                        - word:
+                            text: ':'
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        displayChildren: false
+                    - phrase:
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - BR
+                              - SBR
+                              - mBR
+                              - mSBR
+                          - histologic
+                          - nuclear
+                          quantifier:
+                            maximum: 0
+                            minimum: 0
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - word:
+                              text: grade
+                              morphoVariants: true
+                          - word:
+                              text: scale
+                              morphoVariants: true
+                          - word:
+                              text: score
+                              morphoVariants: true
+                          quantifier:
+                            maximum: none
+                            minimum: 1
+                      - word:
+                          text: ':'
+                          quantifier:
+                            maximum: 0
+                            minimum: 0
+                  - alternative:
+                      of:
+                      - phrase:
+                          of:
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - link:
+                                  path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+                              - link:
+                                  path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                              quantifier:
+                                maximum: none
+                                minimum: 1
+                          - word:
+                              text: ':'
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          displayChildren: false
+                      - of
+                      - =
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - phrase:
+                        - (
+                        - phrase:
+                          - phrase:
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - to
+                                - word:
+                                    text: '-'
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - alternative:
+                                    view:
+                                      layout: list
+                                    of:
+                                    - I
+                                    - word:
+                                        matchType: Regexp
+                                        text: '11'
+                                    - word:
+                                        matchType: Regexp
+                                        text: '111'
+                                - NA
+                                - word:
+                                    matchType: Regexp
+                                    text: '[1-9]'
+                          - phrase:
+                              view:
+                                width: 162
+                                height: 100
+                              of:
+                              - alternative:
+                                  view:
+                                    layout: list
+                                  of:
+                                  - phrase:
+                                    - word:
+                                        text: out
+                                        quantifier:
+                                          maximum: 1
+                                          minimum: 0
+                                    - of
+                                  - /
+                              - alternative:
+                                  view:
+                                    layout: list
+                                  of:
+                                  - word:
+                                      matchType: Regexp
+                                      text: '111'
+                                  - word:
+                                      matchType: Regexp
+                                      text: (3|9)
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          - word:
+                              text: point
+                              morphoVariants: true
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          - phrase:
+                              of:
+                              - macro:
+                                  snid: linguamatics_wc.WC_Punctuation
+                                  pt: punctuation
+                                  of:
+                                  - alternative:
+                                      macroPt: punctuation
+                                      of:
+                                      - ','
+                                      - ;
+                                      - ':'
+                                      - .
+                                      - ''''
+                                      - ''''''
+                                      - '"'
+                                      - “
+                                      - ”
+                                      - «
+                                      - »
+                                      - ‘
+                                      - ’
+                                      - ‚
+                                      - ‛
+                                      - „
+                                      - ‟
+                                      - ‹
+                                      - ›
+                                      - (
+                                      - )
+                                      - '['
+                                      - ']'
+                                      - /
+                                      - '!'
+                                      - '?'
+                                      - '{'
+                                      - '}'
+                                      - word:
+                                          text: '-'
+                                      - '~'
+                                      - '...'
+                                      - '***'
+                                      - _
+                                      - \
+                                      macroSnid: linguamatics_wc.WC_Punctuation
+                                  quantifier:
+                                    maximum: 1
+                                    minimum: 0
+                              - phrase:
+                                - alternative:
+                                    view:
+                                      layout: list
+                                      width: 97
+                                      height: 80
+                                    of:
+                                    - high
+                                    - intermediate
+                                    - low
+                                - word:
+                                    text: grade
+                                    quantifier:
+                                      maximum: 1
+                                      minimum: 0
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                        - )
+                      - phrase:
+                        - phrase:
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - to
+                              - word:
+                                  text: '-'
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          - alternative:
+                              view:
+                                layout: list
+                              of:
+                              - alternative:
+                                  view:
+                                    layout: list
+                                  of:
+                                  - I
+                                  - word:
+                                      matchType: Regexp
+                                      text: '11'
+                                  - word:
+                                      matchType: Regexp
+                                      text: '111'
+                              - NA
+                              - word:
+                                  matchType: Regexp
+                                  text: '[1-9]'
+                        - phrase:
+                            view:
+                              width: 162
+                              height: 100
+                            of:
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - phrase:
+                                  - word:
+                                      text: out
+                                      quantifier:
+                                        maximum: 1
+                                        minimum: 0
+                                  - of
+                                - /
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - word:
+                                    matchType: Regexp
+                                    text: '111'
+                                - word:
+                                    matchType: Regexp
+                                    text: (3|9)
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - word:
+                            text: point
+                            morphoVariants: true
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - phrase:
+                            of:
+                            - macro:
+                                snid: linguamatics_wc.WC_Punctuation
+                                pt: punctuation
+                                of:
+                                - alternative:
+                                    macroPt: punctuation
+                                    of:
+                                    - ','
+                                    - ;
+                                    - ':'
+                                    - .
+                                    - ''''
+                                    - ''''''
+                                    - '"'
+                                    - “
+                                    - ”
+                                    - «
+                                    - »
+                                    - ‘
+                                    - ’
+                                    - ‚
+                                    - ‛
+                                    - „
+                                    - ‟
+                                    - ‹
+                                    - ›
+                                    - (
+                                    - )
+                                    - '['
+                                    - ']'
+                                    - /
+                                    - '!'
+                                    - '?'
+                                    - '{'
+                                    - '}'
+                                    - word:
+                                        text: '-'
+                                    - '~'
+                                    - '...'
+                                    - '***'
+                                    - _
+                                    - \
+                                    macroSnid: linguamatics_wc.WC_Punctuation
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            - phrase:
+                              - alternative:
+                                  view:
+                                    layout: list
+                                    width: 97
+                                    height: 80
+                                  of:
+                                  - high
+                                  - intermediate
+                                  - low
+                              - word:
+                                  text: grade
+                                  quantifier:
+                                    maximum: 1
+                                    minimum: 0
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 1
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2018-06-06 11:37:45'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_tubules_base.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase2
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+              view:
+                width: 684
+                height: 738
+              of:
+              - phrase:
+                - tubules
+                - =
+                - alternative:
+                    of:
+                    - phrase:
+                      - (
+                      - phrase:
+                        - word:
+                            matchType: Regexp
+                            text: '[0-3]'
+                        - word:
+                            text: point
+                            morphoVariants: true
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - phrase:
+                            of:
+                            - of
+                            - word:
+                                matchType: Regexp
+                                text: '[0-3]'
+                            - word:
+                                text: point
+                                morphoVariants: true
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                      - )
+                    - phrase:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - phrase:
+                          of:
+                          - of
+                          - word:
+                              matchType: Regexp
+                              text: '[0-3]'
+                          - word:
+                              text: point
+                              morphoVariants: true
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                    - phrase:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - /
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                    - macro:
+                        snid: ohsu_test_result.test_result
+                        pt: Test Result
+                        of:
+                        - alternative:
+                            macroPt: Test Result
+                            of:
+                            - absent
+                            - amplified
+                            - borderline
+                            - equivocal
+                            - high
+                            - low
+                            - marked
+                            - minimal
+                            - moderate
+                            - negative
+                            - non-amplified
+                            - phrase:
+                              - not
+                              - done
+                            - positive
+                            - present
+                            - unamplified
+                            macroSnid: ohsu_test_result.test_result
+                    quantifier:
+                      maximum: none
+                      minimum: 1
+              - phrase:
+                - alternative:
+                  - phrase:
+                    - word:
+                        text: /
+                        quantifier:
+                          maximum: 0
+                          minimum: 0
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - phrase:
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - /
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                - for
+                - nuclei
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase2
+    creationDate: '2018-09-27 21:28:56'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - class:
+              snid: snomed.76752008
+              pt: Breast structure
+          - class:
+              snid: snomed.69031006
+              pt: Excision of breast tissue
+          - mastectomy
+          - breast
+          id: alternative1
+    creationDate: '2018-05-11 10:17:50'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_grade/hist_grade_phrase_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.rpt_text
+          pt: Report Text
+          where:
+          - region:
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+                  id: region1
+              - region:
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - region:
+                      snid: hc.specimen
+                      pt: Specimen Description
+                      where:
+                      - shadowRegion:
+                          snid: hc.specimen_id
+                          pt: Specimen Id
+                          id: shadow region1
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/hist_grade_query.i2qy
+                          id: link2
+    creationDate: '2018-05-09 15:31:44'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_nuclei_base.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase2
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+              view:
+                width: 739
+                height: 701
+              of:
+              - phrase:
+                - word:
+                    text: '#'
+                    quantifier:
+                      maximum: 0
+                      minimum: 0
+                - nuclei
+                - =
+                - alternative:
+                    of:
+                    - phrase:
+                      - (
+                      - phrase:
+                        - word:
+                            matchType: Regexp
+                            text: '[0-3]'
+                        - word:
+                            text: point
+                            morphoVariants: true
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - phrase:
+                            of:
+                            - of
+                            - word:
+                                matchType: Regexp
+                                text: '[0-3]'
+                            - word:
+                                text: point
+                                morphoVariants: true
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                      - )
+                    - phrase:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - phrase:
+                          of:
+                          - of
+                          - word:
+                              matchType: Regexp
+                              text: '[0-3]'
+                          - word:
+                              text: point
+                              morphoVariants: true
+                              quantifier:
+                                maximum: 1
+                                minimum: 0
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                    - phrase:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - /
+                      - word:
+                          matchType: Regexp
+                          text: '[0-3]'
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                    - macro:
+                        snid: ohsu_test_result.test_result
+                        pt: Test Result
+                        of:
+                        - alternative:
+                            macroPt: Test Result
+                            of:
+                            - absent
+                            - amplified
+                            - borderline
+                            - equivocal
+                            - high
+                            - low
+                            - marked
+                            - minimal
+                            - moderate
+                            - negative
+                            - non-amplified
+                            - phrase:
+                              - not
+                              - done
+                            - positive
+                            - present
+                            - unamplified
+                            macroSnid: ohsu_test_result.test_result
+                    quantifier:
+                      maximum: none
+                      minimum: 1
+              - phrase:
+                - alternative:
+                  - phrase:
+                    - word:
+                        text: /
+                        quantifier:
+                          maximum: 0
+                          minimum: 0
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - phrase:
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - /
+                    - word:
+                        matchType: Regexp
+                        text: '[0-3]'
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                - for
+                - nuclei
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase2
+    creationDate: '2018-09-27 21:28:54'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - alternative:
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_grade/hist_grade_phrase_no_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.rpt_text
+          pt: Report Text
+          where:
+          - region:
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+                  id: region1
+              - region:
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - region:
+                      snid: hc.specimen
+                      pt: Specimen Description
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/hist_grade_query.i2qy
+                      id: link2
+    creationDate: '2018-05-09 15:26:11'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/hist_grade_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        boundaries: Exact
+        allRows: true
+        allTime: true
+    summary: ''
+    creator: Bubz
+    comments: ''
+    approxQueryTime: ''
+    query:
+      document:
+      - phrase:
+          multiSentence: true
+          of:
+          - phrase:
+              of:
+              - Grade
+              - ':'
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - phrase:
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                  quantifier:
+                    maximum: none
+                    minimum: 1
+              - word:
+                  text: ':'
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              displayChildren: false
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - phrase:
+              multiSentence: true
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_sbr_base.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_mitoses_base.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_nuclei_base.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_tubules_base.i2qy
+              - phrase:
+                  multiSentence: true
+                  of:
+                  - (
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_sbr_base.i2qy
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_mitoses_base.i2qy
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_nuclei_base.i2qy
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/query_lib/hist_tubules_base.i2qy
+                  - )
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              findMatches: longestOnly
+              id: phrase1
+    description: ''
+    useInSmartQuery: true
+    title: ''
+    creationDate: '2015-10-07 16:40:22'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+              view:
+                width: 411
+                height: 535
+              of:
+              - phrase:
+                  view:
+                    width: 392
+                    height: 370
+                  allowOverlap: true
+                  of:
+                  - phrase:
+                      of:
+                      - alternative:
+                        - macro:
+                            snid: linguamatics_wc.WC_Adverb
+                            pt: adverb
+                            of:
+                            - alternative:
+                                macroPt: adverb
+                                of:
+                                - additionally
+                                - after
+                                - afterwards
+                                - again
+                                - ago
+                                - phrase:
+                                  - all
+                                  - over
+                                - almost
+                                - already
+                                - also
+                                - always
+                                - anyhow
+                                - anyway
+                                - anywhere
+                                - approximately
+                                - phrase:
+                                  - as
+                                  - well
+                                - back
+                                - before
+                                - beforehand
+                                - besides
+                                - earlier
+                                - early
+                                - either
+                                - else
+                                - enough
+                                - especially
+                                - essentially
+                                - even
+                                - ever
+                                - everywhere
+                                - far
+                                - further
+                                - hardly
+                                - hence
+                                - here
+                                - hither
+                                - how
+                                - however
+                                - indeed
+                                - immediately
+                                - phrase:
+                                  - in
+                                  - particular
+                                - instead
+                                - just
+                                - late
+                                - later
+                                - less
+                                - likely
+                                - maybe
+                                - more
+                                - most
+                                - much
+                                - nearby
+                                - nearly
+                                - never
+                                - not
+                                - now
+                                - nowhere
+                                - often
+                                - oftentimes
+                                - once
+                                - only
+                                - otherwise
+                                - overall
+                                - particularly
+                                - perhaps
+                                - possibly
+                                - presumably
+                                - probably
+                                - quite
+                                - rarely
+                                - rather
+                                - recently
+                                - relatively
+                                - respectively
+                                - seldom
+                                - so
+                                - somehow
+                                - sometimes
+                                - someway
+                                - somewhere
+                                - soon
+                                - specially
+                                - still
+                                - substantially
+                                - sufficiently
+                                - then
+                                - thence
+                                - there
+                                - thereafter
+                                - thereby
+                                - therefore
+                                - therein
+                                - thereto
+                                - thither
+                                - thus
+                                - today
+                                - tomorrow
+                                - too
+                                - twice
+                                - usually
+                                - very
+                                - well
+                                - whence
+                                - whither
+                                - 'yes'
+                                - yet
+                                - yesterday
+                                macroSnid: linguamatics_wc.WC_Adverb
+                        - moderately
+                        - poorly
+                        - squamous
+                        - well
+                      - alternative:
+                          view:
+                            width: 136
+                            height: 135
+                          of:
+                          - class: /prep
+                          - macro:
+                              snid: linguamatics_wc.WC_Conjunction
+                              pt: conjunction
+                              of:
+                              - alternative:
+                                  macroPt: conjunction
+                                  of:
+                                  - '&'
+                                  - after
+                                  - albeit
+                                  - although
+                                  - also
+                                  - and
+                                  - as
+                                  - phrase:
+                                    - as
+                                    - far
+                                    - as
+                                  - because
+                                  - before
+                                  - but
+                                  - either
+                                  - if
+                                  - moreover
+                                  - neither
+                                  - nor
+                                  - once
+                                  - or
+                                  - so
+                                  - than
+                                  - though
+                                  - unless
+                                  - versus
+                                  - vs
+                                  - vs.
+                                  - when
+                                  - whereas
+                                  - whereby
+                                  - whether
+                                  - while
+                                  - whilst
+                                  - yet
+                                  macroSnid: linguamatics_wc.WC_Conjunction
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 0
+                  - word:
+                      matchType: Wildcard
+                      text: differentiated
+              - phrase:
+                  view:
+                    width: 199
+                    height: 118
+                  allowOverlap: true
+                  of:
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - lobular
+                      - globular
+                      - tubular
+                  - word:
+                      matchType: Wildcard
+                      text: differentiation
+          findMatches: longestOnly
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-05-10 13:54:46'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+creationDate: '2018-10-02 19:19:42'
+version: 6.2

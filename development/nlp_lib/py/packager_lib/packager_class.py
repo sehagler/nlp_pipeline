@@ -19,10 +19,9 @@ class Packager(Packager_base):
     
     #
     def __init__(self, project_data):
-        Packager_base.__init__(self)
+        Packager_base.__init__(self, project_data)
         self.directory_manager = project_data['directory_manager']
         self.load_dir = self.directory_manager.pull_directory('postprocessing_data_out')
-        self.save_dir = self.directory_manager.pull_directory('processing_data_dir')
         self.project_name = project_data['project_name']
         self._create_data_json()
         self._save_data_json()

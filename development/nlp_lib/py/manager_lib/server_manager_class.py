@@ -17,8 +17,7 @@ class Server_manager(object):
     
     #
     def __init__(self, project_data, password):
-        self.server = project_data['acc_server']
-        self.server = self.server[1]
+        self.server = project_data['acc_server'][1]
         self.user = project_data['user']
         self.password = password
         

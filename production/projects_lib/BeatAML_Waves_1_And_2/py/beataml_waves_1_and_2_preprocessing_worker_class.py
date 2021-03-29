@@ -27,7 +27,7 @@ class BeatAML_Waves_1_And_2_preprocessing_worker(Preprocessing_worker):
         
     #
     def _preprocess_documents(self, raw_data_reader, start_idx, document_ctr, 
-                              fail_ctr):
+                              fail_ctr, password):
         document_value_dict = raw_data_reader.get_document_values()
         for data_file in document_value_dict:
             for document_value_key in sorted(document_value_dict[data_file].keys()):
@@ -38,7 +38,7 @@ class BeatAML_Waves_1_And_2_preprocessing_worker(Preprocessing_worker):
                     document_ctr, fail_ctr = \
                         self._preprocess_document(raw_data_reader, data_tmp, 
                                                   start_idx, document_ctr, 
-                                                  fail_ctr)
+                                                  fail_ctr, password)
         return document_ctr, fail_ctr
     
     #

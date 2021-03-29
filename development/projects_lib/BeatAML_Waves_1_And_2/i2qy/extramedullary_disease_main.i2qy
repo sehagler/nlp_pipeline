@@ -1,11 +1,443 @@
-version: 6.2
-creationDate: '2018-10-26 16:08:10'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
-  - ../General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
   - Union:
-    - extramedullary_disease/extramedullary_disease_specimens_wrapper.i2qy
-    - Subtraction: [extramedullary_disease/extramedullary_disease_sections_wrapper.i2qy, extramedullary_disease/extramedullary_disease_specimen_description_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+    - /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/extramedullary_disease/extramedullary_disease_specimens_wrapper.i2qy
+    - Subtraction:
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/extramedullary_disease/extramedullary_disease_sections_wrapper.i2qy
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/extramedullary_disease/extramedullary_disease_specimen_description_wrapper.i2qy
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/General/cancer/extramedullary_disease/extramedullary_disease_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - extramedullary
+          - alternative:
+              of:
+              - class:
+                  snid: nlm_plus.0
+                  pt: Diseases
+              - phrase:
+                - AML
+                - phrase:
+                    of:
+                    - alternative:
+                      - class: /prep
+                      - macro:
+                          snid: linguamatics_wc.WC_Preposition
+                          pt: preposition
+                          of:
+                          - alternative:
+                              macroPt: preposition
+                              of:
+                              - aboard
+                              - about
+                              - above
+                              - absent
+                              - phrase:
+                                - according
+                                - to
+                              - across
+                              - after
+                              - against
+                              - phrase:
+                                - ahead
+                                - of
+                              - phrase:
+                                - all
+                                - over
+                              - along
+                              - alongside
+                              - amid
+                              - amidst
+                              - among
+                              - amongst
+                              - anti
+                              - around
+                              - as
+                              - phrase:
+                                - as
+                                - far
+                                - as
+                              - aside
+                              - phrase:
+                                - as
+                                - of
+                              - phrase:
+                                - as
+                                - to
+                              - astraddle
+                              - astride
+                              - at
+                              - atop
+                              - phrase:
+                                - because
+                                - of
+                              - before
+                              - behind
+                              - below
+                              - beneath
+                              - beside
+                              - besides
+                              - between
+                              - beyond
+                              - but
+                              - by
+                              - circa
+                              - despite
+                              - down
+                              - during
+                              - except
+                              - phrase:
+                                - except
+                                - for
+                              - for
+                              - from
+                              - given
+                              - in
+                              - phrase:
+                                - in
+                                - addition
+                                - to
+                              - phrase:
+                                - in
+                                - between
+                              - phrase:
+                                - in
+                                - case
+                                - of
+                              - phrase:
+                                - in
+                                - place
+                                - of
+                              - inside
+                              - phrase:
+                                - in
+                                - spite
+                                - of
+                              - phrase:
+                                - instead
+                                - of
+                              - into
+                              - less
+                              - lest
+                              - like
+                              - minus
+                              - near
+                              - phrase:
+                                - near
+                                - to
+                              - next
+                              - phrase:
+                                - next
+                                - to
+                              - notwithstanding
+                              - of
+                              - 'off'
+                              - 'on'
+                              - phrase:
+                                - 'on'
+                                - account
+                                - of
+                              - phrase:
+                                - 'on'
+                                - top
+                                - of
+                              - onto
+                              - opposite
+                              - phrase:
+                                - other
+                                - than
+                              - out
+                              - phrase:
+                                - out
+                                - of
+                              - outside
+                              - phrase:
+                                - outside
+                                - of
+                              - over
+                              - past
+                              - per
+                              - plus
+                              - save
+                              - since
+                              - through
+                              - throughout
+                              - till
+                              - to
+                              - toward
+                              - towards
+                              - under
+                              - underneath
+                              - unlike
+                              - until
+                              - unto
+                              - up
+                              - phrase:
+                                - up
+                                - to
+                              - upon
+                              - versus
+                              - vs
+                              - vs.
+                              - via
+                              - with
+                              - within
+                              - without
+                              macroSnid: linguamatics_wc.WC_Preposition
+                    - ALL
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+              - disease
+              - involvement
+              - phrase:
+                  of:
+                  - myeloid
+                  - tumor
+                  displayChildren: false
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2019-01-30 00:13:24'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/extramedullary_disease/extramedullary_disease_specimens_wrapper.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - shadowRegion:
+                      snid: hc.specimen_id
+                      pt: Specimen Id
+                      id: shadow region1
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/extramedullary_disease/extramedullary_disease_query.i2qy
+                      id: link1
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 16:03:06'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/extramedullary_disease/extramedullary_disease_specimen_description_wrapper.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/extramedullary_disease/extramedullary_disease_query.i2qy
+                      id: link1
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 16:03:06'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/tools_lib/document_filter_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - region:
+              view:
+                width: 316
+                height: 336
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  view:
+                    width: 96
+                    height: 82
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+              - region:
+                  snid: hc.section_body
+                  showWholeRegion: true
+                  pt: Section Body
+                  columnOptions:
+                  - Text
+                  where:
+                  - alternative:
+                    - phrase:
+                        of:
+                        - bone
+                        - marrow
+                        displayChildren: false
+                    - CSF
+                    - phrase:
+                        of:
+                        - word:
+                            text: peripheral
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - blood
+                        displayChildren: false
+          id: alternative1
+    creationDate: '2019-01-30 22:16:19'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/extramedullary_disease/extramedullary_disease_sections_wrapper.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          view:
+            width: 346
+            height: 121
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              id: region1
+          - region:
+              snid: hc.section_body
+              showWholeRegion: true
+              pt: Section Body
+              columnOptions:
+              - Text
+              where:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/extramedullary_disease/extramedullary_disease_query.i2qy
+                  id: link2
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 15:56:12'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+creationDate: '2018-10-26 16:08:10'
+version: 6.2

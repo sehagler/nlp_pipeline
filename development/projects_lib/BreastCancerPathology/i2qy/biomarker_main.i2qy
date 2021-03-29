@@ -1,18 +1,750 @@
-version: 6.2
+output:
+  useOutputEditor: true
+  columns:
+  - itemOptions: {}
+    id: region1
+  - itemOptions: {}
+    id: And1
+  - itemOptions: {}
+    id: region1
+  - itemOptions: {}
+    id: shadow region1
+  - itemOptions: {}
+    id: phrase1
+  outputSettings:
+    allResults: true
+    allRows: true
+    hitsPerDocPerAssertion: 1
+    outputOrdering: alpha
+    allTime: true
+creator: edingert
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - Union: [biomarkers/biomarker_specimens_wrapper.i2qy, biomarkers/biomarker_no_specimens_wrapper.i2qy]
-output:
-  columns:
-  - id: region1
-    itemOptions: {}
-  - id: region1
-    itemOptions: {}
-  - id: shadow region1
-    itemOptions: {}
-  - id: phrase1
-    itemOptions: {}
-  outputSettings: {allResults: true, allRows: true, allTime: true, hitsPerDocPerAssertion: 1, outputOrdering: alpha}
-  useOutputEditor: true
-creator: edingert
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/biomarkers/biomarker_specimens_wrapper.i2qy
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/biomarkers/biomarker_no_specimens_wrapper.i2qy
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/biomarkers/biomarker_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      - id: shadow region1
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.rpt_text
+          pt: Report Text
+          where:
+          - region:
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+                  id: region1
+              - region:
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - region:
+                      snid: hc.specimen
+                      pt: Specimen Description
+                      where:
+                      - shadowRegion:
+                          snid: hc.specimen_id
+                          pt: Specimen Id
+                          id: shadow region1
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                      - phrase:
+                          of:
+                          - link:
+                              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/biomarker_query.i2qy
+                          id: phrase1
+    creationDate: '2020-03-06 17:26:46'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          view:
+            width: 1068
+            height: 826
+          of:
+          - phrase:
+              of:
+              - phrase:
+                - alternative:
+                    of:
+                    - macro:
+                        snid: linguamatics_wc.WC_Conjunction
+                        pt: conjunction
+                        of:
+                        - alternative:
+                            macroPt: conjunction
+                            of:
+                            - '&'
+                            - after
+                            - albeit
+                            - although
+                            - also
+                            - and
+                            - as
+                            - phrase:
+                              - as
+                              - far
+                              - as
+                            - because
+                            - before
+                            - but
+                            - either
+                            - if
+                            - moreover
+                            - neither
+                            - nor
+                            - once
+                            - or
+                            - so
+                            - than
+                            - though
+                            - unless
+                            - versus
+                            - vs
+                            - vs.
+                            - when
+                            - whereas
+                            - whereby
+                            - whether
+                            - while
+                            - whilst
+                            - yet
+                            macroSnid: linguamatics_wc.WC_Conjunction
+                    - class: /prep
+                    quantifier:
+                      maximum: 1
+                      minimum: 0
+                - alternative:
+                  - phrase:
+                    - phrase:
+                        of:
+                        - phrase:
+                            of:
+                            - alternative:
+                                view:
+                                  layout: list
+                                of:
+                                - completely
+                                - diffusely
+                                - focally
+                                - strong
+                                - strongly
+                                - weak
+                                - weakly
+                            - macro:
+                                snid: linguamatics_wc.WC_Conjunction
+                                pt: conjunction
+                                of:
+                                - alternative:
+                                    macroPt: conjunction
+                                    of:
+                                    - '&'
+                                    - after
+                                    - albeit
+                                    - although
+                                    - also
+                                    - and
+                                    - as
+                                    - phrase:
+                                      - as
+                                      - far
+                                      - as
+                                    - because
+                                    - before
+                                    - but
+                                    - either
+                                    - if
+                                    - moreover
+                                    - neither
+                                    - nor
+                                    - once
+                                    - or
+                                    - so
+                                    - than
+                                    - though
+                                    - unless
+                                    - versus
+                                    - vs
+                                    - vs.
+                                    - when
+                                    - whereas
+                                    - whereby
+                                    - whether
+                                    - while
+                                    - whilst
+                                    - yet
+                                    macroSnid: linguamatics_wc.WC_Conjunction
+                                quantifier:
+                                  maximum: 1
+                                  minimum: 0
+                            quantifier:
+                              maximum: none
+                              minimum: 0
+                        - macro:
+                            snid: ohsu_test_result.test_result
+                            pt: Test Result
+                            of:
+                            - alternative:
+                                macroPt: Test Result
+                                of:
+                                - absent
+                                - amplified
+                                - borderline
+                                - equivocal
+                                - high
+                                - low
+                                - marked
+                                - minimal
+                                - moderate
+                                - negative
+                                - non-amplified
+                                - phrase:
+                                  - not
+                                  - done
+                                - positive
+                                - present
+                                - unamplified
+                                macroSnid: ohsu_test_result.test_result
+                            boundaries: Exact
+                        - word:
+                            text: staining
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - macro:
+                            snid: linguamatics_wc.WC_Conjunction
+                            pt: conjunction
+                            of:
+                            - alternative:
+                                macroPt: conjunction
+                                of:
+                                - '&'
+                                - after
+                                - albeit
+                                - although
+                                - also
+                                - and
+                                - as
+                                - phrase:
+                                  - as
+                                  - far
+                                  - as
+                                - because
+                                - before
+                                - but
+                                - either
+                                - if
+                                - moreover
+                                - neither
+                                - nor
+                                - once
+                                - or
+                                - so
+                                - than
+                                - though
+                                - unless
+                                - versus
+                                - vs
+                                - vs.
+                                - when
+                                - whereas
+                                - whereby
+                                - whether
+                                - while
+                                - whilst
+                                - yet
+                                macroSnid: linguamatics_wc.WC_Conjunction
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        quantifier:
+                          maximum: none
+                          minimum: 1
+                    - macro:
+                        snid: linguamatics_wc.WC_Punctuation
+                        pt: punctuation
+                        of:
+                        - alternative:
+                            macroPt: punctuation
+                            of:
+                            - ','
+                            - ;
+                            - ':'
+                            - .
+                            - ''''
+                            - ''''''
+                            - '"'
+                            - “
+                            - ”
+                            - «
+                            - »
+                            - ‘
+                            - ’
+                            - ‚
+                            - ‛
+                            - „
+                            - ‟
+                            - ‹
+                            - ›
+                            - (
+                            - )
+                            - '['
+                            - ']'
+                            - /
+                            - '!'
+                            - '?'
+                            - '{'
+                            - '}'
+                            - word:
+                                text: '-'
+                            - '~'
+                            - '...'
+                            - '***'
+                            - _
+                            - \
+                            macroSnid: linguamatics_wc.WC_Punctuation
+                        where:
+                        - alternative:
+                          - ':'
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - phrase:
+                    - alternative:
+                      - word:
+                          matchType: Regexp
+                          text: '[0-4](\.\d+)?(\+)?(\/\d)?'
+                      - word:
+                          matchType: Regexp
+                          text: (\d-)?\d(\+)?
+                    - macro:
+                        snid: ohsu_test_score_quantifier.test_score_quantifier
+                        pt: Test Score Quantifier
+                        of:
+                        - alternative:
+                            macroPt: Test Score Quantifier
+                            of:
+                            - grade
+                            - intensity
+                            - point
+                            - points
+                            - score
+                            macroSnid: ohsu_test_score_quantifier.test_score_quantifier
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - phrase:
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - '>'
+                        - <
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - word:
+                        matchType: Regexp
+                        text: \d\d?\d?(-\d\d?\d?)?%
+                    - alternative:
+                        view:
+                          layout: list
+                        of:
+                        - favorable
+                        - strong
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                  - phrase:
+                    - class:
+                        snid: numerics.numerics
+                        pt: Numerics
+                    - /
+                    - class:
+                        snid: numerics.numerics
+                        pt: Numerics
+                  - alternative:
+                    - phrase:
+                      - class: /prep
+                      - word:
+                          text: invasive
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - word:
+                          text: cell
+                          morphoVariants: true
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: none
+                minimum: 1
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-05-16 13:46:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/biomarkers/biomarker_no_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.rpt_text
+          pt: Report Text
+          where:
+          - region:
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+                  id: region1
+              - region:
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - region:
+                      snid: hc.specimen
+                      pt: Specimen Description
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                  - phrase:
+                      of:
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/biomarker_query.i2qy
+                      id: phrase1
+    creationDate: '2020-03-06 17:25:08'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - class:
+              snid: snomed.76752008
+              pt: Breast structure
+          - class:
+              snid: snomed.69031006
+              pt: Excision of breast tissue
+          - mastectomy
+          - breast
+          id: alternative1
+    creationDate: '2018-05-11 10:17:50'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate_subject.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        boundaries: Exact
+        allRows: true
+        allTime: true
+    creator: szhang
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+            - phrase:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+              - class: /prep
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
+            - phrase:
+              - phrase:
+                  of:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
+                  - word:
+                      text: ':'
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+              quantifier:
+                maximum: 1
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2015-12-14 15:22:31'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - alternative:
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject_predicate.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - phrase:
+              of:
+              - alternative:
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+                - phrase:
+                    of:
+                    - word:
+                        text: internal
+                        morphoVariants: true
+                    - word:
+                        text: control
+                        morphoVariants: true
+                    displayChildren: false
+              - class: /prep
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy
+          - macro:
+              snid: linguamatics_wc.WC_Conjunction
+              pt: conjunction
+              of:
+              - alternative:
+                  macroPt: conjunction
+                  of:
+                  - '&'
+                  - after
+                  - albeit
+                  - although
+                  - also
+                  - and
+                  - as
+                  - phrase:
+                    - as
+                    - far
+                    - as
+                  - because
+                  - before
+                  - but
+                  - either
+                  - if
+                  - moreover
+                  - neither
+                  - nor
+                  - once
+                  - or
+                  - so
+                  - than
+                  - though
+                  - unless
+                  - versus
+                  - vs
+                  - vs.
+                  - when
+                  - whereas
+                  - whereby
+                  - whether
+                  - while
+                  - whilst
+                  - yet
+                  macroSnid: linguamatics_wc.WC_Conjunction
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - alternative:
+              of:
+              - class: /vg
+              - signals
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - word:
+              text: ':'
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2018-05-21 15:26:04'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_base.i2qy:
+    creator: haglers
+    query:
+      document:
+      - alternative:
+        - CK5/6
+        - ER
+        - HER2
+        - Ki67
+        - PR
+    creationDate: '2018-05-23 10:07:00'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_base.i2qy
+          - phrase:
+              of:
+              - alternative:
+                  view:
+                    layout: list
+                  of:
+                  - and
+                  - or
+                  - ','
+                  - /
+                  quantifier:
+                    maximum: none
+                    minimum: 1
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_base.i2qy
+              quantifier:
+                maximum: none
+                minimum: 0
+          findMatches: longestOnly
+          id: phrase1
+    creationDate: '2018-05-16 13:23:29'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/biomarker_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+      outputSettings:
+        maxResults: 10000
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate_subject.i2qy
+          - link:
+              path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_subject_predicate.i2qy
+          id: alternative1
+    creationDate: '2020-03-06 17:21:41'
+    version: 6.2
+version: 6.2

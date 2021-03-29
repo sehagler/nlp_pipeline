@@ -8,6 +8,7 @@ creator: haglers
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
   - Union:
     - /api;type=saved_query/__private__/haglers/CCC19/ecog_status/ecog_status_specimens_wrapper.i2qy
     - Subtraction:
@@ -205,6 +206,24 @@ querySnapshots:
                       id: link2
     creationDate: '2020-05-27 17:07:22'
     version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
   /api;type=saved_query/__private__/haglers/CCC19/ecog_status/ecog_status_sectiions_wrapper.i2qy:
     output:
       useOutputEditor: true
@@ -292,73 +311,35 @@ querySnapshots:
               quantifier:
                 maximum: 1
                 minimum: 0
-          - alternative:
+          - phrase:
+              multiSentence: true
+              maxWordGap: -1
+              wordGapRestricted: false
               of:
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
+              - word:
+                  caseSensitive: true
+                  matchType: Regexp
+                  text: '[A-Za-z]*'
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - alternative:
                   of:
-                  - class: /chunk
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_0.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_1.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_2.i2qy
-                      findMatches: longestOnly
-                      showMultipleColumns: true
-                  - class: /chunk
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
-                  of:
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_0.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_1.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_2.i2qy
-                      findMatches: longestOnly
-                      showMultipleColumns: true
-                  - class: /chunk
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
-                  of:
-                  - class: /chunk
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_0.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_1.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_2.i2qy
-                      findMatches: longestOnly
-                      showMultipleColumns: true
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
-                  of:
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_0.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_1.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_2.i2qy
-                      findMatches: longestOnly
-                      showMultipleColumns: true
-              prioritization: span
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_0.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_1.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_status_query_element_2.i2qy
+                  findMatches: longestOnly
+                  showMultipleColumns: true
+              - word:
+                  caseSensitive: true
+                  matchType: Regexp
+                  text: '[A-Za-z]*'
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
           - sentence:
               quantifier:
                 maximum: 1

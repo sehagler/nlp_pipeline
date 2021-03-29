@@ -13,6 +13,8 @@ import shutil
 import time
 
 #
+from nlp_lib.py.linguamatics_lib.linguamatics_i2e_client_manager_class \
+    import Linguamatics_i2e_client_manager
 from nlp_lib.py.linguamatics_lib.linguamatics_i2e_file_manager_class \
     import Linguamatics_i2e_file_manager
 from nlp_lib.py.linguamatics_lib.linguamatics_i2e_writer_class \
@@ -28,6 +30,7 @@ class Process_manager(object):
     
     #
     def __init__(self, project_data, password):
+        self.password = password
         project_name = project_data['project_name']
         import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                       project_name.lower() + \
@@ -36,8 +39,6 @@ class Process_manager(object):
         exec(import_cmd, globals())
         self.project_data = project_data
         self.server = self.project_data['acc_server']
-        from nlp_lib.py.linguamatics_lib.linguamatics_i2e_client_manager_class \
-            import Linguamatics_i2e_client_manager
         self.linguamatics_i2e_client_manager = \
             Linguamatics_i2e_client_manager(self.project_data, password)
         self.linguamatics_i2e_file_manager = \
@@ -50,7 +51,6 @@ class Process_manager(object):
         self.project_name = self.project_data['project_name']
         self.raw_data_reader = Raw_data_reader(self.project_data, password)
         self.report_postprocessor = self.project_data['report_postprocessor']
-        self.report_postprocessor.set_credentials(self.project_data, password)
         self.report_postprocessor.set_data_dirs(self.project_data)
         self.server_manager = Server_manager(self.project_data, password)
     
@@ -86,6 +86,7 @@ class Process_manager(object):
             self.linguamatics_i2e_writer.prepare_keywords_file_ssh(keywords_tmp_file)
         elif self.project_data['root_dir_flg'] in ''.join([ 'dev_server', 'prod_server' ]):
             self.linguamatics_i2e_writer.prepare_keywords_file(keywords_tmp_file)
+        self.linguamatics_i2e_client_manager.login()
         for resource_type in self.linguamatics_i2e_file_manager.resource_files_keys():
             try:
                 self.linguamatics_i2e_client_manager.delete_resource(self.linguamatics_i2e_file_manager.i2e_resource(resource_type))
@@ -112,6 +113,7 @@ class Process_manager(object):
                 print(e)
         self.linguamatics_i2e_client_manager.make_index_runner(self.linguamatics_i2e_file_manager.i2e_resource('index_template'),
                                                                self.project_name)
+        self.linguamatics_i2e_client_manager.logout()
     
     #
     def packager(self):
@@ -134,7 +136,8 @@ class Process_manager(object):
         self.linguamatics_i2e_writer.generate_source_data_file(self.project_name)
     
     #
-    def preprocessor(self, start_idx, cleanup_flg, preprocess_files_flg=True):
+    def preprocessor(self, password, start_idx, cleanup_flg,
+                     preprocess_files_flg=True):
         self.preprocess_files_flg = preprocess_files_flg
         if start_idx > 0:
             cleanup_flg = False
@@ -153,7 +156,7 @@ class Process_manager(object):
         processes = []
         rets = []
         for process_idx in range(num_processes):
-            w = Preprocessing_worker(self.project_data, 
+            w = Preprocessing_worker(self.project_data,
                                      self.preprocess_files_flg)
             linguamatics_i2e_writer_copy = \
                 deepcopy(self.linguamatics_i2e_writer)
@@ -165,7 +168,8 @@ class Process_manager(object):
                                               linguamatics_i2e_writer_copy,
                                               metadata_manager_copy,
                                               raw_data_reader_copy,
-                                              process_idx, start_idx,))
+                                              process_idx, start_idx,
+                                              password))
             processes.append(p)
         for p in processes:
             p.start()

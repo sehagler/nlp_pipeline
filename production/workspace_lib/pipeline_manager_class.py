@@ -24,7 +24,8 @@ from nlp_lib.py.tool_lib.query_tools_lib.date_tools import datetime2matlabdn
 class Pipeline_manager(object):
     
     #
-    def __init__(self, password, operation_mode, project, root_dir_flg):
+    def __init__(self, password, operation_mode, project, project_subdir,
+                 root_dir_flg):
         import_cmd = 'from projects_lib.' + project + '.py.' + project.lower() + \
                      '_project_manager_class import ' + project + \
                      '_project_manager as Project_manager'
@@ -34,7 +35,8 @@ class Pipeline_manager(object):
                      '_test_manager as Test_manager'
         exec(import_cmd, globals())
         user = getpass.getuser()
-        project_manager = Project_manager(operation_mode, user, root_dir_flg)
+        project_manager = Project_manager(operation_mode, project_subdir, user,
+                                          root_dir_flg)
         self.project_data = project_manager.get_project_data()
         self.process_manager = Process_manager(self.project_data, password)
         self.test_manager = Test_manager(self.project_data, root_dir_flg)
@@ -111,18 +113,19 @@ class Pipeline_manager(object):
         self.process_manager.packager()
             
     #
-    def pre_queries(self, preprocessor_start_idx=0, preprocessor_cleanup_flg=True):
+    def pre_queries(self, password, preprocessor_start_idx=0,
+                    preprocessor_cleanup_flg=True):
         if preprocessor_start_idx >= 0:
             if preprocessor_start_idx > 0:
                 preprocessor_cleanup_flg = False
-            self.process_manager.preprocessor(preprocessor_start_idx, preprocessor_cleanup_flg)
+            self.process_manager.preprocessor(password, 
+                                              preprocessor_start_idx, 
+                                              preprocessor_cleanup_flg)
             #self._quality_control()
         self.process_manager.preindexer()
         self.process_manager.indexer()
         self.process_manager.postindexer()
         
     #
-    def test(self):
-        #self.test_manager.compare_preprocessor_output()
-        #self.test_manager.compare_postprocessor_output()
-        self.test_manager.data_validation()
+    def calculate_performance(self):
+        self.test_manager.calculate_performance()

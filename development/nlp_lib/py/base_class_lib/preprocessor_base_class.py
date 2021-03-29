@@ -28,7 +28,7 @@ class Preprocessor_base(General_base):
     def _append_keywords_text(self, keyword, index_flg=1):
         keyword = re.sub(self.section_header_pre_tag, '', keyword)
         keyword = re.sub(self.section_header_post_tag, '', keyword)
-        self.linguamatics_i2e_writer._append_keywords_text(keyword, index_flg)
+        self.dynamic_data_manager._append_keywords_text(keyword, index_flg)
         
     #
     def _clear_command_list(self):
@@ -199,16 +199,16 @@ class Preprocessor_base(General_base):
          return tagged_text
      
     #
-    def pull_linguamatics_i2e_writer(self):
-        return self.linguamatics_i2e_writer
+    def pull_dynamic_data_manager(self):
+        return self.dynamic_data_manager
      
     #
     def pull_text(self):
         return self.text
     
     #
-    def push_linguamatics_i2e_writer(self, linguamatics_i2e_writer):
-        self.linguamatics_i2e_writer = linguamatics_i2e_writer
+    def push_dynamic_data_manager(self, dynamic_data_manager):
+        self.dynamic_data_manager = dynamic_data_manager
      
     #
     def push_text(self, text):

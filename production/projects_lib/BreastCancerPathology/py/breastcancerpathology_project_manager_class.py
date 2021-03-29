@@ -12,9 +12,11 @@ from nlp_lib.py.manager_lib.project_manager_class import Project_manager
 class BreastCancerPathology_project_manager(Project_manager):
     
     #
-    def __init__(self, operation_mode, user, root_dir_flg):
+    def __init__(self, operation_mode, project_subdir, user, root_dir_flg):
         project_name = 'BreastCancerPathology'
-        Project_manager.__init__(self, project_name, operation_mode, user, root_dir_flg)
+        Project_manager.__init__(self, operation_mode, project_name, 
+                                 project_subdir, user, root_dir_flg)
+        self.project_subdir = project_subdir
     
     #
     def get_project_data(self):
@@ -34,9 +36,11 @@ class BreastCancerPathology_project_manager(Project_manager):
         self.project_data['patient_identifiers'] = ['MRN']
         self.project_data['raw_data_encoding'] = 'utf-8'
         self.project_data['raw_data_files'] = {}
-        self.project_data['raw_data_files']['BreastCancerPathology.xls'] = {}
-        self.project_data['raw_data_files']['BreastCancerPathology.xls']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['BreastCancerPathology.xls']['NLP_PROCESS'] = 'BREAST_CANCER_PATHOLOGY_REPORT'
-        self.project_data['xml_metadata_keys'] = [ 'NLP_PROCESS', 'SOURCE_SYSTEM' ]
+        if self.project_subdir == 'test':
+            self.project_data['raw_data_files']['BreastCancerPathology.xls'] = {}
+            self.project_data['raw_data_files']['BreastCancerPathology.xls']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['BreastCancerPathology.xls']['NLP_PROCESS'] = 'BREAST_CANCER_PATHOLOGY_REPORT'
+        else:
+            print('Bad project_subdir value')
         self._create_processors()    
         return self.project_data

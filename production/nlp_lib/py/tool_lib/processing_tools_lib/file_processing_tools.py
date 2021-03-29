@@ -103,7 +103,7 @@ def _write_file(mode_flg, filename, data):
                     f.write(data)
             elif mode_flg == 1:
                 with open(filename, 'w') as f:
-                    json.dump(data, f)
+                    json.dump(data, f, indent=4)
             wrote_file = True
         except:
             if retry_ctr == 0:

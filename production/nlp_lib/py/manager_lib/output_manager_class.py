@@ -8,8 +8,6 @@ Created on Wed Oct 31 14:28:32 2018
 #
 import glob
 import os
-import requests
-import sys
 import urllib3
 
 #
@@ -26,9 +24,7 @@ class Output_manager(Packager_base):
     #
     def __init__(self, project_name, metadata_manager):
         Packager_base.__init__(self)
-        self.password = ''
         self.project_name = project_name
-        self.user = ''
         self.metadata_manager = metadata_manager
         self.merged_data_dict_list = []
         self.data_dict_classes_list = []
@@ -99,27 +95,9 @@ class Output_manager(Packager_base):
         for i in range(len(self.merged_data_dict_list)):
             document_id = self.merged_data_dict_list[i]['DOCUMENT_ID']
             self.merged_data_dict_list[i][self.metadata_key] = \
-                self.metadata_dict_dict[document_id]
-    
-    #
-    def include_software_info(self):
-        auth_values = (self.user, self.password)
-        response = requests.get(self.server + '/api', auth=auth_values, verify= False)
-        try:
-            i2e_version = response.headers['X-Version']
-        except:
-            i2e_version = 'FAILED_TO_CONNECT'
-        python_version = \
-            str(sys.version_info[0]) + '.' + \
-            str(sys.version_info[1]) + '.' + \
-            str(sys.version_info[2])
-        for i in range(len(self.merged_data_dict_list)):
-            self.merged_data_dict_list[i][self.nlp_metadata_key] = {}
-            self.merged_data_dict_list[i][self.nlp_metadata_key]['I2E_VERSION'] = \
-                i2e_version
-            self.merged_data_dict_list[i][self.nlp_metadata_key]['PYTHON_VERSION'] = \
-                python_version
-        pass
+                self.metadata_dict_dict[document_id][self.metadata_key]
+            self.merged_data_dict_list[i][self.nlp_metadata_key] = \
+                self.metadata_dict_dict[document_id][self.nlp_metadata_key]
     
     #
     def include_text(self):
@@ -153,12 +131,6 @@ class Output_manager(Packager_base):
                                                       data_dict[self.nlp_data_key][data_key])
             merged_data_dict_list.append(merged_dict)
         self.merged_data_dict_list = merged_data_dict_list
-        
-    #
-    def set_credentials(self, server, user, password):
-        self.server = server
-        self.user = user
-        self.password = password
         
     #
     def set_data_dirs(self, directory_manager):

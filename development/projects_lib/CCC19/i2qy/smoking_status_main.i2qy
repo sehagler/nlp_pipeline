@@ -8,6 +8,7 @@ creator: haglers
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
   - Union:
     - /api;type=saved_query/__private__/haglers/CCC19/smoking_status/smoking_status_specimens_wrapper.i2qy
     - Subtraction:
@@ -166,61 +167,32 @@ querySnapshots:
               quantifier:
                 maximum: 1
                 minimum: 0
-          - alternative:
+          - phrase:
+              multiSentence: true
+              maxWordGap: -1
+              wordGapRestricted: false
               of:
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
+              - word:
+                  caseSensitive: true
+                  matchType: Regexp
+                  text: '[A-Za-z]*'
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - alternative:
                   of:
-                  - class: /chunk
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/explicit_smoking_status.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/implicit_smoking_status.i2qy
-                      findMatches: longestOnly
-                  - class: /chunk
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
-                  of:
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/explicit_smoking_status.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/implicit_smoking_status.i2qy
-                      findMatches: longestOnly
-                  - class: /chunk
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
-                  of:
-                  - class: /chunk
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/explicit_smoking_status.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/implicit_smoking_status.i2qy
-                      findMatches: longestOnly
-              - phrase:
-                  multiSentence: true
-                  maxWordGap: -1
-                  wordGapRestricted: false
-                  of:
-                  - alternative:
-                      of:
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/explicit_smoking_status.i2qy
-                      - link:
-                          path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/implicit_smoking_status.i2qy
-                      findMatches: longestOnly
-              prioritization: span
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/explicit_smoking_status.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/query_lib/implicit_smoking_status.i2qy
+                  findMatches: longestOnly
+              - word:
+                  caseSensitive: true
+                  matchType: Regexp
+                  text: '[A-Za-z]*'
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
           - sentence:
               quantifier:
                 maximum: 1
@@ -1160,6 +1132,24 @@ querySnapshots:
           boundaries: Exact
           id: alternative1
     creationDate: '2020-06-15 18:38:19'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
     version: 6.2
   /api;type=saved_query/__private__/haglers/CCC19/smoking_status/smoking_status_sections_wrapper.i2qy:
     output:

@@ -1,8 +1,398 @@
-version: 6.2
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: edingert
 multiquery:
   Document Join:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - Union: [hist_diff/hist_diff_specimens_wrapper.i2qy, hist_diff/hist_diff_no_specimens_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: edingert
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_diff/hist_diff_specimens_wrapper.i2qy
+    - /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_diff/hist_diff_no_specimens_wrapper.i2qy
+querySnapshots:
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - class:
+              snid: snomed.76752008
+              pt: Breast structure
+          - class:
+              snid: snomed.69031006
+              pt: Excision of breast tissue
+          - mastectomy
+          - breast
+          id: alternative1
+    creationDate: '2018-05-11 10:17:50'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_diff/hist_diff_no_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.rpt_text
+          pt: Report Text
+          where:
+          - region:
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+                  id: region1
+              - region:
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - region:
+                      snid: hc.specimen
+                      pt: Specimen Description
+                      quantifier:
+                        maximum: 0
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                      id: link1
+    creationDate: '2018-05-09 14:58:04'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          of:
+          - alternative:
+              view:
+                width: 411
+                height: 535
+              of:
+              - phrase:
+                  view:
+                    width: 392
+                    height: 370
+                  allowOverlap: true
+                  of:
+                  - phrase:
+                      of:
+                      - alternative:
+                        - macro:
+                            snid: linguamatics_wc.WC_Adverb
+                            pt: adverb
+                            of:
+                            - alternative:
+                                macroPt: adverb
+                                of:
+                                - additionally
+                                - after
+                                - afterwards
+                                - again
+                                - ago
+                                - phrase:
+                                  - all
+                                  - over
+                                - almost
+                                - already
+                                - also
+                                - always
+                                - anyhow
+                                - anyway
+                                - anywhere
+                                - approximately
+                                - phrase:
+                                  - as
+                                  - well
+                                - back
+                                - before
+                                - beforehand
+                                - besides
+                                - earlier
+                                - early
+                                - either
+                                - else
+                                - enough
+                                - especially
+                                - essentially
+                                - even
+                                - ever
+                                - everywhere
+                                - far
+                                - further
+                                - hardly
+                                - hence
+                                - here
+                                - hither
+                                - how
+                                - however
+                                - indeed
+                                - immediately
+                                - phrase:
+                                  - in
+                                  - particular
+                                - instead
+                                - just
+                                - late
+                                - later
+                                - less
+                                - likely
+                                - maybe
+                                - more
+                                - most
+                                - much
+                                - nearby
+                                - nearly
+                                - never
+                                - not
+                                - now
+                                - nowhere
+                                - often
+                                - oftentimes
+                                - once
+                                - only
+                                - otherwise
+                                - overall
+                                - particularly
+                                - perhaps
+                                - possibly
+                                - presumably
+                                - probably
+                                - quite
+                                - rarely
+                                - rather
+                                - recently
+                                - relatively
+                                - respectively
+                                - seldom
+                                - so
+                                - somehow
+                                - sometimes
+                                - someway
+                                - somewhere
+                                - soon
+                                - specially
+                                - still
+                                - substantially
+                                - sufficiently
+                                - then
+                                - thence
+                                - there
+                                - thereafter
+                                - thereby
+                                - therefore
+                                - therein
+                                - thereto
+                                - thither
+                                - thus
+                                - today
+                                - tomorrow
+                                - too
+                                - twice
+                                - usually
+                                - very
+                                - well
+                                - whence
+                                - whither
+                                - 'yes'
+                                - yet
+                                - yesterday
+                                macroSnid: linguamatics_wc.WC_Adverb
+                        - moderately
+                        - poorly
+                        - squamous
+                        - well
+                      - alternative:
+                          view:
+                            width: 136
+                            height: 135
+                          of:
+                          - class: /prep
+                          - macro:
+                              snid: linguamatics_wc.WC_Conjunction
+                              pt: conjunction
+                              of:
+                              - alternative:
+                                  macroPt: conjunction
+                                  of:
+                                  - '&'
+                                  - after
+                                  - albeit
+                                  - although
+                                  - also
+                                  - and
+                                  - as
+                                  - phrase:
+                                    - as
+                                    - far
+                                    - as
+                                  - because
+                                  - before
+                                  - but
+                                  - either
+                                  - if
+                                  - moreover
+                                  - neither
+                                  - nor
+                                  - once
+                                  - or
+                                  - so
+                                  - than
+                                  - though
+                                  - unless
+                                  - versus
+                                  - vs
+                                  - vs.
+                                  - when
+                                  - whereas
+                                  - whereby
+                                  - whether
+                                  - while
+                                  - whilst
+                                  - yet
+                                  macroSnid: linguamatics_wc.WC_Conjunction
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      quantifier:
+                        maximum: none
+                        minimum: 0
+                  - word:
+                      matchType: Wildcard
+                      text: differentiated
+              - phrase:
+                  view:
+                    width: 199
+                    height: 118
+                  allowOverlap: true
+                  of:
+                  - alternative:
+                      view:
+                        layout: list
+                      of:
+                      - lobular
+                      - globular
+                      - tubular
+                  - word:
+                      matchType: Wildcard
+                      text: differentiation
+          findMatches: longestOnly
+          boundaries: Exact
+          id: phrase1
+    creationDate: '2018-05-10 13:54:46'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BreastCancerPathology/hist_diff/hist_diff_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.rpt_text
+          pt: Report Text
+          where:
+          - region:
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+                  id: region1
+              - region:
+                  snid: hc.section_body
+                  pt: Section Body
+                  where:
+                  - region:
+                      snid: hc.specimen
+                      pt: Specimen Description
+                      where:
+                      - shadowRegion:
+                          snid: hc.specimen_id
+                          pt: Specimen Id
+                          id: shadow region1
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/BreastCancerPathology/tools_lib/body_site_query.i2qy
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy
+                          id: link1
+    creationDate: '2018-05-09 15:04:50'
+    version: 6.2
+version: 6.2

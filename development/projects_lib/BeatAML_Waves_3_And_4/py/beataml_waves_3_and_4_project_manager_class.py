@@ -16,9 +16,11 @@ from nlp_lib.py.manager_lib.project_manager_class import Project_manager
 class BeatAML_Waves_3_And_4_project_manager(Project_manager):
     
     #
-    def __init__(self, operation_mode, user, root_dir_flg):
+    def __init__(self, operation_mode, project_subdir, user, root_dir_flg):
         project_name = 'BeatAML_Waves_3_And_4'
-        Project_manager.__init__(self, project_name, operation_mode, user, root_dir_flg)
+        Project_manager.__init__(self, operation_mode, project_name,
+                                 project_subdir, user, root_dir_flg)
+        self.project_subdir = project_subdir
         self.user = user
     
     #
@@ -46,27 +48,29 @@ class BeatAML_Waves_3_And_4_project_manager(Project_manager):
         self.project_data['patient_identifiers'] = ['MRN']
         self.project_data['raw_data_encoding'] = 'utf-8'
         self.project_data['raw_data_files'] = {}
-        self.project_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}
-        self.project_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
-        self.project_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx'] = {}
-        self.project_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
-        self.project_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx'] = {}
-        self.project_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
-        self.project_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx'] = {}
-        self.project_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_MODE'] = 'CASE_NUMBER'
-        self.project_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
-        self.project_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx'] = {}
-        self.project_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-        self.project_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
-        self.project_data['raw_data_files_sequence'] = [ 'Beaker_Bone_Marrow_Morphology_Reports.xlsx',
-                                                         'Beaker_Chromosome_Reports.xlsx',
-                                                         'Beaker_Hematopathology_Reports.xlsx',
-                                                         'PowerPath_Chromosome_Reports.xlsx',
-                                                         'PowerPath_Hematopathology_Reports.xlsx' ]
-        self.project_data['xml_metadata_keys'] = [ 'NLP_PROCESS', 'SOURCE_SYSTEM' ]
+        if self.project_subdir == 'test':
+            self.project_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}
+            self.project_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.project_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx'] = {}
+            self.project_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
+            self.project_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx'] = {}
+            self.project_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.project_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx'] = {}
+            self.project_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_MODE'] = 'CASE_NUMBER'
+            self.project_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
+            self.project_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx'] = {}
+            self.project_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
+            self.project_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.project_data['raw_data_files_sequence'] = [ 'Beaker_Bone_Marrow_Morphology_Reports.xlsx',
+                                                             'Beaker_Chromosome_Reports.xlsx',
+                                                             'Beaker_Hematopathology_Reports.xlsx',
+                                                             'PowerPath_Chromosome_Reports.xlsx',
+                                                             'PowerPath_Hematopathology_Reports.xlsx' ]
+        else:
+            print('Bad project_subdir value')
         self._create_processors()
         
         #
