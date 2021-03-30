@@ -24,7 +24,7 @@ class Project_manager(object):
         self.project_data['header_key'] = 'REPORT_HEADER'
         self.project_data['max_files_per_zip'] = 10000
         self.project_data['mrn_list'] = None
-        self.project_data['num_processes'] = 10
+        self.project_data['num_processes'] = 8
         self.project_data['operation_mode'] = operation_mode
         self.project_data['project_name'] = project_name
         self.project_data['project_subdir'] = project_subdir

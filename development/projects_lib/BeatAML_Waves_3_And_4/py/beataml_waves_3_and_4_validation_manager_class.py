@@ -397,7 +397,7 @@ class BeatAML_Waves_3_And_4_validation_manager(Performance_data_manager, Validat
         gold_standard_object = Gold_standard_jsons(self.directory_manager, self.mrn_list)
         gold_standard_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'gold_standard.json')
         self.gold_standard_data = gold_standard_object.get_data_json()
-        validation_object = Specimens(self.directory_manager, nlp_data)
+        validation_object = Specimens(self.project_data, nlp_data)
         validation_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
         self.validation_data = validation_object.get_data_json()
         
@@ -515,6 +515,7 @@ class BeatAML_Waves_3_And_4_validation_manager(Performance_data_manager, Validat
                             item_score[item][0] += 1
                         elif performance == 'multiple values':
                             item_score[item][2] += 1
+        performance_statistics_list = []
         for key in item_score.keys():
             M = item_score[key][2]
             FN = item_score[key][5]
@@ -530,10 +531,18 @@ class BeatAML_Waves_3_And_4_validation_manager(Performance_data_manager, Validat
             print(f'\tfalse neg: ' + str(FN))
             print(f'\tfalse pos: ' + str(FP))
             print(f'\tfalse pos + false neg: ' + str(FP_plus_FN))
-            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            performance_statistics = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            performance_statistics['QUERY'] = key
+            performance_statistics_list.append(performance_statistics)
         self.logger.create_file('log.txt')
         print('\n')
         print(gs_record_ctr)
         print(missing_specimens)
         print(full_specimen_ctr)
         print(len(list(set(patient_ids_list))))
+        return performance_statistics_list
+        
+    #
+    def display_performance(self, performance_statistics_list):
+        self._display_performance_statistics(performance_statistics_list)

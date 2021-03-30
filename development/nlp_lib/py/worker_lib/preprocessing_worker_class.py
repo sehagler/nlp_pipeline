@@ -15,7 +15,7 @@ from linguamatics_i2e_lib.py.linguamatics_i2e_manager_class \
     import Linguamatics_i2e_manager
 from nlp_lib.py.document_preprocessing_lib.document_preprocessing_manager_class \
     import Document_preprocessing_manager
-from nlp_lib.py.template_lib.preprocessor_template_lib.raw_report_preprocessor_class \
+from nlp_lib.py.document_preprocessing_lib.template_lib.preprocessor_template_lib.raw_report_preprocessor_class \
     import Raw_report_preprocessor
 
 #
