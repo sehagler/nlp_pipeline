@@ -6,9 +6,9 @@ Created on Fri Jan 11 13:47:40 2019
 """
 
 #
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
     import Section_header_normalizer_pathology_report
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.table_normalizer_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.table_normalizer_class \
     import Table_normalizer
 from nlp_lib.py.document_preprocessing_lib.template_lib.preprocessor_template_lib.pathology_report_class \
     import Pathology_report

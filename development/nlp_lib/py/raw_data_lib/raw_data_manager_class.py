@@ -22,10 +22,10 @@ from nlp_lib.py.tool_lib.processing_tools_lib.variable_processing_tools \
 class Raw_data_manager(object):
     
     #
-    def __init__(self, project_data, password):
+    def __init__(self, project_data, server_manager, password):
         self.project_data = project_data
-        self.xml_reader = Xml_reader(project_data, password)
-        self.xlsx_reader = Xlsx_reader(project_data, password)
+        self.xml_reader = Xml_reader(project_data, server_manager, password)
+        self.xlsx_reader = Xlsx_reader(project_data, server_manager, password)
         self._read_raw_data_from_source_files()
         
     #

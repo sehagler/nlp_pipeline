@@ -9,14 +9,14 @@ Created on Mon Oct 22 16:28:34 2018
 import re
 
 #
-from nlp_lib.py.base_class_lib.template_base_class import Template_base
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.label_normalizer_class \
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.template_base_class import Template_base
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.label_normalizer_class \
     import Label_normalizer
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
     import Section_header_normalizer_pathology_report
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.specimen_normalizer_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.specimen_normalizer_class \
     import Specimen_normalizer
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.pretokenizers_lib.pretokenizer_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.pretokenizers_lib.pretokenizer_class \
     import Pretokenizer
 
 #

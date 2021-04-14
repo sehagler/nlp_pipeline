@@ -9,12 +9,15 @@ Created on Tue Nov 13 08:12:07 2018
 import os
 
 #
-from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_base
-from nlp_lib.py.processor_lib.postprocessor_lib.postprocessor_class import Postprocessor
-from nlp_lib.py.tool_lib.query_tools_lib.tnm_stage_tools import Postprocessor as Postprocessor_tnm_stage
+from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+    import Postprocessor_base
+from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
+    import Postprocessing_manager
+from nlp_lib.py.tool_lib.query_tools_lib.tnm_stage_tools \
+    import Postprocessor as Postprocessor_tnm_stage
 
 #
-class BreastCancerPathology_postprocessor(Postprocessor):
+class BreastCancerPathology_postprocessor(Postprocessing_manager):
 
     #
     def _biomarker_business_rules(self):

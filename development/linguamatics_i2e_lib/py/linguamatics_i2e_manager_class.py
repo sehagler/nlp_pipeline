@@ -13,7 +13,8 @@ Created on Fri Jan 04 10:50:12 2019
 
 #
 from i2e.wsapi.common import (ClientConnectionSettings, I2EConnection,
-                  I2EServer, I2EUser, RequestMaker, RequestConfiguration)
+                              I2EServer, I2EUser, RequestMaker,
+                              RequestConfiguration)
 from i2e.wsapi.serialize import Resource
 from i2e.wsapi.task import MakeIndexConfiguration, TaskLauncher
 import json
@@ -34,15 +35,15 @@ from linguamatics_i2e_lib.py.linguamatics_i2e_writer_class \
 class Linguamatics_i2e_manager(object):
     
     #
-    def __init__(self, project_data, password):
-        self.project_data = project_data
-        self.project_name = project_data['project_name']
-        self.server = project_data['acc_server'][2]
-        self.user = project_data['user']
+    def __init__(self, static_data_manager, server_manager, password):
+        self.static_data = static_data_manager.get_project_data()
+        self.project_name = self.static_data['project_name']
+        self.server = self.static_data['acc_server'][2]
+        self.user = self.static_data['user']
         self.linguamatics_i2e_file_manager = \
-            Linguamatics_i2e_file_manager(self.project_data)
+            Linguamatics_i2e_file_manager(self.static_data)
         self.linguamatics_i2e_writer = \
-            Linguamatics_i2e_writer(self.project_data, password)
+            Linguamatics_i2e_writer(self.static_data, server_manager)
         self.i2e_server = I2EServer(self.server)
         self.i2e_user = I2EUser(self.user, password)
         self.connection_settings = ClientConnectionSettings.create()
@@ -52,7 +53,8 @@ class Linguamatics_i2e_manager(object):
                                   license_pool=self.license_pool)
         
     #
-    def _folder_downloader(self, request_maker, folder_name, parent_folder, download_folder):
+    def _folder_downloader(self, request_maker, folder_name, parent_folder,
+                           download_folder):
         folder_content = request_maker.list_resource(folder_name)
         try:
             local_folder = os.path.normpath(download_folder + '/' + urllib.parse.unquote(folder_name.uri.replace(parent_folder,'')))
@@ -75,9 +77,9 @@ class Linguamatics_i2e_manager(object):
     #
     def _put_keywords_file(self, linguamatics_i2e_writer):
         keywords_tmp_file = '/tmp/keywords_default.txt'
-        if self.project_data['root_dir_flg'] in ''.join([ 'X', 'Z' ]):
+        if self.static_data['root_dir_flg'] in ''.join([ 'X', 'Z' ]):
             linguamatics_i2e_writer.prepare_keywords_file_ssh(keywords_tmp_file)
-        elif self.project_data['root_dir_flg'] in ''.join([ 'dev_server', 'prod_server' ]):
+        elif self.static_data['root_dir_flg'] in ''.join([ 'dev_server', 'prod_server' ]):
             linguamatics_i2e_writer.prepare_keywords_file(keywords_tmp_file)
 
     #
@@ -89,7 +91,8 @@ class Linguamatics_i2e_manager(object):
                                         os.path.basename(resource_file))
         else:
             source_data_path = Resource(resource %
-                                        project_name + '/' + os.path.basename(resource_file))
+                                        project_name + '/' + \
+                                        os.path.basename(resource_file))
         request_maker = RequestMaker(self.conn)
         with open(resource_file, 'rb') as source_data:
             request_maker.create_resource(source_data_path,

@@ -9,15 +9,21 @@ Created on Tue Apr 21 12:51:07 2020
 import os
 
 #
-from nlp_lib.py.processor_lib.postprocessor_lib.postprocessor_class import Postprocessor
-from nlp_lib.py.tool_lib.query_tools_lib.cancer_stage_tools import Postprocessor as Postprocessor_cancer_stage
-from nlp_lib.py.tool_lib.query_tools_lib.ecog_tools import Postprocessor as Postprocessor_ecog_score
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_history_tools import Postprocessor as Postprocessor_smoking_history
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_products_tools import Postprocessor as Postprocessor_smoking_products
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_status_tools import Postprocessor as Postprocessor_smoking_status
+from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
+    import Postprocessing_manager
+from nlp_lib.py.tool_lib.query_tools_lib.cancer_stage_tools \
+    import Postprocessor as Postprocessor_cancer_stage
+from nlp_lib.py.tool_lib.query_tools_lib.ecog_tools \
+    import Postprocessor as Postprocessor_ecog_score
+from nlp_lib.py.tool_lib.query_tools_lib.smoking_history_tools \
+    import Postprocessor as Postprocessor_smoking_history
+from nlp_lib.py.tool_lib.query_tools_lib.smoking_products_tools \
+    import Postprocessor as Postprocessor_smoking_products
+from nlp_lib.py.tool_lib.query_tools_lib.smoking_status_tools \
+    import Postprocessor as Postprocessor_smoking_status
 
 #
-class CCC19_postprocessor(Postprocessor):
+class CCC19_postprocessor(Postprocessing_manager):
 
     #
     def _import_reports_body(self, project_data):

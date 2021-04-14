@@ -10,7 +10,8 @@ import re
 import statistics
 
 #
-from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_base
+from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+    import Postprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):

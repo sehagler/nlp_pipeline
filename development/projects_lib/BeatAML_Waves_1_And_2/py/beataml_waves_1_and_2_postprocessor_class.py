@@ -9,12 +9,12 @@ Created on Tue Nov 13 08:12:07 2018
 import os
 
 #
-from nlp_lib.py.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.processor_lib.postprocessor_lib.general_postprocessor_class \
+from nlp_lib.py.postprocessing_lib.general_postprocessor_class \
     import General_postprocessor
-from nlp_lib.py.processor_lib.postprocessor_lib.postprocessor_class \
-    import Postprocessor
+from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
+    import Postprocessing_manager
 from nlp_lib.py.tool_lib.query_tools_lib.antigens_tools \
     import Postprocessor as Postprocessor_antigens
 from nlp_lib.py.tool_lib.query_tools_lib.blasts_tools \
@@ -37,7 +37,7 @@ from projects_lib.BeatAML_Waves_1_And_2.py.diagnosis_reader_class \
     import Diagnosis_reader
 
 #
-class BeatAML_Waves_1_And_2_postprocessor(Postprocessor):
+class BeatAML_Waves_1_And_2_postprocessor(Postprocessing_manager):
 
     #
     def _import_reports_body(self, project_data):

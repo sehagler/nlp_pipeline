@@ -16,18 +16,65 @@ import os
 import shutil
 
 #
-from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
-from nlp_lib.py.manager_lib.directory_manager_class import Directory_manager
+from nlp_lib.py.logger_lib.logger_class import Logger
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
-    import read_json_file, xml_diff
+    import read_package_json_file, read_nlp_data_from_package_json_file, write_json_file, xml_diff
 
 #
-class Performance_data_manager(Packager_base):
+class Performance_data_manager(object):
     
     #
     def __init__(self, project_manager):
         project_data = project_manager.get_project_data()
-        Packager_base.__init__(self, project_data)
+        self.directory_manager = project_data['directory_manager']
+        self.save_dir = \
+            self.directory_manager.pull_directory('processing_data_dir')
+        self.project_data = project_data
+        
+        self.log_dir = self.directory_manager.pull_directory('log_dir')
+        self.logger = Logger(self.log_dir)
+        self.static_data = project_data
+
+        json_structure_manager = project_data['json_structure_manager']
+        self.document_wrapper_key = \
+            json_structure_manager.pull_key('document_wrapper_key')
+        self.documents_wrapper_key = \
+            json_structure_manager.pull_key('documents_wrapper_key')
+        self.metadata_key = \
+            json_structure_manager.pull_key('metadata_key')
+        self.nlp_data_key = \
+            json_structure_manager.pull_key('nlp_data_key')
+        self.nlp_datetime_key = \
+            json_structure_manager.pull_key('nlp_datetime_key')
+        self.nlp_datum_key = \
+            json_structure_manager.pull_key('nlp_datum_key')
+        self.nlp_metadata_key = \
+            json_structure_manager.pull_key('nlp_metadata_key')
+        self.nlp_performance_key = \
+            json_structure_manager.pull_key('nlp_performance_key')
+        self.nlp_query_key = \
+            json_structure_manager.pull_key('nlp_query_key')
+        self.nlp_section_key = \
+            json_structure_manager.pull_key('nlp_section_key')
+        self.nlp_specimen_key = \
+            json_structure_manager.pull_key('nlp_specimen_key')
+        self.nlp_source_text_key = \
+            json_structure_manager.pull_key('nlp_source_text_key')
+        self.nlp_text_element_key = \
+            json_structure_manager.pull_key('nlp_text_element_key')
+        self.nlp_text_key = \
+            json_structure_manager.pull_key('nlp_text_key')
+        self.nlp_value_key = \
+            json_structure_manager.pull_key('nlp_value_key')
+            
+        # to be moved to appropriate location
+        json_structure_manager = project_data['json_structure_manager']
+        self.multiple_specimens = \
+            json_structure_manager.pull_key('multiple_specimens')
+        self.multiple_values = \
+            json_structure_manager.pull_key('multiple_values')
+        #
+    
         self.directory_manager = project_data['directory_manager']
         
     #
@@ -130,17 +177,42 @@ class Performance_data_manager(Packager_base):
         performance_statistics['PRECISION'] = str(round(P, 3))
         performance_statistics['RECALL'] = str(round(R, 3))
         return performance_statistics
+    
+    #
+    def _write_performance_data(self, project_data, performance_statistics_list):
+        project_name = project_data['project_name']
+        documents_wrapper = read_package_json_file(project_data)
+        for i in range(len(documents_wrapper[self.documents_wrapper_key])):
+            nlp_data = \
+                documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_data_key]
+            query_list = []
+            for nlp_datum in nlp_data:
+                query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
+            query_list = list(set(query_list))
+            performance_statistics_list_tmp = []
+            for item in performance_statistics_list:
+                if item[self.nlp_query_key] in query_list:
+                    performance_statistics_list_tmp.append(item)
+            documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
+                performance_statistics_list_tmp
+        write_json_file(os.path.join(self.save_dir, project_name + '.json'),
+                        documents_wrapper)
         
     #
     def display_performance_data(self):
-        self.validation_manager.display_performance(self.performance_statistics_list)
+        self.display_performance(self.performance_statistics_list)
         
     #
     def get_performance_data(self):
-        self.validation_manager.read_nlp_data()
+        self.read_nlp_data()
         self.performance_statistics_list = \
-            self.validation_manager.calculate_performance()
+            self.calculate_performance()
+            
+    #
+    def read_nlp_data(self):
+        self.nlp_data = read_nlp_data_from_package_json_file(self.static_data)
         
     #
     def write_performance_data(self):
-        self._write_performance_data(self.performance_statistics_list)
+        self._write_performance_data(self.project_data,
+                                     self.performance_statistics_list)

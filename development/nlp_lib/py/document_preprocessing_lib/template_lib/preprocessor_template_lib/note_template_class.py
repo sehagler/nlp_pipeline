@@ -6,10 +6,10 @@ Created on Mon Oct 22 16:28:34 2018
 """
 
 #
-from nlp_lib.py.base_class_lib.template_base_class import Template_base
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.section_header_normalizer_note_class \
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.template_base_class import Template_base
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.section_header_normalizer_note_class \
     import Section_header_normalizer_note
-from nlp_lib.py.processor_lib.preprocessor_lib.summarization_lib.summarization_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.summarization_lib.summarization_class \
     import Summarization
 
 #

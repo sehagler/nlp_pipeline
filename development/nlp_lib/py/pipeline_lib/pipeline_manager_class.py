@@ -7,15 +7,13 @@ Created on Wed Aug 1 9:05:23 2018
 
 #
 from datetime import datetime
-import getpass
 import math
 from matplotlib import pyplot as plt
 import pickle
 import random
 
 #
-from nlp_lib.py.manager_lib.process_manager_class import Process_manager
-from nlp_lib.py.manager_lib.server_manager_class import Server_manager
+from nlp_lib.py.process_lib.process_manager_class import Process_manager
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import read_json_file
 from nlp_lib.py.tool_lib.query_tools_lib.date_tools import datetime2matlabdn
@@ -24,28 +22,29 @@ from nlp_lib.py.tool_lib.query_tools_lib.date_tools import datetime2matlabdn
 class Pipeline_manager(object):
     
     #
-    def __init__(self, password, operation_mode, project, project_subdir,
-                 root_dir_flg):
-        import_cmd = 'from projects_lib.' + project + '.py.' + project.lower() + \
-                     '_project_manager_class import ' + project + \
-                     '_project_manager as Project_manager'
-        exec(import_cmd, globals())
-        import_cmd = 'from projects_lib.' + project + '.py.' + project.lower() + \
-                     '_test_manager_class import ' + project + \
-                     '_test_manager as Test_manager'
-        exec(import_cmd, globals())
-        user = getpass.getuser()
-        project_manager = Project_manager(operation_mode, project_subdir, user,
-                                          root_dir_flg)
-        self.project_data = project_manager.get_project_data()
-        self.process_manager = Process_manager(self.project_data, password)
-        self.test_manager = Test_manager(self.project_data, root_dir_flg)
-        self.server_manager = Server_manager(self.project_data, password)
+    def __init__(self, static_data_manager, server_manager, root_dir_flg,
+                 password):
+        self.static_data = static_data_manager.get_project_data()
+        try:
+            self._project_imports(static_data_manager)
+        except:
+            pass
+        self._create_managers(static_data_manager, server_manager, password)
+        
+    #
+    def _create_managers(self, static_data_manager, server_manager, password):
+        self.process_manager = Process_manager(static_data_manager, 
+                                               server_manager, password)
+        try:
+            self.performance_data_manager = \
+                Performance_data_manager(static_data_manager)
+        except:
+            self.performance_data_manager = None
    
     #
     def _get_metadata_values(self):
         metadata_json_file = \
-            self.project_data['metadata_manager'].get_metadata_json_file()
+            self.static_data['metadata_manager'].get_metadata_json_file()
         metadata = read_json_file(metadata_json_file)
         num_documents = len(metadata.keys())
         document_values = []
@@ -53,21 +52,31 @@ class Pipeline_manager(object):
         date_values = []
         for key0 in metadata.keys():
             for key1 in metadata[key0].keys():
-                if key1 in self.project_data['datetime_identifiers'].keys():
+                if key1 in self.static_data['datetime_identifiers'].keys():
                     date_str = metadata[key0][key1]
                     date_num = \
                         datetime2matlabdn(datetime.strptime(date_str,
-                                                            self.project_data['datetime_identifiers'][key1]))
+                                                            self.static_data['datetime_identifiers'][key1]))
                     date_values.append(date_num)
-                if key1 in self.project_data['document_identifiers']:
+                if key1 in self.static_data['document_identifiers']:
                     document_values.append(metadata[key0][key1])
-                if key1 in self.project_data['patient_identifiers']:
+                if key1 in self.static_data['patient_identifiers']:
                     patient_values.append(metadata[key0][key1])
         document_values = list(set(document_values))
         patient_values = list(set(patient_values))
         date_values.sort()
         patient_values.sort()
         return document_values, patient_values, date_values
+    
+    #
+    def _project_imports(self, static_data_manager):
+        static_data = static_data_manager.get_project_data()
+        project_name = static_data['project_name']
+        import_cmd = 'from projects_lib.' + project_name + '.py.' + \
+                     project_name.lower() + \
+                     '_performance_data_manager_class import ' + project_name + \
+                     '_performance_data_manager as Performance_data_manager'
+        exec(import_cmd, globals())
         
     #
     def _quality_control(self):
@@ -128,6 +137,7 @@ class Pipeline_manager(object):
         
     #
     def calculate_performance(self):
-        self.test_manager.get_performance_data()
-        self.test_manager.display_performance_data()
-        self.test_manager.write_performance_data()
+        if self.performance_data_manager is not None:
+            self.performance_data_manager.get_performance_data()
+            self.performance_data_manager.display_performance_data()
+            self.performance_data_manager.write_performance_data()

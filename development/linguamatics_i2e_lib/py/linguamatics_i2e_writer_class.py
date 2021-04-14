@@ -16,7 +16,6 @@ import xml.etree.ElementTree as ET
 #
 from linguamatics_i2e_lib.py.linguamatics_i2e_file_manager_class \
     import Linguamatics_i2e_file_manager
-from nlp_lib.py.manager_lib.server_manager_class import Server_manager
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import remove_file, write_general_file, write_zip_file
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
@@ -26,13 +25,13 @@ from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
 class Linguamatics_i2e_writer(object):
     
     #
-    def __init__(self, project_data, password):
+    def __init__(self, project_data, server_manager):
         self.project_data = project_data
         self.clear_keywords_text()
         self.metadata_keys = []
         self.linguamatics_i2e_file_manager = \
             Linguamatics_i2e_file_manager(self.project_data)
-        self.server_manager = Server_manager(self.project_data, password)
+        self.server_manager = server_manager
         
     #
     def _append_keywords_text(self, keyword, index_flg):

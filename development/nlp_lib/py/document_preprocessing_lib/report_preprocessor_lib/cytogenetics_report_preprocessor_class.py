@@ -6,11 +6,11 @@ Created on Mon Sep 10 09:44:25 2018
 """
 
 #
-from nlp_lib.py.processor_lib.preprocessor_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
-    import Section_header_normalizer_pathology_report
-from nlp_lib.py.tool_lib.query_tools_lib.karyotype_tools import Posttokenizer as Posttokenizer_karyotype
 from nlp_lib.py.document_preprocessing_lib.template_lib.preprocessor_template_lib.cytogenetics_report_class \
     import Cytogenetics_report
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
+    import Section_header_normalizer_pathology_report
+from nlp_lib.py.tool_lib.query_tools_lib.karyotype_tools import Posttokenizer as Posttokenizer_karyotype
 
 #
 class Cytogenetics_report_preprocessor(Cytogenetics_report):

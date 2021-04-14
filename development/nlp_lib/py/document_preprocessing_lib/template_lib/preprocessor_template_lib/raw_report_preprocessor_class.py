@@ -7,7 +7,7 @@ Created on Mon Sep 10 09:44:25 2018
 
 #
 from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
-from nlp_lib.py.processor_lib.preprocessor_lib.deidentifier_lib.deidentifier_class \
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.deidentifier_lib.deidentifier_class \
     import Deidentifier
 
 #

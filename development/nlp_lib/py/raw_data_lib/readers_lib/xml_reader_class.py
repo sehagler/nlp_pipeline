@@ -12,7 +12,7 @@ import re
 import xml.etree.ElementTree as ET
 
 #
-from nlp_lib.py.base_class_lib.reader_base_class import Reader_base
+from nlp_lib.py.raw_data_lib.base_class_lib.reader_base_class import Reader_base
 
 #
 class Xml_reader(Reader_base):

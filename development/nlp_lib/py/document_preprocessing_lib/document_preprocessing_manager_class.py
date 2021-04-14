@@ -27,47 +27,58 @@ from nlp_lib.py.document_preprocessing_lib.template_lib.preprocessor_template_li
 class Document_preprocessing_manager(object):
     
     #
-    def beataml_report_preprocessor(self, project_data, format_flg):
+    def __init__(self, static_data_manager):
+        self.static_data = static_data_manager.get_project_data()
+        self.format_flg = self.static_data['formatting']
+    
+    '''
+    #
+    def beataml_report_preprocessor(self):
         self.report_preprocessor = \
-            BeatAML_report_preprocessor(project_data, format_flg)
+            BeatAML_report_preprocessor(self.static_data, self.format_flg)
             
     #
-    def breastcancerpathology_report_preprocessor(self, project_data, format_flg):
+    def breastcancerpathology_report_preprocessor(self):
         self.report_preprocessor = \
-            BreastCancerPathology_report_preprocessor(project_data, format_flg)
+            BreastCancerPathology_report_preprocessor(self.static_data, self.format_flg)
             
     #
-    def ccc19_note_preprocessor(self, project_data, format_flg):
+    def ccc19_note_preprocessor(self):
         self.report_preprocessor = \
-            CCC19_note_preprocessor(project_data, format_flg)
+            CCC19_note_preprocessor(self.static_data, self.format_flg)
             
     #
-    def cytogenetics_report_preprocessor(self, project_data, format_flg):
+    def cytogenetics_report_preprocessor(self):
         self.report_preprocessor = \
-            Cytogenetics_report_preprocessor(project_data, format_flg)
+            Cytogenetics_report_preprocessor(self.static_data, self.format_flg)
+    '''
             
     #
     def format_report(self, source_system):
         self.report_preprocessor.format_report(source_system)
             
+    '''
     #
-    def hematopathology_report_preprocessor(self, project_data, format_flg):
+    def hematopathology_report_preprocessor(self):
         self.report_preprocessor = \
-            Hematopathology_report_preprocessor(project_data, format_flg)
+            Hematopathology_report_preprocessor(self.static_data, self.format_flg)
+    '''
             
     #
     def normalize_report(self):
         self.report_preprocessor.normalize_report()
         
+    '''
     #
-    def note_preprocessor(self, project_data, format_flg):
+    def note_preprocessor(self):
         self.report_preprocessor = \
-            Note_template(project_data, format_flg)
+            Note_template(self.static_data, self.format_flg)
             
     #
-    def pathology_report_preprocessor(self, project_data, format_flg):
+    def pathology_report_preprocessor(self):
         self.report_preprocessor = \
-            Pathology_report(project_data, format_flg)
+            Pathology_report(self.static_data, self.format_flg)
+    '''
         
     #
     def pull_dynamic_data_manager(self):
@@ -89,10 +100,6 @@ class Document_preprocessing_manager(object):
         self.report_preprocessor.push_text(text)
         
     #
-    def raw_report_preprocessor(self, project_data):
-        self.raw_report_preprocessor = Raw_report_preprocessor(project_data)
-        
-    #
     def raw_report_preprocessor_normalize_report(self):
         self.raw_report_preprocessor.normalize_report()
         
@@ -104,3 +111,36 @@ class Document_preprocessing_manager(object):
     #
     def raw_report_preprocessor_push_text(self, text):
         self.raw_report_preprocessor.push_text(text)
+        
+    #
+    def set_raw_report_preprocessor(self, static_data):
+        self.raw_report_preprocessor = Raw_report_preprocessor(static_data)
+        
+    #
+    def set_report_preprocessor(self, xml_metadata):
+        if xml_metadata['NLP_PROCESS'] == 'BEATAML_REPORT':
+            #self.beataml_report_preprocessor()
+            self.report_preprocessor = \
+                BeatAML_report_preprocessor(self.static_data, self.format_flg)
+        elif xml_metadata['NLP_PROCESS'] == 'BREAST_CANCER_PATHOLOGY_REPORT':
+            #self.breastcancerpathology_report_preprocessor()
+            self.report_preprocessor = \
+                BreastCancerPathology_report_preprocessor(self.static_data, self.format_flg)
+        elif xml_metadata['NLP_PROCESS'] == 'CCC19_NOTE':
+            #self.ccc19_note_preprocessor()
+            self.report_preprocessor = \
+                CCC19_note_preprocessor(self.static_data, self.format_flg)
+        elif xml_metadata['NLP_PROCESS'] == 'CYTOGENETICS_REPORT':
+            #self.cytogenetics_report_preprocessor()
+            self.report_preprocessor = \
+                Cytogenetics_report_preprocessor(self.static_data, self.format_flg)
+        elif xml_metadata['NLP_PROCESS'] == 'HEMATOPATHOLOGY_REPORT':
+            #self.hematopathology_report_preprocessor()
+            self.report_preprocessor = \
+                Hematopathology_report_preprocessor(self.static_data, self.format_flg)
+        elif xml_metadata['NLP_PROCESS'] == 'NOTE':
+            #self.note_preprocessor()
+            self.report_preprocessor = \
+                Note_template(self.static_data, self.format_flg)
+        else:
+            print('invalid NLP_PROCESS')

@@ -170,6 +170,86 @@ def read_json_file(filename):
     return _read_file(0, filename)
 
 #
+def read_nlp_data_from_package_json_file(project_data):
+    
+    json_structure_manager = project_data['json_structure_manager']
+    document_wrapper_key = \
+        json_structure_manager.pull_key('document_wrapper_key')
+    documents_wrapper_key = \
+        json_structure_manager.pull_key('documents_wrapper_key')
+    metadata_key = \
+        json_structure_manager.pull_key('metadata_key')
+    nlp_data_key = \
+        json_structure_manager.pull_key('nlp_data_key')
+    nlp_datum_key = \
+        json_structure_manager.pull_key('nlp_datum_key')
+    nlp_metadata_key = \
+        json_structure_manager.pull_key('nlp_metadata_key')
+    nlp_query_key = \
+        json_structure_manager.pull_key('nlp_query_key')
+    nlp_section_key = \
+        json_structure_manager.pull_key('nlp_section_key')
+    nlp_specimen_key = \
+        json_structure_manager.pull_key('nlp_specimen_key')
+    
+    nlp_data_tmp = read_package_json_file(project_data)
+    patient_identifiers = project_data['patient_identifiers']
+    patient_list = project_data['patient_list']
+    nlp_data_tmp = nlp_data_tmp[documents_wrapper_key]
+    nlp_data = {}
+    for item in nlp_data_tmp:
+        for patient_identifier in patient_identifiers:
+            try:
+                patient = \
+                    item[document_wrapper_key][metadata_key][patient_identifier]
+            except:
+                pass
+        document_idx = \
+            item[document_wrapper_key][nlp_metadata_key]['NLP_DOCUMENT_IDX']
+        if patient in patient_list:
+            nlp_data[document_idx] = {}
+            for key in item[document_wrapper_key].keys():
+                if key not in [nlp_data_key]:
+                    nlp_data[document_idx][key] = \
+                        item[document_wrapper_key][key]
+                else:
+                    data_in = item[document_wrapper_key][key]
+            data = {}
+            for item in data_in:
+                nlp_query_key_tmp = \
+                    item[nlp_datum_key][nlp_query_key]
+                nlp_section_key_tmp = \
+                    item[nlp_datum_key][nlp_section_key]
+                try:
+                    nlp_specimen_key_tmp = \
+                        item[nlp_datum_key][nlp_specimen_key]
+                except:
+                    nlp_specimen_key_tmp = ''
+                key_0 = str((nlp_section_key_tmp, nlp_specimen_key_tmp))
+                for key_1 in item[nlp_datum_key].keys():
+                    if key_0 not in data.keys():
+                        data[key_0] = {}
+                    if key_1 not in [nlp_query_key,
+                                     nlp_section_key,
+                                     nlp_specimen_key]:
+                        if key_1 == 'DIAGNOSIS':
+                            data[key_0]['DIAGNOSIS VALUE'] = \
+                                item[nlp_datum_key][key_1]
+                        else:
+                            data[key_0][nlp_query_key_tmp + ' ' + key_1] = \
+                                item[nlp_datum_key][key_1]
+            nlp_data[document_idx][nlp_data_key] = data
+    return nlp_data
+
+def read_package_json_file(project_data):
+    project_name = project_data['project_name']
+    directory_manager = project_data['directory_manager']
+    data_dir = directory_manager.pull_directory('processing_data_dir')
+    nlp_data = \
+        read_json_file(os.path.join(data_dir, project_name + '.json'))
+    return nlp_data
+
+#
 def read_xlsx_file(filename):
     return _read_file(1, filename)
 
