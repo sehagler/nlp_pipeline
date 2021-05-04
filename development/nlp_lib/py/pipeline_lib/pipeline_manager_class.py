@@ -16,7 +16,7 @@ import random
 from nlp_lib.py.process_lib.process_manager_class import Process_manager
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import read_json_file
-from nlp_lib.py.tool_lib.query_tools_lib.date_tools import datetime2matlabdn
+from tool_lib.py.query_tools_lib.date_tools import datetime2matlabdn
 
 #
 class Pipeline_manager(object):

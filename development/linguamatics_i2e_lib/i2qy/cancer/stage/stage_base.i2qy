@@ -1,4 +1,4 @@
-version: 5.6.1
+version: 6.2
 creationDate: '2020-10-01 17:54:02'
 query:
   document:
@@ -28,12 +28,10 @@ query:
             - phrase:
               - class: {snid: tnm.tnm_stages, pt: TNM Stages}
               - (
-              - word: {text: '([0-5]|[IV]+)([A-Da-d][0-9]?)?', matchType: Regexp,
-                  morphoVariants: true}
+              - word: {text: '([0-5]|[IV]+)([A-Da-d][0-9]?)?', matchType: Regexp, morphoVariants: true}
               - )
             - phrase:
-              - word: {text: '([0-5]|[IV]+)([A-Da-d][0-9]?)?', matchType: Regexp,
-                  morphoVariants: true}
+              - word: {text: '([0-5]|[IV]+)([A-Da-d][0-9]?)?', matchType: Regexp, morphoVariants: true}
               - phrase:
                   quantifier: {minimum: 0, maximum: 1}
                   of:

@@ -1,4 +1,4 @@
-version: 5.6.1
+version: 6.2
 creationDate: '2020-08-18 17:06:06'
 query:
   document:
@@ -42,8 +42,7 @@ query:
                       macroPt: Grandparent
                       macroSnid: Linguamatics.Grandparent
                       of:
-                      - word: {text: Grandparent, macroPt: Grandparent, macroSnid: Linguamatics.GeneralGrandparent,
-                          morphoVariants: true}
+                      - word: {text: Grandparent, macroPt: Grandparent, macroSnid: Linguamatics.GeneralGrandparent, morphoVariants: true}
                       - alternative:
                           macroPt: Grandmother
                           macroSnid: Linguamatics.Grandmother
@@ -73,8 +72,7 @@ query:
                       macroPt: Parent
                       macroSnid: Linguamatics.Parent
                       of:
-                      - word: {text: Parent, macroPt: Parent, macroSnid: Linguamatics.GeneralParent,
-                          morphoVariants: true}
+                      - word: {text: Parent, macroPt: Parent, macroSnid: Linguamatics.GeneralParent, morphoVariants: true}
                       - alternative:
                           macroPt: Mother
                           macroSnid: Linguamatics.Mother
@@ -98,8 +96,7 @@ query:
                       macroPt: Sibling
                       macroSnid: Linguamatics.Sibling
                       of:
-                      - word: {text: Sibling, macroPt: Sibling, macroSnid: Linguamatics.GeneralSibling,
-                          morphoVariants: true}
+                      - word: {text: Sibling, macroPt: Sibling, macroSnid: Linguamatics.GeneralSibling, morphoVariants: true}
                       - alternative:
                           macroPt: Brother
                           macroSnid: Linguamatics.Brother
@@ -113,8 +110,7 @@ query:
                           of:
                           - word: {text: Sister, morphoVariants: true}
                           - Sis
-                      - word: {text: Twin, macroPt: Twin, macroSnid: Linguamatics.Twin,
-                          morphoVariants: true}
+                      - word: {text: Twin, macroPt: Twin, macroSnid: Linguamatics.Twin, morphoVariants: true}
                   - alternative:
                       isStructuralMacroAlternative: true
                       macroPt: Children
@@ -134,8 +130,7 @@ query:
                           - word: {text: Daughter, morphoVariants: true}
                           - DTR
                           - DTRS
-                      - word: {text: Son, macroPt: Son, macroSnid: Linguamatics.Son,
-                          morphoVariants: true}
+                      - word: {text: Son, macroPt: Son, macroSnid: Linguamatics.Son, morphoVariants: true}
                   - alternative:
                       isStructuralMacroAlternative: true
                       macroPt: Spouse
@@ -178,12 +173,9 @@ query:
                           of:
                           - word: {text: Niece, morphoVariants: true}
                           - word: {text: Neice, morphoVariants: true}
-                      - word: {text: Nephew, macroPt: Nephew, macroSnid: Linguamatics.Nephew,
-                          morphoVariants: true}
-                      - word: {text: Uncle, macroPt: Uncle, macroSnid: Linguamatics.Uncle,
-                          morphoVariants: true}
-                      - word: {text: Aunt, macroPt: Aunt, macroSnid: Linguamatics.Aunt,
-                          morphoVariants: true}
+                      - word: {text: Nephew, macroPt: Nephew, macroSnid: Linguamatics.Nephew, morphoVariants: true}
+                      - word: {text: Uncle, macroPt: Uncle, macroSnid: Linguamatics.Uncle, morphoVariants: true}
+                      - word: {text: Aunt, macroPt: Aunt, macroSnid: Linguamatics.Aunt, morphoVariants: true}
                       - alternative:
                           macroPt: Cousin
                           macroSnid: Linguamatics.Cousin
@@ -239,10 +231,7 @@ query:
                   - alternative:
                       macroPt: negative word
                       macroSnid: linguamatics_wc.WC_Negative_Word
-                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
-                        hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no',
-                        nobody, none, nor, not, nothing, nowhere, oughtn't, shan't,
-                        shouldn't, wasn't, weren't, won't, wouldn't]
+                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
               - evidence
             - word: {text: manage, morphoVariants: true}
             - word: {text: relate, morphoVariants: true}

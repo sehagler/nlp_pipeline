@@ -6,7 +6,7 @@ Created on Thu Nov  5 09:24:59 2020
 """
 
 #
-from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools import note_label, part_label, specimen_label, s
 
 #

@@ -15,7 +15,7 @@ from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools \
     import compare_texts
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
-from nlp_lib.py.tool_lib.query_tools_lib.date_tools import compare_dates
+from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
 #
 class CCC19_performance_data_manager(Performance_data_manager):

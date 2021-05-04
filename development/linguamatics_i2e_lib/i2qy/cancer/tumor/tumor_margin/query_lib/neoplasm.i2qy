@@ -1,11 +1,10 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2020-03-11 16:36:51'
 query:
   document:
   - alternative:
     - class:
-        parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific
-            neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
+        parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
         snid: nlm_plus.D009369
         pt: Neoplasms
         where:

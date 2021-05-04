@@ -1,114 +1,63 @@
-output:
-  useOutputEditor: true
-  columns:
-  - id: alternative1
-creator: haglers
+version: 6.2
+creationDate: '2018-07-03 10:46:23'
 query:
   document:
   - phrase:
     - word:
         text: spanning
-        quantifier:
-          maximum: 0
-          minimum: 0
+        quantifier: {minimum: 0, maximum: 0}
     - alternative:
-        view:
-          layout: list
+        quantifier: {minimum: 0, maximum: 1}
+        view: {layout: list}
         of:
         - phrase:
-            of:
-            - less
-            - than
             displayChildren: false
+            of: [less, than]
         - within
-        quantifier:
-          maximum: 1
-          minimum: 0
     - alternative:
+        id: alternative1
         of:
         - phrase:
           - word:
               text: x
-              quantifier:
-                maximum: 0
-                minimum: 0
-          - class:
-              unit: length.meter
-              snid: measurement.length
-              pt: Length (m)
+              quantifier: {minimum: 0, maximum: 0}
+          - class: {unit: length.meter, snid: measurement.length, pt: Length (m)}
           - word:
               text: x
-              quantifier:
-                maximum: 0
-                minimum: 0
+              quantifier: {minimum: 0, maximum: 0}
         - phrase:
           - alternative:
-              view:
-                layout: list
+              quantifier: {minimum: 0, maximum: 1}
+              view: {layout: list}
               of:
               - phrase:
-                - class:
-                    snid: numerics.numerics
-                    pt: Numerics
+                - class: {snid: numerics.numerics, pt: Numerics}
                 - /
               - phrase:
                 - class:
+                    quantifier: {minimum: 0, maximum: 1}
                     snid: numerics.numerics
                     pt: Numerics
-                    quantifier:
-                      maximum: 1
-                      minimum: 0
-                - class: /word
-                - class: /prep
-              quantifier:
-                maximum: 1
-                minimum: 0
+                - {class: /word}
+                - {class: /prep}
           - alternative:
-              view:
-                layout: list
+              view: {layout: list}
               of:
-              - class:
-                  snid: numerics.numerics
-                  pt: Numerics
-              - class: /word
+              - class: {snid: numerics.numerics, pt: Numerics}
+              - {class: /word}
           - alternative:
-              view:
-                layout: list
+              view: {layout: list}
               of:
               - phrase:
-                  of:
-                  - high
-                  - power
-                  - field
                   displayChildren: false
+                  of: [high, power, field]
               - HPF
           - phrase:
+              quantifier: {minimum: 0, maximum: 1}
               of:
-              - link:
-                  path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
-              quantifier:
-                maximum: 1
-                minimum: 0
-        id: alternative1
-querySnapshots:
-  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
-    creator: haglers
-    query:
-      document:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
-          of:
-          - (
-          - alternative:
-              of:
-              - (
-              - )
-              quantifier:
-                maximum: 0
-                minimum: 0
-          - )
-    creationDate: '2018-05-07 15:22:51'
-    version: 6.2
-creationDate: '2018-07-03 10:46:23'
-version: 6.2
+              - link: {path: ../../../../tools/parenthetical_query.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

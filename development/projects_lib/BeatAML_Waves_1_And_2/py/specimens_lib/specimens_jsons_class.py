@@ -13,10 +13,10 @@ import os
 from pathlib import Path
 
 #
-from nlp_lib.py.tool_lib.query_tools_lib.date_tools import get_date_difference
 from nlp_lib.py.logger_lib.logger_class import Logger
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_base_class \
     import Specimens_base
+from tool_lib.py.query_tools_lib.date_tools import get_date_difference
 
 #
 class Specimens_jsons(Specimens_base):

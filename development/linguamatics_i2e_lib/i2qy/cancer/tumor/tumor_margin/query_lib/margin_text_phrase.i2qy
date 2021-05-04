@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2018-07-20 09:18:33'
 query:
   document:
@@ -17,10 +17,7 @@ query:
           - alternative:
               macroPt: negative word
               macroSnid: linguamatics_wc.WC_Negative_Word
-              of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't,
-                hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none,
-                nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't,
-                won't, wouldn't]
+              of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
       - alternative:
           view: {layout: list}
           of: [clean, clear, close, free, involved, negative, positive]
@@ -190,31 +187,10 @@ query:
           - infiltrating
           - invasive
       - link:
-          path: X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy
+          path: neoplasm.i2qy
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy
-  : version: 5.5.1
-    creationDate: '2020-03-11 16:36:51'
-    query:
-      document:
-      - alternative:
-        - class:
-            parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific
-                neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
-            snid: nlm_plus.D009369
-            pt: Neoplasms
-            where:
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [component, carcinoma, involvement, lesion, malignancy, tumor]
-        - alternative:
-            view: {layout: list}
-            of: [component, carcinoma, involvement, lesion, malignancy, tumor]
-    creator: haglers

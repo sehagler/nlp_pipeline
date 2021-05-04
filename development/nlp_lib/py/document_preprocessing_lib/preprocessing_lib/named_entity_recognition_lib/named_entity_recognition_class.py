@@ -6,10 +6,11 @@ Created on Mon Mar 16 10:17:40 2020
 """
 
 #
-from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools import s
-import nlp_lib.py.tool_lib.query_tools_lib.karyotype_tools as karyotype_tools
-import nlp_lib.py.tool_lib.query_tools_lib.smoking_tools as smoking_tools
+import tool_lib.py.query_tools_lib.karyotype_tools as karyotype_tools
+import tool_lib.py.query_tools_lib.smoking_tools as smoking_tools
 
 #
 class Named_entity_recognition(Preprocessor_base):

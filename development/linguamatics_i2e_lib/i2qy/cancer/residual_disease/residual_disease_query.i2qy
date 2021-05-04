@@ -1,4 +1,4 @@
-version: 5.4
+version: 6.2
 creationDate: '2019-01-30 00:13:24'
 query:
   document:
@@ -23,10 +23,7 @@ query:
                     - alternative:
                         macroPt: negative word
                         macroSnid: linguamatics_wc.WC_Negative_Word
-                        of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't,
-                          hadn't, hasn't, haven't, isn't, mustn't, never, neither,
-                          'no', nobody, none, nor, not, nothing, nowhere, oughtn't,
-                          shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+                        of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
                 - history
                 - negative
                 - possibility
@@ -496,10 +493,7 @@ query:
               - alternative:
                   macroPt: negative word
                   macroSnid: linguamatics_wc.WC_Negative_Word
-                  of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't,
-                    hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody,
-                    none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't,
-                    wasn't, weren't, won't, wouldn't]
+                  of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
           - negative
         - MRD
       - phrase:

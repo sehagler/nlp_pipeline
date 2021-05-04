@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2019-03-12 16:42:00'
 query:
   document:
@@ -9,7 +9,7 @@ query:
         - phrase:
             unordered: true
             of:
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
+            - link: {path: blast.i2qy}
             - phrase:
                 maxWordGap: 1
                 quantifier: {minimum: 0, maximum: none}
@@ -19,7 +19,7 @@ query:
                     quantifier: {minimum: 0, maximum: 1}
                     of: [abnormal]
                 - alternative:
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
+                  - link: {path: blast.i2qy}
                   - word: {text: promonocyte, morphoVariants: true}
                   - word: {text: promonocytic, morphoVariants: true}
                   - word: {text: promyelocyte, morphoVariants: true}
@@ -31,34 +31,3 @@ output:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy:
-    version: 5.5.1
-    creationDate: '2019-02-26 19:12:21'
-    query:
-      document:
-      - alternative:
-          id: alternative1
-          of:
-          - involvement
-          - word: {text: monoblast, morphoVariants: true}
-          - word: {text: myeloblast, morphoVariants: true}
-          - phrase:
-              displayChildren: false
-              of:
-              - alternative:
-                  quantifier: {minimum: 0, maximum: 0}
-                  of: [immature, leukemic, lymphoid]
-              - word:
-                  text: myeloid
-                  quantifier: {minimum: 0, maximum: 1}
-              - word: {text: blast, morphoVariants: true}
-              - word:
-                  text: equivalent
-                  morphoVariants: true
-                  quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

@@ -2,8 +2,7 @@ version: 6.2
 creationDate: '2021-03-01 21:11:36'
 query:
   document:
-  - and: {distinguishColumns: false, distinguishHits: false, expression: 'os.date(''%d-%b-%y
-        %H:%M:%S'')', id: And1, label: DATETIME, ptSource: expression, showInHitColumn: false}
+  - and: {distinguishColumns: false, distinguishHits: false, expression: 'os.date(''%d-%b-%y %H:%M:%S'')', id: And1, label: DATETIME, ptSource: expression, showInHitColumn: false}
 output:
   columns:
   - {id: And1}

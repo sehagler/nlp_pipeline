@@ -6,46 +6,78 @@ Created on Fri Jan 11 13:47:40 2019
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.section_header_normalizer_pathology_report_class \
-    import Section_header_normalizer_pathology_report
-from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.table_normalizer_class \
-    import Table_normalizer
-from nlp_lib.py.document_preprocessing_lib.template_lib.preprocessor_template_lib.pathology_report_class \
-    import Pathology_report
-from nlp_lib.py.tool_lib.query_tools_lib.cancer_tools \
-    import Named_entity_recognition as Named_entity_recognition_cancer
-from nlp_lib.py.tool_lib.query_tools_lib.cancer_tools \
-    import Posttokenizer as Posttokenizer_cancer
-from nlp_lib.py.tool_lib.query_tools_lib.cancer_tools \
-    import Text_preparation as Text_preparation_cancer
-from nlp_lib.py.tool_lib.query_tools_lib.antigens_tools \
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.report_preprocessor_base_class \
+    import Report_preprocessor_base_class
+from nlp_lib.py.document_preprocessing_lib.preprocessing_lib.rewriters_lib.normalizers_lib.section_header_normalizer_class \
+    import Section_header_normalizer
+from tool_lib.py.query_tools_lib.antigens_tools \
     import Posttokenizer as Posttokenizer_antigens
+from tool_lib.py.query_tools_lib.cancer_tools \
+    import Named_entity_recognition as Named_entity_recognition_cancer
+from tool_lib.py.query_tools_lib.cancer_tools \
+    import Posttokenizer as Posttokenizer_cancer
+from tool_lib.py.query_tools_lib.cancer_tools \
+    import Text_preparation as Text_preparation_cancer
 
 #
-class Hematopathology_report_preprocessor(Pathology_report):
+class Hematopathology_report_preprocessor(Report_preprocessor_base_class):
     
-     #
+    #
     def _extract_section_headers(self):
-        Pathology_report._extract_section_headers(self)
-        section_header_normalizer = Section_header_normalizer_pathology_report(self.project_data)
+        section_header_normalizer = Section_header_normalizer(self.project_data)
+        self.dynamic_data_manager.append_keywords_text(self.body_header)
         section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         section_header_normalizer.push_text(self.text)
-        section_header_normalizer.antibodies_tested_section_header(self.formatting)
-        section_header_normalizer.bone_marrow_section_header(self.formatting)
-        section_header_normalizer.cytogenetic_and_fish_studies_section_header(self.formatting)
-        section_header_normalizer.flow_cytometric_analysis_section_header(self.formatting)
-        section_header_normalizer.immunohistochemical_stains_section_header(self.formatting)
-        section_header_normalizer.immunologic_analysis_section_header(self.formatting)
-        section_header_normalizer.molecular_studies_section_header(self.formatting)
-        section_header_normalizer.peripheral_blood_morphology_section_header(self.formatting)
-        section_header_normalizer.special_stains_section_header(self.formatting)
+        section_header_normalizer.amendment_section_header(self.formatting)
+        #section_header_normalizer.antibodies_tested_section_header(self.formatting)
+        #section_header_normalizer.background_section_header(self.formatting)
+        #section_header_normalizer.bone_marrow_section_header(self.formatting)
+        section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
+        #section_header_normalizer.cytogenetic_and_fish_studies_section_header(self.formatting)
+        #section_header_normalizer.diagnosis_section_header(self.formatting)
+        #section_header_normalizer.explanation_section_header(self.formatting)
+        #section_header_normalizer.flow_cytometric_analysis_section_header(self.formatting)
+        section_header_normalizer.history_section_header(self.formatting)
+        section_header_normalizer.impression_and_recommendation_section_header(self.formatting)
+        #section_header_normalizer.immunohistochemical_stains_section_header(self.formatting)
+        #section_header_normalizer.immunologic_analysis_section_header(self.formatting)
+        #section_header_normalizer.interpretation_section_header(self.formatting)
+        #section_header_normalizer.laboratory_data_section_header(self.formatting)
+        #section_header_normalizer.materials_received_section_header(self.formatting)
+        #section_header_normalizer.method_section_header(self.formatting)
+        #section_header_normalizer.molecular_studies_section_header(self.formatting)
+        #section_header_normalizer.peripheral_blood_morphology_section_header(self.formatting)
+        section_header_normalizer.person_section_header(self.formatting)
+        #section_header_normalizer.references_section_header(self.formatting)
+        #section_header_normalizer.special_stains_section_header(self.formatting)
+        #section_header_normalizer.synopsis_section_header(self.formatting)
+        section_header_list = \
+            [ 'ANTIBODIES TESTED', 'BONE MARROW ASPIRATE SMEARS',
+              'BONE MARROW CLOT SECTION', 'BONE MARROW DIFFERENTIAL' ]
+        section_header_normalizer.normalize_section_header_1(section_header_list,
+                                                             self.formatting)
+        section_header_list = \
+            [ 'BACKGROUND', 'CYTOGENETIC ANALYSIS SUMMARY',
+              'PREAMENDMENT DIAGNOSIS', 'DIAGNOSIS', 'EXPLANATION',
+              'FLOW CYTOMETRIC ANALYSIS', 'IMMUNOHISTOCHEMICAL STAINS', 
+              'IMMUNOLOGIC ANALYSIS', 'INTERPRETATION', 'LAB DATA', 
+              'MATERIALS RECEIVED', 'METHOD', 'MOLECULAR STUDIES',
+              'PERIPHERAL BLOOD MORPHOLOGY', 'REFERENCES', 'SPECIAL STAINS',
+              'SYNOPSIS' ]
+        section_header_normalizer.normalize_section_header_2(section_header_list,
+                                                             self.formatting)
         self.text = section_header_normalizer.pull_text()
-        self.dynamic_memory_manager = section_header_normalizer.pull_dynamic_data_manager()
+        self.dynamic_memory_manager = \
+            section_header_normalizer.pull_dynamic_data_manager()
     
     #
     def _format_beakerap(self):
-        Pathology_report._format_beakerap(self)
-        self._format_section_headers()
+        Report_preprocessor_base_class._format_beakerap(self)
+        #self._format_section_headers()
+        self._format_hematopathology_table_beaker_ap()
+        
+    #
+    def _format_hematopathology_table_beaker_ap(self):
         self._clear_command_list()
         self._pull_out_section_header('(?i)[ \t]antibodies tested')
         self._pull_out_section_header('(?i)[ \t]bone marrow aspirate smears')
@@ -100,9 +132,7 @@ class Hematopathology_report_preprocessor(Pathology_report):
         self._process_command_list()
         
     #
-    def _format_powerpath(self):
-        Pathology_report._format_powerpath(self)
-        self._format_section_headers()
+    def _format_hematopathology_table_powerpath(self):
         self._clear_command_list()
         self._pull_out_table_entry('[ \t]Bands[ \t]+[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Baso(phil)?s[ \t]+(x )?[0-9]')
@@ -112,6 +142,12 @@ class Hematopathology_report_preprocessor(Pathology_report):
         self._pull_out_table_entry('[ \t](?<!% )Neutrophils[ \t]+[0-9]')
         self._pull_out_table_entry('[ \t]PMNs[ \t]+(x )?[0-9]')
         self._process_command_list()
+        
+    #
+    def _format_powerpath(self):
+        Report_preprocessor_base_class._format_powerpath(self)
+        #self._format_section_headers()
+        self._format_hematopathology_table_powerpath()
         
     #
     def _format_section_headers(self):
@@ -124,7 +160,7 @@ class Hematopathology_report_preprocessor(Pathology_report):
         
     #
     def _named_entity_recognition(self):
-        Pathology_report._named_entity_recognition(self)
+        Report_preprocessor_base_class._named_entity_recognition(self)
         self._normalize_whitespace()
         named_entity_recognition_cancer = Named_entity_recognition_cancer(self.project_data)
         named_entity_recognition_cancer.push_text(self.text)
@@ -134,15 +170,8 @@ class Hematopathology_report_preprocessor(Pathology_report):
         self._normalize_whitespace()
             
     #
-    def _normalize_table(self):
-        table_normalizer = Table_normalizer()
-        table_normalizer.push_text(self.text)
-        table_normalizer.normalize_table()
-        self.text = table_normalizer.pull_text()
-            
-    #
     def _posttokenizer(self, clear_section_headers=True):
-        Pathology_report._posttokenizer(self)
+        Report_preprocessor_base_class._posttokenizer(self)
         posttokenizer_antigens = Posttokenizer_antigens(self.project_data)
         posttokenizer_antigens.push_text(self.text)
         posttokenizer_antigens.process_antigens()
@@ -159,16 +188,18 @@ class Hematopathology_report_preprocessor(Pathology_report):
         if clear_section_headers:
             self._clear_section_header_tags()
         
+    '''
     #
     def _pretokenizer(self):
-        Pathology_report._pretokenizer(self)
-        self._normalize_table
+        Report_preprocessor_base_class._pretokenizer(self)
+        #self._normalize_table
         
     #
     def _remove_false_specimen(self):
         self._clear_command_list()
         self._general_command('(?i) \((([a-o]|[r-z])+[0-9]+(,( )?)?)+\)', {None : ''})
         self._process_command_list()
+    '''
         
     #
     def _text_cleanup(self):
@@ -181,7 +212,7 @@ class Hematopathology_report_preprocessor(Pathology_report):
         
     #
     def _text_setup(self):
-        Pathology_report._text_setup(self)
+        Report_preprocessor_base_class._text_setup(self)
         self._normalize_whitespace()
         text_preparation = Text_preparation_cancer(self.project_data)
         text_preparation.push_text(self.text)
@@ -189,8 +220,3 @@ class Hematopathology_report_preprocessor(Pathology_report):
         text_preparation.setup_text()
         self.text = text_preparation.pull_text()
         self._normalize_whitespace()
-        
-    #
-    def normalize_report(self):
-        Pathology_report.normalize_report(self)
-        self._text_cleanup()

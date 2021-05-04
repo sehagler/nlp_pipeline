@@ -1,0 +1,52 @@
+version: 6.2
+creationDate: '2020-06-16 19:40:40'
+query:
+  document:
+  - link: {path: smoking_status_query.i2qy, id: link4}
+  - phrase:
+      findMatches: longestOnly
+      id: phrase1
+      maxWordGap: -1
+      multiSentence: true
+      view: {height: 336, width: 1043}
+      wordGapRestricted: false
+      of:
+      - sentence:
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          prioritization: span
+          of:
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - {class: /chunk}
+              - link: {path: smoking_status_query.i2qy}
+              - {class: /chunk}
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - {class: /chunk}
+              - link: {path: smoking_status_query.i2qy}
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - link: {path: smoking_status_query.i2qy}
+              - {class: /chunk}
+          - link: {path: smoking_status_query.i2qy}
+      - sentence:
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: phrase1}
+  - id: link4.alternative1
+    itemOptions: {}
+    linkItemId: link4
+  columnLocations: [1, 0]
+  useOutputEditor: true
+creator: haglers

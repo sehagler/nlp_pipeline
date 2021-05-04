@@ -1,4 +1,4 @@
-version: 6.1
+version: 6.2
 creationDate: '2020-05-27 17:10:02'
 query:
   document:
@@ -31,9 +31,8 @@ output:
   columns:
   - {id: region1}
   - {id: shadow region1}
-  - {id: link1.alternative1.col0, linkItemId: link1}
-  - {id: link1.alternative1.col1, linkItemId: link1}
-  - {id: link1.alternative1.col2, linkItemId: link1}
-  - {id: link1.alternative1.col3, linkItemId: link1}
+  - id: link1.alternative1.col0
+    itemOptions: {}
+    linkItemId: link1
   useOutputEditor: true
 creator: haglers

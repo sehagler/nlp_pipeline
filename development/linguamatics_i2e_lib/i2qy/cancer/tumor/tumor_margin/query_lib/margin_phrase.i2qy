@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2018-07-03 09:21:07'
 query:
   document:
@@ -8,101 +8,20 @@ query:
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
           of:
-          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_base.i2qy'}
+          - link: {path: margin_base.i2qy}
           - alternative:
               view: {layout: list}
               of: [+, and, but, to]
-      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_base.i2qy'}
+      - link: {path: margin_base.i2qy}
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
           of:
           - alternative:
               view: {layout: list}
               of: [+, and, but, to]
-          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_base.i2qy'}
+          - link: {path: margin_base.i2qy}
 output:
   columns:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-07 15:22:51'
-    query:
-      document:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
-          of:
-          - (
-          - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [(, )]
-          - )
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_base.i2qy
-  : version: 5.5.1
-    creationDate: '2018-07-03 10:46:23'
-    query:
-      document:
-      - phrase:
-        - word:
-            text: spanning
-            quantifier: {minimum: 0, maximum: 0}
-        - alternative:
-            quantifier: {minimum: 0, maximum: 1}
-            view: {layout: list}
-            of:
-            - phrase:
-                displayChildren: false
-                of: [less, than]
-            - within
-        - alternative:
-            id: alternative1
-            of:
-            - phrase:
-              - word:
-                  text: x
-                  quantifier: {minimum: 0, maximum: 0}
-              - class: {unit: length.meter, snid: measurement.length, pt: Length (m)}
-              - word:
-                  text: x
-                  quantifier: {minimum: 0, maximum: 0}
-            - phrase:
-              - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
-                  view: {layout: list}
-                  of:
-                  - phrase:
-                    - class: {snid: numerics.numerics, pt: Numerics}
-                    - /
-                  - phrase:
-                    - class:
-                        quantifier: {minimum: 0, maximum: 1}
-                        snid: numerics.numerics
-                        pt: Numerics
-                    - {class: /word}
-                    - {class: /prep}
-              - alternative:
-                  view: {layout: list}
-                  of:
-                  - class: {snid: numerics.numerics, pt: Numerics}
-                  - {class: /word}
-              - alternative:
-                  view: {layout: list}
-                  of:
-                  - phrase:
-                      displayChildren: false
-                      of: [high, power, field]
-                  - HPF
-              - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
-                  of:
-                  - link:
-                      path: [../../../tools/parenthetical_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy']
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

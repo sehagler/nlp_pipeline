@@ -6,7 +6,8 @@ Created on Mon Mar 16 13:28:29 2020
 """
 
 #
-from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+	import Preprocessor_base
 
 #
 class Deidentifier(Preprocessor_base):

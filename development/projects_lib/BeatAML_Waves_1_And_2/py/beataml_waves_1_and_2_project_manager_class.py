@@ -54,16 +54,16 @@ class BeatAML_Waves_1_And_2_project_manager(Static_data_manager):
         if self.project_subdir == 'test':
             self.static_data['raw_data_files']['Beaker Results.xls'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Beaker Results.xls']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.static_data['raw_data_files']['Beaker Results.xls']['NLP_PROCESS'] = 'HEMATOPATHOLOGY_REPORT'
             self.static_data['raw_data_files']['Bone Marrow Morph Report.xls'] = {}
             self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['NLP_PROCESS'] = 'HEMATOPATHOLOGY_REPORT'
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx'] = {}
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
             self.static_data['raw_data_files']['PowerPath Results.xls'] = {}
             self.static_data['raw_data_files']['PowerPath Results.xls']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['PowerPath Results.xls']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.static_data['raw_data_files']['PowerPath Results.xls']['NLP_PROCESS'] = 'HEMATOPATHOLOGY_REPORT'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls'] = {}
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['NLP_MODE'] = 'CASE_NUMBER'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'

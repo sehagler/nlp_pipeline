@@ -1,4 +1,4 @@
-version: 5.6.1
+version: 6.2
 creationDate: '2020-06-08 21:29:46'
 query:
   document:
@@ -30,7 +30,7 @@ query:
                   text: date
                   quantifier: {minimum: 0, maximum: 1}
               - link:
-                  path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                  path: ../../tools/date_query.i2qy
                   quantifier: {minimum: 0, maximum: 1}
       - phrase:
           displayChildren: false
@@ -67,8 +67,7 @@ query:
                 - alternative:
                     quantifier: {minimum: 0, maximum: 1}
                     of: [date, in]
-                - link:
-                    path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                - link: {path: ../../tools/date_query.i2qy}
               - phrase:
                 - word: {text: \d+\+, matchType: Regexp}
                 - phrase:
@@ -163,7 +162,7 @@ query:
               - word:
                   text: ','
                   quantifier: {minimum: 0, maximum: 1}
-              - link: {path: 'Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy'}
+              - link: {path: tobacco_products_smoking.i2qy}
             - phrase:
               - word:
                   text: '~'
@@ -202,7 +201,7 @@ query:
                 of:
                 - class: {snid: numerics.decimals, pt: Decimal}
                 - class: {snid: numerics.integers, pt: Integer}
-            - link: {path: 'Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy'}
+            - link: {path: tobacco_products_smoking.i2qy}
             - /
             - alternative:
               - word: {text: mo, morphoVariants: true}
@@ -224,8 +223,7 @@ query:
                   of:
                   - word: {text: mo, morphoVariants: true}
                   - word: {text: yr, morphoVariants: true}
-            - link:
-                path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+            - link: {path: ../../tools/date_query.i2qy}
           - word:
               text: ago
               quantifier: {minimum: 0, maximum: 1}
@@ -243,7 +241,7 @@ query:
                   of:
                   - word: {text: type, morphoVariants: true}
                   - ':'
-              - link: {path: 'Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy'}
+              - link: {path: tobacco_products_smoking.i2qy}
           - phrase:
               displayChildren: false
               quantifier: {minimum: 0, maximum: 1}
@@ -257,8 +255,7 @@ query:
                     of:
                     - class: {snid: numerics.decimals, pt: Decimal}
                     - class: {snid: numerics.integers, pt: Integer}
-                - link:
-                    path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                - link: {path: ../../tools/date_query.i2qy}
           - phrase:
             - last
             - attempt
@@ -271,8 +268,7 @@ query:
                   of:
                   - class: {snid: numerics.decimals, pt: Decimal}
                   - class: {snid: numerics.integers, pt: Integer}
-              - link:
-                  path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+              - link: {path: ../../tools/date_query.i2qy}
           - phrase:
             - alternative:
               - word: {text: mo, morphoVariants: true}
@@ -302,95 +298,3 @@ output:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy:
-    version: 5.6.1
-    creationDate: '2019-01-28 21:59:35'
-    query:
-      document:
-      - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          of:
-          - PHI_DATE
-          - phrase:
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - word: {text: \-, matchType: Regexp}
-            - word: {text: '[0-9]{1,2}', matchType: Regexp}
-            - word: {text: \-, matchType: Regexp}
-            - alternative:
-              - word: {text: '[0-9]{2}', matchType: Regexp}
-              - word: {text: '[0-9]{4}', matchType: Regexp}
-          - phrase:
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - word: {text: /, matchType: Regexp}
-            - word: {text: '[0-9]{1,2}', matchType: Regexp}
-            - word: {text: /, matchType: Regexp}
-            - alternative:
-              - word: {text: '[0-9]{2}', matchType: Regexp}
-              - word: {text: '[0-9]{4}', matchType: Regexp}
-          - phrase:
-            - macro:
-                snid: ohsu_months.months
-                pt: Month
-                of:
-                - alternative:
-                    macroPt: Month
-                    macroSnid: ohsu_months.months
-                    of: [Jan, January, Feb, February, Mar, March, Apr, April, May,
-                      Jun, June, Jul, July, Aug, August, Sep, September, Oct, October,
-                      Nov, November, Dec, December]
-            - word:
-                text: .
-                quantifier: {minimum: 0, maximum: 1}
-            - alternative:
-              - phrase:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - ','
-                - alternative:
-                  - word: {text: '[0-9]{2}', matchType: Regexp}
-                  - word: {text: '[0-9]{4}', matchType: Regexp}
-              - phrase:
-                - alternative:
-                    quantifier: {minimum: 0, maximum: 1}
-                    of: [of, ',']
-                - word: {text: '[0-9]{4}', matchType: Regexp}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  ? Z:/NLP/NLP_Sandbox/haglers/NLP_Software/development/nlp_lib/i2qy/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy
-  : version: 5.6.1
-    creationDate: '2020-06-15 18:38:19'
-    query:
-      document:
-      - alternative:
-          boundaries: Exact
-          id: alternative1
-          of:
-          - word: {text: cigar, morphoVariants: true}
-          - word: {text: cigarette, morphoVariants: true}
-          - word: {text: e-cigarette, morphoVariants: true}
-          - phrase:
-            - word:
-                text: medical
-                quantifier: {minimum: 0, maximum: 0}
-            - marijuana
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                of:
-                - for
-                - word: {text: edible, morphoVariants: true}
-          - word: {text: pipe, morphoVariants: true}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

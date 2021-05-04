@@ -1,89 +1,17 @@
-output:
-  useOutputEditor: true
-  columns:
-  - id: phrase1
-creator: haglers
+version: 6.2
+creationDate: '2019-04-24 20:28:59'
 query:
   document:
   - phrase:
+      id: phrase1
       of:
-      - link:
-          path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy
+      - link: {path: ../../../../tools/percentage_query.i2qy}
       - of
       - alternative:
-        - word:
-            text: WBC
-            morphoVariants: true
-        - word:
-            text: cell
-            morphoVariants: true
-      id: phrase1
-querySnapshots:
-  /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy:
-    output:
-      useOutputEditor: true
-      columns:
-      - id: phrase1
-    creator: haglers
-    query:
-      document:
-      - phrase:
-          view:
-            width: 578
-            height: 138
-          of:
-          - macro:
-              snid: linguamatics_wc.WC_Determiner
-              pt: determiner
-              of:
-              - alternative:
-                  macroPt: determiner
-                  of:
-                  - a
-                  - all
-                  - an
-                  - another
-                  - any
-                  - both
-                  - each
-                  - enough
-                  - every
-                  - few
-                  - fewer
-                  - less
-                  - many
-                  - more
-                  - most
-                  - much
-                  - 'no'
-                  - other
-                  - several
-                  - some
-                  - such
-                  - the
-                  macroSnid: linguamatics_wc.WC_Determiner
-              quantifier:
-                maximum: 1
-                minimum: 0
-          - alternative:
-              view:
-                layout: list
-              of:
-              - estimated
-              - '~'
-              - '>'
-              - <
-              quantifier:
-                maximum: 1
-                minimum: 0
-          - word:
-              view:
-                width: 324
-                height: 55
-              matchType: Regexp
-              text: ([0-9]+(\.[0-9]+)?%\-)?[0-9]+(\.[0-9]+)?%
-          id: phrase1
-    creationDate: '2019-02-26 17:24:53'
-    version: 6.2
-creationDate: '2019-04-24 20:28:59'
-version: 6.2
+        - word: {text: WBC, morphoVariants: true}
+        - word: {text: cell, morphoVariants: true}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers

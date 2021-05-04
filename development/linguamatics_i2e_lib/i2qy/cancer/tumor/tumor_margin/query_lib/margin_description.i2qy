@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2018-07-13 10:28:08'
 query:
   document:
@@ -16,10 +16,7 @@ query:
               - alternative:
                   macroPt: Determiner
                   macroSnid: ohsu_determiner.determiner
-                  of: [a, all, an, another, any, both, each, enough, every, few, fewer,
-                    her, his, its, less, little, many, much, more, most, multiple,
-                    my, other, our, several, some, such, sufficient, that, the, their,
-                    these, this, those, what, whatever, which, whichever, whose, your]
+                  of: [a, all, an, another, any, both, each, enough, every, few, fewer, her, his, its, less, little, many, much, more, most, multiple, my, other, our, several, some, such, sufficient, that, the, their, these, this, those, what, whatever, which, whichever, whose, your]
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
           of:
@@ -239,9 +236,7 @@ query:
                                     - alternative:
                                         macroPt: Margin Descriptor
                                         macroSnid: ohsu_margin_decriptor.margin_descriptor
-                                        of: [biopsy, cauterized, excision, inked,
-                                          new, resection, revised, sectioned, specimen,
-                                          surgical]
+                                        of: [biopsy, cauterized, excision, inked, new, resection, revised, sectioned, specimen, surgical]
                             - phrase:
                                 boundaries: Exact
                                 of:
@@ -252,12 +247,7 @@ query:
                                     - alternative:
                                         macroPt: Determiner
                                         macroSnid: ohsu_determiner.determiner
-                                        of: [a, all, an, another, any, both, each,
-                                          enough, every, few, fewer, her, his, its,
-                                          less, little, many, much, more, most, multiple,
-                                          my, other, our, several, some, such, sufficient,
-                                          that, the, their, these, this, those, what,
-                                          whatever, which, whichever, whose, your]
+                                        of: [a, all, an, another, any, both, each, enough, every, few, fewer, her, his, its, less, little, many, much, more, most, multiple, my, other, our, several, some, such, sufficient, that, the, their, these, this, those, what, whatever, which, whichever, whose, your]
                             - alternative:
                                 view: {layout: list}
                                 of: [closest, nearest]
@@ -525,8 +515,7 @@ query:
                             - alternative:
                                 macroPt: Margin Descriptor
                                 macroSnid: ohsu_margin_decriptor.margin_descriptor
-                                of: [biopsy, cauterized, excision, inked, new, resection,
-                                  revised, sectioned, specimen, surgical]
+                                of: [biopsy, cauterized, excision, inked, new, resection, revised, sectioned, specimen, surgical]
                     - phrase:
                         boundaries: Exact
                         of:
@@ -537,12 +526,7 @@ query:
                             - alternative:
                                 macroPt: Determiner
                                 macroSnid: ohsu_determiner.determiner
-                                of: [a, all, an, another, any, both, each, enough,
-                                  every, few, fewer, her, his, its, less, little,
-                                  many, much, more, most, multiple, my, other, our,
-                                  several, some, such, sufficient, that, the, their,
-                                  these, this, those, what, whatever, which, whichever,
-                                  whose, your]
+                                of: [a, all, an, another, any, both, each, enough, every, few, fewer, her, his, its, less, little, many, much, more, most, multiple, my, other, our, several, some, such, sufficient, that, the, their, these, this, those, what, whatever, which, whichever, whose, your]
                     - alternative:
                         view: {layout: list}
                         of: [closest, nearest]
@@ -720,7 +704,7 @@ query:
                     - phrase: [in, situ]
                     - infiltrating
                     - invasive
-                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy'}
+                - link: {path: neoplasm.i2qy}
       - alternative:
           view: {layout: list}
           of:
@@ -905,8 +889,7 @@ query:
                       - alternative:
                           macroPt: Margin Descriptor
                           macroSnid: ohsu_margin_decriptor.margin_descriptor
-                          of: [biopsy, cauterized, excision, inked, new, resection,
-                            revised, sectioned, specimen, surgical]
+                          of: [biopsy, cauterized, excision, inked, new, resection, revised, sectioned, specimen, surgical]
       - phrase:
           displayChildren: false
           quantifier: {minimum: 0, maximum: 1}
@@ -1037,11 +1020,7 @@ query:
                   - alternative:
                       macroPt: Determiner
                       macroSnid: ohsu_determiner.determiner
-                      of: [a, all, an, another, any, both, each, enough, every, few,
-                        fewer, her, his, its, less, little, many, much, more, most,
-                        multiple, my, other, our, several, some, such, sufficient,
-                        that, the, their, these, this, those, what, whatever, which,
-                        whichever, whose, your]
+                      of: [a, all, an, another, any, both, each, enough, every, few, fewer, her, his, its, less, little, many, much, more, most, multiple, my, other, our, several, some, such, sufficient, that, the, their, these, this, those, what, whatever, which, whichever, whose, your]
           - alternative:
               quantifier: {minimum: 1, maximum: none}
               view: {layout: list}
@@ -1134,32 +1113,10 @@ query:
                       - alternative:
                           macroPt: Margin Descriptor
                           macroSnid: ohsu_margin_decriptor.margin_descriptor
-                          of: [biopsy, cauterized, excision, inked, new, resection,
-                            revised, sectioned, specimen, surgical]
+                          of: [biopsy, cauterized, excision, inked, new, resection, revised, sectioned, specimen, surgical]
               - word: {text: resect, morphoVariants: true}
 output:
   columns:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy
-  : version: 5.5.1
-    creationDate: '2020-03-11 16:36:51'
-    query:
-      document:
-      - alternative:
-        - class:
-            parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific
-                neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
-            snid: nlm_plus.D009369
-            pt: Neoplasms
-            where:
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [component, carcinoma, involvement, lesion, malignancy, tumor]
-        - alternative:
-            view: {layout: list}
-            of: [component, carcinoma, involvement, lesion, malignancy, tumor]
-    creator: haglers

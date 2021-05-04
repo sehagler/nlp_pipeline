@@ -10,11 +10,11 @@ import json
 import os
 
 #
-from nlp_lib.py.tool_lib.query_tools_lib.blasts_tools import get_blast_value
 from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_json_file
 from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools import prune_surface_antigens
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_jsons_class \
     import Specimens_jsons
+from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 
 #
 class Specimens(Specimens_jsons):

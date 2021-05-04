@@ -1,4 +1,4 @@
-version: 5.6.1
+version: 6.2
 creationDate: '2020-08-05 01:37:33'
 query:
   document:
@@ -19,21 +19,21 @@ query:
               pt: ICD-O Histology
               where:
               - link:
-                  path: X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/stage/cancer_terminology_exclusion_list.i2qy
+                  path: cancer_terminology_exclusion_list.i2qy
                   quantifier: {minimum: 0, maximum: 0}
           - class:
               snid: nci.C3262
               pt: Neoplasm
               where:
               - link:
-                  path: X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/stage/cancer_terminology_exclusion_list.i2qy
+                  path: cancer_terminology_exclusion_list.i2qy
                   quantifier: {minimum: 0, maximum: 0}
           - class:
               snid: nlm_plus.D009369
               pt: Neoplasms
               where:
               - link:
-                  path: X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/stage/cancer_terminology_exclusion_list.i2qy
+                  path: cancer_terminology_exclusion_list.i2qy
                   quantifier: {minimum: 0, maximum: 0}
         - alternative:
           - macro:
@@ -43,8 +43,7 @@ query:
               - alternative:
                   macroPt: Cancer Initialism
                   macroSnid: ohsu_cancer_initialisms.cancer_initialism
-                  of: [ADH, AML, AMML, DLBCL, DC, GIST, IDC, ILC, LC, MM, NET, NSCLC,
-                    RCC, SCC, SLL, SPC, TCC, UDH]
+                  of: [ADH, AML, AMML, DLBCL, DC, GIST, IDC, ILC, LC, MM, NET, NSCLC, RCC, SCC, SLL, SPC, TCC, UDH]
           - macro:
               snid: ohsu_cancer_types.cancer_type
               pt: Cancer Type
@@ -85,8 +84,7 @@ query:
                     - alternative:
                         macroPt: Cancer Type
                         macroSnid: ohsu_cancer_types.cancer_type
-                        of: [adeno, adenoCA, adenocarcinoma, CA, cancer, carcinoma,
-                          melanoma]
+                        of: [adeno, adenoCA, adenocarcinoma, CA, cancer, carcinoma, melanoma]
                     where:
                     - alternative:
                         quantifier: {minimum: 0, maximum: 0}
@@ -120,17 +118,3 @@ output:
   outputSettings: {outputOrdering: alpha}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/stage/cancer_terminology_exclusion_list.i2qy
-  : version: 5.6.1
-    creationDate: '2020-08-05 00:17:09'
-    query:
-      document:
-      - alternative:
-        - word: {text: cancer, includeInQuery: false}
-        - malignancy
-        - metastases
-        - metastasis
-        - metastatic
-        - oncology
-    creator: haglers

@@ -1,4 +1,4 @@
-version: 5.6.1
+version: 6.2
 creationDate: '2019-01-29 23:09:08'
 query:
   document:
@@ -139,15 +139,13 @@ query:
                           - within
                           - without
                   - {class: /prep}
-              - link:
-                  path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+              - link: {path: ../../tools/date_query.i2qy}
             - phrase:
                 maxWordGap: -1
                 wordGapRestricted: false
                 of:
                 - (
-                - link:
-                    path: [../../tools/date_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy']
+                - link: {path: ../../tools/date_query.i2qy}
                 - )
           - alternative:
             - phrase:
@@ -282,67 +280,3 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/date_query.i2qy:
-    version: 5.6.1
-    creationDate: '2019-01-28 21:59:35'
-    query:
-      document:
-      - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          of:
-          - PHI_DATE
-          - phrase:
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - word: {text: \-, matchType: Regexp}
-            - word: {text: '[0-9]{1,2}', matchType: Regexp}
-            - word: {text: \-, matchType: Regexp}
-            - alternative:
-              - word: {text: '[0-9]{2}', matchType: Regexp}
-              - word: {text: '[0-9]{4}', matchType: Regexp}
-          - phrase:
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - word: {text: /, matchType: Regexp}
-            - word: {text: '[0-9]{1,2}', matchType: Regexp}
-            - word: {text: /, matchType: Regexp}
-            - alternative:
-              - word: {text: '[0-9]{2}', matchType: Regexp}
-              - word: {text: '[0-9]{4}', matchType: Regexp}
-          - phrase:
-            - macro:
-                snid: ohsu_months.months
-                pt: Month
-                of:
-                - alternative:
-                    macroPt: Month
-                    macroSnid: ohsu_months.months
-                    of: [Jan, January, Feb, February, Mar, March, Apr, April, May,
-                      Jun, June, Jul, July, Aug, August, Sep, September, Oct, October,
-                      Nov, November, Dec, December]
-            - word:
-                text: .
-                quantifier: {minimum: 0, maximum: 1}
-            - alternative:
-              - phrase:
-                - word: {text: '[0-9]{1,2}', matchType: Regexp}
-                - ','
-                - alternative:
-                  - word: {text: '[0-9]{2}', matchType: Regexp}
-                  - word: {text: '[0-9]{4}', matchType: Regexp}
-              - phrase:
-                - alternative:
-                    quantifier: {minimum: 0, maximum: 1}
-                    of: [of, ',']
-                - word: {text: '[0-9]{4}', matchType: Regexp}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

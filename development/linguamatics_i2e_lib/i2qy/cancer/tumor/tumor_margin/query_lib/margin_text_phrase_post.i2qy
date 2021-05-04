@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2018-07-20 09:18:33'
 query:
   document:
@@ -101,14 +101,7 @@ query:
             - alternative:
                 macroPt: auxiliary verb
                 macroSnid: linguamatics_wc.WC_Auxiliary_Verb
-                of: [am, are, aren't, be, been, being, can, can't, cannot, could,
-                  couldn't, could've, did, didn't, do, does, doesn't, doing, done,
-                  don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll,
-                  he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might,
-                  must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's,
-                  should, shouldn't, should've, they'd, they'll, they're, they've,
-                  was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't,
-                  would, wouldn't, would've, you'd, you'll, you're, you've]
+                of: [am, are, aren't, be, been, being, can, can't, cannot, could, couldn't, could've, did, didn't, do, does, doesn't, doing, done, don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll, he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might, must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's, should, shouldn't, should've, they'd, they'll, they're, they've, was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't, would, wouldn't, would've, you'd, you'll, you're, you've]
         - word: {text: transect, morphoVariants: true}
     - alternative:
       - phrase:
@@ -332,7 +325,7 @@ query:
                   - in-situ
                   - infiltrating
                   - invasive
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy'}
+              - link: {path: neoplasm.i2qy}
       - alternative:
           view: {layout: list}
           of: [clear, free, involved, negative, positive]
@@ -346,24 +339,3 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/neoplasm.i2qy
-  : version: 5.5.1
-    creationDate: '2020-03-11 16:36:51'
-    query:
-      document:
-      - alternative:
-        - class:
-            parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific
-                neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
-            snid: nlm_plus.D009369
-            pt: Neoplasms
-            where:
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [component, carcinoma, involvement, lesion, malignancy, tumor]
-        - alternative:
-            view: {layout: list}
-            of: [component, carcinoma, involvement, lesion, malignancy, tumor]
-    creator: haglers

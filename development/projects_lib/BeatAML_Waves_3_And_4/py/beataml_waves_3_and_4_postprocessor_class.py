@@ -15,26 +15,26 @@ from nlp_lib.py.postprocessing_lib.general_postprocessor_class \
     import General_postprocessor
 from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
     import Postprocessing_manager
-from nlp_lib.py.tool_lib.query_tools_lib.antigens_tools \
-    import Postprocessor as Postprocessor_antigens
-from nlp_lib.py.tool_lib.query_tools_lib.blasts_tools \
-    import Postprocessor as Postprocessor_blasts
-from nlp_lib.py.tool_lib.query_tools_lib.date_tools \
-    import Postprocessor as Postprocessor_date
-from nlp_lib.py.tool_lib.query_tools_lib.diagnosis_tools \
-    import Postprocessor as Postprocessor_diagnosis
-from nlp_lib.py.tool_lib.query_tools_lib.fab_classification_tools \
-    import Postprocessor as Postprocessor_fab_classification
-from nlp_lib.py.tool_lib.query_tools_lib.fish_analysis_summary_tools \
-    import Postprocessor as Postprocessor_fish_analysis_summary
-from nlp_lib.py.tool_lib.query_tools_lib.immunophenotype_tools \
-    import Postprocessor as Postprocessor_immunophenotype
-from nlp_lib.py.tool_lib.query_tools_lib.karyotype_tools \
-    import Postprocessor as Postprocessor_karyotype
-from nlp_lib.py.tool_lib.query_tools_lib.specific_diagnosis_tools \
-    import Postprocessor as Postprocessor_specific_diagnosis
 from projects_lib.BeatAML_Waves_3_And_4.py.diagnosis_reader_class \
     import Diagnosis_reader
+from tool_lib.py.query_tools_lib.antigens_tools \
+    import Postprocessor as Postprocessor_antigens
+from tool_lib.py.query_tools_lib.blasts_tools \
+    import Postprocessor as Postprocessor_blasts
+from tool_lib.py.query_tools_lib.date_tools \
+    import Postprocessor as Postprocessor_date
+from tool_lib.py.query_tools_lib.diagnosis_tools \
+    import Postprocessor as Postprocessor_diagnosis
+from tool_lib.py.query_tools_lib.fab_classification_tools \
+    import Postprocessor as Postprocessor_fab_classification
+from tool_lib.py.query_tools_lib.fish_analysis_summary_tools \
+    import Postprocessor as Postprocessor_fish_analysis_summary
+from tool_lib.py.query_tools_lib.immunophenotype_tools \
+    import Postprocessor as Postprocessor_immunophenotype
+from tool_lib.py.query_tools_lib.karyotype_tools \
+    import Postprocessor as Postprocessor_karyotype
+from tool_lib.py.query_tools_lib.specific_diagnosis_tools \
+    import Postprocessor as Postprocessor_specific_diagnosis
 
 #
 class BeatAML_Waves_3_And_4_postprocessor(Postprocessing_manager):

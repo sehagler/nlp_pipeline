@@ -54,19 +54,19 @@ class BeatAML_Waves_3_And_4_project_manager(Static_data_manager):
         if self.project_subdir == 'test':
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_PROCESS'] = 'HEMATOPATHOLOGY_REPORT'
             self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx'] = {}
             self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
             self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx'] = {}
             self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'HEMATOPATHOLOGY_REPORT'
             self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx'] = {}
             self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_MODE'] = 'CASE_NUMBER'
             self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_PROCESS'] = 'CYTOGENETICS_REPORT'
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx'] = {}
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'BEATAML_REPORT'
+            self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_PROCESS'] = 'HEMATOPATHOLOGY_REPORT'
             self.static_data['raw_data_files_sequence'] = [ 'Beaker_Bone_Marrow_Morphology_Reports.xlsx',
                                                              'Beaker_Chromosome_Reports.xlsx',
                                                              'Beaker_Hematopathology_Reports.xlsx',

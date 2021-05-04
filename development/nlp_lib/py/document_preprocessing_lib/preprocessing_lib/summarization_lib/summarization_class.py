@@ -6,12 +6,12 @@ Created on Thu Jan 23 10:38:15 2020
 """
 
 #
-from nlp_lib.py.base_class_lib.preprocessor_base_class import Preprocessor_base
-import nlp_lib.py.tool_lib.query_tools_lib.ecog_tools as ecog_tools
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+import tool_lib.py.query_tools_lib.ecog_tools as ecog_tools
 from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
     import article, be, note_label, s, specimen_label
-import nlp_lib.py.tool_lib.query_tools_lib.serial_number_tools as serial_number_tools
-import nlp_lib.py.tool_lib.query_tools_lib.tnm_stage_tools as tnm_stage_tools
+import tool_lib.py.query_tools_lib.serial_number_tools as serial_number_tools
+import tool_lib.py.query_tools_lib.tnm_stage_tools as tnm_stage_tools
 
 #
 class Summarization(Preprocessor_base):

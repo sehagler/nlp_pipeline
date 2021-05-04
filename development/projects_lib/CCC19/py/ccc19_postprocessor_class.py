@@ -11,15 +11,15 @@ import os
 #
 from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
     import Postprocessing_manager
-from nlp_lib.py.tool_lib.query_tools_lib.cancer_stage_tools \
+from tool_lib.py.query_tools_lib.cancer_stage_tools \
     import Postprocessor as Postprocessor_cancer_stage
-from nlp_lib.py.tool_lib.query_tools_lib.ecog_tools \
+from tool_lib.py.query_tools_lib.ecog_tools \
     import Postprocessor as Postprocessor_ecog_score
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_history_tools \
+from tool_lib.py.query_tools_lib.smoking_history_tools \
     import Postprocessor as Postprocessor_smoking_history
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_products_tools \
+from tool_lib.py.query_tools_lib.smoking_products_tools \
     import Postprocessor as Postprocessor_smoking_products
-from nlp_lib.py.tool_lib.query_tools_lib.smoking_status_tools \
+from tool_lib.py.query_tools_lib.smoking_status_tools \
     import Postprocessor as Postprocessor_smoking_status
 
 #

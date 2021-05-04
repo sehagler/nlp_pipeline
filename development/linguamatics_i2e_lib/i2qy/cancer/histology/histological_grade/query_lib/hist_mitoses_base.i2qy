@@ -1,112 +1,78 @@
-output:
-  useOutputEditor: true
-  columns:
-  - id: phrase2
-creator: haglers
+version: 6.2
+creationDate: '2018-09-27 21:22:52'
 query:
   document:
   - phrase:
+      findMatches: longestOnly
+      id: phrase2
       of:
       - alternative:
-          view:
-            width: 678
-            height: 846
+          view: {height: 846, width: 678}
           of:
           - phrase:
             - mitoses
             - =
             - alternative:
+                quantifier: {minimum: 1, maximum: none}
                 of:
                 - phrase:
                   - (
                   - phrase:
-                    - word:
-                        matchType: Regexp
-                        text: '[0-3]'
+                    - word: {text: '[0-3]', matchType: Regexp}
                     - word:
                         text: point
                         morphoVariants: true
-                        quantifier:
-                          maximum: 1
-                          minimum: 0
+                        quantifier: {minimum: 0, maximum: 1}
                     - phrase:
+                        quantifier: {minimum: 0, maximum: 1}
                         of:
                         - of
-                        - word:
-                            matchType: Regexp
-                            text: '[0-3]'
+                        - word: {text: '[0-3]', matchType: Regexp}
                         - word:
                             text: point
                             morphoVariants: true
-                            quantifier:
-                              maximum: 1
-                              minimum: 0
-                        quantifier:
-                          maximum: 1
-                          minimum: 0
+                            quantifier: {minimum: 0, maximum: 1}
                   - )
                 - phrase:
-                  - word:
-                      matchType: Regexp
-                      text: '[0-3]'
+                  - word: {text: '[0-3]', matchType: Regexp}
                   - word:
                       text: point
                       morphoVariants: true
-                      quantifier:
-                        maximum: 1
-                        minimum: 0
+                      quantifier: {minimum: 0, maximum: 1}
                   - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
                       of:
                       - of
-                      - word:
-                          matchType: Regexp
-                          text: '[0-3]'
+                      - word: {text: '[0-3]', matchType: Regexp}
                       - word:
                           text: point
                           morphoVariants: true
-                          quantifier:
-                            maximum: 1
-                            minimum: 0
-                      quantifier:
-                        maximum: 1
-                        minimum: 0
+                          quantifier: {minimum: 0, maximum: 1}
                 - phrase:
-                  - word:
-                      matchType: Regexp
-                      text: '[0-3]'
+                  - word: {text: '[0-3]', matchType: Regexp}
                   - /
-                  - word:
-                      matchType: Regexp
-                      text: '[0-3]'
+                  - word: {text: '[0-3]', matchType: Regexp}
                   - word:
                       text: point
                       morphoVariants: true
-                      quantifier:
-                        maximum: 1
-                        minimum: 0
+                      quantifier: {minimum: 0, maximum: 1}
                 - phrase:
+                    displayChildren: false
                     of:
-                    - word:
-                        matchType: Regexp
-                        text: '[0-9]*'
+                    - word: {text: '[0-9]*', matchType: Regexp}
                     - mitoses
                     - per
-                    - word:
-                        matchType: Regexp
-                        text: '[0-9]*'
+                    - word: {text: '[0-9]*', matchType: Regexp}
                     - alternative:
-                        view:
-                          layout: list
-                        of:
-                        - hp
-                        - HPF
-                    displayChildren: false
+                        view: {layout: list}
+                        of: [hp, HPF]
                 - macro:
                     snid: ohsu_test_result.test_result
                     pt: Test Result
                     of:
                     - alternative:
                         macroPt: Test Result
+                        macroSnid: ohsu_test_result.test_result
                         of:
                         - absent
                         - amplified
@@ -119,76 +85,37 @@ query:
                         - moderate
                         - negative
                         - non-amplified
-                        - phrase:
-                          - not
-                          - done
+                        - phrase: [not, done]
                         - positive
                         - present
                         - unamplified
-                        macroSnid: ohsu_test_result.test_result
                 - =
-                quantifier:
-                  maximum: none
-                  minimum: 1
           - phrase:
             - alternative:
               - phrase:
                 - word:
                     text: /
-                    quantifier:
-                      maximum: 0
-                      minimum: 0
-                - word:
-                    matchType: Regexp
-                    text: '[0-3]'
+                    quantifier: {minimum: 0, maximum: 0}
+                - word: {text: '[0-3]', matchType: Regexp}
                 - word:
                     text: point
                     morphoVariants: true
-                    quantifier:
-                      maximum: 1
-                      minimum: 0
+                    quantifier: {minimum: 0, maximum: 1}
               - phrase:
-                - word:
-                    matchType: Regexp
-                    text: '[0-3]'
+                - word: {text: '[0-3]', matchType: Regexp}
                 - /
-                - word:
-                    matchType: Regexp
-                    text: '[0-3]'
+                - word: {text: '[0-3]', matchType: Regexp}
                 - word:
                     text: point
                     morphoVariants: true
-                    quantifier:
-                      maximum: 1
-                      minimum: 0
+                    quantifier: {minimum: 0, maximum: 1}
             - for
             - mitoses
       - link:
-          path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
-          quantifier:
-            maximum: 1
-            minimum: 0
-      findMatches: longestOnly
-      id: phrase2
-querySnapshots:
-  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
-    creator: haglers
-    query:
-      document:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
-          of:
-          - (
-          - alternative:
-              of:
-              - (
-              - )
-              quantifier:
-                maximum: 0
-                minimum: 0
-          - )
-    creationDate: '2018-05-07 15:22:51'
-    version: 6.2
-creationDate: '2018-09-27 21:22:52'
-version: 6.2
+          path: ../../../../tools/parenthetical_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: phrase2}
+  useOutputEditor: true
+creator: haglers

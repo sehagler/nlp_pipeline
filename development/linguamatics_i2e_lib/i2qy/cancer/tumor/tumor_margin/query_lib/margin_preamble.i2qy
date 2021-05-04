@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2018-07-20 09:53:24'
 query:
   document:
@@ -14,10 +14,7 @@ query:
           - alternative:
               macroPt: negative word
               macroSnid: linguamatics_wc.WC_Negative_Word
-              of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't,
-                hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none,
-                nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't,
-                won't, wouldn't]
+              of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
       - alternative:
           quantifier: {minimum: 1, maximum: none}
           view: {height: 433, width: 841}
@@ -144,19 +141,7 @@ query:
                                       - alternative:
                                           macroPt: auxiliary verb
                                           macroSnid: linguamatics_wc.WC_Auxiliary_Verb
-                                          of: [am, are, aren't, be, been, being, can,
-                                            can't, cannot, could, couldn't, could've,
-                                            did, didn't, do, does, doesn't, doing,
-                                            done, don't, had, hadn't, has, hasn't,
-                                            have, haven't, having, he'd, he'll, he's,
-                                            I'd, I'm, I'll, I've, is, isn't, it'd,
-                                            it'll, it's, may, might, must, mustn't,
-                                            ought, oughtn't, shall, shan't, she'd,
-                                            she'll, she's, should, shouldn't, should've,
-                                            they'd, they'll, they're, they've, was,
-                                            wasn't, were, we'd, we'll, we're, we've,
-                                            weren't, will, won't, would, wouldn't,
-                                            would've, you'd, you'll, you're, you've]
+                                          of: [am, are, aren't, be, been, being, can, can't, cannot, could, couldn't, could've, did, didn't, do, does, doesn't, doing, done, don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll, he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might, must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's, should, shouldn't, should've, they'd, they'll, they're, they've, was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't, would, wouldn't, would've, you'd, you'll, you're, you've]
                                   - word: {text: come, morphoVariants: true}
                                   - word: {text: approach, morphoVariants: true}
                                   - word: {text: extend, morphoVariants: true}
@@ -172,18 +157,7 @@ query:
                                   - alternative:
                                       macroPt: auxiliary verb
                                       macroSnid: linguamatics_wc.WC_Auxiliary_Verb
-                                      of: [am, are, aren't, be, been, being, can,
-                                        can't, cannot, could, couldn't, could've,
-                                        did, didn't, do, does, doesn't, doing, done,
-                                        don't, had, hadn't, has, hasn't, have, haven't,
-                                        having, he'd, he'll, he's, I'd, I'm, I'll,
-                                        I've, is, isn't, it'd, it'll, it's, may, might,
-                                        must, mustn't, ought, oughtn't, shall, shan't,
-                                        she'd, she'll, she's, should, shouldn't, should've,
-                                        they'd, they'll, they're, they've, was, wasn't,
-                                        were, we'd, we'll, we're, we've, weren't,
-                                        will, won't, would, wouldn't, would've, you'd,
-                                        you'll, you're, you've]
+                                      of: [am, are, aren't, be, been, being, can, can't, cannot, could, couldn't, could've, did, didn't, do, does, doesn't, doing, done, don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll, he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might, must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's, should, shouldn't, should've, they'd, they'll, they're, they've, was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't, would, wouldn't, would've, you'd, you'll, you're, you've]
                               - word: {text: come, morphoVariants: true}
                               - word: {text: approach, morphoVariants: true}
                               - word: {text: extend, morphoVariants: true}
@@ -201,22 +175,10 @@ query:
                                 - alternative:
                                     macroPt: auxiliary verb
                                     macroSnid: linguamatics_wc.WC_Auxiliary_Verb
-                                    of: [am, are, aren't, be, been, being, can, can't,
-                                      cannot, could, couldn't, could've, did, didn't,
-                                      do, does, doesn't, doing, done, don't, had,
-                                      hadn't, has, hasn't, have, haven't, having,
-                                      he'd, he'll, he's, I'd, I'm, I'll, I've, is,
-                                      isn't, it'd, it'll, it's, may, might, must,
-                                      mustn't, ought, oughtn't, shall, shan't, she'd,
-                                      she'll, she's, should, shouldn't, should've,
-                                      they'd, they'll, they're, they've, was, wasn't,
-                                      were, we'd, we'll, we're, we've, weren't, will,
-                                      won't, would, wouldn't, would've, you'd, you'll,
-                                      you're, you've]
+                                    of: [am, are, aren't, be, been, being, can, can't, cannot, could, couldn't, could've, did, didn't, do, does, doesn't, doing, done, don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll, he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might, must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's, should, shouldn't, should've, they'd, they'll, they're, they've, was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't, would, wouldn't, would've, you'd, you'll, you're, you've]
                             - alternative:
                                 view: {layout: list}
-                                of: [approaching, approximating, extending, involving,
-                                  present]
+                                of: [approaching, approximating, extending, involving, present]
               - alternative:
                   quantifier: {minimum: 0, maximum: 1}
                   view: {layout: list}

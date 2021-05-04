@@ -46,23 +46,23 @@ class CCC19_project_manager(Static_data_manager):
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_145226.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_150629.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_151845.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML',
                                                              'NAGLE_CCC19_NLP_HNO_NOTE_20210122_143857.XML',
@@ -74,15 +74,15 @@ class CCC19_project_manager(Static_data_manager):
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_PROCESS'] = 'CCC19_NOTE'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files_sequence'] = [ 'Nagle_CCC19_NLP_hno_note_v_covid_positive.xml',
                                                              'Nagle_CCC19_NLP_hno_note_v_second_general_set.xml',

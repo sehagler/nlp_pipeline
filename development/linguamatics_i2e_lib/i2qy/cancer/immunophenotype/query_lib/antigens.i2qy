@@ -1,4 +1,4 @@
-version: 5.4
+version: 6.2
 creationDate: '2019-02-11 20:43:51'
 query:
   document:
@@ -16,7 +16,7 @@ query:
               - word:
                   text: slightly
                   quantifier: {minimum: 0, maximum: 1}
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy'}
+              - link: {path: antigen_values.i2qy}
           - alternative:
               view: {height: 682, width: 257}
               of:
@@ -51,7 +51,7 @@ query:
           of:
           - (
           - alternative:
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy'}
+            - link: {path: antigen_values.i2qy}
             - word: {text: '[0-9]+%', matchType: Regexp}
           - )
 output:
@@ -60,40 +60,3 @@ output:
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy:
-    version: 5.4
-    creationDate: '2019-02-13 20:27:46'
-    query:
-      document:
-      - alternative:
-          id: alternative1
-          of:
-          - bright
-          - phrase:
-              displayChildren: false
-              of:
-              - word: {text: 'dim(inished)?', matchType: Regexp}
-              - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
-                  of:
-                  - /
-                  - alternative: [partial, variable]
-          - focal
-          - low
-          - moderate
-          - negative
-          - partial
-          - positive
-          - phrase:
-            - word:
-                text: minor
-                quantifier: {minimum: 0, maximum: 1}
-            - subset
-          - variable
-          - weak
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

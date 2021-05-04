@@ -13,7 +13,7 @@ from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
 from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
     import Postprocessing_manager
-from nlp_lib.py.tool_lib.query_tools_lib.tnm_stage_tools \
+from tool_lib.py.query_tools_lib.tnm_stage_tools \
     import Postprocessor as Postprocessor_tnm_stage
 
 #

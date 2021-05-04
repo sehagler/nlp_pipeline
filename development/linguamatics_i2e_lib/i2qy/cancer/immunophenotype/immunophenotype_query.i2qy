@@ -1,272 +1,60 @@
-output:
-  useOutputEditor: true
-  columns:
-  - id: phrase1
-creator: haglers
+version: 6.2
+creationDate: '2020-03-06 22:29:00'
 query:
   document:
   - phrase:
-      multiSentence: true
+      id: phrase1
+      maxSentenceGap: -1
       maxWordGap: -1
+      multiSentence: true
       wordGapRestricted: false
       of:
       - phrase:
         - alternative:
+            quantifier: {minimum: 0, maximum: 0}
             of:
             - phrase:
-              - link:
-                  path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+              - link: {path: query_lib/antigens.i2qy}
               - alternative:
-                  view:
-                    layout: list
-                  of:
-                  - ':'
-                  - /
-                  - ','
+                  view: {layout: list}
+                  of: [':', /, ',']
             - phrase:
-                of:
-                - using
-                - the
                 displayChildren: false
-            quantifier:
-              maximum: 0
-              minimum: 0
-        - link:
-            path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+                of: [using, the]
+        - link: {path: query_lib/antigens.i2qy}
         - alternative:
-            view:
-              layout: list
-            of:
-            - ':'
-            - /
-            quantifier:
-              maximum: 0
-              minimum: 0
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of: [':', /]
       - phrase:
         - alternative:
-            view:
-              layout: list
-            of:
-            - ':'
-            - /
-            quantifier:
-              maximum: 0
-              minimum: 0
-        - link:
-            path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of: [':', /]
+        - link: {path: query_lib/antigens.i2qy}
         - alternative:
-            view:
-              layout: list
-            of:
-            - ':'
-            - /
-            quantifier:
-              maximum: 0
-              minimum: 0
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of: [':', /]
       - phrase:
         - alternative:
-            view:
-              layout: list
-            of:
-            - ':'
-            - /
-            quantifier:
-              maximum: 0
-              minimum: 0
-        - link:
-            path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of: [':', /]
+        - link: {path: query_lib/antigens.i2qy}
         - alternative:
-            view:
-              layout: list
-            of:
-            - ':'
-            - /
-            quantifier:
-              maximum: 0
-              minimum: 0
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of: [':', /]
         - alternative:
-            view:
-              layout: list
-            of:
-            - negative
-            - positive
-            quantifier:
-              maximum: 1
-              minimum: 0
+            quantifier: {minimum: 0, maximum: 1}
+            view: {layout: list}
+            of: [negative, positive]
         - link:
-            path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
-            quantifier:
-              maximum: 1
-              minimum: 0
-      maxSentenceGap: -1
-      id: phrase1
-querySnapshots:
-  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
-    creator: haglers
-    query:
-      document:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
-          of:
-          - (
-          - alternative:
-              of:
-              - (
-              - )
-              quantifier:
-                maximum: 0
-                minimum: 0
-          - )
-    creationDate: '2018-05-07 15:22:51'
-    version: 6.2
-  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy:
-    output:
-      useOutputEditor: true
-      columns:
-      - id: phrase1
-      outputSettings:
-        allResults: true
-        allRows: true
-        allTime: true
-    creator: haglers
-    query:
-      document:
-      - phrase:
-          view:
-            width: 865
-            height: 842
-          of:
-          - phrase:
-              unordered: true
-              view:
-                width: 526
-                height: 724
-              of:
-              - phrase:
-                  of:
-                  - word:
-                      text: slightly
-                      quantifier:
-                        maximum: 1
-                        minimum: 0
-                  - link:
-                      path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy
-                  quantifier:
-                    maximum: 1
-                    minimum: 0
-              - alternative:
-                  view:
-                    width: 257
-                    height: 682
-                  of:
-                  - BE
-                  - word:
-                      view:
-                        width: 239
-                        height: 59
-                      matchType: Regexp
-                      text: '[a-z]?CD[0-9]{1,3}[a-z]{0,2}(-|\+|-positive)?'
-                  - word:
-                      matchType: Regexp
-                      text: HLA-DR(-|\+|-positive)?
-                  - word:
-                      view:
-                        width: 222
-                        height: 48
-                      matchType: Regexp
-                      text: '[a-z]?Kappa[a-z]?(-|\+|-positive)?'
-                  - word:
-                      matchType: Regexp
-                      text: Ki-67
-                  - word:
-                      view:
-                        width: 231
-                        height: 47
-                      matchType: Regexp
-                      text: '[a-z]?Lambda[a-z]?(-|\+|-positive)?'
-                  - word:
-                      matchType: Regexp
-                      text: '[a-z]?T[Dd]T(-|\+|-positive)?'
-                  - word:
-                      matchType: Regexp
-                      text: '[a-z]?MPO(-|\+|-positive)?'
-                  - word:
-                      matchType: Regexp
-                      text: PAX-?5
-                  - word:
-                      matchType: Regexp
-                      text: TXM4
-                  - phrase:
-                      of:
-                      - glycophorin
-                      - word:
-                          matchType: Regexp
-                          text: '[A-Z]'
-                      displayChildren: false
-                  - lysozyme
-                  - word:
-                      matchType: Regexp
-                      text: '[a-z]?p53'
-          - phrase:
-              of:
-              - (
-              - alternative:
-                - link:
-                    path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy
-                - word:
-                    matchType: Regexp
-                    text: '[0-9]+%'
-              - )
-              quantifier:
-                maximum: 1
-                minimum: 0
-          id: phrase1
-    creationDate: '2019-02-11 20:43:51'
-    version: 6.2
-  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy:
-    output:
-      useOutputEditor: true
-      columns:
-      - id: alternative1
-    creator: haglers
-    query:
-      document:
-      - alternative:
-          of:
-          - bright
-          - phrase:
-              of:
-              - word:
-                  matchType: Regexp
-                  text: dim(inished)?
-              - phrase:
-                  of:
-                  - /
-                  - alternative:
-                    - partial
-                    - variable
-                  quantifier:
-                    maximum: 1
-                    minimum: 0
-              displayChildren: false
-          - focal
-          - low
-          - moderate
-          - negative
-          - partial
-          - positive
-          - phrase:
-            - word:
-                text: minor
-                quantifier:
-                  maximum: 1
-                  minimum: 0
-            - subset
-          - variable
-          - weak
-          id: alternative1
-    creationDate: '2019-02-13 20:27:46'
-    version: 6.2
-creationDate: '2020-03-06 22:29:00'
-version: 6.2
+            path: ../../tools/parenthetical_query.i2qy
+            quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
