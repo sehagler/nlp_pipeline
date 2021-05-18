@@ -21,38 +21,33 @@ class Postprocessor(Postprocessor_base):
                  label):
         Postprocessor_base.__init__(self, project_data, label, data_file,
                                     data_key_map, data_value_map)
-        self._get_blast_percentage()
+        self._extract_data_values()
         
     #
-    def _get_blast_percentage(self):
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                try:
-                    text_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
-                except:
-                    text_list = []
-                value_flg = False
-                value_list = []
-                for text in text_list:
-                    text = re.sub('%', '', text)
-                    if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text) is not None:
-                        match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text)
-                        value_list.append(match.group(0))
-                        if re.search('(?i)(blast|cell|involve|WBC)', text):
-                            value_flg = True
-                    elif re.search('(?i)(occasional|no definitive)', text) is not None:
-                    #elif re.search('(?i)(no definitive)', text) is not None:
-                        value_list.append('0')
-                        if re.search('(?i)(blast|cell|involve|WBC)', text):
-                            value_flg = True
-                    else:
-                        pass
-                if value_flg:
-                    value_list = self._normalize_value_list(value_list)
-                else:
-                    value_list = []
-                self._append_data(i, key, value_list)
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            text_list = text_list[0]
+        value_flg = False
+        value_list = []
+        for text in text_list:
+            text = re.sub('%', '', text)
+            if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text) is not None:
+                match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text)
+                value_list.append(match.group(0))
+                if re.search('(?i)(blast|cell|involve|WBC)', text):
+                    value_flg = True
+            elif re.search('(?i)(occasional|no definitive)', text) is not None:
+            #elif re.search('(?i)(no definitive)', text) is not None:
+                value_list.append('0')
+                if re.search('(?i)(blast|cell|involve|WBC)', text):
+                    value_flg = True
+            else:
+                pass
+        if value_flg:
+            value_list = self._normalize_value_list(value_list)
+        else:
+            value_list = []
+        return value_list
                     
     #
     def _get_include_approximately_list(self, value_list_out, approximately_list):

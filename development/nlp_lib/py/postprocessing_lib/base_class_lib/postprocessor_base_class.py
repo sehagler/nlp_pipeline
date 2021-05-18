@@ -28,6 +28,8 @@ class Postprocessor_base(object):
             json_structure_manager.pull_key('nlp_datetime_key')
         self.nlp_datum_key = \
             json_structure_manager.pull_key('nlp_datum_key')
+        self.nlp_element_key = \
+            json_structure_manager.pull_key('nlp_text_element_key')
         self.nlp_metadata_key = \
             json_structure_manager.pull_key('nlp_metadata_key')
         self.nlp_performance_key = \
@@ -40,10 +42,8 @@ class Postprocessor_base(object):
             json_structure_manager.pull_key('nlp_specimen_key')
         self.nlp_source_text_key = \
             json_structure_manager.pull_key('nlp_source_text_key')
-        self.nlp_text_element_key = \
-            json_structure_manager.pull_key('nlp_text_element_key')
-        self.nlp_text_key = \
-            json_structure_manager.pull_key('nlp_text_key')
+        self.nlp_tool_output_key = \
+            json_structure_manager.pull_key('nlp_tool_output_key')
         self.nlp_value_key = \
             json_structure_manager.pull_key('nlp_value_key')
             
@@ -83,11 +83,14 @@ class Postprocessor_base(object):
             self.data_value_map = data_value_map
         if data_key_map is not None:
             self._build_json_structure()
-        
+            
     #
     def _append_data(self, idx, key, value_list):
         if len(value_list) > 0:
-            value_list = list(set(value_list))
+            try:
+                value_list = list(set(value_list))
+            except:
+                pass
             self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_value_key] \
                 = value_list
         self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_query_key] \
@@ -137,16 +140,18 @@ class Postprocessor_base(object):
                 if key not in self.data_dict_list[i][self.nlp_data_key].keys():
                     self.data_dict_list[i][self.nlp_data_key][key] = {}
                     self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
-                if self.nlp_text_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label].keys():
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_datetime_key] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
-                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_datetime_key].append(datetime)
-                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(text)
+                if self.nlp_tool_output_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label]:
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key] = {}
+                if self.nlp_datetime_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key].keys():
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_datetime_key] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
+                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_datetime_key].append(datetime)
+                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(text)
                 for j in range(len(elements)):
-                    if self.nlp_text_element_key+str(j) not in self.data_dict_list[i][self.nlp_data_key][key][self.label].keys():
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key+str(j)] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key+str(j)].append(elements[j])
-                    
+                    if self.nlp_element_key+str(j+1) not in self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key].keys():
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key+str(j+1)] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key+str(j+1)].append(elements[j])
+    
     #
     def _create_data_structure(self, match_str):
         for i in range(len(self.data_dict_list)):
@@ -157,8 +162,43 @@ class Postprocessor_base(object):
                     if key not in self.data_dict_list[i][self.nlp_data_key]:
                         self.data_dict_list[i][self.nlp_data_key][key] = {}
                         self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(entry_text)
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key] = {}
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(entry_text)
+    
+    #
+    def _extract_data_value(self, text_list):
+        print('self._extract_data_value function not defined')
+        
+    #
+    def _extract_data_values(self):
+        for i in range(len(self.data_dict_list)):
+            for key in self.data_dict_list[i][self.nlp_data_key]:
+                try:
+                    text_list = \
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)]
+                except:
+                    text_list = []
+                value_list = self._extract_data_value(text_list)
+                self._append_data(i, key, value_list)
+                
+    #
+    def _extract_data_values(self):
+        for i in range(len(self.data_dict_list)):
+            for key in self.data_dict_list[i][self.nlp_data_key]:
+                try:
+                    keys = \
+                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key].keys()
+                    element_keys = [k for k in keys if self.nlp_element_key in k]
+                    element_keys = list(set(element_keys))
+                    if len(element_keys) > 0:
+                        text_list = []
+                        for j in range(len(element_keys)):
+                            text_list.append(self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(j)])
+                except:
+                    text_list = []
+                value_list = self._extract_data_value(text_list)
+                self._append_data(i, key, value_list)
     
     #
     def get_data_dict_base_keys_list(self):

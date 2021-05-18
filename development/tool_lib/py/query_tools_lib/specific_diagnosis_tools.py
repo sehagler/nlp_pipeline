@@ -24,30 +24,23 @@ class Postprocessor(Postprocessor_base):
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}
         self._create_data_structure('(COMMENT|NOTE|SUMMARY)')
-        self._get_specific_diagnosis()
+        self._extract_data_values()
         
     #
-    def _get_specific_diagnosis(self):
+    def _extract_data_value(self, text_list):
+        value_list = []
+        if len(text_list) > 0:
+            text_list = text_list[0]
         diagnosis_keys = self.diagnosis_reader.get_keys()
-        for i in range(len(self.data_dict_list)):
-            del_keys = []
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                entry_txt = self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key][0]
-                entry_txt = re.sub('\(.*?\)', '', entry_txt)
-                entry_txt = re.sub(' +', ' ', entry_txt)
-                del_key = True
-                for diagnosis_key in diagnosis_keys:
-                    diagnosis_dict = self.diagnosis_reader.get_dict_by_key(diagnosis_key)
-                    for diagnosis in diagnosis_dict['specific_diagnosis']:
-                        if not re.search('(?i)no evidence of marrow involvement by ' + diagnosis, entry_txt):
-                            if re.search('(?i)(?<!/)' + diagnosis + '(?!/)', entry_txt):
-                                del_key = False
-                                self.data_dict_list[i][self.nlp_data_key][key][self.label]['DIAGNOSIS'] = []
-                                self.data_dict_list[i][self.nlp_data_key][key][self.label]['DIAGNOSIS'].append(diagnosis_key)
-                                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
-                                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(diagnosis)
-                                self._append_data(i, key, [])
-                if del_key:
-                    del_keys.append(key)
-            for key in del_keys:
-                del self.data_dict_list[i][self.nlp_data_key][key]
+        entry_txt = text_list[0]
+        entry_txt = re.sub('\(.*?\)', '', entry_txt)
+        entry_txt = re.sub(' +', ' ', entry_txt)
+        del_key = True
+        for diagnosis_key in diagnosis_keys:
+            diagnosis_dict = self.diagnosis_reader.get_dict_by_key(diagnosis_key)
+            for diagnosis in diagnosis_dict['specific_diagnosis']:
+                if not re.search('(?i)no evidence of marrow involvement by ' + diagnosis, entry_txt):
+                    if re.search('(?i)(?<!/)' + diagnosis + '(?!/)', entry_txt):
+                        del_key = False
+                        value_list.append((diagnosis_key, diagnosis))
+        return value_list

@@ -77,6 +77,7 @@ class Process_manager(object):
         self.metadata_manager.load_metadata()
         self.metadata_manager.append_nlp_metadata_value('DOCUMENT_SET_INDEXING_START_DATETIME',
                                                         index_start_datetime)
+        self.metadata_manager.save_metadata()
         self.linguamatics_i2e_manager.login()
         self.linguamatics_i2e_manager.make_index_runner()
         self.linguamatics_i2e_manager.logout()
@@ -86,14 +87,17 @@ class Process_manager(object):
         self.metadata_manager.append_nlp_metadata_value('DOCUMENT_SET_INDEXING_END_DATETIME',
                                                         index_end_datetime)
         self.metadata_manager.save_metadata()
-    
-    #
-    def packager(self):
-        self.packaging_manager.create_data_json()
         
     #
     def postindexer(self):
         self.metadata_manager.save_metadata()
+        
+    #
+    def postperformance(self):
+        if self.static_data['project_subdir'] == 'test':
+            self.packaging_manager.create_postperformance_test_data_json()
+        elif self.static_data['project_subdir'] == 'production':
+            self.packaging_manager.create_postperformance_production_data_json()
 
     #
     def postprocessor(self, cleanup_flg=True):
@@ -109,6 +113,10 @@ class Process_manager(object):
         self.linguamatics_i2e_manager.login()
         self.linguamatics_i2e_manager.preindexer()
         self.linguamatics_i2e_manager.logout()
+        
+    #
+    def preperformance(self):
+        self.packaging_manager.create_preperformance_test_data_json()
     
     #
     def preprocessor(self, password, start_idx, cleanup_flg,

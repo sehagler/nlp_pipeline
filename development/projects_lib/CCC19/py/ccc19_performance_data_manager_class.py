@@ -13,7 +13,7 @@ from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
 from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools \
     import compare_texts
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
+from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
@@ -32,9 +32,15 @@ class CCC19_performance_data_manager(Performance_data_manager):
         return z
     
     #
-    def _find_data_value(self, node, key, mode_flg='single_value'):
+    def _find_data_value(self, node, key_0, key_1, mode_flg='single_value'):
+        self.data_dict_list = []
+        self._walk(node, key_0)
         self.data_value = []
-        self._walk(node, key)
+        for data_dict in self.data_dict_list:
+            data_list = data_dict[key_1].split(', ')
+            if 'MANUAL_REVIEW' in data_list:
+                data_list.remove('MANUAL_REVIEW')
+            self.data_value.extend(data_list)
         self.data_value = list(self._unique(self.data_value))
         if mode_flg == 'single_value':
             if len(self.data_value) == 0:
@@ -111,7 +117,7 @@ class CCC19_performance_data_manager(Performance_data_manager):
     def _walk(self, node, key):
         for k, v in node.items():
             if k == key:
-                self.data_value.extend(v)
+                self.data_dict_list.extend(v)
             elif isinstance(v, dict):
                 self._walk(v, key)
                 
@@ -143,15 +149,15 @@ class CCC19_performance_data_manager(Performance_data_manager):
             for item in nlp_data:
                 if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
                     nlp_cancer_stage_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'CANCER STAGE VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'CANCER_STAGE_' + self.nlp_value_key, 'CANCER_STAGE')
                     nlp_ecog_score_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'ECOG SCORE VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'ECOG_SCORE_' + self.nlp_value_key, 'NORMALIZED_ECOG_SCORE')
                     nlp_smoking_history_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING HISTORY VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING_HISTORY_' + self.nlp_value_key, 'NORMALIZED_SMOKING_HISTORY')
                     nlp_smoking_products_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING PRODUCTS VALUE', mode_flg='multiple_values')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING_PRODUCTS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_PRODUCTS', mode_flg='multiple_values')
                     nlp_smoking_status_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING STATUS VALUE')
+                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING_STATUS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_STATUS')
             for item in validation_data:
                 if item[2] == csn:
                     validation_cancer_stage_value = \
@@ -164,7 +170,7 @@ class CCC19_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[6])
                     validation_smoking_products_value = \
                         self._process_validation_item(item[7])
-            display_data_flg = False
+            display_data_flg = True
             performance, flg = \
                 self._compare_values(nlp_cancer_stage_value,
                                      validation_cancer_stage_value)
@@ -199,45 +205,35 @@ class CCC19_performance_data_manager(Performance_data_manager):
                 if display_data_flg:
                     print(csn)
         if True:
-            performance_statistics_list = []
+            performance_statistics_dict = {}
             num_docs = len(validation_csn_list)
             num_pats = len(validation_mrn_list)
             N = num_docs
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_cancer_stage_performance)
-            performance_statistics = \
+            performance_statistics_dict['CANCER_STAGE'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics['QUERY'] = 'CANCER STAGE'
-            performance_statistics_list.append(performance_statistics)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_ecog_score_performance)
-            performance_statistics = \
+            performance_statistics_dict['ECOG_SCORE'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics['QUERY'] = 'ECOG SCORE'
-            performance_statistics_list.append(performance_statistics)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_smoking_history_performance)
-            performance_statistics = \
+            performance_statistics_dict['SMOKING_HISTORY'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics['QUERY'] = 'SMOKING HISTORY'
-            performance_statistics_list.append(performance_statistics)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_smoking_products_performance)
-            performance_statistics = \
+            performance_statistics_dict['SMOKING_PRODUCTS'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics['QUERY'] = 'SMOKING PRODUCTS'
-            performance_statistics_list.append(performance_statistics)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_smoking_status_performance)
-            performance_statistics = \
+            performance_statistics_dict['SMOKING STATUS'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics['QUERY'] = 'SMOKING STATUS'
-            performance_statistics_list.append(performance_statistics)
             print('\n')
             print('number of docs:\t\t%d' % num_docs)
             print('number of patients:\t%d' % num_pats)
-        return performance_statistics_list
+        return performance_statistics_dict
             
     #
-    def display_performance(self, performance_statistics_list):
-        self._display_performance_statistics(performance_statistics_list)
+    def display_performance(self, performance_statistics_dict):
+        self._display_performance_statistics(performance_statistics_dict)

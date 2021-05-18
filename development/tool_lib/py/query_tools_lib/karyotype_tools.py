@@ -32,44 +32,40 @@ class Postprocessor(Postprocessor_base):
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}
         self._create_data_structure('(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')
-        self._get_karyotype()
+        self._extract_data_values()
         
     #
-    def _get_karyotype(self):
-        for i in range(len(self.data_dict_list)):
-            del_keys = []
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                entry_text = \
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key][0]
-                if entry_text[-1] == ',':
-                    entry_text = entry_text[:-1]
-                entry_text = re.sub('(?i)karyotype results : ', '', entry_text)
-                entry_text = re.sub('\]' , '] ', entry_text)
-                entry_text = re.sub(' +', ' ', entry_text)
-                entry_text = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_text)
-                entry_text = re.sub('[ \n]', '', entry_text)
-                entry_text = re.sub('&lt;', '<', entry_text)
-                entry_text = re.sub('&gt;', '>', entry_text)
-                try:
-                    if entry_text[:2] == '//':
-                        entry_text = entry_text[2:]
-                except:
-                    pass
-                match_str = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
-                match = re.search(match_str, entry_text)
-                if match is not None:
-                    karyotype = match.group(0)
-                    try:
-                        atomized_karyotype = atomize_karyotype(karyotype)
-                    except:
-                        atomized_karyotype = ''
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key].append(entry_text)
-                    self._append_data(i, key, atomized_karyotype)
-                else:
-                    del_keys.append(key)
-            for key in del_keys:
-                del self.data_dict_list[i][self.nlp_data_key][key]
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            text_list = text_list[0]
+        entry_text = text_list[0]
+        if entry_text[-1] == ',':
+            entry_text = entry_text[:-1]
+        entry_text = re.sub('(?i)karyotype results : ', '', entry_text)
+        entry_text = re.sub('\]' , '] ', entry_text)
+        entry_text = re.sub(' +', ' ', entry_text)
+        entry_text = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_text)
+        entry_text = re.sub('[ \n]', '', entry_text)
+        entry_text = re.sub('&lt;', '<', entry_text)
+        entry_text = re.sub('&gt;', '>', entry_text)
+        try:
+            if entry_text[:2] == '//':
+                entry_text = entry_text[2:]
+        except:
+            pass
+        match_str = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
+        match = re.search(match_str, entry_text)
+        if match is not None:
+            karyotype = match.group(0)
+            try:
+                atomized_karyotype = atomize_karyotype(karyotype)
+            except:
+                atomized_karyotype = ''
+            value_list = []
+            value_list.append(entry_text)
+        else:
+            value_list = []
+        return value_list
 
 #
 class Posttokenizer(Preprocessor_base):

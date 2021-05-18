@@ -21,48 +21,37 @@ class Postprocessor(Postprocessor_base):
                  label):
         Postprocessor_base.__init__(self, project_data, label, data_file,
                                     data_key_map, data_value_map)
-        self._get_ecog_status()
+        self._extract_data_values()
         
     #
-    def _get_ecog_status(self):
-        pattern = re.compile('[0-9]{1,3}%?(( ?\- ?| / )[0-9]{1,6}%?)?')
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                try:
-                    score_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key  + '0']
-                except:
-                    score_list = []
-                try:
-                    test_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_element_key + '1']
-                except:
-                    test_list = []
-                value_list = []
-                for j in range(len(score_list)):
-                    score = score_list[j]
-                    test = test_list[j]
-                    if re.search(pattern, score) is not None:
-                        for m in re.finditer(pattern, score):
-                            value = m.group(0)
-                            value = re.sub('%', '', value)
-                            value = re.sub('(\-|/)', ',', value)
-                            value = re.sub(',', ' , ', value)
-                            value = re.sub(' +', ' ', value)
-                            if re.search(',', value) is not None:
-                                values = value.split(' , ')
-                                for k in range(len(values)):
-                                    values[k] = int(values[k])
-                                if test in [ 'karnofsky', 'lansky' ]:
-                                    for k in range(len(values)):
-                                        values[k] = self._map_to_zubrod(values[k])
-                                values = [ int(x) for x in values ]
-                                value = str(tuple(sorted(values)))
-                            else:
-                                if test in [ 'karnofsky', 'lansky' ]:
-                                    value = self._map_to_zubrod(value)
-                            value_list.append(value)
-                self._append_data(i, key, value_list)
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            ecog_score_text_list = text_list[1]
+            test_text_list = text_list[2]
+            context_text_list = text_list[3]
+        else:
+            ecog_score_text_list = []
+            test_text_list = []
+            context_text_list = []
+        value_list = []
+        normalized_ecog_score_text_list = \
+            self._process_ecog_score_text_list(ecog_score_text_list, test_text_list)
+        value_list = []
+        for i in range(len(ecog_score_text_list)):
+            value_list.append((ecog_score_text_list[i],
+                               normalized_ecog_score_text_list[i],
+                               test_text_list[i],
+                               context_text_list[i]))
+        value_list = list(set(value_list))
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['ECOG_SCORE'] = value[0]
+            value_dict['NORMALIZED_ECOG_SCORE'] = value[1]
+            value_dict['ECOG_TEST'] = value[2]
+            value_dict['CONTEXT'] = value[3]
+            value_dict_list.append(value_dict)
+        return value_dict_list
                     
     # map karnofsky and lansky value to zubrod values per
     # https://oncologypro.esmo.org/oncology-in-practice/practice-tools/performance-scales
@@ -82,6 +71,37 @@ class Postprocessor(Postprocessor_base):
         else:
             value_out = value_in
         return value_out
+    
+    #
+    def _process_ecog_score_text_list(self, score_list, test_list):
+        pattern = re.compile('[0-9]{1,3}%?(( ?\- ?| / )[0-9]{1,6}%?)?')
+        processed_score_list = []
+        for i in range(len(score_list)):
+            score_raw = score_list[i]
+            test = test_list[i]
+            if re.search(pattern, score_raw) is not None:
+                for m in re.finditer(pattern, score_raw):
+                    score_processed = m.group(0)
+                    score_processed = re.sub('%', '', score_processed)
+                    score_processed = re.sub('(\-|/)', ',', score_processed)
+                    score_processed = re.sub(',', ' , ', score_processed)
+                    score_processed = re.sub(' +', ' ', score_processed)
+                    if re.search(',', score_processed) is not None:
+                        scores_processed = score_processed.split(' , ')
+                        for k in range(len(scores_processed)):
+                            scores_processed[k] = int(scores_processed[k])
+                        if test in [ 'karnofsky', 'lansky' ]:
+                            for k in range(len(scores_processed)):
+                                scores_processed[k] = \
+                                    self._map_to_zubrod(scores_processed[k])
+                        scores_processed = [ int(x) for x in scores_processed ]
+                        score_processed = str(tuple(sorted(scores_processed)))
+                    else:
+                        if test in [ 'karnofsky', 'lansky' ]:
+                            score_processed = self._map_to_zubrod(score_processed)
+            processed_score_list.append(score_processed)
+        return processed_score_list
+        
     
 #
 class Summarization(Preprocessor_base):

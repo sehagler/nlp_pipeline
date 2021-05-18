@@ -23,39 +23,35 @@ class Postprocessor(Postprocessor_base):
                  label):
         Postprocessor_base.__init__(self, project_data, label, data_file,
                                     data_key_map, data_value_map)
-        self._get_date()
+        self._extract_data_values()
         
     #
-    def _get_date(self):
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                value_list = []
-                try:
-                    text_list = self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
-                except:
-                    text_list = []
-                for text in text_list:
-                    text = normalize_month(text)
-                    text = re.sub('[A-Za-z]+-?[0-9]+ - [0-9]{4}', '', text)
-                    text = re.sub('[,\-\.]', '/', text)
-                    text = re.sub('(?<=[0-9]) of (?=[0-9])', ' / ', text)
-                    match_str0 = '('
-                    match_str0 += '(?<= )[0-9]{1,2} (/ [0-9]{1,2} )?/ [0-9]{2}([0-9]{2})?(?=( |$))'
-                    match_str0 += ')'
-                    match0 = re.search(match_str0, text)
-                    match_str1 = '('
-                    match_str1 += '(?i)(?<= )(early )?[0-9]{4}(?=( |$))'
-                    match_str1 += ')'
-                    match1 = re.search(match_str1, text)
-                    if match0 is not None:
-                        value_tmp = match0.group(0)
-                        value_tmp = re.sub(' \- ', '-', value_tmp)
-                        value_tmp = re.sub(' / ', '/', value_tmp)
-                        value_list.append(value_tmp)
-                    elif match1 is not None:
-                        value_tmp = match1.group(0)
-                        value_list.append(value_tmp)
-                self._append_data(i, key, value_list)
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            text_list = text_list[0]
+        value_list = []
+        for text in text_list:
+            text = normalize_month(text)
+            text = re.sub('[A-Za-z]+-?[0-9]+ - [0-9]{4}', '', text)
+            text = re.sub('[,\-\.]', '/', text)
+            text = re.sub('(?<=[0-9]) of (?=[0-9])', ' / ', text)
+            match_str0 = '('
+            match_str0 += '(?<= )[0-9]{1,2} (/ [0-9]{1,2} )?/ [0-9]{2}([0-9]{2})?(?=( |$))'
+            match_str0 += ')'
+            match0 = re.search(match_str0, text)
+            match_str1 = '('
+            match_str1 += '(?i)(?<= )(early )?[0-9]{4}(?=( |$))'
+            match_str1 += ')'
+            match1 = re.search(match_str1, text)
+            if match0 is not None:
+                value_tmp = match0.group(0)
+                value_tmp = re.sub(' \- ', '-', value_tmp)
+                value_tmp = re.sub(' / ', '/', value_tmp)
+                value_list.append(value_tmp)
+            elif match1 is not None:
+                value_tmp = match1.group(0)
+                value_list.append(value_tmp)
+        return value_list
     
 #
 class Tokenizer(Preprocessor_base):

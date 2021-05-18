@@ -170,9 +170,9 @@ def read_json_file(filename):
     return _read_file(0, filename)
 
 #
-def read_nlp_data_from_package_json_file(project_data):
+def read_nlp_data_from_package_json_file(static_data):
     
-    json_structure_manager = project_data['json_structure_manager']
+    json_structure_manager = static_data['json_structure_manager']
     document_wrapper_key = \
         json_structure_manager.pull_key('document_wrapper_key')
     documents_wrapper_key = \
@@ -191,10 +191,12 @@ def read_nlp_data_from_package_json_file(project_data):
         json_structure_manager.pull_key('nlp_section_key')
     nlp_specimen_key = \
         json_structure_manager.pull_key('nlp_specimen_key')
+    nlp_tool_output_key = \
+        json_structure_manager.pull_key('nlp_tool_output_key')
     
-    nlp_data_tmp = read_package_json_file(project_data)
-    patient_identifiers = project_data['patient_identifiers']
-    patient_list = project_data['patient_list']
+    nlp_data_tmp = read_package_json_file(static_data)
+    patient_identifiers = static_data['patient_identifiers']
+    patient_list = static_data['patient_list']
     nlp_data_tmp = nlp_data_tmp[documents_wrapper_key]
     nlp_data = {}
     for item in nlp_data_tmp:
@@ -236,14 +238,14 @@ def read_nlp_data_from_package_json_file(project_data):
                             data[key_0]['DIAGNOSIS VALUE'] = \
                                 item[nlp_datum_key][key_1]
                         else:
-                            data[key_0][nlp_query_key_tmp + ' ' + key_1] = \
+                            data[key_0][nlp_query_key_tmp + '_' + key_1] = \
                                 item[nlp_datum_key][key_1]
             nlp_data[document_idx][nlp_data_key] = data
     return nlp_data
 
-def read_package_json_file(project_data):
-    project_name = project_data['project_name']
-    directory_manager = project_data['directory_manager']
+def read_package_json_file(static_data):
+    project_name = static_data['project_name']
+    directory_manager = static_data['directory_manager']
     data_dir = directory_manager.pull_directory('processing_data_dir')
     nlp_data = \
         read_json_file(os.path.join(data_dir, project_name + '.json'))
@@ -268,6 +270,79 @@ def write_general_file(filename, data):
 #
 def write_json_file(filename, data):
     _write_file(1, filename, data)
+    
+#
+def write_nlp_data_to_package_json_file(static_data, data_in):
+    directory_manager = static_data['directory_manager']
+    
+    json_structure_manager = static_data['json_structure_manager']
+    document_wrapper_key = \
+        json_structure_manager.pull_key('document_wrapper_key')
+    documents_wrapper_key = \
+        json_structure_manager.pull_key('documents_wrapper_key')
+    metadata_key = \
+        json_structure_manager.pull_key('metadata_key')
+    nlp_data_key = \
+        json_structure_manager.pull_key('nlp_data_key')
+    nlp_datetime_key = \
+        json_structure_manager.pull_key('nlp_datetime_key')
+    nlp_datum_key = \
+        json_structure_manager.pull_key('nlp_datum_key')
+    nlp_metadata_key = \
+        json_structure_manager.pull_key('nlp_metadata_key')
+    nlp_performance_key = \
+        json_structure_manager.pull_key('nlp_performance_key')
+    nlp_query_key = \
+        json_structure_manager.pull_key('nlp_query_key')
+    nlp_section_key = \
+        json_structure_manager.pull_key('nlp_section_key')
+    nlp_specimen_key = \
+        json_structure_manager.pull_key('nlp_specimen_key')
+    nlp_source_text_key = \
+        json_structure_manager.pull_key('nlp_source_text_key')
+    nlp_text_element_key = \
+        json_structure_manager.pull_key('nlp_text_element_key')
+    nlp_text_key = \
+        json_structure_manager.pull_key('nlp_text_key')
+    nlp_tool_output_key = \
+        json_structure_manager.pull_key('nlp_tool_output_key')
+    nlp_value_key = \
+        json_structure_manager.pull_key('nlp_value_key')
+        
+    # to be moved to appropriate location
+    multiple_specimens = \
+        json_structure_manager.pull_key('multiple_specimens')
+    multiple_values = \
+        json_structure_manager.pull_key('multiple_values')
+    #
+    
+    project_name = static_data['project_name']
+    save_dir = directory_manager.pull_directory('processing_data_dir')
+    
+    documents = []
+    for key_0 in data_in.keys():
+        document_in = data_in[key_0]
+        document = {}
+        for key_1 in document_in.keys():
+            if key_1 != 'RAW_TEXT':
+                if key_1 not in [nlp_data_key, 'PREPROCESSED_TEXT']:
+                    document[key_1] = document_in[key_1]
+                elif key_1 == 'PREPROCESSED_TEXT':
+                    document[nlp_source_text_key] = document_in[key_1]
+                else:
+                    data_tmp = document_in[key_1]
+        data = []
+        for key_1 in data_tmp:
+            for key_2 in data_tmp[key_1]:
+                data.append({ nlp_datum_key : data_tmp[key_1][key_2] })
+        document[nlp_data_key] = data
+        document_wrapper = {}
+        document_wrapper[document_wrapper_key] = document
+        documents.append(document_wrapper)
+    documents_wrapper = {}
+    documents_wrapper[documents_wrapper_key] = documents
+    write_json_file(os.path.join(save_dir, project_name + '.json'),
+                    documents_wrapper)
     
 #
 def write_zip_file(filename, data, zip_path, max_files_per_zip, remove_file_flg=True):

@@ -20,10 +20,37 @@ class Postprocessor(Postprocessor_base):
                  label):
         Postprocessor_base.__init__(self, project_data, label, data_file,
                                     data_key_map, data_value_map)
-        self._get_cancer_stage()
+        self._extract_data_values()
         
     #
-    def _get_cancer_stage(self):
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            cancer_stage_text_list = text_list[1]
+            cancer_type_text_list = text_list[2]
+            context_text_list = text_list[3]
+        else:
+            cancer_stage_text_list = []
+            cancer_type_text_list = []
+            context_text_list = []
+        cancer_stage_text_list = \
+            self._process_cancer_stage_text_list(cancer_stage_text_list)
+        value_list = []
+        for i in range(len(cancer_stage_text_list)):
+            value_list.append((cancer_stage_text_list[i],
+                               cancer_type_text_list[i],
+                               context_text_list[i]))
+        value_list = list(set(value_list))
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['CANCER_STAGE'] = value[0]
+            value_dict['CANCER_TYPE'] = value[1]
+            value_dict['CONTEXT'] = value[2]
+            value_dict_list.append(value_dict)
+        return value_dict_list
+    
+    #
+    def _process_cancer_stage_text_list(self, cancer_stage_text_list):
         switch_dict = {}
         switch_dict['0'] = '0'
         switch_dict['1'] = 'I'
@@ -35,42 +62,42 @@ class Postprocessor(Postprocessor_base):
             re.compile('(?i)stage( is now)? [IV]{1,3}([A-Da-d][0-9]?)?( (\-|/) [IV]{1,3}([A-Da-d][0-9]?)?)?( |$)')
         pattern1 = \
             re.compile('(?i)stage( is now)? [0-5]([A-Da-d][0-9]?)?( (\-|/) [0-5]([A-Da-d][0-9]?)?)?( |$)')
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                try:
-                    text_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
-                except:
-                    text_list = []
-                value_list = []
-                for text in text_list:
-                    stage_0_flg = False
-                    stage_0_text_list = [ 'DCIS', 'LCIS', 'SCCIS', 'in situ' ]
-                    for item in stage_0_text_list:
-                        if re.search('(?i)' + item, text) is not None:
-                            stage_0_flg = True
-                    if re.search(pattern0, text) is not None:
-                        for m in re.finditer(pattern0, text):
-                            value = m.group(0)
-                            value = re.sub('(?i)stage( is now)?', '', value)
-                            value = re.sub(' ', '', value)
-                            value = re.sub('[A-Da-d][0-9]?', '', value)
-                            value_list.append(value)
-                    elif re.search(pattern1, text) is not None:
-                        for m in re.finditer(pattern1, text):
-                            value = m.group(0)
-                            value = re.sub('(?i)stage( is now)?', '', value)
-                            value = re.sub(' ', '', value)
-                            value = re.sub('[A-Da-d][0-9]?', '', value)
-                            value = switch_dict[value]
-                            value_list.append(value)
-                    elif stage_0_flg:
-                        value = '0'
-                        value_list.append(value)
-                    elif re.search('(?i)early stage', text) is not None:
-                        value_list.append('early')
-                    elif re.search('(?i)end stage', text) is not None:
-                        value_list.append('end')
-                    elif re.search('(?i)extensive stage', text) is not None:
-                        value_list.append('extensive')
-                self._append_data(i, key, value_list)
+        for i in range(len(cancer_stage_text_list)):
+            cancer_stage_text_raw = cancer_stage_text_list[i]
+            stage_0_flg = False
+            stage_0_text_list = [ 'DCIS', 'LCIS', 'SCCIS', 'in situ' ]
+            for item in stage_0_text_list:
+                if re.search('(?i)' + item, cancer_stage_text_raw) is not None:
+                    stage_0_flg = True
+            if re.search(pattern0, cancer_stage_text_raw) is not None:
+                for m in re.finditer(pattern0, cancer_stage_text_raw):
+                    cancer_stage_text_processed = m.group(0)
+                    cancer_stage_text_processed = \
+                        re.sub('(?i)stage( is now)?', '', cancer_stage_text_processed)
+                    cancer_stage_text_processed = \
+                        re.sub(' ', '', cancer_stage_text_processed)
+                    cancer_stage_text_processed = \
+                        re.sub('[A-Da-d][0-9]?', '', cancer_stage_text_processed)
+            elif re.search(pattern1, cancer_stage_text_raw) is not None:
+                for m in re.finditer(pattern1, cancer_stage_text_raw):
+                    cancer_stage_text_processed = m.group(0)
+                    cancer_stage_text_processed = \
+                        re.sub('(?i)stage( is now)?', '', cancer_stage_text_processed)
+                    cancer_stage_text_processed = \
+                        re.sub(' ', '', cancer_stage_text_processed)
+                    cancer_stage_text_processed = \
+                        re.sub('[A-Da-d][0-9]?', '', cancer_stage_text_processed)
+                    cancer_stage_text_processed = \
+                        switch_dict[cancer_stage_text_processed]
+            elif stage_0_flg:
+                cancer_stage_text_processed = '0'
+            elif re.search('(?i)early stage', cancer_stage_text_raw) is not None:
+                cancer_stage_text_processed = 'early'
+            elif re.search('(?i)end stage', cancer_stage_text_raw) is not None:
+                cancer_stage_text_processed = 'end'
+            elif re.search('(?i)extensive stage', cancer_stage_text_raw) is not None:
+                cancer_stage_text_processed = 'extensive'
+            else:
+                cancer_stage_text_processed = cancer_stage_text_raw
+            cancer_stage_text_list[i] = cancer_stage_text_processed
+        return cancer_stage_text_list

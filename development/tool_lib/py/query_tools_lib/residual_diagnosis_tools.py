@@ -24,14 +24,6 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
-        if len(text_list) > 0:
-            text_list = text_list[0]
-        value_list = []
-        for text in text_list:
-            text = re.sub(' (?=[0-9])', ' M', text)
-            text = re.sub('(AML|FAB)[\- ]', '', text)
-            text = re.sub('[\(\)]', '', text)
-            text = re.sub(' ', '', text)
-            text = re.sub('.*(?=M)', '', text)
-            value_list.append(text)
+        text_list = text_list[0]
+        value_list = text_list
         return value_list

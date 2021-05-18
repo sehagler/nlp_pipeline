@@ -11,7 +11,7 @@ import re
 
 #
 from nlp_lib.py.raw_data_lib.base_class_lib.reader_base_class import Reader_base
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_xlsx_file
+from tool_lib.py.processing_tools_lib.file_processing_tools import read_xlsx_file
 
 #
 class Xlsx_reader(Reader_base):

@@ -8,8 +8,8 @@ Created on Thu Dec 19 12:35:50 2019
 #
 from nlp_lib.py.static_data_lib.directory_manager_class \
     import Directory_manager
-from nlp_lib.py.static_data_lib.json_structure_manager_class \
-    import Json_structure_manager
+from tool_lib.py.structure_tools_lib.json_structure_tools \
+    import Json_structure_tools
 from nlp_lib.py.static_data_lib.network_manager_class import Network_manager
 
 #
@@ -41,7 +41,7 @@ class Static_data_manager(object):
         self.static_data['directory_manager'] = \
             Directory_manager(self.static_data, root_dir_flg)
         self.static_data['json_structure_manager'] = \
-            Json_structure_manager()
+            Json_structure_tools()
         
     #
     def get_project_data(self):

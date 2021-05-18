@@ -14,7 +14,7 @@ import random
 
 #
 from nlp_lib.py.process_lib.process_manager_class import Process_manager
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
+from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
 from tool_lib.py.query_tools_lib.date_tools import datetime2matlabdn
 
@@ -40,7 +40,7 @@ class Pipeline_manager(object):
                 Performance_data_manager(static_data_manager)
         except:
             self.performance_data_manager = None
-   
+
     #
     def _get_metadata_values(self):
         metadata_json_file = \
@@ -89,6 +89,13 @@ class Pipeline_manager(object):
         print('number of patients: %d' % num_patients)
         
     #
+    def calculate_performance(self):
+        if self.performance_data_manager is not None:
+            self.performance_data_manager.get_performance_data()
+            self.performance_data_manager.display_performance_data()
+            self.performance_data_manager.write_performance_data()
+        
+    #
     def download_queries(self):
         self.process_manager.download_queries()
         
@@ -117,12 +124,16 @@ class Pipeline_manager(object):
             pickle.dump(training_groups, f)
             
     #
-    def post_queries(self):
-        self.process_manager.postprocessor()
-        self.process_manager.packager()
+    def postqueries_postperformance(self):
+        self.process_manager.postperformance()
             
     #
-    def pre_queries(self, password, preprocessor_start_idx=0,
+    def postqueries_preperformance(self):
+        self.process_manager.postprocessor()
+        self.process_manager.preperformance()
+            
+    #
+    def prequeries(self, password, preprocessor_start_idx=0,
                     preprocessor_cleanup_flg=True):
         if preprocessor_start_idx >= 0:
             if preprocessor_start_idx > 0:
@@ -134,10 +145,3 @@ class Pipeline_manager(object):
         self.process_manager.preindexer()
         self.process_manager.indexer()
         self.process_manager.postindexer()
-        
-    #
-    def calculate_performance(self):
-        if self.performance_data_manager is not None:
-            self.performance_data_manager.get_performance_data()
-            self.performance_data_manager.display_performance_data()
-            self.performance_data_manager.write_performance_data()

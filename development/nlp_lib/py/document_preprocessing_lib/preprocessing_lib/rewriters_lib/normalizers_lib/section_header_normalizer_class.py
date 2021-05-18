@@ -10,9 +10,10 @@ import re
 
 #
 from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+from tool_lib.py.processing_tools_lib.text_processing_tools \
     import amend, clinician, clinician_reviewed, history, patient, review_item, s
-from tool_lib.py.query_tools_lib.section_header_class import Section_header
+from tool_lib.py.structure_tools_lib.section_header_structure_tools \
+    import Section_header_structure_tools
 
 #
 class Section_header_normalizer(Preprocessor_base):
@@ -20,7 +21,7 @@ class Section_header_normalizer(Preprocessor_base):
     #
     def __init__(self, static_data):
         Preprocessor_base.__init__(self, static_data)
-        section_header = Section_header()
+        section_header = Section_header_structure_tools()
         self.section_header_dict = section_header._section_header_dict()
 
     #
@@ -97,7 +98,6 @@ class Section_header_normalizer(Preprocessor_base):
             regex_list.append(self._pre_punct() + 'note\s+\([^\)]*\)' + self._post_punct())
             regex_list.append(self._pre_punct() + 'note (\([^\)]*\))?' + self._post_punct())
             regex_list.append(self._pre_punct() + 'note( [A-Z])?' + self._post_punct())
-            self._normalize_section_header(mode_flg, regex_list, 'COMMENT')
         elif mode_flg == 'unformatted':
             regex_list = []
             regex_list.append('comment' + s())
@@ -109,9 +109,7 @@ class Section_header_normalizer(Preprocessor_base):
             regex_list.append('regarding')
             regex_list.append('teaching provided')
             regex_list.append('visit type')
-            self._normalize_section_header(mode_flg, regex_list, 'COMMENT')
-        else:
-            print('unknown mode: ' + mode_flg)
+        self._normalize_section_header(mode_flg, regex_list, 'COMMENT')
             
     #
     def history_section_header(self, mode_flg):
@@ -143,18 +141,6 @@ class Section_header_normalizer(Preprocessor_base):
                                        no_punctuation_flg=no_punctuation_flg)
         self.text = re.sub('FAMILY HSTRY', 'FAMILY HISTORY', self.text)
         self._append_keywords_text('FAMILY HISTORY')
-        
-    #
-    def impression_and_recommendation_section_header(self, mode_flg):
-        section_header = 'IMPRESSION AND RECOMMENDATION'
-        regex_list = self.section_header_dict[section_header]
-        if mode_flg == 'formatted':
-            no_punctuation_flg = False
-        elif mode_flg == 'unformatted':
-            no_punctuation_flg = True
-        self._normalize_section_header(mode_flg, regex_list,
-                                       section_header,
-                                       no_punctuation_flg=no_punctuation_flg)
             
     #
     def person_section_header(self, mode_flg):
@@ -166,7 +152,6 @@ class Section_header_normalizer(Preprocessor_base):
             regex_list.append('(frozen section diagnosis|intraoperative consult(ation)? diagnosis) ' + \
                              clinician_reviewed() + ' by')
             regex_list.append(clinician_reviewed() + ' by[^ \d]?')
-            self._normalize_section_header(mode_flg, regex_list, 'PERSON')
         elif mode_flg == 'unformatted':
             regex_list.append(patient())
             regex_list.append('name of ' + clinician() + '/clinical support person notified')
@@ -174,9 +159,7 @@ class Section_header_normalizer(Preprocessor_base):
             regex_list.append('(addended|performed|referred|requested) by')
             regex_list.append(clinician())
             regex_list.append('(primary care ' + clinician() + '|pcp)')
-            self._normalize_section_header(mode_flg, regex_list, 'PERSON')
-        else:
-            print('unknown mode: ' + mode_flg)
+        self._normalize_section_header(mode_flg, regex_list, 'PERSON')
             
     #
     def general_command(self, section_header_list, mode_flg):
@@ -187,22 +170,8 @@ class Section_header_normalizer(Preprocessor_base):
                                   True)
         
     #
-    def normalize_section_header_1(self, section_header_list, mode_flg):
+    def normalize_section_header(self, section_header_list, mode_flg):
         for section_header in section_header_list:
-            #no_punctuation_flg = True
-            if mode_flg == 'formatted':
-                no_punctuation_flg = False
-            elif mode_flg == 'unformatted':
-                no_punctuation_flg = True
-            regex_list = self.section_header_dict[section_header]
-            self._normalize_section_header(mode_flg, regex_list,
-                                           section_header,
-                                           no_punctuation_flg=no_punctuation_flg)
-            
-    #
-    def normalize_section_header_2(self, section_header_list, mode_flg):
-        for section_header in section_header_list:
-            #no_punctuation_flg = False
             if mode_flg == 'formatted':
                 no_punctuation_flg = False
             elif mode_flg == 'unformatted':

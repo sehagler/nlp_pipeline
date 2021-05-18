@@ -16,9 +16,9 @@ import xml.etree.ElementTree as ET
 #
 from linguamatics_i2e_lib.py.linguamatics_i2e_file_manager_class \
     import Linguamatics_i2e_file_manager
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
+from tool_lib.py.processing_tools_lib.file_processing_tools \
     import remove_file, write_general_file, write_zip_file
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+from tool_lib.py.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible
 
 #

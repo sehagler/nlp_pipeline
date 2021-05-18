@@ -18,16 +18,15 @@ class Postprocessor(Postprocessor_base):
                  label):
         Postprocessor_base.__init__(self, project_data, label, data_file,
                                     data_key_map, data_value_map)
-        self._cleanup_antigens()
+        self._extract_data_values()
 
     #
-    def _cleanup_antigens(self):
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                antigens = \
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
-                #antigens = self._prune_surface_antigens(antigens)
-                value_list = []
-                for antigen_str in antigens:
-                    value_list.extend([correct_antibodies(antigen_str)])
-                self._append_data(i, key, value_list)
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            text_list = text_list[0]
+        antigens = text_list
+        #antigens = self._prune_surface_antigens(antigens)
+        value_list = []
+        for antigen_str in antigens:
+            value_list.extend([correct_antibodies(antigen_str)])
+        return value_list

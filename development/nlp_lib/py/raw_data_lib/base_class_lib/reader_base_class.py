@@ -11,7 +11,7 @@ import re
 import xlrd
 
 #
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+from tool_lib.py.processing_tools_lib.text_processing_tools \
     import make_ascii
 
 #
@@ -86,7 +86,8 @@ class Reader_base(object):
         document_identifiers = self.project_data['document_identifiers']
         data_csn_list = []
         for document_identifier in document_identifiers:
-            data_csn_list.extend(data[document_identifier])
+            if document_identifier in data.keys():
+                data_csn_list.extend(data[document_identifier])
         if 'document_list' in self.project_data.keys():
             document_list = self.project_data['document_list']
         else:

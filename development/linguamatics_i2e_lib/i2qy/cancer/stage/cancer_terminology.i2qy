@@ -11,72 +11,44 @@ query:
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
           of: [serious]
-      - alternative:
-        - alternative:
-          - class:
-              boundaries: Exact
-              snid: icdo.histology
-              pt: ICD-O Histology
-              where:
-              - link:
-                  path: cancer_terminology_exclusion_list.i2qy
-                  quantifier: {minimum: 0, maximum: 0}
-          - class:
-              snid: nci.C3262
-              pt: Neoplasm
-              where:
-              - link:
-                  path: cancer_terminology_exclusion_list.i2qy
-                  quantifier: {minimum: 0, maximum: 0}
-          - class:
-              snid: nlm_plus.D009369
-              pt: Neoplasms
-              where:
-              - link:
-                  path: cancer_terminology_exclusion_list.i2qy
-                  quantifier: {minimum: 0, maximum: 0}
-        - alternative:
-          - macro:
-              snid: ohsu_cancer_initialisms.cancer_initialism
-              pt: Cancer Initialism
+      - phrase:
+          findMatches: longestOnly
+          of:
+          - alternative:
+              prioritization: span
               of:
               - alternative:
-                  macroPt: Cancer Initialism
-                  macroSnid: ohsu_cancer_initialisms.cancer_initialism
-                  of: [ADH, AML, AMML, DLBCL, DC, GIST, IDC, ILC, LC, MM, NET, NSCLC, RCC, SCC, SLL, SPC, TCC, UDH]
-          - macro:
-              snid: ohsu_cancer_types.cancer_type
-              pt: Cancer Type
-              of:
+                - class:
+                    boundaries: Exact
+                    snid: icdo.histology
+                    pt: ICD-O Histology
+                    where:
+                    - link:
+                        path: cancer_terminology_exclusion_list.i2qy
+                        quantifier: {minimum: 0, maximum: 0}
+                - class:
+                    snid: nci.C3262
+                    pt: Neoplasm
+                    where:
+                    - link:
+                        path: cancer_terminology_exclusion_list.i2qy
+                        quantifier: {minimum: 0, maximum: 0}
+                - class:
+                    snid: nlm_plus.D009369
+                    pt: Neoplasms
+                    where:
+                    - link:
+                        path: cancer_terminology_exclusion_list.i2qy
+                        quantifier: {minimum: 0, maximum: 0}
               - alternative:
-                  macroPt: Cancer Type
-                  macroSnid: ohsu_cancer_types.cancer_type
-                  of: [adeno, adenoCA, adenocarcinoma, CA, cancer, carcinoma, melanoma]
-              where:
-              - alternative:
-                  quantifier: {minimum: 0, maximum: 0}
-                  of:
-                  - adenocarcinoma
-                  - word: {text: carcinoma, includeInQuery: false}
-        - phrase:
-            maxWordGap: 1
-            unordered: true
-            of:
-            - alternative:
-              - class: {snid: icdo.topography, pt: ICD-O Topography}
-              - macro:
-                  snid: ohsu_anatomical_adjectives.anatomical_adjective
-                  pt: Anatomical Adjective
-                  of:
-                  - alternative:
-                      macroPt: Anatomical Adjective
-                      macroSnid: ohsu_anatomical_adjectives.anatomical_adjective
-                      of:
-                      - anal
-                      - phrase: [colon, rectal]
-                      - gastroesophageal
-            - phrase:
-              - alternative:
+                - macro:
+                    snid: ohsu_cancer_initialisms.cancer_initialism
+                    pt: Cancer Initialism
+                    of:
+                    - alternative:
+                        macroPt: Cancer Initialism
+                        macroSnid: ohsu_cancer_initialisms.cancer_initialism
+                        of: [ADH, AML, AMML, DLBCL, DC, GIST, IDC, ILC, LC, MM, NET, NSCLC, RCC, SCC, SLL, SPC, TCC, UDH]
                 - macro:
                     snid: ohsu_cancer_types.cancer_type
                     pt: Cancer Type
@@ -88,10 +60,43 @@ query:
                     where:
                     - alternative:
                         quantifier: {minimum: 0, maximum: 0}
-                        of: [adenocarcinoma, carcinoma]
-                - word: {text: metastasis, morphoVariants: true}
-                - word: {text: nodule, morphoVariants: true}
-        - R-ISS
+                        of:
+                        - adenocarcinoma
+                        - word: {text: carcinoma, includeInQuery: false}
+              - phrase:
+                  maxWordGap: 1
+                  unordered: true
+                  of:
+                  - alternative:
+                    - class: {snid: icdo.topography, pt: ICD-O Topography}
+                    - macro:
+                        snid: ohsu_anatomical_adjectives.anatomical_adjective
+                        pt: Anatomical Adjective
+                        of:
+                        - alternative:
+                            macroPt: Anatomical Adjective
+                            macroSnid: ohsu_anatomical_adjectives.anatomical_adjective
+                            of:
+                            - anal
+                            - phrase: [colon, rectal]
+                            - gastroesophageal
+                  - phrase:
+                    - alternative:
+                      - macro:
+                          snid: ohsu_cancer_types.cancer_type
+                          pt: Cancer Type
+                          of:
+                          - alternative:
+                              macroPt: Cancer Type
+                              macroSnid: ohsu_cancer_types.cancer_type
+                              of: [adeno, adenoCA, adenocarcinoma, CA, cancer, carcinoma, melanoma]
+                          where:
+                          - alternative:
+                              quantifier: {minimum: 0, maximum: 0}
+                              of: [adenocarcinoma, carcinoma]
+                      - word: {text: metastasis, morphoVariants: true}
+                      - word: {text: nodule, morphoVariants: true}
+              - R-ISS
       - phrase:
           displayChildren: false
           quantifier: {minimum: 0, maximum: 1}

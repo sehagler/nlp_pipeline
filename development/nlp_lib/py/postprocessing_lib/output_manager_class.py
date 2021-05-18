@@ -11,7 +11,7 @@ import os
 import urllib3
 
 #
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
+from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xml_file, write_json_file
 
 #
@@ -51,6 +51,8 @@ class Output_manager(object):
             json_structure_manager.pull_key('nlp_text_element_key')
         self.nlp_text_key = \
             json_structure_manager.pull_key('nlp_text_key')
+        self.nlp_tool_output_key = \
+            json_structure_manager.pull_key('nlp_tool_output_key')
         self.nlp_value_key = \
             json_structure_manager.pull_key('nlp_value_key')
             

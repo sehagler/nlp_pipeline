@@ -64,9 +64,11 @@ if True:
     nlp_process.pipeline_manager(password, operation_mode, project_name,
                                  project_subdir, root_dir_flg)
     #nlp_process.generate_training_data_sets()
-    nlp_process.pre_queries(password)
-    #nlp_process.post_queries()
-    #nlp_process.calculate_performance()
+    #nlp_process.prequeries(password)
+    nlp_process.postqueries_preperformance()
+    if project_subdir == 'test':
+        nlp_process.calculate_performance()
+    nlp_process.postqueries_postperformance()
     #nlp_process.download_queries()
     
 #

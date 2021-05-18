@@ -25,26 +25,28 @@ class Postprocessor(Postprocessor_base):
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}
         self._create_data_structure('ANTIBODIES TESTED \d')
-        self._get_antibodies_tested_list()
+        self._extract_data_values()
                     
     #
-    def _get_antibodies_tested_list(self):
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                entry_text = \
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
-                entry_text_tmp = re.sub('/', ' ', entry_text[0])
-                antibodies = list(set(entry_text_tmp.split()))
-                nonantibodies = []
-                for element in antibodies:
-                    if not is_antibody(element):
-                        nonantibodies.append(element)
-                nonantibodies = list(set(nonantibodies))
-                for nonantibody in nonantibodies:
-                    antibodies.remove(nonantibody)
-                antibodies.sort()
-                if antibodies != []:
-                    self._append_data(i, key, antibodies)
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            text_list = text_list[0]
+        entry_text = text_list
+        '''
+        entry_text_tmp = re.sub('/', ' ', entry_text[0])
+        antibodies = list(set(entry_text_tmp.split()))
+        nonantibodies = []
+        for element in antibodies:
+            if not is_antibody(element):
+                nonantibodies.append(element)
+        nonantibodies = list(set(nonantibodies))
+        for nonantibody in nonantibodies:
+            antibodies.remove(nonantibody)
+        antibodies.sort()
+        if antibodies != []:
+            self._append_data(i, key, antibodies)
+        '''
+        return entry_text
 
 #
 class Posttokenizer(Preprocessor_base):

@@ -10,7 +10,11 @@ query:
       maxWordGap: 10
       multiSentence: true
       of:
-      - link: {path: cancer_terminology.i2qy, id: link6}
+      - phrase:
+          findMatches: longestOnly
+          id: phrase3
+          of:
+          - link: {path: cancer_terminology.i2qy}
       - alternative:
           quantifier: {minimum: 0, maximum: 0}
           of:
@@ -235,18 +239,16 @@ query:
           - CKD
           - s/p
       - phrase:
-        - link: {path: stage_base.i2qy, id: link5}
-        - word:
-            text: CKD
-            quantifier: {minimum: 0, maximum: 0}
+          id: phrase2
+          of:
+          - link: {path: stage_base.i2qy}
+          - word:
+              text: CKD
+              quantifier: {minimum: 0, maximum: 0}
 output:
   columns:
   - {id: phrase1}
-  - id: link5.alternative1
-    itemOptions: {}
-    linkItemId: link5
-  - id: link6.phrase1
-    itemOptions: {}
-    linkItemId: link6
+  - {id: phrase2}
+  - {id: phrase3}
   useOutputEditor: true
 creator: haglers

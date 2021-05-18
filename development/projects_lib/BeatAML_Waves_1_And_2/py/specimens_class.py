@@ -10,7 +10,7 @@ import json
 import os
 
 #
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_json_file
+from tool_lib.py.processing_tools_lib.file_processing_tools import read_json_file
 from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools import prune_surface_antigens
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_jsons_class \
     import Specimens_jsons
@@ -19,7 +19,7 @@ from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 #
 class Specimens(Specimens_jsons):
     
-        #
+    #
     def __init__(self, project_data, nlp_data):
         directory_manager = project_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
@@ -106,12 +106,14 @@ class Specimens(Specimens_jsons):
             for key1 in data_json_tmp[key0].keys():
                 for key2 in data_json_tmp[key0][key1].keys():
                     try:
-                        diagnoses = data_json_tmp[key0][key1][key2]['specificDx']
-                        diagnoses = self._trim_data_value(diagnoses)
-                        diagnoses = list(set(diagnoses))
-                        if len(diagnoses) == 1:
-                            value = diagnoses[0]
-                        elif len(diagnoses) > 1:
+                        values = data_json_tmp[key0][key1][key2]['specificDx'][0]
+                        #values = self._trim_data_value(values)
+                        #values = list(set(values))
+                        specific_diagnoses = []
+                        specific_diagnoses.append(''.join(values[0][1]))
+                        if len(specific_diagnoses) == 1:
+                            value = specific_diagnoses[0]
+                        elif len(specific_diagnoses) > 1:
                             value = self.multiple_values
                         else:
                             value = None
@@ -168,19 +170,19 @@ class Specimens(Specimens_jsons):
     #
     def _process_data(self, data_in):
         data_out = {}
-        data_out = self._get_data_value(data_in, data_out, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES TESTED TEXT', 'Antibodies.Tested')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE MARROW BLAST VALUE', '%.Blasts.in.BM')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'DIAGNOSIS VALUE', 'dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'DIAGNOSIS DATE VALUE', 'dx.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'EXTRAMEDULLARY DISEASE TEXT', 'Extramedullary.dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'COMMENT', 'BONE MARROW' ], 'FAB CLASSIFICATION VALUE', 'FAB/Blast.Morphology')
-        data_out = self._get_data_value(data_in, data_out, [ 'FISH ANALYSIS SUMMARY' ], 'FISH ANALYSIS SUMMARY TEXT', 'FISH.Analysis.Summary')
-        data_out = self._get_data_value(data_in, data_out, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE TEXT', 'Karyotype')
-        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'RELAPSE DATE VALUE', 'Relapse.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'PERIPHERAL BLOOD' ], 'PERIPHERAL BLOOD BLAST VALUE', '%.Blasts.in.PB')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'RESIDUAL DISEASE TEXT', 'Residual.dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SPECIFIC DIAGNOSIS TEXT', 'specificDx')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SURFACE ANTIGENS TEXT', 'Surface.Antigens.(Immunohistochemical.Stains)')
+        data_out = self._get_data_value(data_in, data_out, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES_TESTED_' + self.nlp_value_key, 'Antibodies.Tested')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST_' + self.nlp_value_key, '%.Blasts.in.BM')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'DIAGNOSIS_' + self.nlp_value_key, 'dx')
+        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE_' + self.nlp_value_key, 'dx.Date')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'EXTRAMEDULLARY_DISEASE_' + self.nlp_value_key, 'Extramedullary.dx')
+        data_out = self._get_data_value(data_in, data_out, [ 'COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION_' + self.nlp_value_key, 'FAB/Blast.Morphology')
+        data_out = self._get_data_value(data_in, data_out, [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY_' + self.nlp_value_key, 'FISH.Analysis.Summary')
+        data_out = self._get_data_value(data_in, data_out, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE_' + self.nlp_value_key, 'Karyotype')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'PERIPHERAL BLOOD' ], 'PERIPHERAL_BLOOD_BLAST_' + self.nlp_value_key, '%.Blasts.in.PB')
+        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'RELAPSE_DATE_' + self.nlp_value_key, 'Relapse.Date')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'RESIDUAL_DISEASE_' + self.nlp_value_key, 'Residual.dx')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SPECIFIC_DIAGNOSIS_' + self.nlp_value_key, 'specificDx')
+        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SURFACE_ANTIGENS_' + self.nlp_value_key, 'Surface.Antigens.(Immunohistochemical.Stains)')
         if not data_out:
             data_out = None
         return data_out

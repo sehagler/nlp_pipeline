@@ -29,43 +29,21 @@ class Hematopathology_report_preprocessor(Report_preprocessor_base_class):
         section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         section_header_normalizer.push_text(self.text)
         section_header_normalizer.amendment_section_header(self.formatting)
-        #section_header_normalizer.antibodies_tested_section_header(self.formatting)
-        #section_header_normalizer.background_section_header(self.formatting)
-        #section_header_normalizer.bone_marrow_section_header(self.formatting)
         section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
-        #section_header_normalizer.cytogenetic_and_fish_studies_section_header(self.formatting)
-        #section_header_normalizer.diagnosis_section_header(self.formatting)
-        #section_header_normalizer.explanation_section_header(self.formatting)
-        #section_header_normalizer.flow_cytometric_analysis_section_header(self.formatting)
         section_header_normalizer.history_section_header(self.formatting)
-        section_header_normalizer.impression_and_recommendation_section_header(self.formatting)
-        #section_header_normalizer.immunohistochemical_stains_section_header(self.formatting)
-        #section_header_normalizer.immunologic_analysis_section_header(self.formatting)
-        #section_header_normalizer.interpretation_section_header(self.formatting)
-        #section_header_normalizer.laboratory_data_section_header(self.formatting)
-        #section_header_normalizer.materials_received_section_header(self.formatting)
-        #section_header_normalizer.method_section_header(self.formatting)
-        #section_header_normalizer.molecular_studies_section_header(self.formatting)
-        #section_header_normalizer.peripheral_blood_morphology_section_header(self.formatting)
         section_header_normalizer.person_section_header(self.formatting)
-        #section_header_normalizer.references_section_header(self.formatting)
-        #section_header_normalizer.special_stains_section_header(self.formatting)
-        #section_header_normalizer.synopsis_section_header(self.formatting)
         section_header_list = \
-            [ 'ANTIBODIES TESTED', 'BONE MARROW ASPIRATE SMEARS',
-              'BONE MARROW CLOT SECTION', 'BONE MARROW DIFFERENTIAL' ]
-        section_header_normalizer.normalize_section_header_1(section_header_list,
-                                                             self.formatting)
-        section_header_list = \
-            [ 'BACKGROUND', 'CYTOGENETIC ANALYSIS SUMMARY',
-              'PREAMENDMENT DIAGNOSIS', 'DIAGNOSIS', 'EXPLANATION',
-              'FLOW CYTOMETRIC ANALYSIS', 'IMMUNOHISTOCHEMICAL STAINS', 
-              'IMMUNOLOGIC ANALYSIS', 'INTERPRETATION', 'LAB DATA', 
+            [ 'ANTIBODIES TESTED', 'BACKGROUND', 'BONE MARROW ASPIRATE SMEARS',
+              'BONE MARROW CLOT SECTION', 'BONE MARROW DIFFERENTIAL',
+              'CYTOGENETIC ANALYSIS SUMMARY', 'PREAMENDMENT DIAGNOSIS',
+              'DIAGNOSIS', 'EXPLANATION', 'FLOW CYTOMETRIC ANALYSIS',
+              'IMMUNOHISTOCHEMICAL STAINS', 'IMMUNOLOGIC ANALYSIS',
+              'IMPRESSION AND RECOMMENDATION', 'INTERPRETATION', 'LAB DATA',
               'MATERIALS RECEIVED', 'METHOD', 'MOLECULAR STUDIES',
               'PERIPHERAL BLOOD MORPHOLOGY', 'REFERENCES', 'SPECIAL STAINS',
               'SYNOPSIS' ]
-        section_header_normalizer.normalize_section_header_2(section_header_list,
-                                                             self.formatting)
+        section_header_normalizer.normalize_section_header(section_header_list,
+                                                           self.formatting)
         self.text = section_header_normalizer.pull_text()
         self.dynamic_memory_manager = \
             section_header_normalizer.pull_dynamic_data_manager()

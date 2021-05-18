@@ -9,8 +9,7 @@ Created on Thu Nov 15 12:12:23 2018
 import os
 
 #
-#from nlp_lib.py.base_class_lib.packager_base_class import Packager_base
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
+from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file, write_json_file
 
 #
@@ -18,10 +17,10 @@ class Metadata_manager(object):
     
     #
     def __init__(self, static_data_manager):
-        static_data = static_data_manager.get_project_data()
-        directory_manager = static_data['directory_manager']
+        self.static_data = static_data_manager.get_project_data()
+        directory_manager = self.static_data['directory_manager']
         
-        json_structure_manager = static_data['json_structure_manager']
+        json_structure_manager = self.static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -74,6 +73,10 @@ class Metadata_manager(object):
     #
     def append_metadata_dicts(self, metadata_dict_key, source_metadata_dict, 
                              nlp_metadata_dict):
+        for id_key in self.static_data['document_identifiers']:
+            if id_key in source_metadata_dict.keys():
+                source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
+                    source_metadata_dict[id_key]
         self.metadata_dict_dict[metadata_dict_key] = {}
         self.metadata_dict_dict[metadata_dict_key][self.metadata_key] = \
             source_metadata_dict

@@ -22,9 +22,9 @@ from tool_lib.py.query_tools_lib.date_tools import compare_dates
 class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, project_manager):
-        project_data = project_manager.get_project_data()
-        Performance_data_manager.__init__(self, project_manager)
+    def __init__(self, static_data_manager):
+        project_data = static_data_manager.get_project_data()
+        Performance_data_manager.__init__(self, static_data_manager)
         self.project_data = project_data
     
     #
@@ -513,8 +513,23 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
                             item_score[item][0] += 1
                         elif performance == 'multiple values':
                             item_score[item][2] += 1
-        performance_statistics_list = []
+        performance_statistics_dict = {}
         for key in item_score.keys():
+            performance_key = {}
+            performance_key['Antibodies.Tested'] = 'ANTIBODIES_TESTED'
+            performance_key['dx'] = 'DIAGNOSIS'
+            performance_key['dx.Date'] = 'DIAGNOSIS_DATE'
+            performance_key['Extramedullary.dx'] = 'EXTRAMEDULARY_DISEASE'
+            performance_key['FAB/Blast.Morphology'] = 'FAB_CLASSIFICATION'
+            performance_key['FISH.Analysis.Summary'] = 'FISH_ANALYSIS_SUMMARY'
+            performance_key['Karyotype'] = 'KARYOTYPE'
+            performance_key['%.Blasts.in.BM'] = 'BONE_MARROW_BLAST'
+            performance_key['%.Blasts.in.PB'] = 'PERIPHERAL_BLOOD_BLAST'
+            performance_key['Relapse.Date'] = 'RELAPSE_DATE'
+            performance_key['Residual.dx'] = 'RESIDUAL_DISEASE'
+            performance_key['specificDx'] = 'SPECIFIC_DIAGNOSIS'
+            performance_key['Surface.Antigens.(Immunohistochemical.Stains)'] = \
+                'SURFACE_ANTIGENS'
             M = item_score[key][2]
             FN = item_score[key][5]
             FP = item_score[key][4]
@@ -531,16 +546,16 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
             print(f'\tfalse pos + false neg: ' + str(FP_plus_FN))
             performance_statistics = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics['QUERY'] = key
-            performance_statistics_list.append(performance_statistics)
+            performance_statistics_dict[performance_key[key]] = \
+                performance_statistics
         self.logger.create_file('log.txt')
         print('\n')
         print(gs_record_ctr)
         print(missing_specimens)
         print(full_specimen_ctr)
         print(len(list(set(patient_ids_list))))
-        return performance_statistics_list
+        return performance_statistics_dict
         
     #
-    def display_performance(self, performance_statistics_list):
-        self._display_performance_statistics(performance_statistics_list)
+    def display_performance(self, performance_statistics_dict):
+        self._display_performance_statistics(performance_statistics_dict)

@@ -10,7 +10,7 @@ import re
 import xlrd
 
 #
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools import substitution
+from tool_lib.py.processing_tools_lib.text_processing_tools import substitution
 from projects_lib.BeatAML_Waves_3_And_4.py.specimens_lib.specimens_base_class \
     import Specimens_base
 from tool_lib.py.query_tools_lib.antigens_tools \

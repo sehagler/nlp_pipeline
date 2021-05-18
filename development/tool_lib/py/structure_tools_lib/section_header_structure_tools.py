@@ -6,11 +6,11 @@ Created on Mon Apr 26 10:49:48 2021
 """
 
 #
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+from tool_lib.py.processing_tools_lib.text_processing_tools \
     import amend, article, be, datetime, diagnosis, medication, review_item, s
 
 #
-class Section_header(object):
+class Section_header_structure_tools(object):
     
     #
     def _post_punct(self):

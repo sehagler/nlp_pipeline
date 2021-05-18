@@ -10,7 +10,7 @@ import re
 
 #
 from nlp_lib.py.base_class_lib.general_base_class import General_base
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+from tool_lib.py.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible, substitution
 
 #

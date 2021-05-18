@@ -64,15 +64,23 @@ class Nlp_processor(object):
         server_manager = Server_manager(static_data, password)
         self.nlp_pipeline = Pipeline_manager(static_data_manager,
                                              server_manager, root_dir_flg,
-                                             password) 
+                                             password)
+        
+    #
+    def postqueries_postperformance(self):
+        self.nlp_pipeline.postqueries_postperformance()
+            
+    #
+    def postqueries_preperformance(self):
+        self.nlp_pipeline.postqueries_preperformance()
     
     #
     def post_queries(self):
         self.nlp_pipeline.post_queries()
         
     #
-    def pre_queries(self, password):
-        self.nlp_pipeline.pre_queries(password)
+    def prequeries(self, password):
+        self.nlp_pipeline.prequeries(password)
         
     #
     def software_manager(self, password, root_dir_flg):

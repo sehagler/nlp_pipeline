@@ -21,38 +21,58 @@ class Postprocessor(Postprocessor_base):
                  label):
         Postprocessor_base.__init__(self, project_data, label, data_file,
                                     data_key_map, data_value_map)
-        self._get_smoking_history()
+        self._extract_data_values()
         
     #
-    def _get_smoking_history(self):
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                try:
-                    text_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_text_key]
-                except:
-                    text_list = []
-                value_list = []
-                for text in text_list:
-                    value_decimal = None
-                    if re.search('(?i)yrs since quitting( smoking)? :( ~)? [0-9]{1,2}(.[0-9])?', text) is not None:
-                        match = re.search('(?i)yrs since quitting( smoking)? :( ~)? [0-9]{1,2}(.[0-9])?', text)
-                        value = match.group(0)
-                        match = re.search('[0-9]{1,2}(.[0-9])?', value)
-                        value_decimal = Decimal(match.group(0))
-                    if re.search('(?i)quit( smoking)?( ~)? [0-9]{1,2}(.[0-9])?\+? yrs ago', text) is not None:
-                        match = re.search('(?i)quit( smoking)?( ~)? [0-9]{1,2}(.[0-9])?\+? yrs ago', text)
-                        value = match.group(0)
-                        match = re.search('[0-9]{1,2}(.[0-9])?', value)
-                        value_decimal = Decimal(match.group(0))
-                    if value_decimal is not None:
-                        if value_decimal < 1.0:
-                            value = 'quit less than 1 year ago'
-                        elif value_decimal >= 1.0 and value_decimal < 6.0:
-                            value = 'quit between 1 and 5 years ago'
-                        elif value_decimal >= 6.0 and value_decimal < 11.0:
-                            value = 'quit between 6 and 10 years ago'
-                        elif value_decimal >= 11.0:
-                            value = 'quit more than 10 years ago'
-                        value_list.append(value.lower())
-                self._append_data(i, key, value_list)
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            smoking_history_text_list = text_list[0]
+            context_text_list = text_list[1]
+        else:
+            smoking_history_text_list = []
+            context_text_list = []
+        normalized_smoking_history_text_list = \
+            self._process_smoking_history_text_list(smoking_history_text_list)
+        value_list = []
+        for i in range(len(smoking_history_text_list)):
+            value_list.append((smoking_history_text_list[i],
+                               normalized_smoking_history_text_list[i],
+                               context_text_list[i]))
+        value_list = list(set(value_list))
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['SMOKING_HISTORY'] = value[0]
+            value_dict['NORMALIZED_SMOKING_HISTORY'] = value[1]
+            value_dict['CONTEXT'] = value[2]
+            value_dict_list.append(value_dict)
+        return value_dict_list
+    
+    #
+    def _process_smoking_history_text_list(self, smoking_history_text_list):
+        value_list = []
+        for text in smoking_history_text_list:
+            value_decimal = None
+            if re.search('(?i)yrs since quitting( smoking)? :( ~)? [0-9]{1,2}(.[0-9])?', text) is not None:
+                match = re.search('(?i)yrs since quitting( smoking)? :( ~)? [0-9]{1,2}(.[0-9])?', text)
+                value = match.group(0)
+                match = re.search('[0-9]{1,2}(.[0-9])?', value)
+                value_decimal = Decimal(match.group(0))
+            if re.search('(?i)quit( smoking)?( ~)? [0-9]{1,2}(.[0-9])?\+? yrs ago', text) is not None:
+                match = re.search('(?i)quit( smoking)?( ~)? [0-9]{1,2}(.[0-9])?\+? yrs ago', text)
+                value = match.group(0)
+                match = re.search('[0-9]{1,2}(.[0-9])?', value)
+                value_decimal = Decimal(match.group(0))
+            if value_decimal is not None:
+                if value_decimal < 1.0:
+                    value = 'quit less than 1 year ago'
+                elif value_decimal >= 1.0 and value_decimal < 6.0:
+                    value = 'quit between 1 and 5 years ago'
+                elif value_decimal >= 6.0 and value_decimal < 11.0:
+                    value = 'quit between 6 and 10 years ago'
+                elif value_decimal >= 11.0:
+                    value = 'quit more than 10 years ago'
+                value_list.append(value.lower())
+            else:
+                value_list.append('MANUAL_REVIEW')
+        return value_list

@@ -6,7 +6,7 @@ Created on Thu Apr  1 16:44:15 2021
 """
 
 #
-class Json_structure_manager(object):
+class Json_structure_tools(object):
     
     #
     def __init__(self):
@@ -19,13 +19,17 @@ class Json_structure_manager(object):
         self.json_structure_dict['nlp_datum_key'] = 'NLP_ELEMENT'
         self.json_structure_dict['nlp_metadata_key'] = 'NLP_METADATA'
         self.json_structure_dict['nlp_performance_key'] = 'NLP_PERFORMANCE'
+        self.json_structure_dict['nlp_performance_metadata_key'] = \
+            'NLP_PERFORMANCE_METADATA'
         self.json_structure_dict['nlp_query_key'] = 'QUERY'
         self.json_structure_dict['nlp_section_key'] = 'SECTION'
         self.json_structure_dict['nlp_specimen_key'] = 'SPECIMEN'
         self.json_structure_dict['nlp_source_text_key'] = 'NLP_SOURCE_TEXT'
         self.json_structure_dict['nlp_text_element_key'] = 'TEXT_ELEMENT_'
         self.json_structure_dict['nlp_text_key'] = 'TEXT'
-        self.json_structure_dict['nlp_value_key'] = 'VALUE'
+        self.json_structure_dict['nlp_tool_output_key'] = \
+            'LINGUAMATICS_I2E_OUTPUT'
+        self.json_structure_dict['nlp_value_key'] = 'NLP_OUTPUT'
         
         # to be moved to appropriate location
         self.json_structure_dict['multiple_specimens'] = 'MULTIPLE_SPECIMENS'

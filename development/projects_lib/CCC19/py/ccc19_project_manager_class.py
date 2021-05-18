@@ -13,7 +13,7 @@ import xlrd
 #
 from nlp_lib.py.static_data_lib.static_data_manager_class \
     import Static_data_manager
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools \
+from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
 
 #
@@ -30,7 +30,8 @@ class CCC19_project_manager(Static_data_manager):
     def get_project_data(self):
         self.static_data['datetime_identifiers'] = {}
         self.static_data['datetime_identifiers'][ 'NOTE_DATE' ] = '%d-%b-%y'
-        self.static_data['document_identifiers'] = [ 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
+        self.static_data['document_identifiers'] = \
+            [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.static_data['flags'] = {}
         self.static_data['flags']['multiprocessing'] = True
         self.static_data['flags']['remove_date'] = True
@@ -40,10 +41,43 @@ class CCC19_project_manager(Static_data_manager):
         self.static_data['patient_identifiers'] = [ 'OHSU_MRN' ]
         self.static_data['raw_data_files'] = {}
         self.static_data['read_data_mode'] = 'get_data_by_document_number'
-        self.static_data['text_identifiers'] = [ 'COMMENT_TEXT', 'NOTE_TEXT', 'RESULT_TEXT' ]
+        self.static_data['text_identifiers'] = [ 'COMMENT_TEXT', 'NOTE_TEXT',
+                                                 'PATHOLOGY_REPORT', 'RESULT_TEXT' ]
         if self.project_subdir == 'production':
             self.static_data['raw_data_encoding'] = 'utf-16'
             self.static_data['raw_data_files'] = {}
+            '''
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153220.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153220.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153220.XML']['NLP_PROCESS'] = 'NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153220.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153225.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153225.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153225.XML']['NLP_PROCESS'] = 'NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153225.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153231.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153231.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153231.XML']['NLP_PROCESS'] = 'NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153231.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153237.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153237.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153237.XML']['NLP_PROCESS'] = 'NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153237.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153243.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153243.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153243.XML']['NLP_PROCESS'] = 'NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210409_153243.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20210504_152315.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20210504_152315.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20210504_152315.XML']['NLP_PROCESS'] = 'NOTE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20210504_152315.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE_20210409_153220.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20210409_153225.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20210409_153231.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20210409_153237.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20210409_153243.XML',
+                                                            'NAGLE_CCC19_NLP_PATH_RESULTS_20210504_152315.XML' ]
+            '''
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20210122_143223.XML']['NLP_PROCESS'] = 'NOTE'

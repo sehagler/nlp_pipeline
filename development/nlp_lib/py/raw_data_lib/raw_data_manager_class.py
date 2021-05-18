@@ -13,9 +13,9 @@ import sys
 #
 from nlp_lib.py.raw_data_lib.readers_lib.xml_reader_class import Xml_reader
 from nlp_lib.py.raw_data_lib.readers_lib.xlsx_reader_class import Xlsx_reader
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools \
+from tool_lib.py.processing_tools_lib.text_processing_tools \
     import remove_repeated_substrings
-from nlp_lib.py.tool_lib.processing_tools_lib.variable_processing_tools \
+from tool_lib.py.processing_tools_lib.variable_processing_tools \
     import delete_key
 
 #
