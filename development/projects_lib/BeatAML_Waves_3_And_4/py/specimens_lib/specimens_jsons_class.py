@@ -108,29 +108,6 @@ class Specimens_jsons(Specimens_base):
             corrected_data_json = {}
         return corrected_data_json
                     
-    #                 
-    def _evaluate_generic(self, entry_label):
-        data_json_tmp = self.data_json
-        for key0 in data_json_tmp.keys():
-            for key1 in data_json_tmp[key0].keys():
-                for key2 in data_json_tmp[key0][key1].keys():
-                    try:
-                        values = data_json_tmp[key0][key1][key2][entry_label]
-                        values = self._trim_data_value(values)
-                        values = list(set(values))
-                        if len(values) == 1:
-                            value = values[0]
-                        elif len(values) > 1:
-                            value = self.multiple_values
-                        else:
-                            value = None
-                        if value is not None:
-                            self.data_json[key0][key1][key2][entry_label] = value
-                        else:
-                            del self.data_json[key0][key1][key2][entry_label]
-                    except:
-                        pass
-                    
     #
     def _generate_document_map(self, specimen_tree):
         deidentifier_key_dict = self._get_deidentifier_keys()
