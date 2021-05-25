@@ -168,7 +168,12 @@ class Postprocessor(Postprocessor_base):
             for idx in range(len(value_list_out)):
                 if value_list_out[idx][:2] == '~ ' and re.search('-', value_list_out[idx]):
                     value_list_out[idx] = value_list_out[idx][2:]
-        return value_list_out
+        value_dict_list = []
+        for value in value_list_out:
+            value_dict = {}
+            value_dict['BLAST_PERCENTAGE'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list
 
 #
 def get_blast_value(blast_value_list):

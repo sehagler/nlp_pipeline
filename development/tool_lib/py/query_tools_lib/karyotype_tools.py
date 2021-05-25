@@ -65,7 +65,12 @@ class Postprocessor(Postprocessor_base):
             value_list.append(entry_text)
         else:
             value_list = []
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['KARYOTYPE'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list
 
 #
 class Posttokenizer(Preprocessor_base):

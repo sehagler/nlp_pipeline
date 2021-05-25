@@ -51,7 +51,12 @@ class Postprocessor(Postprocessor_base):
             elif match1 is not None:
                 value_tmp = match1.group(0)
                 value_list.append(value_tmp)
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['DATE'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list
     
 #
 class Tokenizer(Preprocessor_base):

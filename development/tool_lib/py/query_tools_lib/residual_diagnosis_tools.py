@@ -26,4 +26,9 @@ class Postprocessor(Postprocessor_base):
     def _extract_data_value(self, text_list):
         text_list = text_list[0]
         value_list = text_list
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['DIAGNOSIS'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list

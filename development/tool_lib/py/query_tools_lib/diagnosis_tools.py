@@ -53,4 +53,9 @@ class Postprocessor(Postprocessor_base):
                             self.data_dict_list[i][self.nlp_data_key][key]['DIAGNOSIS'] = []
                         self.data_dict_list[i][self.nlp_data_key][key]['DIAGNOSIS'].append(diagnosis_key)
                         '''
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['DIAGNOSIS'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list

@@ -12,48 +12,7 @@ import xlrd
 
 #
 class Specimens_base(object):
-    
-    #
-    def __init__(self, project_data):
-        json_structure_manager = project_data['json_structure_manager']
-        self.document_wrapper_key = \
-            json_structure_manager.pull_key('document_wrapper_key')
-        self.documents_wrapper_key = \
-            json_structure_manager.pull_key('documents_wrapper_key')
-        self.metadata_key = \
-            json_structure_manager.pull_key('metadata_key')
-        self.nlp_data_key = \
-            json_structure_manager.pull_key('nlp_data_key')
-        self.nlp_datetime_key = \
-            json_structure_manager.pull_key('nlp_datetime_key')
-        self.nlp_datum_key = \
-            json_structure_manager.pull_key('nlp_datum_key')
-        self.nlp_metadata_key = \
-            json_structure_manager.pull_key('nlp_metadata_key')
-        self.nlp_performance_key = \
-            json_structure_manager.pull_key('nlp_performance_key')
-        self.nlp_query_key = \
-            json_structure_manager.pull_key('nlp_query_key')
-        self.nlp_section_key = \
-            json_structure_manager.pull_key('nlp_section_key')
-        self.nlp_specimen_key = \
-            json_structure_manager.pull_key('nlp_specimen_key')
-        self.nlp_source_text_key = \
-            json_structure_manager.pull_key('nlp_source_text_key')
-        self.nlp_text_element_key = \
-            json_structure_manager.pull_key('nlp_text_element_key')
-        self.nlp_text_key = \
-            json_structure_manager.pull_key('nlp_text_key')
-        self.nlp_value_key = \
-            json_structure_manager.pull_key('nlp_value_key')
-            
-        # to be moved to appropriate location
-        self.multiple_specimens = \
-            json_structure_manager.pull_key('multiple_specimens')
-        self.multiple_values = \
-            json_structure_manager.pull_key('multiple_values')
-        #
-    
+
     #
     def _get_deidentifier_keys(self):
         deidentifier_key_dict = {}

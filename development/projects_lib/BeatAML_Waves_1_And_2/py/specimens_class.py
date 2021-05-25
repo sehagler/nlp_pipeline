@@ -20,11 +20,54 @@ from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 class Specimens(Specimens_jsons):
     
     #
-    def __init__(self, project_data, nlp_data):
+    def __init__(self, project_data, metadata_dict_dict, data_json):
+            
+        json_structure_manager = project_data['json_structure_manager']
+        self.document_wrapper_key = \
+            json_structure_manager.pull_key('document_wrapper_key')
+        self.documents_wrapper_key = \
+            json_structure_manager.pull_key('documents_wrapper_key')
+        self.metadata_key = \
+            json_structure_manager.pull_key('metadata_key')
+        self.nlp_data_key = \
+            json_structure_manager.pull_key('nlp_data_key')
+        self.nlp_datetime_key = \
+            json_structure_manager.pull_key('nlp_datetime_key')
+        self.nlp_datum_key = \
+            json_structure_manager.pull_key('nlp_datum_key')
+        self.nlp_element_key = \
+            json_structure_manager.pull_key('nlp_text_element_key')
+        self.nlp_metadata_key = \
+            json_structure_manager.pull_key('nlp_metadata_key')
+        self.nlp_performance_key = \
+            json_structure_manager.pull_key('nlp_performance_key')
+        self.nlp_query_key = \
+            json_structure_manager.pull_key('nlp_query_key')
+        self.nlp_section_key = \
+            json_structure_manager.pull_key('nlp_section_key')
+        self.nlp_specimen_key = \
+            json_structure_manager.pull_key('nlp_specimen_key')
+        self.nlp_source_text_key = \
+            json_structure_manager.pull_key('nlp_source_text_key')
+        self.nlp_text_key = \
+            json_structure_manager.pull_key('nlp_text_key')
+        self.nlp_tool_output_key = \
+            json_structure_manager.pull_key('nlp_tool_output_key')
+        self.nlp_value_key = \
+            json_structure_manager.pull_key('nlp_value_key')
+            
+        # to be moved to appropriate location
+        self.multiple_specimens = \
+            json_structure_manager.pull_key('multiple_specimens')
+        self.multiple_values = \
+            json_structure_manager.pull_key('multiple_values')
+        #
+        
+        self.metadata_dict_dict = metadata_dict_dict
         directory_manager = project_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
-        Specimens_jsons.__init__(self, project_data, nlp_data)
+        Specimens_jsons.__init__(self, project_data, data_json)
     
     #                 
     def _evaluate_antibodies_tested(self):
@@ -110,9 +153,9 @@ class Specimens(Specimens_jsons):
                         #values = self._trim_data_value(values)
                         #values = list(set(values))
                         specific_diagnoses = []
-                        specific_diagnoses.append(''.join(values[0][1]))
+                        specific_diagnoses.append(''.join(values[0]))
                         if len(specific_diagnoses) == 1:
-                            value = specific_diagnoses[0]
+                            value = specific_diagnoses[0][0]
                         elif len(specific_diagnoses) > 1:
                             value = self.multiple_values
                         else:
@@ -166,23 +209,3 @@ class Specimens(Specimens_jsons):
         else:
             process_label = 'hematopathology_' + doc_label
         return process_label
-                    
-    #
-    def _process_data(self, data_in):
-        data_out = {}
-        data_out = self._get_data_value(data_in, data_out, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES_TESTED_' + self.nlp_value_key, 'Antibodies.Tested')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST_' + self.nlp_value_key, '%.Blasts.in.BM')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'DIAGNOSIS_' + self.nlp_value_key, 'dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE_' + self.nlp_value_key, 'dx.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'EXTRAMEDULLARY_DISEASE_' + self.nlp_value_key, 'Extramedullary.dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION_' + self.nlp_value_key, 'FAB/Blast.Morphology')
-        data_out = self._get_data_value(data_in, data_out, [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY_' + self.nlp_value_key, 'FISH.Analysis.Summary')
-        data_out = self._get_data_value(data_in, data_out, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE_' + self.nlp_value_key, 'Karyotype')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'PERIPHERAL BLOOD' ], 'PERIPHERAL_BLOOD_BLAST_' + self.nlp_value_key, '%.Blasts.in.PB')
-        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'RELAPSE_DATE_' + self.nlp_value_key, 'Relapse.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'RESIDUAL_DISEASE_' + self.nlp_value_key, 'Residual.dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SPECIFIC_DIAGNOSIS_' + self.nlp_value_key, 'specificDx')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SURFACE_ANTIGENS_' + self.nlp_value_key, 'Surface.Antigens.(Immunohistochemical.Stains)')
-        if not data_out:
-            data_out = None
-        return data_out

@@ -6,7 +6,10 @@ Created on Thu Apr 16 09:39:27 2020
 """
 
 #
+import ast
 import collections
+from copy import deepcopy
+import re
 
 #
 from distutils.dir_util import copy_tree
@@ -87,7 +90,7 @@ class Performance_data_manager(object):
             pass
         if x is not self.multiple_values:
             if y is not None:
-                if len(x) > 0:
+                if x is not None:
                     if collections.Counter(x) == collections.Counter(y):
                         result = 'true positive'
                     else:
@@ -97,16 +100,13 @@ class Performance_data_manager(object):
                     display_data_flg = True
                     result = 'false negative'
             else:
-                if len(x) > 0:
+                if x is not None:
                     display_data_flg = True
                     result = 'false positive'
                 else:
                     result = 'true negative'
         else:
             result = 'multiple values'
-        #if display_data_flg:
-        #        print(x)
-        #        print(y)
         return result, display_data_flg
         
     #
@@ -136,8 +136,6 @@ class Performance_data_manager(object):
                     result = 'true negative'
         else:
             result = 'multiple values'
-        #if display_data_flg:
-        #    print(str(x) + ' ' + str(y))
         return result, display_data_flg
     
     #
@@ -148,10 +146,63 @@ class Performance_data_manager(object):
             print(' precision:\t' + performance_statistics_dict[key]['PRECISION'])
             print(' recall:\t' + performance_statistics_dict[key]['RECALL'])
             print(' F1:\t\t' + performance_statistics_dict[key]['F1'])
-
+    
+    #
+    def _get_data_value(self, node, section_key_list, target_key, data_key, 
+                        mode_flg='multiple_values'):
+        self.data_dict_list = []
+        self._walk(node, target_key, [], section_key_list)
+        data_value = []
+        if section_key_list is not None:
+            for i in range(len(section_key_list)):
+                label = section_key_list[i]
+                if len(data_value) == 0:
+                    for item in self.data_dict_list:
+                        if item[0] == label:
+                            data_value.append(item[1])
+        else:
+            for item in self.data_dict_list:
+                data_value.append(item[1])
+        self.data_dict_list = data_value
+        data_value = []
+        if section_key_list is not None:  
+            if len(self.data_dict_list) > 0:
+                for data_dict in self.data_dict_list[0]:
+                    data_tmp = data_dict[data_key]
+                    if isinstance(data_tmp, list):
+                        data_tmp = tuple(data_tmp)
+                    elif isinstance(data_tmp, tuple):
+                        data_tmp = tuple(data_tmp)
+                    data_value.append(data_tmp)
+            else:
+                data_value = self.data_dict_list
+        else:
+            if len(self.data_dict_list) > 0:
+                for data_dict in self.data_dict_list[0]:
+                    data_tmp = data_dict[data_key]
+                    if mode_flg == 'multiple_values':
+                        data_tmp = data_dict[data_key].split(', ')
+                        data_tmp = tuple(data_tmp)
+                    elif mode_flg == 'single_value':
+                        pass
+                    data_value.append(data_tmp)
+            else:
+                data_value = self.data_dict_list
+        data_value = list(set(data_value))
+        if mode_flg == 'single_value':
+            if len(data_value) == 0:
+                data_value = None
+            elif len(data_value) == 1:
+                data_value = data_value[0]
+            elif len(data_value) > 1:
+                data_value = self.multiple_values
+        elif mode_flg == 'multiple_values':
+            if len(data_value) == 0:
+                data_value = None
+        return data_value
+    
     #
     def _performance_statistics(self, FN, FP, FP_plus_FN, TN, TP, N):
-        #N = TP + TN + FN + FP + FP_plus_FN
         if N > 0:
             A = (TP + TN) / N
         else:
@@ -177,6 +228,50 @@ class Performance_data_manager(object):
         performance_statistics['PRECISION'] = str(round(P, 3))
         performance_statistics['RECALL'] = str(round(R, 3))
         return performance_statistics
+    
+    #
+    def _read_metadata(self, nlp_data):
+        metadata_keys = []
+        metadata_dict_dict = {}
+        for key in nlp_data.keys():
+            metadata_dict_dict[key] = {}
+            metadata_dict_dict[key]['METADATA'] = \
+                nlp_data[key]['METADATA']
+            metadata_dict_dict[key]['NLP_METADATA'] = \
+                nlp_data[key]['NLP_METADATA']
+        for metadata_key in metadata_dict_dict.keys():
+            for key in metadata_dict_dict[metadata_key].keys():
+                if key not in metadata_keys:
+                    metadata_keys.append(key)
+        return metadata_keys, metadata_dict_dict
+    
+    #
+    def _unique(self, lst):
+        s = set()
+        for el in lst:
+            if isinstance(el, str):
+                s.add(el)
+            elif el[0] == 'not':
+                s.add(tuple(*el))
+            else:
+                s.update(self._unique(el))
+        return s
+    
+    #
+    def _walk(self, node, target_key, key_list_in, section_key_list):
+        for k, v in node.items():
+            key_list = deepcopy(key_list_in)
+            key_list.append(k)
+            if k == target_key:
+                section_key = ast.literal_eval(key_list[0])[0]
+                section_key = re.sub(' [0-9]+$', '', section_key)
+                if section_key_list is not None:
+                    if section_key in section_key_list:
+                        self.data_dict_list.append(tuple([section_key, v]))
+                else:
+                    self.data_dict_list.append(tuple([section_key, v]))
+            elif isinstance(v, dict):
+                self._walk(v, target_key, key_list, section_key_list)
         
     #
     def display_performance_data(self):

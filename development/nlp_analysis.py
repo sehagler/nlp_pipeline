@@ -16,16 +16,20 @@ z_root_base = 'Z:/NLP'
 
 #
 operation_modes = [ 'development', 'production' ]
-project_names = [ 'AdverseEvents', 'BeatAML_Waves_1_And_2', 'BeatAML_Waves_3_And_4', 
-                  'BreastCancerPathology', 'CCC19' ]
+project_names = [ 'AdverseEvents', 'BeatAML_Waves_1_And_2',
+                  'BeatAML_Waves_3_And_4', 'BreastCancerPathology', 'CCC19' ]
 project_subdirs = [ 'production', 'test' ]
 root_dir_flg = [ 'X', 'Z', 'server' ]
 
 #
+mode_flgs = [ 'prequeries', 'postqueries' ]
+
+#
 operation_mode = operation_modes[0]
-project_name = project_names[2]
+project_name = project_names[1]
 project_subdir = project_subdirs[1]
 root_dir_flg = root_dir_flg[2]
+mode_flg = mode_flgs[0]
 
 #
 if root_dir_flg == 'server':
@@ -64,11 +68,13 @@ if True:
     nlp_process.pipeline_manager(password, operation_mode, project_name,
                                  project_subdir, root_dir_flg)
     #nlp_process.generate_training_data_sets()
-    #nlp_process.prequeries(password)
-    nlp_process.postqueries_preperformance()
-    if project_subdir == 'test':
-        nlp_process.calculate_performance()
-    nlp_process.postqueries_postperformance()
+    if mode_flg == 'prequeries':
+        nlp_process.prequeries(password)
+    elif mode_flg == 'postqueries':
+        nlp_process.postqueries_preperformance()
+        if project_subdir == 'test':
+            nlp_process.calculate_performance()
+        nlp_process.postqueries_postperformance()
     #nlp_process.download_queries()
     
 #

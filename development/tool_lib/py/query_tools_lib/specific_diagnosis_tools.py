@@ -43,4 +43,9 @@ class Postprocessor(Postprocessor_base):
                     if re.search('(?i)(?<!/)' + diagnosis + '(?!/)', entry_txt):
                         del_key = False
                         value_list.append((diagnosis_key, diagnosis))
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['DIAGNOSIS'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list

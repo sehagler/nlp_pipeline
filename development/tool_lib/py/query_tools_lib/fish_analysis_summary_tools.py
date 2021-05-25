@@ -37,4 +37,9 @@ class Postprocessor(Postprocessor_base):
         entry_text = re.sub(':[ \n\t]*$', '', entry_text)
         value_list = []
         value_list.append(entry_text)
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['FISH_ANALYSIS_SUMMARY'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list

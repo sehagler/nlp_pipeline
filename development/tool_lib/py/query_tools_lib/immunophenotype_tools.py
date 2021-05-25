@@ -29,4 +29,9 @@ class Postprocessor(Postprocessor_base):
         value_list = []
         for antigen_str in antigens:
             value_list.extend([correct_antibodies(antigen_str)])
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['IMMUNOPHENOTYPE'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list

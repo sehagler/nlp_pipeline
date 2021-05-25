@@ -34,4 +34,9 @@ class Postprocessor(Postprocessor_base):
             text = re.sub(' ', '', text)
             text = re.sub('.*(?=M)', '', text)
             value_list.append(text)
-        return value_list
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['FAB_CLASSIFICATION'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list

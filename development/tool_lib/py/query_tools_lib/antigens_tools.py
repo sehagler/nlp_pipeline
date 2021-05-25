@@ -31,7 +31,7 @@ class Postprocessor(Postprocessor_base):
     def _extract_data_value(self, text_list):
         if len(text_list) > 0:
             text_list = text_list[0]
-        entry_text = text_list
+        value_list = text_list
         '''
         entry_text_tmp = re.sub('/', ' ', entry_text[0])
         antibodies = list(set(entry_text_tmp.split()))
@@ -46,7 +46,12 @@ class Postprocessor(Postprocessor_base):
         if antibodies != []:
             self._append_data(i, key, antibodies)
         '''
-        return entry_text
+        value_dict_list = []
+        for value in value_list:
+            value_dict = {}
+            value_dict['ANTIBODIES_TESTED'] = value
+            value_dict_list.append(value_dict)
+        return value_dict_list
 
 #
 class Posttokenizer(Preprocessor_base):

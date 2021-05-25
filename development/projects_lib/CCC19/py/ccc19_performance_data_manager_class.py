@@ -32,24 +32,29 @@ class CCC19_performance_data_manager(Performance_data_manager):
         return z
     
     #
-    def _find_data_value(self, node, key_0, key_1, mode_flg='single_value'):
-        self.data_dict_list = []
-        self._walk(node, key_0)
-        self.data_value = []
-        for data_dict in self.data_dict_list:
-            data_list = data_dict[key_1].split(', ')
-            if 'MANUAL_REVIEW' in data_list:
-                data_list.remove('MANUAL_REVIEW')
-            self.data_value.extend(data_list)
-        self.data_value = list(self._unique(self.data_value))
-        if mode_flg == 'single_value':
-            if len(self.data_value) == 0:
-                self.data_value = None
-            elif len(self.data_value) == 1:
-                self.data_value = self.data_value[0]
-            elif len(self.data_value) > 1:
-                self.data_value = self.multiple_values
-        return self.data_value
+    def _get_nlp_data(self, data_in):
+        data_out = {}
+        data_out['CANCER_STAGE'] = \
+            self._get_data_value(data_in, None, 'CANCER_STAGE_' + self.nlp_value_key, 'CANCER_STAGE', mode_flg='single_value')
+        data_out['NORMALIZED_ECOG_SCORE'] = \
+            self._get_data_value(data_in, None, 'ECOG_SCORE_' + self.nlp_value_key, 'NORMALIZED_ECOG_SCORE', mode_flg='single_value')
+        data_out['NORMALIZED_SMOKING_HISTORY'] = \
+            self._get_data_value(data_in, None, 'SMOKING_HISTORY_' + self.nlp_value_key, 'NORMALIZED_SMOKING_HISTORY', mode_flg='single_value')
+        data_out['NORMALIZED_SMOKING_PRODUCTS'] = \
+            self._get_data_value(data_in, None, 'SMOKING_PRODUCTS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_PRODUCTS', mode_flg='multiple_values')
+        data_out['NORMALIZED_SMOKING_STATUS'] = \
+            self._get_data_value(data_in, None, 'SMOKING_STATUS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_STATUS', mode_flg='single_value')
+        del_keys = []
+        for key in data_out:
+            if data_out[key] is not None:
+                data_out[key] = data_out[key]
+            else:
+                del_keys.append(key)
+        for key in del_keys:
+            del data_out[key]  
+        if not data_out:
+            data_out = None
+        return data_out
         
     #
     def _intersection(self, x, y):
@@ -71,6 +76,17 @@ class CCC19_performance_data_manager(Performance_data_manager):
         if x == '':
             x = None
         return x
+    
+    #
+    def _read_nlp_value_data(self, validation_csn_list, nlp_data):
+        nlp_values = {}
+        for csn in validation_csn_list:
+            data_out = None
+            for item in nlp_data:
+                if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
+                    data_out = self._get_nlp_data(nlp_data[item][self.nlp_data_key])
+            nlp_values[csn] = data_out
+        return nlp_values
         
     #
     def _read_validation_data(self, project_data):
@@ -100,26 +116,6 @@ class CCC19_performance_data_manager(Performance_data_manager):
                     validation_data_tmp.append(cell_value)
                 validation_data.append(validation_data_tmp)
         return validation_data
-    
-    #
-    def _unique(self, lst):
-        s = set()
-        for el in lst:
-            if isinstance(el, str):
-                s.add(el)
-            elif el[0] == 'not':
-                s.add(tuple(*el))
-            else:
-                s.update(self._unique(el))
-        return s
-    
-    #
-    def _walk(self, node, key):
-        for k, v in node.items():
-            if k == key:
-                self.data_dict_list.extend(v)
-            elif isinstance(v, dict):
-                self._walk(v, key)
                 
     #
     def calculate_performance(self):
@@ -135,29 +131,48 @@ class CCC19_performance_data_manager(Performance_data_manager):
                 validation_csn_list.append(item[2])
         validation_mrn_list = list(set(validation_mrn_list))
         validation_csn_list = list(set(validation_csn_list))
+        nlp_values = self._read_nlp_value_data(validation_csn_list, nlp_data)
         nlp_cancer_stage_performance = []
         nlp_ecog_score_performance = []
         nlp_smoking_history_performance = []
         nlp_smoking_products_performance = []
         nlp_smoking_status_performance = []
         for csn in validation_csn_list:
-            nlp_cancer_stage_value = None
-            nlp_ecog_score_value = None
-            nlp_smoking_history_value = None
-            nlp_smoking_products_value = []
-            nlp_smoking_status_value = None
-            for item in nlp_data:
-                if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
-                    nlp_cancer_stage_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'CANCER_STAGE_' + self.nlp_value_key, 'CANCER_STAGE')
-                    nlp_ecog_score_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'ECOG_SCORE_' + self.nlp_value_key, 'NORMALIZED_ECOG_SCORE')
-                    nlp_smoking_history_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING_HISTORY_' + self.nlp_value_key, 'NORMALIZED_SMOKING_HISTORY')
+            data_out = nlp_values[csn]
+            if data_out is not None:
+                if 'CANCER_STAGE' in data_out.keys():
+                    nlp_cancer_stage_value = data_out['CANCER_STAGE']
+                else:
+                    nlp_cancer_stage_value = None
+                if 'NORMALIZED_ECOG_SCORE' in data_out.keys():
+                    nlp_ecog_score_value = data_out['NORMALIZED_ECOG_SCORE']
+                else:
+                    nlp_ecog_score_value = None
+                if 'NORMALIZED_SMOKING_HISTORY' in data_out.keys():
+                    nlp_smoking_history_value = data_out['NORMALIZED_SMOKING_HISTORY']
+                else:
+                    nlp_smoking_history_value = None
+                if 'NORMALIZED_SMOKING_PRODUCTS' in data_out.keys():
+                    nlp_smoking_products_value = data_out['NORMALIZED_SMOKING_PRODUCTS']
+                    nlp_smoking_products_value_tmp = nlp_smoking_products_value
+                    nlp_smoking_products_value = []
+                    for item0 in nlp_smoking_products_value_tmp:
+                        for item1 in item0:
+                            nlp_smoking_products_value.append(item1)
                     nlp_smoking_products_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING_PRODUCTS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_PRODUCTS', mode_flg='multiple_values')
-                    nlp_smoking_status_value = \
-                        self._find_data_value(nlp_data[item][self.nlp_data_key], 'SMOKING_STATUS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_STATUS')
+                        list(set(nlp_smoking_products_value))
+                else:
+                    nlp_smoking_products_value = None
+                if 'NORMALIZED_SMOKING_STATUS' in data_out.keys():
+                    nlp_smoking_status_value = data_out['NORMALIZED_SMOKING_STATUS']
+                else:
+                    nlp_smoking_status_value = None
+            else:
+                nlp_cancer_stage_value = None
+                nlp_ecog_score_value = None
+                nlp_smoking_history_value = None
+                nlp_smoking_products_value = None
+                nlp_smoking_status_value = None
             for item in validation_data:
                 if item[2] == csn:
                     validation_cancer_stage_value = \
