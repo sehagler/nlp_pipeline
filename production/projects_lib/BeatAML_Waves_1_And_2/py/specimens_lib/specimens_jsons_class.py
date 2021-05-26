@@ -13,25 +13,19 @@ import os
 from pathlib import Path
 
 #
-from nlp_lib.py.manager_lib.directory_manager_class import Directory_manager
-from nlp_lib.py.tool_lib.query_tools_lib.date_tools import get_date_difference
 from nlp_lib.py.logger_lib.logger_class import Logger
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_base_class \
     import Specimens_base
+from tool_lib.py.query_tools_lib.date_tools import get_date_difference
 
 #
 class Specimens_jsons(Specimens_base):
     
     #
-    def __init__(self, directory_manager, nlp_data):
-        Specimens_base.__init__(self)
-        self.directory_manager = directory_manager
-        self.metadata_json_file = \
-            self.directory_manager.pull_directory('metadata_dir') + '/metadata.json'
+    def __init__(self, project_data, data_json):
+        self.directory_manager = project_data['directory_manager']
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
-        self._read_metadata(self.metadata_json_file)
-        data_json = self._read_data(nlp_data)
         specimen_tree = self._identify_documents_with_same_proc_nm(deepcopy(data_json))
         specimen_tree = self._identify_documents_for_same_specimen(specimen_tree)
         specimen_dict = self._cluster_specimens(specimen_tree)
@@ -107,29 +101,6 @@ class Specimens_jsons(Specimens_base):
             corrected_data_json = {}
         return corrected_data_json
                     
-    #                 
-    def _evaluate_generic(self, entry_label):
-        data_json_tmp = self.data_json
-        for key0 in data_json_tmp.keys():
-            for key1 in data_json_tmp[key0].keys():
-                for key2 in data_json_tmp[key0][key1].keys():
-                    try:
-                        values = data_json_tmp[key0][key1][key2][entry_label]
-                        values = self._trim_data_value(values)
-                        values = list(set(values))
-                        if len(values) == 1:
-                            value = values[0]
-                        elif len(values) > 1:
-                            value = self.multiple_values
-                        else:
-                            value = None
-                        if value is not None:
-                            self.data_json[key0][key1][key2][entry_label] = value
-                        else:
-                            del self.data_json[key0][key1][key2][entry_label]
-                    except:
-                        pass
-                    
     #
     def _generate_document_map(self, specimen_tree):
         deidentifier_key_dict = self._get_deidentifier_keys()
@@ -150,19 +121,6 @@ class Specimens_jsons(Specimens_base):
                 documents = specimen_tree[key0][key1]
                 documents = list(set(documents))
                 self.logger.log_entry_merge_documents(key0, key1, date_str, key[0], documents)
-        
-    #
-    def _get_data_value(self, data_in, data_out, label0_list, label1, label2):
-        data_value = []
-        for label0 in label0_list:
-            if len(data_value) == 0:
-                for key in data_in.keys():
-                    if label0 in key:
-                        if label1 in data_in[key].keys():
-                            data_value.append(data_in[key][label1])
-        if len(data_value) > 0:
-            data_out[label2] = data_value
-        return data_out
     
     #
     def _get_specimen_dict(self, specimen_tree, key0, key1):
@@ -220,49 +178,6 @@ class Specimens_jsons(Specimens_base):
                 if doc_key in documents_in[key].keys():
                     document[doc_nums][doc_key].extend(documents_in[key][doc_key])
         return document
-    
-    #
-    def _read_data(self, nlp_data):
-        data_json = {}
-        for key in nlp_data.keys():
-            json_tmp = nlp_data[key]
-            doc_name = str(key)
-            mrn = json_tmp[self.metadata_key]['MRN']
-            preprocessed_text = json_tmp[self.nlp_source_text_key]
-            proc_nm = json_tmp[self.metadata_key]['PROC_NM']
-            result_date = json_tmp[self.metadata_key]['RESULT_COMPLETED_DT']
-            specimen_date = json_tmp[self.metadata_key]['SPECIMEN_COLL_DT']
-            data_in = json_tmp[self.nlp_data_key]
-            data_out = self._process_data(data_in)
-            if data_out is not None:
-                doc_label = ''
-                if 'bone marrow' in preprocessed_text.lower():
-                    doc_label += 'BLD'
-                elif 'peripheral blood' in preprocessed_text.lower():
-                    doc_label += 'BLD'
-                if 'CSF' in preprocessed_text:
-                    doc_label += 'CSF'
-                if doc_label == '':
-                    doc_label = 'NA'
-                if mrn not in data_json:
-                    data_json[mrn] = {}
-                if specimen_date not in data_json[mrn]:
-                    data_json[mrn][specimen_date] = {}
-                if proc_nm not in data_json[mrn][specimen_date]:
-                    data_json[mrn][specimen_date][proc_nm] = {}
-                if doc_name not in data_json[mrn][specimen_date][proc_nm].keys():
-                    data_json[mrn][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
-        return data_json
-    
-    #
-    def _read_metadata(self, filename):
-        self.metadata_keys = []
-        with open(filename, 'r') as f:
-            self.metadata_dict_dict = json.load(f)
-        for metadata_key in self.metadata_dict_dict.keys():
-            for key in self.metadata_dict_dict[metadata_key].keys():
-                if key not in self.metadata_keys:
-                    self.metadata_keys.append(key)
                     
     #
     def _trim_data_value(self, data_value):

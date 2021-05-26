@@ -1,156 +1,737 @@
-version: 5.5.1
-creationDate: '2018-10-26 16:08:10'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
-  - X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
   - Union:
-    - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_specimens_wrapper.i2qy',
-      immunophenotype/immunophenotype_specimens_wrapper.i2qy]
-    - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_specimen_description_wrapper.i2qy',
-      immunophenotype/immunophenotype_specimen_description_wrapper.i2qy]
+    - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_specimens_wrapper.i2qy
+    - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_specimen_description_wrapper.i2qy
     - Subtraction:
-      - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_sections_wrapper.i2qy',
-        immunophenotype/immunophenotype_sections_wrapper.i2qy]
-      - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_specimen_description_wrapper.i2qy',
-        immunophenotype/immunophenotype_specimen_description_wrapper.i2qy]
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_sections_wrapper.i2qy
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_specimen_description_wrapper.i2qy
     - Subtraction:
-      - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_summary_section_wrapper.i2qy',
-        immunophenotype/immunophenotype_summary_section_wrapper.i2qy]
-      - ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_summary_specimen_description_wrapper.i2qy',
-        immunophenotype/immunophenotype_summary_specimen_description_wrapper.i2qy]
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_summary_section_wrapper.i2qy
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_summary_specimen_description_wrapper.i2qy
 querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/immunophenotype_query.i2qy
-  : version: 5.5.1
-    creationDate: '2020-03-06 22:29:00'
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_sections_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.alternative1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          view:
+            width: 376
+            height: 210
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - alternative:
+                - COMMENT
+                - NOTE
+              id: region1
+          - region:
+              snid: hc.section_body
+              showWholeRegion: true
+              pt: Section Body
+              columnOptions:
+              - Text
+              where:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_comment.i2qy
+                  id: link2
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 15:56:12'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_specimens_wrapper.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.alternative1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - alternative:
+                - COMMENT
+                - NOTE
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - shadowRegion:
+                      snid: hc.specimen_id
+                      pt: Specimen Id
+                      id: shadow region1
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_comment.i2qy
+                      id: link2
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 16:03:06'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy:
+    creator: haglers
     query:
       document:
       - phrase:
-          id: phrase1
-          maxSentenceGap: -1
           maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - alternative:
+              of:
+              - (
+              - )
+              quantifier:
+                maximum: 0
+                minimum: 0
+          - )
+    creationDate: '2018-05-07 15:22:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - phrase:
+          view:
+            width: 865
+            height: 842
+          of:
+          - phrase:
+              unordered: true
+              view:
+                width: 526
+                height: 724
+              of:
+              - phrase:
+                  of:
+                  - word:
+                      text: slightly
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - alternative:
+                  view:
+                    width: 257
+                    height: 682
+                  of:
+                  - BE
+                  - word:
+                      view:
+                        width: 239
+                        height: 59
+                      matchType: Regexp
+                      text: '[a-z]?CD[0-9]{1,3}[a-z]{0,2}(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: HLA-DR(-|\+|-positive)?
+                  - word:
+                      view:
+                        width: 222
+                        height: 48
+                      matchType: Regexp
+                      text: '[a-z]?Kappa[a-z]?(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: Ki-67
+                  - word:
+                      view:
+                        width: 231
+                        height: 47
+                      matchType: Regexp
+                      text: '[a-z]?Lambda[a-z]?(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: '[a-z]?T[Dd]T(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: '[a-z]?MPO(-|\+|-positive)?'
+                  - word:
+                      matchType: Regexp
+                      text: PAX-?5
+                  - word:
+                      matchType: Regexp
+                      text: TXM4
+                  - phrase:
+                      of:
+                      - glycophorin
+                      - word:
+                          matchType: Regexp
+                          text: '[A-Z]'
+                      displayChildren: false
+                  - lysozyme
+                  - word:
+                      matchType: Regexp
+                      text: '[a-z]?p53'
+          - phrase:
+              of:
+              - (
+              - alternative:
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy
+                - word:
+                    matchType: Regexp
+                    text: '[0-9]+%'
+              - )
+              quantifier:
+                maximum: 1
+                minimum: 0
+          id: phrase1
+    creationDate: '2019-02-11 20:43:51'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - phrase:
+              multiSentence: true
+              view:
+                width: 750
+                height: 304
+              maxWordGap: -1
+              wordGapRestricted: false
+              of:
+              - alternative:
+                  view:
+                    width: 531
+                    height: 266
+                  of:
+                  - phrase:
+                      view:
+                        width: 511
+                        height: 119
+                      maxWordGap: -1
+                      wordGapRestricted: false
+                      of:
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - immunophenotype
+                          - phenotype
+                      - phrase:
+                          of:
+                          - of
+                          - link:
+                              path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy
+                          quantifier:
+                            maximum: 1
+                            minimum: 0
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - ':'
+                          - for
+                          - of
+                          quantifier:
+                            maximum: 0
+                            minimum: 0
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - ':'
+                          - for
+                          - of
+                  - phrase:
+                      of:
+                      - alternative:
+                          view:
+                            layout: list
+                          of:
+                          - negative
+                          - positive
+                      - for
+                      displayChildren: false
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy
+              maxSentenceGap: -1
+          findMatches: longestOnly
+          id: alternative1
+    creationDate: '2019-01-30 00:13:24'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - involvement
+          - word:
+              text: monoblast
+              morphoVariants: true
+          - word:
+              text: myeloblast
+              morphoVariants: true
+          - phrase:
+              of:
+              - alternative:
+                  of:
+                  - immature
+                  - leukemic
+                  - lymphoid
+                  quantifier:
+                    maximum: 0
+                    minimum: 0
+              - word:
+                  text: myeloid
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              - word:
+                  text: blast
+                  morphoVariants: true
+              - word:
+                  text: equivalent
+                  morphoVariants: true
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              displayChildren: false
+          id: alternative1
+    creationDate: '2019-02-26 19:12:21'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: phrase1
+    creator: haglers
+    query:
+      document:
+      - phrase:
           multiSentence: true
+          maxWordGap: -1
           wordGapRestricted: false
           of:
           - phrase:
             - alternative:
-                quantifier: {minimum: 0, maximum: 0}
                 of:
                 - phrase:
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
                   - alternative:
-                      view: {layout: list}
-                      of: [':', /, ',']
+                      view:
+                        layout: list
+                      of:
+                      - ':'
+                      - /
+                      - ','
                 - phrase:
+                    of:
+                    - using
+                    - the
                     displayChildren: false
-                    of: [using, the]
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [':', /]
-          - phrase:
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [':', /]
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [':', /]
-          - phrase:
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [':', /]
-            - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy'}
-            - alternative:
-                quantifier: {minimum: 0, maximum: 0}
-                view: {layout: list}
-                of: [':', /]
-            - alternative:
-                quantifier: {minimum: 0, maximum: 1}
-                view: {layout: list}
-                of: [negative, positive]
+                quantifier:
+                  maximum: 0
+                  minimum: 0
             - link:
-                path: X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy
-                quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: phrase1}
+                path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - ':'
+                - /
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+          - phrase:
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - ':'
+                - /
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - ':'
+                - /
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+          - phrase:
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - ':'
+                - /
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigens.i2qy
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - ':'
+                - /
+                quantifier:
+                  maximum: 0
+                  minimum: 0
+            - alternative:
+                view:
+                  layout: list
+                of:
+                - negative
+                - positive
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+            - link:
+                path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+          maxSentenceGap: -1
+          id: phrase1
+    creationDate: '2020-03-06 22:29:00'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_summary_specimen_description_wrapper.i2qy
+  : output:
       useOutputEditor: true
+      columns:
+      - id: region1
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.alternative1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype.i2qy
-  : version: 5.5.1
-    creationDate: '2019-01-30 00:13:24'
     query:
       document:
-      - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          of:
-          - phrase:
-              maxSentenceGap: -1
-              maxWordGap: -1
-              multiSentence: true
-              view: {height: 304, width: 750}
-              wordGapRestricted: false
-              of:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
               - alternative:
-                  quantifier: {minimum: 0, maximum: 1}
-                  view: {height: 266, width: 531}
-                  of:
-                  - phrase:
-                      maxWordGap: -1
-                      view: {height: 119, width: 511}
-                      wordGapRestricted: false
-                      of:
-                      - alternative:
-                          view: {layout: list}
-                          of: [immunophenotype, phenotype]
-                      - phrase:
-                          quantifier: {minimum: 0, maximum: 1}
-                          of:
-                          - of
-                          - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast_wrapped.i2qy'}
-                      - alternative:
-                          quantifier: {minimum: 0, maximum: 0}
-                          view: {layout: list}
-                          of: [':', for, of]
-                      - alternative:
-                          view: {layout: list}
-                          of: [':', for, of]
-                  - phrase:
-                      displayChildren: false
-                      of:
-                      - alternative:
-                          view: {layout: list}
-                          of: [negative, positive]
-                      - for
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/immunophenotype_query.i2qy'}
+                - SUMMARY
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - alternative:
+                - phrase:
+                  - bone
+                  - marrow
+                - phrase:
+                  - word:
+                      text: peripheral
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - blood
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype.i2qy
+                      id: link2
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2019-02-21 17:16:26'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy:
     output:
-      columns:
-      - {id: alternative1}
       useOutputEditor: true
+      columns:
+      - id: alternative1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_comment.i2qy
-  : version: 5.5.1
-    creationDate: '2019-04-10 18:20:03'
     query:
       document:
       - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          view: {height: 340, width: 548}
           of:
           - phrase:
-              maxSentenceGap: -1
-              maxWordGap: -1
+            - phrase:
+                unordered: true
+                of:
+                - link:
+                    path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy
+                - phrase:
+                    maxWordGap: 1
+                    of:
+                    - alternative:
+                      - and
+                      - +
+                      - /
+                    - alternative:
+                        of:
+                        - abnormal
+                        quantifier:
+                          maximum: 1
+                          minimum: 0
+                    - alternative:
+                      - link:
+                          path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast.i2qy
+                      - word:
+                          text: promonocyte
+                          morphoVariants: true
+                      - word:
+                          text: promonocytic
+                          morphoVariants: true
+                      - word:
+                          text: promyelocyte
+                          morphoVariants: true
+                    quantifier:
+                      maximum: none
+                      minimum: 0
+            - word:
+                text: population
+                quantifier:
+                  maximum: 1
+                  minimum: 0
+          id: alternative1
+    creationDate: '2019-03-12 16:42:00'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_specimen_description_wrapper.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - id: region1
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - linkItemId: link2
+        itemOptions: {}
+        id: link2.alternative1
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - alternative:
+                - COMMENT
+                - NOTE
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_comment.i2qy
+                      id: link2
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 16:03:06'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          of:
+          - region:
+              view:
+                width: 316
+                height: 336
+              snid: hc.titled_section
+              pt: Titled Section
+              where:
+              - region:
+                  view:
+                    width: 96
+                    height: 82
+                  snid: hc.section_title
+                  pt: Section Title
+                  where:
+                  - SUMMARY
+              - region:
+                  snid: hc.section_body
+                  showWholeRegion: true
+                  pt: Section Body
+                  columnOptions:
+                  - Text
+                  where:
+                  - alternative:
+                    - phrase:
+                        of:
+                        - bone
+                        - marrow
+                        displayChildren: false
+                    - CSF
+                    - phrase:
+                        of:
+                        - word:
+                            text: peripheral
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
+                        - blood
+                        displayChildren: false
+          id: alternative1
+    creationDate: '2019-01-30 22:16:19'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_comment.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
+    query:
+      document:
+      - alternative:
+          view:
+            width: 548
+            height: 340
+          of:
+          - phrase:
               multiSentence: true
-              view: {height: 301, width: 530}
+              view:
+                width: 530
+                height: 301
+              maxWordGap: -1
               wordGapRestricted: false
               of:
               - alternative:
@@ -159,312 +740,71 @@ querySnapshots:
                     wordGapRestricted: false
                     of:
                     - alternative:
-                        view: {layout: list}
-                        of: [immunophenotype, phenotype]
+                        view:
+                          layout: list
+                        of:
+                        - immunophenotype
+                        - phenotype
                     - alternative:
-                        quantifier: {minimum: 0, maximum: 0}
-                        view: {layout: list}
-                        of: [':', for, of]
+                        view:
+                          layout: list
+                        of:
+                        - ':'
+                        - for
+                        - of
+                        quantifier:
+                          maximum: 0
+                          minimum: 0
                     - alternative:
-                        view: {layout: list}
-                        of: [':', for, of]
+                        view:
+                          layout: list
+                        of:
+                        - ':'
+                        - for
+                        - of
                 - phrase:
-                    displayChildren: false
                     of:
                     - alternative:
-                        view: {layout: list}
-                        of: [negative, positive]
+                        view:
+                          layout: list
+                        of:
+                        - negative
+                        - positive
                     - for
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/immunophenotype_query.i2qy'}
+                    displayChildren: false
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy
+              maxSentenceGap: -1
+          findMatches: longestOnly
+          id: alternative1
+    creationDate: '2019-04-10 18:20:03'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/query_lib/antigen_values.i2qy:
     output:
-      columns:
-      - {id: alternative1}
       useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_sections_wrapper.i2qy
-  : version: 5.5.1
-    creationDate: '2018-10-26 15:56:12'
-    query:
-      document:
-      - region:
-          view: {height: 210, width: 376}
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region1
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - alternative: [COMMENT, NOTE]
-          - region:
-              columnOptions: [Text]
-              showWholeRegion: true
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_comment.i2qy',
-                  id: link3}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
       columns:
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: region1}
-      - {id: link3.alternative1, linkItemId: link3}
-      columnLocations: [1, 0, 2]
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
+      - id: alternative1
     creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_specimen_description_wrapper.i2qy
-  : version: 5.5.1
-    creationDate: '2018-10-26 16:03:06'
-    query:
-      document:
-      - region:
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region1
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - alternative: [COMMENT, NOTE]
-          - region:
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.specimen
-                  pt: Specimen Description
-                  where:
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_comment.i2qy',
-                      id: link2}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
-      columns:
-      - {id: region1}
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: link2.alternative1, linkItemId: link2}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_specimens_wrapper.i2qy
-  : version: 5.5.1
-    creationDate: '2018-10-26 16:03:06'
-    query:
-      document:
-      - region:
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region1
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - alternative: [COMMENT, NOTE]
-          - region:
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.specimen
-                  pt: Specimen Description
-                  where:
-                  - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen
-                        Id}
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_comment.i2qy',
-                      id: link2}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
-      columns:
-      - {id: shadow region1}
-      - {id: region1}
-      - {id: link2.alternative1, linkItemId: link2}
-      columnLocations: [1, 0, 2]
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_summary_section_wrapper.i2qy
-  : version: 5.5.1
-    creationDate: '2019-02-21 17:10:18'
-    query:
-      document:
-      - region:
-          view: {height: 286, width: 500}
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region2
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - alternative: [SUMMARY]
-          - region:
-              columnOptions: [Text]
-              showWholeRegion: true
-              view: {height: 248, width: 353}
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - alternative:
-                - phrase: [bone, marrow]
-                - phrase:
-                  - word:
-                      text: peripheral
-                      quantifier: {minimum: 0, maximum: 1}
-                  - blood
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype.i2qy',
-                  id: link3}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
-      columns:
-      - {id: region2}
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: link3.alternative1, linkItemId: link3}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype_summary_specimen_description_wrapper.i2qy
-  : version: 5.5.1
-    creationDate: '2019-02-21 17:16:26'
-    query:
-      document:
-      - region:
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region:
-              id: region1
-              snid: hc.section_title
-              pt: Section Title
-              where:
-              - alternative: [SUMMARY]
-          - region:
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - alternative:
-                - phrase: [bone, marrow]
-                - phrase:
-                  - word:
-                      text: peripheral
-                      quantifier: {minimum: 0, maximum: 1}
-                  - blood
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.specimen
-                  pt: Specimen Description
-                  where:
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/immunophenotype/immunophenotype.i2qy',
-                      id: link3}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
-      columns:
-      - {id: region1}
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: link3.alternative1, linkItemId: link3}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy:
-    version: 5.5.1
-    creationDate: '2019-02-26 19:12:21'
     query:
       document:
       - alternative:
-          id: alternative1
-          of:
-          - involvement
-          - word: {text: monoblast, morphoVariants: true}
-          - word: {text: myeloblast, morphoVariants: true}
-          - phrase:
-              displayChildren: false
-              of:
-              - alternative:
-                  quantifier: {minimum: 0, maximum: 0}
-                  of: [immature, leukemic, lymphoid]
-              - word:
-                  text: myeloid
-                  quantifier: {minimum: 0, maximum: 1}
-              - word: {text: blast, morphoVariants: true}
-              - word:
-                  text: equivalent
-                  morphoVariants: true
-                  quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast_wrapped.i2qy:
-    version: 5.5.1
-    creationDate: '2019-03-12 16:42:00'
-    query:
-      document:
-      - alternative:
-          id: alternative1
-          of:
-          - phrase:
-            - phrase:
-                unordered: true
-                of:
-                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
-                - phrase:
-                    maxWordGap: 1
-                    quantifier: {minimum: 0, maximum: none}
-                    of:
-                    - alternative: [and, +, /]
-                    - alternative:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of: [abnormal]
-                    - alternative:
-                      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/blast_%/blast_%_tools/blast.i2qy'}
-                      - word: {text: promonocyte, morphoVariants: true}
-                      - word: {text: promonocytic, morphoVariants: true}
-                      - word: {text: promyelocyte, morphoVariants: true}
-            - word:
-                text: population
-                quantifier: {minimum: 0, maximum: 1}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy
-  : version: 5.5.1
-    creationDate: '2019-02-13 20:27:46'
-    query:
-      document:
-      - alternative:
-          id: alternative1
           of:
           - bright
           - phrase:
-              displayChildren: false
               of:
-              - word: {text: 'dim(inished)?', matchType: Regexp}
+              - word:
+                  matchType: Regexp
+                  text: dim(inished)?
               - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
                   of:
                   - /
-                  - alternative: [partial, variable]
+                  - alternative:
+                    - partial
+                    - variable
+                  quantifier:
+                    maximum: 1
+                    minimum: 0
+              displayChildren: false
           - focal
           - low
           - moderate
@@ -474,143 +814,71 @@ querySnapshots:
           - phrase:
             - word:
                 text: minor
-                quantifier: {minimum: 0, maximum: 1}
+                quantifier:
+                  maximum: 1
+                  minimum: 0
             - subset
           - variable
           - weak
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigens.i2qy:
-    version: 5.5.1
-    creationDate: '2019-02-11 20:43:51'
-    query:
-      document:
-      - phrase:
-          id: phrase1
-          view: {height: 842, width: 865}
-          of:
-          - phrase:
-              unordered: true
-              view: {height: 724, width: 526}
-              of:
-              - phrase:
-                  quantifier: {minimum: 0, maximum: 1}
-                  of:
-                  - word:
-                      text: slightly
-                      quantifier: {minimum: 0, maximum: 1}
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy'}
-              - alternative:
-                  view: {height: 682, width: 257}
-                  of:
-                  - BE
-                  - word:
-                      text: '[a-z]?CD[0-9]{1,3}[a-z]{0,2}(-|\+|-positive)?'
-                      matchType: Regexp
-                      view: {height: 59, width: 239}
-                  - word: {text: 'HLA-DR(-|\+|-positive)?', matchType: Regexp}
-                  - word:
-                      text: '[a-z]?Kappa[a-z]?(-|\+|-positive)?'
-                      matchType: Regexp
-                      view: {height: 48, width: 222}
-                  - word: {text: Ki-67, matchType: Regexp}
-                  - word:
-                      text: '[a-z]?Lambda[a-z]?(-|\+|-positive)?'
-                      matchType: Regexp
-                      view: {height: 47, width: 231}
-                  - word: {text: '[a-z]?T[Dd]T(-|\+|-positive)?', matchType: Regexp}
-                  - word: {text: '[a-z]?MPO(-|\+|-positive)?', matchType: Regexp}
-                  - word: {text: 'PAX-?5', matchType: Regexp}
-                  - word: {text: TXM4, matchType: Regexp}
-                  - phrase:
-                      displayChildren: false
-                      of:
-                      - glycophorin
-                      - word: {text: '[A-Z]', matchType: Regexp}
-                  - lysozyme
-                  - word: {text: '[a-z]?p53', matchType: Regexp}
-          - phrase:
-              quantifier: {minimum: 0, maximum: 1}
-              of:
-              - (
-              - alternative:
-                - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/immunophenotype/query_lib/antigen_values.i2qy'}
-                - word: {text: '[0-9]+%', matchType: Regexp}
-              - )
-    output:
-      columns:
-      - {id: phrase1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/document_id_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-04 13:11:41'
-    query:
-      document:
-      - region: {id: region1, snid: hc.DOCUMENT_ID}
-    output:
-      columns:
-      - {id: region1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/parenthetical_query.i2qy:
-    version: 5.5.1
-    creationDate: '2018-05-07 15:22:51'
-    query:
-      document:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
-          of:
-          - (
-          - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [(, )]
-          - )
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy
-  : version: 5.5.1
-    creationDate: '2019-01-30 22:16:19'
-    query:
-      document:
-      - alternative:
           id: alternative1
-          of:
-          - region:
-              view: {height: 336, width: 316}
-              snid: hc.titled_section
-              pt: Titled Section
-              where:
-              - region:
-                  view: {height: 82, width: 96}
-                  snid: hc.section_title
-                  pt: Section Title
-                  where: [SUMMARY]
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.section_body
-                  pt: Section Body
-                  where:
-                  - alternative:
-                    - phrase:
-                        displayChildren: false
-                        of: [bone, marrow]
-                    - CSF
-                    - phrase:
-                        displayChildren: false
-                        of:
-                        - word:
-                            text: peripheral
-                            quantifier: {minimum: 0, maximum: 1}
-                        - blood
-    output:
-      columns:
-      - {id: alternative1}
+    creationDate: '2019-02-13 20:27:46'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype_summary_section_wrapper.i2qy
+  : output:
       useOutputEditor: true
+      columns:
+      - id: region2
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - linkItemId: link3
+        itemOptions: {}
+        id: link3.alternative1
     creator: haglers
+    query:
+      document:
+      - region:
+          view:
+            width: 500
+            height: 286
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              where:
+              - alternative:
+                - SUMMARY
+              id: region2
+          - region:
+              view:
+                width: 353
+                height: 248
+              snid: hc.section_body
+              showWholeRegion: true
+              pt: Section Body
+              columnOptions:
+              - Text
+              where:
+              - alternative:
+                - phrase:
+                  - bone
+                  - marrow
+                - phrase:
+                  - word:
+                      text: peripheral
+                      quantifier:
+                        maximum: 1
+                        minimum: 0
+                  - blood
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/immunophenotype/immunophenotype.i2qy
+                  id: link3
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2019-02-21 17:10:18'
+    version: 6.2
+creationDate: '2018-10-26 16:08:10'
+version: 6.2

@@ -1,0 +1,117 @@
+version: 6.2
+creationDate: '2020-06-08 20:23:30'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - link: {path: ../../query_lib/quit_smoking.i2qy}
+      - phrase:
+          displayChildren: false
+          of:
+          - class: {snid: numerics.integers, pt: Integer}
+          - alternative:
+            - phrase:
+              - word:
+                  text: pack
+                  quantifier: {minimum: 0, maximum: 1}
+              - yr
+            - PPY
+          - alternative:
+            - smoking
+            - phrase:
+                displayChildren: false
+                of:
+                - tobacco
+                - word:
+                    text: use
+                    quantifier: {minimum: 0, maximum: 1}
+          - hx
+          - phrase:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - word:
+                  text: (
+                  quantifier: {minimum: 0, maximum: 1}
+              - quit
+              - alternative:
+                - phrase:
+                  - in
+                  - class: {snid: numerics.integers, pt: Integer}
+                - phrase:
+                  - word: {text: \d+\+, matchType: Regexp}
+                  - phrase:
+                      displayChildren: false
+                      of:
+                      - alternative:
+                        - word: {text: month, morphoVariants: true}
+                        - word: {text: yr, morphoVariants: true}
+                      - ago
+              - word:
+                  text: )
+                  quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+        - active
+        - alternative:
+          - smoking
+          - phrase:
+              displayChildren: false
+              of:
+              - tobacco
+              - word:
+                  text: use
+                  quantifier: {minimum: 0, maximum: 1}
+        - phrase:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - word:
+                text: (
+                quantifier: {minimum: 0, maximum: 1}
+            - pack
+            - class: {snid: numerics.integers, pt: Integer}
+            - word: {text: yr, morphoVariants: true}
+            - hx
+            - word:
+                text: )
+                quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          displayChildren: false
+          of:
+          - word: {text: have, morphoVariants: true}
+          - macro:
+              snid: linguamatics_wc.WC_Negative_Word
+              pt: negative word
+              of:
+              - alternative:
+                  macroPt: negative word
+                  macroSnid: linguamatics_wc.WC_Negative_Word
+                  of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+          - alternative:
+            - word: {text: smoke, morphoVariants: true}
+            - phrase:
+                displayChildren: false
+                of:
+                - word: {text: use, morphoVariants: true}
+                - tobacco
+          - link:
+              path: ../../query_lib/tobacco_products_smoking.i2qy
+              quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          displayChildren: false
+          of:
+          - macro:
+              snid: linguamatics_wc.WC_Negative_Word
+              pt: negative word
+              of:
+              - alternative:
+                  macroPt: negative word
+                  macroSnid: linguamatics_wc.WC_Negative_Word
+                  of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+          - word: {text: smoke, morphoVariants: true}
+          - hx
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

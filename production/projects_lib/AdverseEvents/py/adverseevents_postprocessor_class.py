@@ -9,9 +9,10 @@ Created on Tue Apr 21 12:51:07 2020
 import os
 
 #
-from nlp_lib.py.processor_lib.postprocessor_lib.postprocessor_class import Postprocessor
+from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
+    import Postprocessing_manager
 
 #
-class AdverseEvents_postprocessor(Postprocessor):
+class AdverseEvents_postprocessor(Postprocessing_manager):
 
     pass

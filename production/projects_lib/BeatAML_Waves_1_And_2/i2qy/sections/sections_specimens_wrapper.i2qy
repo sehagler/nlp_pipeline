@@ -1,4 +1,4 @@
-version: 5.5.1
+version: 6.2
 creationDate: '2018-10-26 16:03:06'
 query:
   document:
@@ -20,15 +20,12 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen
-                    Id}
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/sections_query.i2qy',
-                  id: link1}
+              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
+              - link: {path: ../../General/tools/sections_query.i2qy, id: link3}
   - alternative:
       view: {height: 211, width: 154}
       of:
-      - link:
-          path: [../../../../i2qy/tools/document_filter.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
+      - link: {path: ../tools_lib/document_filter_query.i2qy}
       - region:
           view: {height: 121, width: 119}
           snid: hc.titled_section
@@ -43,73 +40,9 @@ output:
   columns:
   - {id: shadow region1}
   - {id: region1}
-  - {id: link1.alternative1, linkItemId: link1}
+  - id: link3.alternative1
+    itemOptions: {}
+    linkItemId: link3
   columnLocations: [1, 0, 2]
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/sections_query.i2qy:
-    version: 5.5.1
-    creationDate: '2020-03-04 23:34:51'
-    query:
-      document:
-      - alternative:
-          findMatches: longestOnly
-          id: alternative1
-          of:
-          - phrase:
-              findMatches: longestOnly
-              maxSentenceGap: -1
-              maxWordGap: -1
-              multiSentence: true
-              wordGapRestricted: false
-              of:
-              - word: {text: .*, matchType: Regexp}
-              - word: {text: .*, matchType: Regexp}
-          - word: {text: .*, matchType: Regexp}
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy:
-    version: 5.5.1
-    creationDate: '2019-01-30 22:16:19'
-    query:
-      document:
-      - alternative:
-          id: alternative1
-          of:
-          - region:
-              view: {height: 336, width: 316}
-              snid: hc.titled_section
-              pt: Titled Section
-              where:
-              - region:
-                  view: {height: 82, width: 96}
-                  snid: hc.section_title
-                  pt: Section Title
-                  where: [SUMMARY]
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.section_body
-                  pt: Section Body
-                  where:
-                  - alternative:
-                    - phrase:
-                        displayChildren: false
-                        of: [bone, marrow]
-                    - CSF
-                    - phrase:
-                        displayChildren: false
-                        of:
-                        - word:
-                            text: peripheral
-                            quantifier: {minimum: 0, maximum: 1}
-                        - blood
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

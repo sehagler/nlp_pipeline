@@ -1,0 +1,18 @@
+version: 6.2
+creationDate: '2020-03-11 16:36:51'
+query:
+  document:
+  - alternative:
+    - class:
+        parameter: {caption: Neoplasms, enabled: false, explanation: 'Any specific neoplasms ', name: Neoplasm (2), whenBlank: outputEverything}
+        snid: nlm_plus.D009369
+        pt: Neoplasms
+        where:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of: [component, carcinoma, involvement, lesion, malignancy, tumor]
+    - alternative:
+        view: {layout: list}
+        of: [component, carcinoma, involvement, lesion, malignancy, tumor]
+creator: haglers

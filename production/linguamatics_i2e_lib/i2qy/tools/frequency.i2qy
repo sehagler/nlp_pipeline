@@ -1,0 +1,31 @@
+version: 6.2
+creationDate: '2020-06-15 17:57:36'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - once
+          - twice
+          - phrase:
+            - alternative:
+                quantifier: {minimum: 0, maximum: 1}
+                view: {layout: list}
+                of: [estimated, '~', '>', <]
+            - class: {snid: numerics.integers, pt: Integer}
+      - alternative:
+        - daily
+        - monthly
+        - phrase:
+            displayChildren: false
+            of:
+            - alternative: [/, a, per]
+            - alternative: [day, month]
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers

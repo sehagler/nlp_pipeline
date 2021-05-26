@@ -1,197 +1,292 @@
-version: 5.4
-creationDate: '2018-10-26 16:08:10'
+output:
+  outputSettings:
+    allResults: true
+    allRows: true
+    outputOrdering: alpha
+    allTime: true
+creator: haglers
 multiquery:
   Document Join:
-  - [../general/document_id_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/document_id_query.i2qy']
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
   - Union:
-    - X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/fab_classification/fab_classification_specimens_wrapper.i2qy
-    - Subtraction: ['X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/fab_classification/fab_classification_sections_wrapper.i2qy',
-        'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/fab_classification/fab_classification_specimen_description_wrapper.i2qy']
-output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
-creator: haglers
+    - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/fab_classification/fab_classification_specimens_wrapper.i2qy
+    - Subtraction:
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/fab_classification/fab_classification_sections_wrapper.i2qy
+      - /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/fab_classification/fab_classification_specimen_description_wrapper.i2qy
 querySnapshots:
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy:
-    version: 5.4
-    creationDate: '2019-01-30 22:16:19'
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/fab_classification/fab_classification_sections_wrapper.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - columnOptions:
+        - Empty
+        isValueColumn: true
+        id: value1
+      - id: region1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
+    creator: haglers
+    query:
+      document:
+      - region:
+          view:
+            width: 316
+            height: 121
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              id: region1
+          - region:
+              snid: hc.section_body
+              showWholeRegion: true
+              pt: Section Body
+              columnOptions:
+              - Text
+              where:
+              - link:
+                  path: /api;type=saved_query/__private__/haglers/General/cancer/fab_classification/fab_classification_query.i2qy
+                  id: link1
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 15:56:12'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: And1
+    creator: haglers
+    query:
+      document:
+      - and:
+          distinguishColumns: false
+          showInHitColumn: false
+          expression: os.date('%d-%b-%y %H:%M:%S')
+          ptSource: expression
+          distinguishHits: false
+          id: And1
+          label: DATETIME
+    creationDate: '2021-03-01 21:11:36'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/fab_classification/fab_classification_specimens_wrapper.i2qy
+  : output:
+      useOutputEditor: true
+      columns:
+      - id: shadow region1
+      - id: region1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
+      columnLocations:
+      - 1
+      - 0
+      - 2
+    creator: haglers
+    query:
+      document:
+      - region:
+          snid: hc.titled_section
+          pt: Titled Section
+          where:
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              id: region1
+          - region:
+              snid: hc.section_body
+              pt: Section Body
+              where:
+              - region:
+                  snid: hc.specimen
+                  showWholeRegion: true
+                  pt: Specimen Description
+                  columnOptions:
+                  - Text
+                  where:
+                  - shadowRegion:
+                      snid: hc.specimen_id
+                      pt: Specimen Id
+                      id: shadow region1
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/fab_classification/fab_classification_query.i2qy
+                      id: link1
+      - link:
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
+    creationDate: '2018-10-26 16:03:06'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy:
+    output:
+      useOutputEditor: true
+      columns:
+      - id: alternative1
+    creator: haglers
     query:
       document:
       - alternative:
-          id: alternative1
           of:
           - region:
-              view: {height: 336, width: 316}
+              view:
+                width: 316
+                height: 336
               snid: hc.titled_section
               pt: Titled Section
               where:
               - region:
-                  view: {height: 82, width: 96}
+                  view:
+                    width: 96
+                    height: 82
                   snid: hc.section_title
                   pt: Section Title
-                  where: [SUMMARY]
+                  where:
+                  - SUMMARY
               - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
                   snid: hc.section_body
+                  showWholeRegion: true
                   pt: Section Body
+                  columnOptions:
+                  - Text
                   where:
                   - alternative:
                     - phrase:
+                        of:
+                        - bone
+                        - marrow
                         displayChildren: false
-                        of: [bone, marrow]
                     - CSF
                     - phrase:
-                        displayChildren: false
                         of:
                         - word:
                             text: peripheral
-                            quantifier: {minimum: 0, maximum: 1}
+                            quantifier:
+                              maximum: 1
+                              minimum: 0
                         - blood
+                        displayChildren: false
+          id: alternative1
+    creationDate: '2019-01-30 22:16:19'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/cancer/fab_classification/fab_classification_query.i2qy:
     output:
-      columns:
-      - {id: alternative1}
       useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/tools/document_id_query.i2qy:
-    version: 5.4
-    creationDate: '2018-05-04 13:11:41'
-    query:
-      document:
-      - region: {id: region1, snid: hc.DOCUMENT_ID}
-    output:
       columns:
-      - {id: region1}
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
+      - id: phrase1
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy:
-    version: 5.4
-    creationDate: '2019-01-30 00:13:24'
     query:
       document:
       - phrase:
-          id: phrase1
           of:
           - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [previous, previously]
+              of:
+              - previous
+              - previously
+              quantifier:
+                maximum: 0
+                minimum: 0
           - word:
               text: (
-              quantifier: {minimum: 0, maximum: 1}
+              quantifier:
+                maximum: 1
+                minimum: 0
           - alternative:
-              quantifier: {minimum: 0, maximum: 1}
-              of: [AML, FAB]
+              of:
+              - AML
+              - FAB
+              quantifier:
+                maximum: 1
+                minimum: 0
           - word:
               text: ','
-              quantifier: {minimum: 0, maximum: 1}
-          - word: {text: '((AML|FAB)\-)?M[0-9][a-z]?', matchType: Regexp}
+              quantifier:
+                maximum: 1
+                minimum: 0
+          - word:
+              matchType: Regexp
+              text: ((AML|FAB)\-)?M[0-9][a-z]?
           - word:
               text: )
-              quantifier: {minimum: 0, maximum: 1}
+              quantifier:
+                maximum: 1
+                minimum: 0
           - phrase:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [was, considered]
+              of:
+              - was
+              - considered
+              quantifier:
+                maximum: 0
+                minimum: 0
+          id: phrase1
+    creationDate: '2019-01-30 00:13:24'
+    version: 6.2
+  /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy:
     output:
-      columns:
-      - {id: phrase1}
       useOutputEditor: true
+      columns:
+      - id: region1
+      outputSettings:
+        allResults: true
+        allRows: true
+        allTime: true
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/fab_classification/fab_classification_sections_wrapper.i2qy:
-    version: 5.4
-    creationDate: '2018-10-26 15:56:12'
     query:
       document:
       - region:
-          view: {height: 121, width: 316}
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region: {id: region1, snid: hc.section_title, pt: Section Title}
-          - region:
-              columnOptions: [Text]
-              showWholeRegion: true
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy',
-                  id: link3}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
+          snid: hc.DOCUMENT_ID
+          id: region1
+    creationDate: '2018-05-04 13:11:41'
+    version: 6.2
+  ? /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/fab_classification/fab_classification_specimen_description_wrapper.i2qy
+  : output:
+      useOutputEditor: true
       columns:
-      - id: value1
-        columnOptions: [Empty]
+      - id: region1
+      - columnOptions:
+        - Empty
         isValueColumn: true
-      - {id: region1}
-      - {id: link3.phrase1, linkItemId: link3}
-      columnLocations: [1, 0, 2]
-      outputSettings: {allResults: true, allRows: true, allTime: true}
-      useOutputEditor: true
+        id: value1
+      - linkItemId: link1
+        itemOptions: {}
+        id: link1.phrase1
     creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/fab_classification/fab_classification_specimen_description_wrapper.i2qy:
-    version: 5.4
-    creationDate: '2018-10-26 16:03:06'
     query:
       document:
       - region:
           snid: hc.titled_section
           pt: Titled Section
           where:
-          - region: {id: region1, snid: hc.section_title, pt: Section Title}
+          - region:
+              snid: hc.section_title
+              pt: Section Title
+              id: region1
           - region:
               snid: hc.section_body
               pt: Section Body
               where:
               - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
                   snid: hc.specimen
+                  showWholeRegion: true
                   pt: Specimen Description
+                  columnOptions:
+                  - Text
                   where:
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy',
-                      id: link3}
+                  - link:
+                      path: /api;type=saved_query/__private__/haglers/General/cancer/fab_classification/fab_classification_query.i2qy
+                      id: link1
       - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
-      columns:
-      - {id: region1}
-      - id: value1
-        columnOptions: [Empty]
-        isValueColumn: true
-      - {id: link3.phrase1, linkItemId: link3}
-      useOutputEditor: true
-    creator: haglers
-  X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/cancer/fab_classification/fab_classification_specimens_wrapper.i2qy:
-    version: 5.4
+          path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_3_And_4/tools_lib/document_filter_query.i2qy
     creationDate: '2018-10-26 16:03:06'
-    query:
-      document:
-      - region:
-          snid: hc.titled_section
-          pt: Titled Section
-          where:
-          - region: {id: region1, snid: hc.section_title, pt: Section Title}
-          - region:
-              snid: hc.section_body
-              pt: Section Body
-              where:
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.specimen
-                  pt: Specimen Description
-                  where:
-                  - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen
-                        Id}
-                  - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy',
-                      id: link3}
-      - link:
-          path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
-    output:
-      columns:
-      - {id: shadow region1}
-      - {id: region1}
-      - {id: link3.phrase1, linkItemId: link3}
-      columnLocations: [1, 0, 2]
-      useOutputEditor: true
-    creator: haglers
+    version: 6.2
+creationDate: '2018-10-26 16:08:10'
+version: 6.2

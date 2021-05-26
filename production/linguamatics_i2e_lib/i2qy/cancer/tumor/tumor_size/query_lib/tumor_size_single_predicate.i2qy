@@ -1,0 +1,48 @@
+version: 6.2
+creationDate: '2018-05-08 14:57:34'
+query:
+  document:
+  - phrase:
+      id: phrase2
+      of:
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - phrase:
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+            - link: {path: tumor_size_base_units_required.i2qy}
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+          - alternative:
+              view: {layout: list}
+              of: [+, and, but, to]
+      - phrase:
+        - word:
+            text: x
+            quantifier: {minimum: 0, maximum: 0}
+        - link: {path: tumor_size_base_units_required.i2qy}
+        - word:
+            text: x
+            quantifier: {minimum: 0, maximum: 0}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - alternative:
+              view: {layout: list}
+              of: [+, and, but, to]
+          - phrase:
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+            - link: {path: tumor_size_base_units_required.i2qy}
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+output:
+  columns:
+  - {title: tumor size phrase, id: phrase2}
+  useOutputEditor: true
+creator: haglers

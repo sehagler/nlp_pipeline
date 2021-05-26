@@ -1,0 +1,71 @@
+version: 6.2
+creationDate: '2020-08-18 00:19:59'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - ecog
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - (
+          - word:
+              text: )
+              quantifier: {minimum: 0, maximum: 0}
+          - alternative:
+              id: alternative1
+              of: [karnofsky, lansky, zubrod]
+          - word:
+              text: (
+              quantifier: {minimum: 0, maximum: 0}
+          - )
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - phrase:
+              displayChildren: false
+              of: [at, presentation]
+          - phrase:
+              displayChildren: false
+              of:
+              - word:
+                  text: improved
+                  quantifier: {minimum: 0, maximum: 1}
+              - to
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - ':'
+          - word: {text: '-'}
+          - =
+          - is
+          - of
+      - alternative:
+          id: alternative4
+          of:
+          - link: {path: ../../tools/percentage_query.i2qy}
+          - phrase:
+            - word: {text: '[0-9]+', matchType: Regexp}
+            - phrase:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - alternative:
+                  - ','
+                  - word: {text: '-'}
+                  - /
+                - word: {text: '[0-9]+', matchType: Regexp}
+                - phrase:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of:
+                    - ','
+                    - or
+                    - word: {text: '[0-9]+', matchType: Regexp}
+output:
+  columns:
+  - {id: phrase1}
+  - {id: alternative4}
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

@@ -1,6 +1,0 @@
-version: 6.2
-creationDate: '2018-05-23 10:07:00'
-query:
-  document:
-  - alternative: [CK5/6, ER, HER2, Ki67, PR]
-creator: haglers

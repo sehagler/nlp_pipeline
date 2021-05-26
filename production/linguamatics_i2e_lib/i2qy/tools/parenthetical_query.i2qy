@@ -1,0 +1,14 @@
+version: 6.2
+creationDate: '2018-05-07 15:22:51'
+query:
+  document:
+  - phrase:
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - (
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of: [(, )]
+      - )
+creator: haglers

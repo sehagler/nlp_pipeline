@@ -1,0 +1,12 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - biomarkers/biomarkers_specimens_wrapper.i2qy
+    - Subtraction: [biomarkers/biomarkers_sections_wrapper.i2qy, biomarkers/biomarkers_specimen_description_wrapper.i2qy]
+output:
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
+creator: haglers

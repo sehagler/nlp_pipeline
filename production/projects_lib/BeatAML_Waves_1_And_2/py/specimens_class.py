@@ -10,20 +10,64 @@ import json
 import os
 
 #
-from nlp_lib.py.tool_lib.query_tools_lib.blasts_tools import get_blast_value
-from nlp_lib.py.tool_lib.processing_tools_lib.file_processing_tools import read_json_file
+from tool_lib.py.processing_tools_lib.file_processing_tools import read_json_file
 from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools import prune_surface_antigens
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_jsons_class \
     import Specimens_jsons
+from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 
 #
 class Specimens(Specimens_jsons):
     
     #
-    def __init__(self, directory_manager, nlp_data):
+    def __init__(self, project_data, metadata_dict_dict, data_json):
+            
+        json_structure_manager = project_data['json_structure_manager']
+        self.document_wrapper_key = \
+            json_structure_manager.pull_key('document_wrapper_key')
+        self.documents_wrapper_key = \
+            json_structure_manager.pull_key('documents_wrapper_key')
+        self.metadata_key = \
+            json_structure_manager.pull_key('metadata_key')
+        self.nlp_data_key = \
+            json_structure_manager.pull_key('nlp_data_key')
+        self.nlp_datetime_key = \
+            json_structure_manager.pull_key('nlp_datetime_key')
+        self.nlp_datum_key = \
+            json_structure_manager.pull_key('nlp_datum_key')
+        self.nlp_element_key = \
+            json_structure_manager.pull_key('nlp_text_element_key')
+        self.nlp_metadata_key = \
+            json_structure_manager.pull_key('nlp_metadata_key')
+        self.nlp_performance_key = \
+            json_structure_manager.pull_key('nlp_performance_key')
+        self.nlp_query_key = \
+            json_structure_manager.pull_key('nlp_query_key')
+        self.nlp_section_key = \
+            json_structure_manager.pull_key('nlp_section_key')
+        self.nlp_specimen_key = \
+            json_structure_manager.pull_key('nlp_specimen_key')
+        self.nlp_source_text_key = \
+            json_structure_manager.pull_key('nlp_source_text_key')
+        self.nlp_text_key = \
+            json_structure_manager.pull_key('nlp_text_key')
+        self.nlp_tool_output_key = \
+            json_structure_manager.pull_key('nlp_tool_output_key')
+        self.nlp_value_key = \
+            json_structure_manager.pull_key('nlp_value_key')
+            
+        # to be moved to appropriate location
+        self.multiple_specimens = \
+            json_structure_manager.pull_key('multiple_specimens')
+        self.multiple_values = \
+            json_structure_manager.pull_key('multiple_values')
+        #
+        
+        self.metadata_dict_dict = metadata_dict_dict
+        directory_manager = project_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
-        Specimens_jsons.__init__(self, directory_manager, nlp_data)
+        Specimens_jsons.__init__(self, project_data, data_json)
     
     #                 
     def _evaluate_antibodies_tested(self):
@@ -65,11 +109,50 @@ class Specimens(Specimens_jsons):
                     except:
                         pass
                     
+    #                 
+    def _evaluate_diagnosis(self):
+        data_json_tmp = self.data_json
+        for key0 in data_json_tmp.keys():
+            for key1 in data_json_tmp[key0].keys():
+                for key2 in data_json_tmp[key0][key1].keys():
+                    if 'dx' in data_json_tmp[key0][key1][key2].keys():
+                        dx_values = data_json_tmp[key0][key1][key2]['dx']
+                    else:
+                        dx_values = None
+                    if 'specificDx' in data_json_tmp[key0][key1][key2].keys():
+                        specificdx_values = \
+                            data_json_tmp[key0][key1][key2]['specificDx'][0]
+                    else:
+                        specificdx_values = None
+                    values = []
+                    if dx_values is not None:
+                        values.extend(dx_values[0])
+                    if specificdx_values is not None:
+                        for item in specificdx_values:
+                            values.append(item[0])
+                    if len(values) > 0:
+                        values = [ values ]
+                    if len(values) > 0:
+                        values = self._trim_data_value(values)
+                        values = list(set(values))
+                        if len(values) == 1:
+                            value = values[0]
+                        elif len(values) > 1:
+                            value = self.multiple_values
+                        else:
+                            value = None
+                        if value is not None:
+                            self.data_json[key0][key1][key2]['dx'] = value
+                        else:
+                            del self.data_json[key0][key1][key2]['dx']
+                    else:
+                        pass
+    
     #
     def _evaluate_features(self):
         self._evaluate_antibodies_tested()
         self._evaluate_bone_marrow_blast()
-        self._evaluate_generic('dx')
+        self._evaluate_diagnosis()
         self._evaluate_generic('dx.Date')
         self._evaluate_generic('Extramedullary.dx')
         self._evaluate_generic('FAB/Blast.Morphology')
@@ -80,6 +163,29 @@ class Specimens(Specimens_jsons):
         self._evaluate_generic('Residual.dx')
         self._evaluate_specific_diagnosis()
         self._evaluate_surface_antigens()
+        
+    #                 
+    def _evaluate_generic(self, entry_label):
+        data_json_tmp = self.data_json
+        for key0 in data_json_tmp.keys():
+            for key1 in data_json_tmp[key0].keys():
+                for key2 in data_json_tmp[key0][key1].keys():
+                    try:
+                        values = data_json_tmp[key0][key1][key2][entry_label]
+                        values = self._trim_data_value(values)
+                        values = list(set(values))
+                        if len(values) == 1:
+                            value = values[0]
+                        elif len(values) > 1:
+                            value = self.multiple_values
+                        else:
+                            value = None
+                        if value is not None:
+                            self.data_json[key0][key1][key2][entry_label] = value
+                        else:
+                            del self.data_json[key0][key1][key2][entry_label]
+                    except:
+                        pass
         
     #
     def _evaluate_peripheral_blood_blast(self):
@@ -105,12 +211,14 @@ class Specimens(Specimens_jsons):
             for key1 in data_json_tmp[key0].keys():
                 for key2 in data_json_tmp[key0][key1].keys():
                     try:
-                        diagnoses = data_json_tmp[key0][key1][key2]['specificDx']
-                        diagnoses = self._trim_data_value(diagnoses)
-                        diagnoses = list(set(diagnoses))
-                        if len(diagnoses) == 1:
-                            value = diagnoses[0]
-                        elif len(diagnoses) > 1:
+                        values = data_json_tmp[key0][key1][key2]['specificDx'][0]
+                        #values = self._trim_data_value(values)
+                        #values = list(set(values))
+                        specific_diagnoses = []
+                        specific_diagnoses.append(''.join(values[0]))
+                        if len(specific_diagnoses) == 1:
+                            value = specific_diagnoses[0][0]
+                        elif len(specific_diagnoses) > 1:
                             value = self.multiple_values
                         else:
                             value = None
@@ -163,23 +271,3 @@ class Specimens(Specimens_jsons):
         else:
             process_label = 'hematopathology_' + doc_label
         return process_label
-                    
-    #
-    def _process_data(self, data_in):
-        data_out = {}
-        data_out = self._get_data_value(data_in, data_out, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES TESTED TEXT', 'Antibodies.Tested')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE MARROW BLAST VALUE', '%.Blasts.in.BM')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'DIAGNOSIS VALUE', 'dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'DIAGNOSIS DATE VALUE', 'dx.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'EXTRAMEDULLARY DISEASE TEXT', 'Extramedullary.dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'COMMENT', 'BONE MARROW' ], 'FAB CLASSIFICATION VALUE', 'FAB/Blast.Morphology')
-        data_out = self._get_data_value(data_in, data_out, [ 'FISH ANALYSIS SUMMARY' ], 'FISH ANALYSIS SUMMARY TEXT', 'FISH.Analysis.Summary')
-        data_out = self._get_data_value(data_in, data_out, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE TEXT', 'Karyotype')
-        data_out = self._get_data_value(data_in, data_out, [ 'HISTORY', 'COMMENT', 'SUMMARY' ], 'RELAPSE DATE VALUE', 'Relapse.Date')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'PERIPHERAL BLOOD' ], 'PERIPHERAL BLOOD BLAST VALUE', '%.Blasts.in.PB')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'RESIDUAL DISEASE TEXT', 'Residual.dx')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SPECIFIC DIAGNOSIS TEXT', 'specificDx')
-        data_out = self._get_data_value(data_in, data_out, [ 'SUMMARY', 'COMMENT' ], 'SURFACE ANTIGENS TEXT', 'Surface.Antigens.(Immunohistochemical.Stains)')
-        if not data_out:
-            data_out = None
-        return data_out

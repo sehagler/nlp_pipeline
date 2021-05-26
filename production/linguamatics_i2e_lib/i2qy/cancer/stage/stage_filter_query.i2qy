@@ -1,0 +1,27 @@
+version: 6.2
+creationDate: '2020-06-16 20:29:09'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      showMultipleColumns: true
+      of:
+      - link: {path: stage_query_context_0.i2qy}
+      - link: {path: stage_query_context_1.i2qy}
+      - alternative:
+          includeInQuery: false
+          of:
+          - DCIS
+          - LCIS
+          - SCCIS
+          - phrase:
+              displayChildren: false
+              of: [in, situ]
+          - stage
+output:
+  columns:
+  - id: alternative1.col0
+    itemOptions: {}
+  useOutputEditor: true
+creator: haglers

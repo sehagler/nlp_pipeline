@@ -1,0 +1,121 @@
+version: 6.2
+creationDate: '2018-09-27 21:22:52'
+query:
+  document:
+  - phrase:
+      findMatches: longestOnly
+      id: phrase2
+      of:
+      - alternative:
+          view: {height: 846, width: 678}
+          of:
+          - phrase:
+            - mitoses
+            - =
+            - alternative:
+                quantifier: {minimum: 1, maximum: none}
+                of:
+                - phrase:
+                  - (
+                  - phrase:
+                    - word: {text: '[0-3]', matchType: Regexp}
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier: {minimum: 0, maximum: 1}
+                    - phrase:
+                        quantifier: {minimum: 0, maximum: 1}
+                        of:
+                        - of
+                        - word: {text: '[0-3]', matchType: Regexp}
+                        - word:
+                            text: point
+                            morphoVariants: true
+                            quantifier: {minimum: 0, maximum: 1}
+                  - )
+                - phrase:
+                  - word: {text: '[0-3]', matchType: Regexp}
+                  - word:
+                      text: point
+                      morphoVariants: true
+                      quantifier: {minimum: 0, maximum: 1}
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - of
+                      - word: {text: '[0-3]', matchType: Regexp}
+                      - word:
+                          text: point
+                          morphoVariants: true
+                          quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                  - word: {text: '[0-3]', matchType: Regexp}
+                  - /
+                  - word: {text: '[0-3]', matchType: Regexp}
+                  - word:
+                      text: point
+                      morphoVariants: true
+                      quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                    displayChildren: false
+                    of:
+                    - word: {text: '[0-9]*', matchType: Regexp}
+                    - mitoses
+                    - per
+                    - word: {text: '[0-9]*', matchType: Regexp}
+                    - alternative:
+                        view: {layout: list}
+                        of: [hp, HPF]
+                - macro:
+                    snid: ohsu_test_result.test_result
+                    pt: Test Result
+                    of:
+                    - alternative:
+                        macroPt: Test Result
+                        macroSnid: ohsu_test_result.test_result
+                        of:
+                        - absent
+                        - amplified
+                        - borderline
+                        - equivocal
+                        - high
+                        - low
+                        - marked
+                        - minimal
+                        - moderate
+                        - negative
+                        - non-amplified
+                        - phrase: [not, done]
+                        - positive
+                        - present
+                        - unamplified
+                - =
+          - phrase:
+            - alternative:
+              - phrase:
+                - word:
+                    text: /
+                    quantifier: {minimum: 0, maximum: 0}
+                - word: {text: '[0-3]', matchType: Regexp}
+                - word:
+                    text: point
+                    morphoVariants: true
+                    quantifier: {minimum: 0, maximum: 1}
+              - phrase:
+                - word: {text: '[0-3]', matchType: Regexp}
+                - /
+                - word: {text: '[0-3]', matchType: Regexp}
+                - word:
+                    text: point
+                    morphoVariants: true
+                    quantifier: {minimum: 0, maximum: 1}
+            - for
+            - mitoses
+      - link:
+          path: ../../../../tools/parenthetical_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: phrase2}
+  useOutputEditor: true
+creator: haglers

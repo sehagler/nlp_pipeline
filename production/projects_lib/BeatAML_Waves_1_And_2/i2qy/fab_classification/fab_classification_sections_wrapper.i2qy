@@ -1,9 +1,9 @@
-version: 5.6.1
+version: 6.2
 creationDate: '2018-10-26 15:56:12'
 query:
   document:
   - region:
-      view: {height: 121, width: 347}
+      view: {height: 121, width: 316}
       snid: hc.titled_section
       pt: Titled Section
       where:
@@ -14,94 +14,18 @@ query:
           snid: hc.section_body
           pt: Section Body
           where:
-          - link:
-              path: [../../../../nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy,
-                'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy']
-              id: link3
-  - link:
-      path: [../tools_lib/document_filter_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy']
+          - link: {path: ../../General/cancer/fab_classification/fab_classification_query.i2qy, id: link1}
+  - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
   - {id: region1}
-  - {id: link3.phrase1, linkItemId: link3}
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
   columnLocations: [1, 0, 2]
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
-querySnapshots:
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/fab_classification/fab_classification_query.i2qy
-  : version: 5.6.1
-    creationDate: '2019-01-30 00:13:24'
-    query:
-      document:
-      - phrase:
-          id: phrase1
-          of:
-          - alternative:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [previous, previously]
-          - word:
-              text: (
-              quantifier: {minimum: 0, maximum: 1}
-          - alternative:
-              quantifier: {minimum: 0, maximum: 1}
-              of: [AML, FAB]
-          - word:
-              text: ','
-              quantifier: {minimum: 0, maximum: 1}
-          - word: {text: '((AML|FAB)\-)?M[0-9][a-z]?', matchType: Regexp}
-          - word:
-              text: )
-              quantifier: {minimum: 0, maximum: 1}
-          - phrase:
-              quantifier: {minimum: 0, maximum: 0}
-              of: [was, considered]
-    output:
-      columns:
-      - {id: phrase1}
-      useOutputEditor: true
-    creator: haglers
-  ? X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/projects_lib/BeatAML/i2qy/tools_lib/document_filter_query.i2qy
-  : version: 5.6.1
-    creationDate: '2019-01-30 22:16:19'
-    query:
-      document:
-      - alternative:
-          id: alternative1
-          of:
-          - region:
-              view: {height: 336, width: 316}
-              snid: hc.titled_section
-              pt: Titled Section
-              where:
-              - region:
-                  view: {height: 82, width: 96}
-                  snid: hc.section_title
-                  pt: Section Title
-                  where: [SUMMARY]
-              - region:
-                  columnOptions: [Text]
-                  showWholeRegion: true
-                  snid: hc.section_body
-                  pt: Section Body
-                  where:
-                  - alternative:
-                    - phrase:
-                        displayChildren: false
-                        of: [bone, marrow]
-                    - CSF
-                    - phrase:
-                        displayChildren: false
-                        of:
-                        - word:
-                            text: peripheral
-                            quantifier: {minimum: 0, maximum: 1}
-                        - blood
-    output:
-      columns:
-      - {id: alternative1}
-      useOutputEditor: true
-    creator: haglers

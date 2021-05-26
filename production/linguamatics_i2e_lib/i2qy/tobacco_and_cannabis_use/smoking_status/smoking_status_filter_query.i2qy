@@ -1,0 +1,21 @@
+version: 6.2
+creationDate: '2020-06-02 21:52:12'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      showMultipleColumns: true
+      of:
+      - link: {path: smoking_status_query_context.i2qy}
+      - alternative:
+          includeInQuery: false
+          of: [smoking, tobacco]
+output:
+  columns:
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  useOutputEditor: true
+creator: haglers

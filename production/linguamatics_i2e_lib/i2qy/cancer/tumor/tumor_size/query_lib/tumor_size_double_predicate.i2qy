@@ -1,0 +1,86 @@
+version: 6.2
+creationDate: '2018-05-09 12:47:01'
+query:
+  document:
+  - phrase:
+      id: phrase2
+      view: {height: 283, width: 1117}
+      of:
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - ranging
+          - {class: /prep}
+      - alternative:
+          view: {height: 246, width: 378}
+          of:
+          - phrase:
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+            - link: {path: tumor_size_base_units_required.i2qy}
+            - word:
+                text: x
+                quantifier: {minimum: 0, maximum: 0}
+          - phrase:
+            - phrase:
+                quantifier: {minimum: 0, maximum: 0}
+                of:
+                - class: {snid: numerics.numerics, pt: Numerics}
+                - ':'
+            - class: {snid: numerics.numerics, pt: Numerics}
+      - alternative:
+        - macro:
+            snid: linguamatics_wc.WC_Conjunction
+            pt: conjunction
+            of:
+            - alternative:
+                macroPt: conjunction
+                macroSnid: linguamatics_wc.WC_Conjunction
+                of:
+                - '&'
+                - after
+                - albeit
+                - although
+                - also
+                - and
+                - as
+                - phrase: [as, far, as]
+                - because
+                - before
+                - but
+                - either
+                - if
+                - moreover
+                - neither
+                - nor
+                - once
+                - or
+                - so
+                - than
+                - though
+                - unless
+                - versus
+                - vs
+                - vs.
+                - when
+                - whereas
+                - whereby
+                - whether
+                - while
+                - whilst
+                - yet
+        - {class: /prep}
+      - phrase:
+        - word:
+            text: x
+            quantifier: {minimum: 0, maximum: 0}
+        - link: {path: tumor_size_base_units_required.i2qy}
+        - word:
+            text: x
+            quantifier: {minimum: 0, maximum: 0}
+output:
+  columns:
+  - {id: phrase2}
+  useOutputEditor: true
+creator: haglers

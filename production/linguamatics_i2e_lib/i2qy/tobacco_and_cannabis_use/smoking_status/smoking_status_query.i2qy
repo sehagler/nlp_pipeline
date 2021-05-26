@@ -1,0 +1,15 @@
+version: 6.2
+creationDate: '2020-06-02 21:52:12'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - link: {path: query_lib/explicit_smoking_status.i2qy}
+      - link: {path: query_lib/implicit_smoking_status.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

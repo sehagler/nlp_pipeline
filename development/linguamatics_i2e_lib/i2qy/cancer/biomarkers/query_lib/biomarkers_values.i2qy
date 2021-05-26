@@ -1,0 +1,36 @@
+version: 6.3
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      of:
+      - phrase:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            view: {layout: list}
+            of: [completely, diffusely, focally, strong, strongly, weak, weakly]
+        - alternative: [negative, positive]
+      - equivocal
+      - alternative:
+        - word: {text: '[0-4](\.\d+)?(\+)?(\/\d)?', matchType: Regexp}
+        - word: {text: '(\d-)?\d(\+)?', matchType: Regexp}
+      - phrase:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            view: {layout: list}
+            of: ['>', <]
+        - word: {text: '\d\d?\d?(-\d\d?\d?)?%', matchType: Regexp}
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            view: {layout: list}
+            of: [favorable, strong]
+      - phrase:
+        - class: {snid: numerics.numerics, pt: Numerics}
+        - /
+        - class: {snid: numerics.numerics, pt: Numerics}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

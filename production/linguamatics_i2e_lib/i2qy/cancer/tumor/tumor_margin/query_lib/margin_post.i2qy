@@ -1,0 +1,125 @@
+version: 6.2
+creationDate: '2020-03-10 00:39:46'
+query:
+  document:
+  - phrase:
+    - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_text_phrase_pre_1.i2qy'}
+    - link: {path: margin_description.i2qy}
+    - phrase:
+        quantifier: {minimum: 0, maximum: 0}
+        of:
+        - word:
+            text: )
+            quantifier: {minimum: 0, maximum: 1}
+        - ':'
+    - phrase:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - alternative:
+            quantifier: {minimum: 0, maximum: 0}
+            view: {layout: list}
+            of:
+            - macro:
+                snid: linguamatics_wc.WC_Punctuation
+                pt: punctuation
+                of:
+                - alternative:
+                    macroPt: punctuation
+                    macroSnid: linguamatics_wc.WC_Punctuation
+                    of:
+                    - ','
+                    - ;
+                    - ':'
+                    - .
+                    - ''''
+                    - ''''''
+                    - '"'
+                    - “
+                    - ”
+                    - «
+                    - »
+                    - ‘
+                    - ’
+                    - ‚
+                    - ‛
+                    - „
+                    - ‟
+                    - ‹
+                    - ›
+                    - (
+                    - )
+                    - '['
+                    - ']'
+                    - /
+                    - '!'
+                    - '?'
+                    - '{'
+                    - '}'
+                    - word: {text: '-'}
+                    - '~'
+                    - '...'
+                    - '***'
+                    - _
+                    - \
+            - macro:
+                snid: linguamatics_wc.WC_Conjunction
+                pt: conjunction
+                of:
+                - alternative:
+                    macroPt: conjunction
+                    macroSnid: linguamatics_wc.WC_Conjunction
+                    of:
+                    - '&'
+                    - after
+                    - albeit
+                    - although
+                    - also
+                    - and
+                    - as
+                    - phrase: [as, far, as]
+                    - because
+                    - before
+                    - but
+                    - either
+                    - if
+                    - moreover
+                    - neither
+                    - nor
+                    - once
+                    - or
+                    - so
+                    - than
+                    - though
+                    - unless
+                    - versus
+                    - vs
+                    - vs.
+                    - when
+                    - whereas
+                    - whereby
+                    - whether
+                    - while
+                    - whilst
+                    - yet
+            - phrase:
+              - word:
+                  text: )
+                  quantifier: {minimum: 0, maximum: 1}
+              - ':'
+            - receptor
+        - alternative:
+            quantifier: {minimum: 0, maximum: 1}
+            view: {layout: list}
+            of:
+            - macro:
+                snid: linguamatics_wc.WC_Auxiliary_Verb
+                pt: auxiliary verb
+                of:
+                - alternative:
+                    macroPt: auxiliary verb
+                    macroSnid: linguamatics_wc.WC_Auxiliary_Verb
+                    of: [am, are, aren't, be, been, being, can, can't, cannot, could, couldn't, could've, did, didn't, do, does, doesn't, doing, done, don't, had, hadn't, has, hasn't, have, haven't, having, he'd, he'll, he's, I'd, I'm, I'll, I've, is, isn't, it'd, it'll, it's, may, might, must, mustn't, ought, oughtn't, shall, shan't, she'd, she'll, she's, should, shouldn't, should've, they'd, they'll, they're, they've, was, wasn't, were, we'd, we'll, we're, we've, weren't, will, won't, would, wouldn't, would've, you'd, you'll, you're, you've]
+            - word: {text: transect, morphoVariants: true}
+        - link: {path: margin_text_phrase_post.i2qy}
+output: {useOutputEditor: true}
+creator: haglers

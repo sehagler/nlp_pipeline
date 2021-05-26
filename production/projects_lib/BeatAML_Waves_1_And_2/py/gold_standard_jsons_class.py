@@ -10,11 +10,12 @@ import re
 import xlrd
 
 #
-from nlp_lib.py.tool_lib.query_tools_lib.antigens_tools import is_antibody, is_antibody_value
-from nlp_lib.py.tool_lib.query_tools_lib.blasts_tools import get_blast_value
-from nlp_lib.py.tool_lib.processing_tools_lib.text_processing_tools import substitution
+from tool_lib.py.processing_tools_lib.text_processing_tools import substitution
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_base_class \
     import Specimens_base
+from tool_lib.py.query_tools_lib.antigens_tools \
+    import is_antibody, is_antibody_value
+from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 
 #
 class Gold_standard_jsons(Specimens_base):

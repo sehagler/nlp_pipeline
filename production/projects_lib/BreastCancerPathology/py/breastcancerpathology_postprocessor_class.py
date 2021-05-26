@@ -9,12 +9,15 @@ Created on Tue Nov 13 08:12:07 2018
 import os
 
 #
-from nlp_lib.py.base_class_lib.postprocessor_base_class import Postprocessor_base
-from nlp_lib.py.processor_lib.postprocessor_lib.postprocessor_class import Postprocessor
-from nlp_lib.py.tool_lib.query_tools_lib.tnm_stage_tools import Postprocessor as Postprocessor_tnm_stage
+from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+    import Postprocessor_base
+from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
+    import Postprocessing_manager
+from tool_lib.py.query_tools_lib.tnm_stage_tools \
+    import Postprocessor as Postprocessor_tnm_stage
 
 #
-class BreastCancerPathology_postprocessor(Postprocessor):
+class BreastCancerPathology_postprocessor(Postprocessing_manager):
 
     #
     def _biomarker_business_rules(self):
@@ -56,27 +59,54 @@ class BreastCancerPathology_postprocessor(Postprocessor):
     def _import_reports_body(self, project_data):
         directory_manager = project_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        self.output_manager.append(Postprocessor_tnm_stage(os.path.join(data_dir, 'section.csv')))
+        self.output_manager.append(Postprocessor_tnm_stage(project_data,
+                                                           os.path.join(data_dir,
+                                                                        'section.csv'),
+                                                           'TNM STAGE'))
         data_key_map, data_value_map, data_text_map = self._tumor_type_business_rules()
-        self.output_manager.append(Postprocessor_base(os.path.join(data_dir, 'section.csv'),
-                                   data_key_map, data_value_map, data_text_map))
+        self.output_manager.append(Postprocessor_base(project_data,
+                                                      'SECTION',
+                                                      os.path.join(data_dir,
+                                                                   'section.csv'),
+                                                      data_key_map,
+                                                      data_value_map))
         data_key_map, data_value_map = self._biomarker_business_rules()
-        self.output_manager.append(Postprocessor_base(os.path.join(data_dir, 'biomarker.csv'),
-                                   data_key_map, data_value_map, None))
+        self.output_manager.append(Postprocessor_base(project_data,
+                                                      'BIOMARKER',
+                                                      os.path.join(data_dir,
+                                                                   'biomarker.csv'),
+                                                      data_key_map,
+                                                      data_value_map))
         data_key_map, data_value_map = \
             self._business_rules('Histological Differentiation Text')
-        self.output_manager.append(Postprocessor_base(os.path.join(data_dir, 'hist_diff.csv'),
-                                   data_key_map, data_value_map, None))
+        self.output_manager.append(Postprocessor_base(project_data,
+                                                      'HISTOLOGICAL DIFFERENTIATION',
+                                                      os.path.join(data_dir,
+                                                                   'hist_diff.csv'),
+                                                      data_key_map,
+                                                      data_value_map))
         data_key_map, data_value_map = \
             self._histological_grade_business_rules()
-        self.output_manager.append(Postprocessor_base(os.path.join(data_dir, 'hist_grade.csv'), 
-                                   data_key_map, data_value_map, None))
+        self.output_manager.append(Postprocessor_base(project_data,
+                                                      'HISTOLOGICAL GRADE',
+                                                      os.path.join(data_dir,
+                                                                   'hist_grade.csv'),
+                                                      data_key_map,
+                                                      data_value_map))
         data_key_map, data_value_map = self._margin_business_rules()
-        self.output_manager.append(Postprocessor_base(os.path.join(data_dir, 'tumor_margin.csv'),
-                                   data_key_map, data_value_map, None))
+        self.output_manager.append(Postprocessor_base(project_data,
+                                                      'TUMOR MARGIN',
+                                                      os.path.join(data_dir,
+                                                                   'tumor_margin.csv'),
+                                                      data_key_map,
+                                                      data_value_map))
         data_key_map, data_value_map = self._business_rules('Tumor Size Text')
-        self.output_manager.append(Postprocessor_base(os.path.join(data_dir, 'tumor_size.csv'),
-                                   data_key_map, data_value_map, None))
+        self.output_manager.append(Postprocessor_base(project_data,
+                                                      'TUMOR SIZE',
+                                                      os.path.join(data_dir,
+                                                                   'tumor_size.csv'),
+                                                      data_key_map,
+                                                      data_value_map))
         
     #
     def _margin_business_rules(self):

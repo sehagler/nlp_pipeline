@@ -1,0 +1,60 @@
+version: 6.2
+title: ''
+creationDate: '2015-10-07 16:40:22'
+query:
+  document:
+  - phrase:
+      multiSentence: true
+      of:
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of: [Grade, ':']
+      - phrase:
+          displayChildren: false
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - alternative:
+              quantifier: {minimum: 1, maximum: none}
+              view: {layout: list}
+              of:
+              - link: {path: ../../../tools/parenthetical_query.i2qy}
+              - link: {path: ../histological_differentiation/hist_diff_query.i2qy}
+          - word:
+              text: ':'
+              quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          findMatches: longestOnly
+          id: phrase1
+          multiSentence: true
+          of:
+          - alternative:
+              view: {layout: list}
+              of:
+              - link: {path: query_lib/hist_sbr_base.i2qy}
+              - link: {path: query_lib/hist_mitoses_base.i2qy}
+              - link: {path: query_lib/hist_nuclei_base.i2qy}
+              - link: {path: query_lib/hist_tubules_base.i2qy}
+          - phrase:
+              multiSentence: true
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - (
+              - alternative:
+                  view: {layout: list}
+                  of:
+                  - link: {path: query_lib/hist_sbr_base.i2qy}
+                  - link: {path: query_lib/hist_mitoses_base.i2qy}
+                  - link: {path: query_lib/hist_nuclei_base.i2qy}
+                  - link: {path: query_lib/hist_tubules_base.i2qy}
+              - )
+output:
+  columns:
+  - {id: phrase1}
+  outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
+  useOutputEditor: true
+approxQueryTime: ''
+comments: ''
+creator: Bubz
+description: ''
+summary: ''
+useInSmartQuery: true

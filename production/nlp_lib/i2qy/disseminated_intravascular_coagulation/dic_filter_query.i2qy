@@ -1,9 +1,0 @@
-version: 5.6.1
-creationDate: '2020-06-17 21:40:00'
-query:
-  document:
-  - alternative:
-    - word: {text: clot, morphoVariants: true}
-    - coagulation
-    - DIC
-creator: haglers
