@@ -18,15 +18,8 @@ class Postprocessor(Postprocessor_base):
 
     #
     def __init__(self, project_data, data_file, label):
-        data_key_map = {}
-        data_key_map['EXTRACTED_TEXT'] = 'TNM Stage Text'
-        data_key_map['0'] = 'T Stage'
-        data_key_map['1'] = 'N Stage'
-        data_key_map['2'] = 'M stage'
-        data_value_map = {}
-        data_text_map = get_data_text_map()
         Postprocessor_base.__init__(self, project_data, label, data_file,
-                                    data_key_map, data_value_map)
+                                    None, None)
         #self._find_text_instances()
         #self._remove_commas_from_extracted_text()
         #self._atomize_tnm_stage()
@@ -85,29 +78,6 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i) \( pT \)', {None : ''})
         self._general_command('(?i) \( pN \)', {None : ''})
         self._general_command('(?i) \( p?M \)', {None : ''})
-
-#
-def get_data_text_map():
-    t_stage_tmplt_1, t_stage_tmplt_2 = t_stage_template()
-    n_stage_tmplt = n_stage_template()
-    m_stage_tmplt = m_stage_template()
-    tnm_stage_tmplt_a = '(' + t_stage_tmplt_1 + '(' + \
-                        '( ?\([^\)]+\))?,? ?' + \
-                        n_stage_tmplt + '(,? ?' + \
-                        m_stage_tmplt + ')?)?' + ')'
-    tnm_stage_tmplt_b = '(' + t_stage_tmplt_2 + '(' + \
-                        '( ?\([^\)]+\))?,? ?' + \
-                        n_stage_tmplt + '(,? ?' + \
-                        m_stage_tmplt + ')?)' + ')'
-    tnm_stage_tmplt_c = '(' + n_stage_tmplt + ')'
-    tnm_stage_tmplt_d = '(' + m_stage_tmplt + ')'
-    tnm_stage_tmplt = '(' + tnm_stage_tmplt_a + '|' + \
-                      tnm_stage_tmplt_b + '|' + \
-                      tnm_stage_tmplt_c + '|' + \
-                      tnm_stage_tmplt_d + ')'
-    data_text_map = {}
-    data_text_map[tnm_stage_tmplt] = 'SAME'
-    return data_text_map
 
 #
 def m_stage_template():

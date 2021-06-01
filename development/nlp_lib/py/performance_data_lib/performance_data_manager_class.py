@@ -81,6 +81,15 @@ class Performance_data_manager(object):
         self.directory_manager = project_data['directory_manager']
         
     #
+    def _compare_data_values(self, x, y):
+        if (isinstance(x, list) or isinstance(x, tuple) or x is None) and \
+           (isinstance(y, list) or isinstance(y, tuple) or y is None):
+            result, display_data_flg = self._compare_lists(x, y)
+        else:
+            result, display_data_flg = self._compare_values(x, y)
+        return result, display_data_flg
+        
+    #
     def _compare_lists(self, x, y):
         display_data_flg = False
         try:
@@ -97,6 +106,35 @@ class Performance_data_manager(object):
                         display_data_flg = True
                         result = 'false positive'
                 else:
+                    display_data_flg = True
+                    result = 'false negative'
+            else:
+                if x is not None:
+                    display_data_flg = True
+                    result = 'false positive'
+                else:
+                    result = 'true negative'
+        else:
+            result = 'multiple values'
+        return result, display_data_flg
+    
+    #
+    def _compare_strings(self, x, y):
+        display_data_flg = False
+        try:
+            if self.multiple_values in x:
+                x = self.multiple_values
+        except:
+            pass
+        if x is not self.multiple_values:
+            if y is not None:
+                if x is not None:
+                    if str(x) in str(y):
+                        result = 'true positive'
+                    else:
+                        display_data_flg = True
+                        result = 'false positive + false negative'
+                elif x is None:
                     display_data_flg = True
                     result = 'false negative'
             else:
@@ -139,6 +177,11 @@ class Performance_data_manager(object):
         return result, display_data_flg
     
     #
+    def _difference(self, x, y):
+        z = list(set(x) - set(y))
+        return z
+    
+    #
     def _display_performance_statistics(self, performance_statistics_dict):
         for key in performance_statistics_dict.keys():
             print(key)
@@ -179,13 +222,16 @@ class Performance_data_manager(object):
         else:
             if len(self.data_dict_list) > 0:
                 for data_dict in self.data_dict_list[0]:
-                    data_tmp = data_dict[data_key]
-                    if mode_flg == 'multiple_values':
-                        data_tmp = data_dict[data_key].split(', ')
-                        data_tmp = tuple(data_tmp)
-                    elif mode_flg == 'single_value':
-                        pass
-                    data_value.append(data_tmp)
+                    if data_key in data_dict.keys():
+                        data_tmp = data_dict[data_key]
+                        if mode_flg == 'multiple_values':
+                            data_tmp = data_dict[data_key].split(', ')
+                            data_tmp = tuple(data_tmp)
+                        elif mode_flg == 'single_value':
+                            pass
+                        if isinstance(data_tmp, list):
+                            data_tmp = tuple(data_tmp)
+                        data_value.append(data_tmp)
             else:
                 data_value = self.data_dict_list
         data_value = list(set(data_value))
@@ -200,6 +246,21 @@ class Performance_data_manager(object):
             if len(data_value) == 0:
                 data_value = None
         return data_value
+    
+    #
+    def _intersection(self, x, y):
+        z = list(set(x) & set(y))
+        return z
+    
+    #
+    def _performance_values(self, input_list):
+        FN = len([ x for x in input_list if x == 'false negative' ])
+        FP = len([ x for x in input_list if x == 'false positive' ])
+        FP_plus_FN = \
+            len([ x for x in input_list if x == 'false positive + false negative' ])
+        TN = len([ x for x in input_list if x == 'true negative' ])
+        TP = len([ x for x in input_list if x == 'true positive' ])
+        return FN, FP, FP_plus_FN, TN, TP
     
     #
     def _performance_statistics(self, FN, FP, FP_plus_FN, TN, TP, N):
@@ -230,6 +291,12 @@ class Performance_data_manager(object):
         return performance_statistics
     
     #
+    def _process_validation_item(self, x):
+        if x == '':
+            x = None
+        return x
+    
+    #
     def _read_metadata(self, nlp_data):
         metadata_keys = []
         metadata_dict_dict = {}
@@ -244,6 +311,17 @@ class Performance_data_manager(object):
                 if key not in metadata_keys:
                     metadata_keys.append(key)
         return metadata_keys, metadata_dict_dict
+    
+    #
+    def _read_nlp_value_data(self, validation_csn_list, nlp_data):
+        nlp_values = {}
+        for csn in validation_csn_list:
+            data_out = None
+            for item in nlp_data:
+                if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_DOCUMENT_ID'] == csn:
+                    data_out = self._get_nlp_data(nlp_data[item][self.nlp_data_key])
+            nlp_values[csn] = data_out
+        return nlp_values
     
     #
     def _unique(self, lst):
@@ -276,6 +354,10 @@ class Performance_data_manager(object):
     #
     def display_performance_data(self):
         self.display_performance(self.performance_statistics_dict)
+        
+    #
+    def display_performance(self, performance_statistics_dict):
+        self._display_performance_statistics(performance_statistics_dict)
         
     #
     def get_performance_data(self):

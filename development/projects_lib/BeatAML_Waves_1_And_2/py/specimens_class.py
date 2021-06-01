@@ -211,13 +211,14 @@ class Specimens(Specimens_jsons):
             for key1 in data_json_tmp[key0].keys():
                 for key2 in data_json_tmp[key0][key1].keys():
                     try:
-                        values = data_json_tmp[key0][key1][key2]['specificDx'][0]
+                        values = data_json_tmp[key0][key1][key2]['specificDx']
+                        values = values[0][0]
                         #values = self._trim_data_value(values)
                         #values = list(set(values))
                         specific_diagnoses = []
-                        specific_diagnoses.append(''.join(values[0]))
+                        specific_diagnoses.append(''.join(values[1]))
                         if len(specific_diagnoses) == 1:
-                            value = specific_diagnoses[0][0]
+                            value = specific_diagnoses[0]
                         elif len(specific_diagnoses) > 1:
                             value = self.multiple_values
                         else:

@@ -29,38 +29,23 @@ class CCC19_postprocessor(Postprocessing_manager):
     def _import_reports_body(self, project_data):
         directory_manager = project_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        data_key_map, data_value_map = self._business_rules('CANCER STAGE TEXT')
         self.output_manager.append(Postprocessor_cancer_stage(project_data,
                                                               os.path.join(data_dir,
                                                                            'cancer_stage.csv'),
-                                                              data_key_map,
-                                                              data_value_map,
                                                               'CANCER_STAGE'))
-        data_key_map, data_value_map = self._business_rules('ECOG SCORE TEXT')
         self.output_manager.append(Postprocessor_ecog_score(project_data,
                                                             os.path.join(data_dir,
                                                                          'ecog_status.csv'),
-                                                            data_key_map,
-                                                            data_value_map,
                                                             'ECOG_SCORE'))
-        data_key_map, data_value_map = self._business_rules('SMOKING HISTORY TEXT')
         self.output_manager.append(Postprocessor_smoking_history(project_data,
                                                                  os.path.join(data_dir,
                                                                               'smoking_history.csv'),
-                                                                 data_key_map,
-                                                                 data_value_map,
                                                                  'SMOKING_HISTORY'))
-        data_key_map, data_value_map = self._business_rules('SMOKING PRODUCTS TEXT')
         self.output_manager.append(Postprocessor_smoking_products(project_data,
                                                                   os.path.join(data_dir,
                                                                                'smoking_products.csv'),
-                                                                  data_key_map,
-                                                                  data_value_map,
                                                                   'SMOKING_PRODUCTS'))
-        data_key_map, data_value_map = self._business_rules('SMOKING STATUS TEXT')
         self.output_manager.append(Postprocessor_smoking_status(project_data,
                                                                 os.path.join(data_dir,
                                                                              'smoking_status.csv'),
-                                                                data_key_map,
-                                                                data_value_map,
                                                                 'SMOKING_STATUS'))

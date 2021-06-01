@@ -6,6 +6,8 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
+from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+    import Postprocessor_base
 from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
 
@@ -21,6 +23,69 @@ class Named_entity_recognition(Preprocessor_base):
         self._general_command('(?i)estrogen receptor( \( ER( , clone [A-Z0-9]+)? \))?', {None : 'ER'})
         self._general_command('(?i)HER(-| / )?2(( | / )?neu)?( \( cerb2 \))?', {None : 'HER2'})
         self._general_command('(?i)progesterone receptor( \( PR( , clone [A-Z0-9]+)? \))?', {None : 'PR'})
+
+#
+class Postprocessor(Postprocessor_base):
+    
+    #
+    def __init__(self, project_data, data_file, label):
+        Postprocessor_base.__init__(self, project_data, label, data_file)
+        self._extract_data_values()
+        
+    #
+    def _extract_data_value(self, text_list):
+        if len(text_list) > 0:
+            biomarker_name_text_list = text_list[1]
+            biomarker_value_text_list = text_list[2]
+            context_text_list = text_list[3]
+        else:
+            biomarker_name_text_list = []
+            biomarker_value_text_list = []
+            context_text_list = []
+        contexts = []
+        for i in range(len(context_text_list)):
+            contexts.append(context_text_list[i])
+        unique_contexts = list(set(contexts))
+        er_value_list = []
+        her2_value_list = []
+        pr_value_list = []
+        for context in unique_contexts:
+            er_value_text_list = []
+            her2_value_text_list = []
+            pr_value_text_list = []
+            for i in range(len(context_text_list)):
+                if context_text_list[i] == context:
+                    biomarker_name = biomarker_name_text_list[i]
+                    biomarker_value = biomarker_value_text_list[i]
+                    if biomarker_name == 'ER':
+                        er_value_text_list.append(biomarker_value.lower())
+                    elif biomarker_name == 'HER2':
+                        her2_value_text_list.append(biomarker_value.lower())
+                    elif biomarker_name == 'PR':
+                        pr_value_text_list.append(biomarker_value.lower())
+            er_value_list.append((er_value_text_list, context))
+            her2_value_list.append((her2_value_text_list, context))
+            pr_value_list.append((pr_value_text_list, context))
+        value_dict_list = []
+        for value in er_value_list:
+            if len(value) > 0:
+                value_dict = {}
+                value_dict['ER'] = value[0]
+                value_dict['CONTEXT'] = value[1]
+                value_dict_list.append(value_dict)
+        for value in her2_value_list:
+            if len(value) > 0:
+                value_dict = {}
+                value_dict['HER2'] = value[0]
+                value_dict['CONTEXT'] = value[1]
+                value_dict_list.append(value_dict)
+        for value in pr_value_list:
+            if len(value) > 0:
+                value_dict = {}
+                value_dict['PR'] = value[0]
+                value_dict['CONTEXT'] = value[1]
+                value_dict_list.append(value_dict)
+        return value_dict_list
 
 #
 class Summarization(Preprocessor_base):

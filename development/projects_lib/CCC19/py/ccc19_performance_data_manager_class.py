@@ -27,11 +27,6 @@ class CCC19_performance_data_manager(Performance_data_manager):
         self.project_data = project_data
     
     #
-    def _difference(self, x, y):
-        z = list(set(x) - set(y))
-        return z
-    
-    #
     def _get_nlp_data(self, data_in):
         data_out = {}
         data_out['CANCER_STAGE'] = \
@@ -55,38 +50,6 @@ class CCC19_performance_data_manager(Performance_data_manager):
         if not data_out:
             data_out = None
         return data_out
-        
-    #
-    def _intersection(self, x, y):
-        z = list(set(x) & set(y))
-        return z
-    
-    #
-    def _performance_values(self, input_list):
-        FN = len([ x for x in input_list if x == 'false negative' ])
-        FP = len([ x for x in input_list if x == 'false positive' ])
-        FP_plus_FN = \
-            len([ x for x in input_list if x == 'false positive + false negative' ])
-        TN = len([ x for x in input_list if x == 'true negative' ])
-        TP = len([ x for x in input_list if x == 'true positive' ])
-        return FN, FP, FP_plus_FN, TN, TP
-    
-    #
-    def _process_validation_item(self, x):
-        if x == '':
-            x = None
-        return x
-    
-    #
-    def _read_nlp_value_data(self, validation_csn_list, nlp_data):
-        nlp_values = {}
-        for csn in validation_csn_list:
-            data_out = None
-            for item in nlp_data:
-                if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_NOTE_CSN_ID'] == csn:
-                    data_out = self._get_nlp_data(nlp_data[item][self.nlp_data_key])
-            nlp_values[csn] = data_out
-        return nlp_values
         
     #
     def _read_validation_data(self, project_data):
@@ -121,7 +84,6 @@ class CCC19_performance_data_manager(Performance_data_manager):
     def calculate_performance(self):
         nlp_data = self.nlp_data
         validation_data = self._read_validation_data(self.project_data)
-        patient_list = self.project_data['patient_list']
         csn_list = self.project_data['document_list']
         validation_mrn_list = []
         validation_csn_list =  []
@@ -187,32 +149,32 @@ class CCC19_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[7])
             display_data_flg = True
             performance, flg = \
-                self._compare_values(nlp_cancer_stage_value,
-                                     validation_cancer_stage_value)
+                self._compare_data_values(nlp_cancer_stage_value,
+                                          validation_cancer_stage_value)
             nlp_cancer_stage_performance.append(performance)
             if flg:
                 display_data_flg = True
             performance, flg = \
-                self._compare_values(nlp_ecog_score_value,
-                                     validation_ecog_score_value)
+                self._compare_data_values(nlp_ecog_score_value,
+                                          validation_ecog_score_value)
             nlp_ecog_score_performance.append(performance)
             if flg:
                 display_data_flg = True
             performance, flg = \
-                self._compare_values(nlp_smoking_history_value,
-                                     validation_smoking_history_value)
+                self._compare_data_values(nlp_smoking_history_value,
+                                          validation_smoking_history_value)
             nlp_smoking_history_performance.append(performance)
             if flg:
                 display_data_flg = True
             performance, flg = \
-                self._compare_lists(nlp_smoking_products_value,
-                                    validation_smoking_products_value)
+                self._compare_data_values(nlp_smoking_products_value,
+                                          validation_smoking_products_value)
             nlp_smoking_products_performance.append(performance)
             if flg:
                 display_data_flg = True
             performance, flg = \
-                self._compare_values(nlp_smoking_status_value,
-                                     validation_smoking_status_value)
+                self._compare_data_values(nlp_smoking_status_value,
+                                          validation_smoking_status_value)
             nlp_smoking_status_performance.append(performance)
             if flg:
                 display_data_flg = True
@@ -248,7 +210,3 @@ class CCC19_performance_data_manager(Performance_data_manager):
             print('number of docs:\t\t%d' % num_docs)
             print('number of patients:\t%d' % num_pats)
         return performance_statistics_dict
-            
-    #
-    def display_performance(self, performance_statistics_dict):
-        self._display_performance_statistics(performance_statistics_dict)
