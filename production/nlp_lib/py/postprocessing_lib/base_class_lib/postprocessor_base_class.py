@@ -13,8 +13,7 @@ import re
 class Postprocessor_base(object):
     
     #
-    def __init__(self, project_data, label, data_file, data_key_map,
-                 data_value_map):
+    def __init__(self, project_data, label, data_file):
         json_structure_manager = project_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
@@ -71,18 +70,7 @@ class Postprocessor_base(object):
         self.data_dict_list = []
         if bool(self.data_csv):
             self._build_data_dictionary()
-        if data_key_map is not None:
-            self.data_key_map = data_key_map
-            self.data_keys = ['EXTRACTED_TEXT']
-            self.data_labels = [self.data_key_map['EXTRACTED_TEXT']]
-            for key in self.data_key_map:
-                if key != 'EXTRACTED_TEXT':
-                    self.data_keys.append(key)
-                    self.data_labels.append(self.data_key_map[key])
-        if data_value_map is not None:
-            self.data_value_map = data_value_map
-        if data_key_map is not None:
-            self._build_json_structure()
+        self._build_json_structure()
             
     #
     def _append_data(self, idx, key, value_list):

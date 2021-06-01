@@ -6,6 +6,7 @@ Created on Mon Mar 04 12:29:38 2019
 """
 
 #
+from copy import deepcopy
 from datetime import datetime
 import os
 import re
@@ -70,12 +71,13 @@ class Packaging_manager(object):
     
     #
     def _write_performance_data(self, performance_data_filename,
-                                test_json_filename, include_datetime):
+                                production_json_filename, include_datetime):
         project_name = self.static_data['project_name']
         performance_statistics_dict = read_json_file(performance_data_filename)
-        if test_json_filename is not None:
-            test_json = read_json_file(test_json_filename)
-            nlp_performance_metadata = test_json[self.documents_wrapper_key][0][self.document_wrapper_key][self.nlp_metadata_key]
+        if production_json_filename is not None:
+            production_json = read_json_file(production_json_filename)
+            nlp_performance_metadata = \
+                production_json[self.documents_wrapper_key][0][self.document_wrapper_key][self.nlp_metadata_key]
             nlp_performance_metadata['DOCUMENT_PREPROCESSING_END_DATETIMES'] = []
             nlp_performance_metadata['DOCUMENT_PREPROCESSING_END_DATETIMES'].append(nlp_performance_metadata['DOCUMENT_PREPROCESSING_END_DATETIME'])
             del nlp_performance_metadata['DOCUMENT_PREPROCESSING_END_DATETIME']
@@ -96,12 +98,13 @@ class Packaging_manager(object):
             nlp_performance_metadata['NOTE_TYPES'].append(nlp_performance_metadata['NOTE_TYPE'])
             del nlp_performance_metadata['NOTE_TYPE']
             del nlp_performance_metadata['PREPROCESSING_PROCESSOR_IDX']
-            for i in range(len(test_json[self.documents_wrapper_key])-1):
-                nlp_performance_metadata_tmp = test_json[self.documents_wrapper_key][i+1][self.document_wrapper_key][self.nlp_metadata_key]
+            for i in range(len(production_json[self.documents_wrapper_key])-1):
+                nlp_performance_metadata_tmp = production_json[self.documents_wrapper_key][i+1][self.document_wrapper_key][self.nlp_metadata_key]
                 nlp_performance_metadata['DOCUMENT_PREPROCESSING_END_DATETIMES'].append(nlp_performance_metadata_tmp['DOCUMENT_PREPROCESSING_END_DATETIME'])
                 nlp_performance_metadata['DOCUMENT_PREPROCESSING_START_DATETIMES'].append(nlp_performance_metadata_tmp['DOCUMENT_PREPROCESSING_START_DATETIME'])
                 nlp_performance_metadata['FILENAMES'].append(nlp_performance_metadata_tmp['FILENAME'])
-                nlp_performance_metadata['NOTE_TYPES'].append(nlp_performance_metadata_tmp['NOTE_TYPE'])
+                if 'NOTE_TYPE' in nlp_performance_metadata_tmp.keys():
+                    nlp_performance_metadata['NOTE_TYPES'].append(nlp_performance_metadata_tmp['NOTE_TYPE'])
             datetime_list = [ datetime.strptime(date, '%d-%b-%y %H:%M:%S.%f') for date in nlp_performance_metadata['DOCUMENT_PREPROCESSING_END_DATETIMES'] ]
             end_datetime = max(datetime_list)
             nlp_performance_metadata['DOCUMENT_SET_PREPROCESSING_END_DATETIME'] = \
@@ -133,7 +136,7 @@ class Packaging_manager(object):
                 if key in query_list:
                     tmp_dict = performance_statistics_dict[key]
                     tmp_dict['QUERY'] = key
-            if test_json_filename is not None:
+            if production_json_filename is not None:
                 documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_metadata_key] = \
                     nlp_performance_metadata
             documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
@@ -161,16 +164,15 @@ class Packaging_manager(object):
     #
     def create_postperformance_production_data_json(self):
         project_name = self.static_data['project_name']
+        performance_data_filename = self.save_dir
         performance_data_filename = \
-            os.path.join(self.save_dir, project_name + '.performance.json')
+            re.sub('/production$', '/test', performance_data_filename)
         performance_data_filename = \
-            re.sub('/production/', '/test/', performance_data_filename)
-        test_json_filename = \
+            os.path.join(performance_data_filename, project_name + '.performance.json')
+        production_json_filename = \
             os.path.join(self.save_dir, project_name + '.json')
-        test_json_filename = \
-            re.sub('/production/', '/test/', test_json_filename)
         self._write_performance_data(performance_data_filename, 
-                                     test_json_filename, True)
+                                     production_json_filename, True)
         
     #
     def create_postperformance_test_data_json(self):

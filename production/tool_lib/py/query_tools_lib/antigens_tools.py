@@ -18,10 +18,8 @@ from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_clas
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, project_data, data_file, data_key_map, data_value_map,
-                 label):
-        Postprocessor_base.__init__(self, project_data, label, data_file, None, 
-                                    None)
+    def __init__(self, project_data, data_file, label):
+        Postprocessor_base.__init__(self, project_data, label, data_file)
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}
         self._create_data_structure('ANTIBODIES TESTED \d')

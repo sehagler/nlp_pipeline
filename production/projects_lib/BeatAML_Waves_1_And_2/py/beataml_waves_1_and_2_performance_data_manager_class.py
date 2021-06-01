@@ -337,20 +337,26 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         return score
     
     #
-    def _compare_values_specific_diagnosis(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
+    def _compare_values_specific_diagnosis(self, validation_record, 
+                                           gold_standard_record, item, 
+                                           item_score, patientId, labId):
         multiple_values = self.multiple_values
         multiple_values = re.sub(' ', '', multiple_values)
         multiple_values = multiple_values.lower()
-        if data_item in validation_record.keys():
-            validation_value = validation_record[data_item]
+        if item in validation_record.keys():
+            #print(validation_record)
+            validation_value = validation_record[item]
+            #print(validation_value)
             validation_value = re.sub('/', 'and', validation_value)
             validation_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', validation_value)
             validation_value = re.sub(' ', '', validation_value)
             validation_value = validation_value.lower()
+            #print(validation_value)
+            #print('')
         else:
             validation_value = None
-        if data_item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[data_item]
+        if item in gold_standard_record.keys():
+            gold_standard_value = gold_standard_record[item]
             gold_standard_value = re.sub('(?i)acute myeloid leukemia', 'AML', gold_standard_value)
             gold_standard_value = re.sub('(?i)acute myelomonocytic leukemia', 'AMML', gold_standard_value)
             gold_standard_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', gold_standard_value)
@@ -362,34 +368,14 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 gold_standard_value = gold_standard_value[:-1]
         else:
             gold_standard_value = None
-        if data_item not in score.keys():
-            score[data_item] = [ 0, 0, 0, 0, 0, 0 ]
-        cond00 = validation_value is not None
-        cond01 = validation_value is None
-        cond10 = gold_standard_value is not None
-        cond11 = gold_standard_value is None
-        if cond00 and cond10:
-            if validation_value != multiple_values:
-                if validation_value in gold_standard_value:
-                    score[data_item][0] += 1
-                else:
-                    score[data_item][3] += 1
-                    self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-            else:
-                score[data_item][2] += 1
-                self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond00 and cond11:
-            score[data_item][4] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond10:
-            score[data_item][5] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond11:
-            score[data_item][1] += 1
-        return score
+        performance, flg = \
+            self._compare_strings(validation_value, gold_standard_value)
+        item_score = self._performance_values(item, item_score, performance)
+        return item_score
     
     #
-    def _compare_values_texts(self, validation_record, gold_standard_record, item, item_score, patientId, labId):
+    def _compare_values_texts(self, validation_record, gold_standard_record, 
+                              item, item_score, patientId, labId):
         multiple_values = self.multiple_values
         multiple_values = re.sub(' ', '', multiple_values)
         if item in validation_record.keys():
@@ -405,21 +391,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         else:
             gold_standard_value = None
         performance, flg = \
-                self._compare_values(validation_value, gold_standard_value)
-        if item not in item_score.keys():
-            item_score[item] = [ 0, 0, 0, 0, 0, 0 ]
-        if performance == 'false negative':
-            item_score[item][5] += 1
-        elif performance == 'false positive':
-            item_score[item][4] += 1
-        elif performance == 'false positive + false negative':
-            item_score[item][3] += 1
-        elif performance == 'true negative':
-            item_score[item][1] += 1
-        elif performance == 'true positive':
-            item_score[item][0] += 1
-        elif performance == 'multiple values':
-            item_score[item][2] += 1
+            self._compare_values(validation_value, gold_standard_value)
+        item_score = self._performance_values(item, item_score, performance)
         return item_score
     
     #
@@ -462,6 +435,24 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if not data_out:
             data_out = None
         return data_out
+    
+    #
+    def _performance_values(self, item, item_score, performance):
+        if item not in item_score.keys():
+            item_score[item] = [ 0, 0, 0, 0, 0, 0 ]
+        if performance == 'false negative':
+            item_score[item][5] += 1
+        elif performance == 'false positive':
+            item_score[item][4] += 1
+        elif performance == 'false positive + false negative':
+            item_score[item][3] += 1
+        elif performance == 'true negative':
+            item_score[item][1] += 1
+        elif performance == 'true positive':
+            item_score[item][0] += 1
+        elif performance == 'multiple values':
+            item_score[item][2] += 1
+        return item_score
     
     #
     def _read_nlp_value_data(self, nlp_data):
@@ -612,21 +603,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                         except:
                             gold_standard_value = None
                         performance, flg = \
-                            self._compare_values(validation_value, gold_standard_value)
-                        if item not in item_score.keys():
-                            item_score[item] = [ 0, 0, 0, 0, 0, 0 ]
-                        if performance == 'false negative':
-                            item_score[item][5] += 1
-                        elif performance == 'false positive':
-                            item_score[item][4] += 1
-                        elif performance == 'false positive + false negative':
-                            item_score[item][3] += 1
-                        elif performance == 'true negative':
-                            item_score[item][1] += 1
-                        elif performance == 'true positive':
-                            item_score[item][0] += 1
-                        elif performance == 'multiple values':
-                            item_score[item][2] += 1
+                            self._compare_data_values(validation_value,
+                                                      gold_standard_value)
+                        item_score = \
+                            self._performance_values(item, item_score, performance)
         performance_statistics_dict = {}
         for key in item_score.keys():
             performance_key = {}

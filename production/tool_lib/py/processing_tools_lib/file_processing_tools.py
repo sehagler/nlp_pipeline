@@ -196,7 +196,10 @@ def read_nlp_data_from_package_json_file(static_data):
     
     nlp_data_tmp = read_package_json_file(static_data)
     patient_identifiers = static_data['patient_identifiers']
-    patient_list = static_data['patient_list']
+    if 'patient_list' in static_data.keys():
+        patient_list = static_data['patient_list']
+    else:
+        patient_list = None
     nlp_data_tmp = nlp_data_tmp[documents_wrapper_key]
     nlp_data = {}
     for item in nlp_data_tmp:
@@ -208,7 +211,7 @@ def read_nlp_data_from_package_json_file(static_data):
                 pass
         document_idx = \
             item[document_wrapper_key][nlp_metadata_key]['NLP_DOCUMENT_IDX']
-        if patient in patient_list:
+        if patient_list is None or patient in patient_list:
             nlp_data[document_idx] = {}
             for key in item[document_wrapper_key].keys():
                 if key not in [nlp_data_key]:
