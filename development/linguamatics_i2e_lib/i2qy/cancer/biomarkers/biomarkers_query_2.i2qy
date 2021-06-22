@@ -1,0 +1,25 @@
+version: 6.3
+creationDate: '2021-06-03 21:47:16'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - link: {path: biomarkers_polariities.i2qy, id: link3}
+      - for
+      - link: {path: biomarkers_names_list.i2qy, id: link1}
+output:
+  columns:
+  - {id: phrase1}
+  - id: link1.link3.alternative1
+    itemOptions: {}
+    linkItemId: link3.link1
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link3.alternative1
+    itemOptions: {}
+    linkItemId: link3
+  columnLocations: [0, 1, 3, 2]
+  useOutputEditor: true
+creator: haglers

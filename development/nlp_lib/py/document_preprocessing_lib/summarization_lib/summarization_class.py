@@ -1,20 +1,41 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan 23 10:38:15 2020
+Created on Thu Jun 17 12:29:58 2021
 
 @author: haglers
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
-import tool_lib.py.query_tools_lib.ecog_tools as ecog_tools
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import article, be, note_label, s, specimen_label
-import tool_lib.py.query_tools_lib.serial_number_tools as serial_number_tools
-import tool_lib.py.query_tools_lib.tnm_stage_tools as tnm_stage_tools
+from tool_lib.py.query_tools_lib.biomarker_tools \
+    import Summarization as Summarization_biomarkers
+from tool_lib.py.query_tools_lib.ecog_tools \
+    import Summarization as Summarization_ecog
+from tool_lib.py.query_tools_lib.histological_grade_tools \
+    import Summarization as Summarization_histological_grade
+from tool_lib.py.query_tools_lib.serial_number_tools \
+    import Summarization as Summarization_serial_number
+from tool_lib.py.query_tools_lib.tnm_stage_tools \
+    import Summarization as Summarization_tnm_stage
 
 #
 class Summarization(Preprocessor_base):
+    
+    #
+    def __init__(self, static_data):
+        Preprocessor_base.__init__(self, static_data)
+        self.summarization_biomarkers = \
+            Summarization_biomarkers(self.static_data)
+        self.summarization_ecog = Summarization_ecog(self.static_data)
+        self.summarization_histological_grade = \
+            Summarization_histological_grade(self.static_data)
+        self.summarization_serial_number = \
+            Summarization_serial_number(self.static_data)
+        self.summarization_tnm_stage = \
+            Summarization_tnm_stage(self.static_data)
     
     #
     def _process_names(self):
@@ -84,20 +105,31 @@ class Summarization(Preprocessor_base):
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see (also )?' + \
                     'specimen' + s() + '( )?' + specimen_label() + '( to ' + specimen_label() + ')?'
         self._substitution_endings_list(match_str)
-        
+    
     #
-    def do_summarization(self):
-        summarization_ecog = ecog_tools.Summarization(self.project_data)
-        summarization_ecog.push_text(self.text)
-        summarization_ecog.process_ecog()
-        self.text = summarization_ecog.pull_text()
-        summarization_serial_number = serial_number_tools.Summarization(self.project_data)
-        summarization_serial_number.push_text(self.text)
-        summarization_serial_number.remove_extraneous_text()
-        self.text = summarization_serial_number.pull_text()
-        summarization_tnm_stage = tnm_stage_tools.Summarization(self.project_data)
-        summarization_tnm_stage.push_text(self.text)
-        summarization_tnm_stage.remove_tnm_staging()
-        self.text = summarization_tnm_stage.pull_text()
+    def process_document(self, text):
+        self.text = text
+        self._normalize_whitespace()
+        self.summarization_biomarkers.push_text(self.text)
+        self.summarization_biomarkers.process_estrogen_receptor()
+        self.summarization_biomarkers.process_her2()
+        self.summarization_biomarkers.process_progesterone_receptor()
+        self.text = self.summarization_biomarkers.pull_text()
+        self.summarization_ecog.push_text(self.text)
+        self.summarization_ecog.process_ecog()
+        self.text = self.summarization_ecog.pull_text()
+        self.summarization_histological_grade.push_text(self.text)
+        self.summarization_histological_grade.process_mitotic_rate()
+        self.summarization_histological_grade.process_nuclear_pleomorphism()
+        self.summarization_histological_grade.process_tubule_formation()
+        self.text = self.summarization_histological_grade.pull_text()
+        self.summarization_serial_number.push_text(self.text)
+        self.summarization_serial_number.remove_extraneous_text()
+        self.text = self.summarization_serial_number.pull_text()
+        self.summarization_tnm_stage.push_text(self.text)
+        self.summarization_tnm_stage.remove_tnm_staging()
+        self.text = self.summarization_tnm_stage.pull_text()
         self._process_names()
         self._remove_extraneous_text()
+        self._normalize_whitespace()
+        return self.text

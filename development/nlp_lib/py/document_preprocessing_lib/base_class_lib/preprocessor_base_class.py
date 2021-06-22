@@ -11,18 +11,27 @@ import re
 #
 from nlp_lib.py.base_class_lib.general_base_class import General_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
-    import make_ascii, make_xml_compatible, substitution
+    import substitution
 
 #
 class Preprocessor_base(General_base):
     
     #
-    def __init__(self, project_data):
-        General_base.__init__(self, project_data)
+    def __init__(self, static_data):
+        General_base.__init__(self, static_data)
         self.command_list = []
         self.section_header_post_tag = '>>>'
         self.section_header_pre_tag = '<<<'
         self.text = ''
+        self.body_header = 'SUMMARY'
+        
+    #
+    def _add_body_header(self):
+        self.text = self.body_header + '\n' + self.text
+        self.text = re.sub('^' + self.body_header + '\n' + self.body_header,
+                           self.body_header + '\n', self.text)
+        self.text = re.sub('^' + self.body_header + '[\n\s]*',
+                           self.body_header + '\n\n', self.text)
         
     #
     def _append_keywords_text(self, keyword, index_flg=1):
@@ -77,14 +86,16 @@ class Preprocessor_base(General_base):
             if match is not None:
                 self.text = self.text[:match.start()] + whitespace + \
                             self.text[match.start()+1:]
-                            
+    
+    '''
     #
     def _make_text_ascii(self):
         self.text = make_ascii(self.text)
-                            
+
     #
     def _make_text_xml_compatible(self):
         self.text = make_xml_compatible(self.text)
+    '''
         
     #
     def _normalize_regular_initialism(self, text, initialism):

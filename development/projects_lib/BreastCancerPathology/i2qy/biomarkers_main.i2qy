@@ -8,5 +8,29 @@ multiquery:
     - biomarkers/biomarkers_specimens_wrapper.i2qy
     - Subtraction: [biomarkers/biomarkers_sections_wrapper.i2qy, biomarkers/biomarkers_specimen_description_wrapper.i2qy]
 output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link1.alternative1.col0
+    itemOptions: {}
+    linkItemId: link1
+  - id: link1.alternative1.col1
+    itemOptions: {}
+    linkItemId: link1
+  - id: link1.alternative1.col2
+    itemOptions: {}
+    linkItemId: link1
+  - id: link1.alternative1.col3
+    itemOptions: {}
+    linkItemId: link1
+  - id: link1.alternative1.col4
+    itemOptions: {}
+    linkItemId: link1
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
 creator: haglers

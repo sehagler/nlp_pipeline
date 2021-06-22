@@ -400,30 +400,57 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         data_out = {}
         data_out['Antibodies.Tested'] = \
             self._get_data_value(data_in, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES_TESTED_' + self.nlp_value_key, 'ANTIBODIES_TESTED')
+        if data_out['Antibodies.Tested'] is not None:
+            data_out['Antibodies.Tested'] = data_out['Antibodies.Tested'][0]
         data_out['dx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS_' + self.nlp_value_key, 'DIAGNOSIS')
+        if data_out['dx'] is not None:
+            data_out['dx'] = data_out['dx'][0]
         data_out['dx.Date'] = \
             self._get_data_value(data_in, [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE_' + self.nlp_value_key, 'DATE')
+        if data_out['dx.Date'] is not None:
+            data_out['dx.Date'] = data_out['dx.Date'][0]
         data_out['Extramedullary.dx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE_' + self.nlp_value_key, 'EXTRAMEDULLARY_DISEASE')
+        if data_out['Extramedullary.dx'] is not None:
+            data_out['Extramedullary.dx'] = data_out['Extramedullary.dx'][0]
         data_out['FAB/Blast.Morphology'] = \
             self._get_data_value(data_in, [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION_' + self.nlp_value_key, 'FAB_CLASSIFICATION')
+        if data_out['FAB/Blast.Morphology'] is not None:
+            data_out['FAB/Blast.Morphology'] = data_out['FAB/Blast.Morphology'][0]
         data_out['FISH.Analysis.Summary'] = \
             self._get_data_value(data_in, [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY_' + self.nlp_value_key, 'FISH_ANALYSIS_SUMMARY')
+        if data_out['FISH.Analysis.Summary'] is not None:
+            data_out['FISH.Analysis.Summary'] = data_out['FISH.Analysis.Summary'][0]
         data_out['Karyotype'] = \
             self._get_data_value(data_in, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE_' + self.nlp_value_key, 'KARYOTYPE' )
+        if data_out['Karyotype'] is not None:
+            data_out['Karyotype'] = data_out['Karyotype'][0]
         data_out['%.Blasts.in.BM'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST_' + self.nlp_value_key, 'BLAST_PERCENTAGE')
+        if data_out['%.Blasts.in.BM'] is not None:
+            data_out['%.Blasts.in.BM'] = data_out['%.Blasts.in.BM'][0]
         data_out['%.Blasts.in.PB'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST_' + self.nlp_value_key, 'BLAST_PERCENTAGE')
+        if data_out['%.Blasts.in.PB'] is not None:
+            data_out['%.Blasts.in.PB'] = data_out['%.Blasts.in.PB'][0]
         data_out['Relapse.Date'] = \
             self._get_data_value(data_in, [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE_' + self.nlp_value_key, 'DATE')
+        if data_out['Relapse.Date'] is not None:
+            data_out['Relapse.Date'] = data_out['Relapse.Date'][0]
         data_out['Residual.dx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE_' + self.nlp_value_key, 'DIAGNOSIS')
+        if data_out['Residual.dx'] is not None:
+            data_out['Residual.dx'] = data_out['Residual.dx'][0]
         data_out['specificDx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS_' + self.nlp_value_key, 'DIAGNOSIS')
+        if data_out['specificDx'] is not None:
+            data_out['specificDx'] = data_out['specificDx'][0]
         data_out['Surface.Antigens.(Immunohistochemical.Stains)'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SURFACE_ANTIGENS_' + self.nlp_value_key, 'IMMUNOPHENOTYPE')
+        if data_out['Surface.Antigens.(Immunohistochemical.Stains)'] is not None:
+            data_out['Surface.Antigens.(Immunohistochemical.Stains)'] = \
+                data_out['Surface.Antigens.(Immunohistochemical.Stains)'][0]
         del_keys = []
         for key in data_out:
             if data_out[key] is not None:
@@ -505,8 +532,8 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     #
     def calculate_performance(self):
         nlp_data = self.nlp_data
-        validation_data = self._read_validation_data(self.project_data, nlp_data)
-        validation_data = validation_data
+        validation_data = \
+            self._read_validation_data(self.project_data, nlp_data)
         full_specimen_ctr = 0
         gs_record_ctr = 0
         patient_ids_list = []

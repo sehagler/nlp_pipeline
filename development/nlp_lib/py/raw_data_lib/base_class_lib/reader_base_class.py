@@ -32,30 +32,22 @@ class Reader_base(object):
             datetime_str = ''
         return datetime_str
     
-    '''
     #
-    def _trim_data_by_patient_identifier(self, data):
-        if 'patient_list' in self.project_data:
-            patient_list = self.project_data['patient_list']
-        else:
-            patient_list = None
-        patient_identifier = None
+    def _trim_data_by_patient_list(self, data):
+        patient_list = self.project_data['patient_list']
+        delete_idxs = []
         for key in self.project_data['patient_identifiers']:
-            try:
-                patient_identifier = list(set(data[key]))
-            except:
-                pass
-        if len(patient_identifier) < 2:
-            if patient_identifier_list is not None:
-                if patient_identifier[0] in patient_identifier_list:
-                    do_analysis_flg = True
-                else:
-                    do_analysis_flg = False
-            else:
-                do_analysis_flg = True
-        #print(patient_identifier)
+            if key in data.keys():
+                patient_identifiers = data[key]
+                for i in range(len(patient_identifiers)):
+                    if patient_identifiers[i] not in patient_list:
+                        delete_idxs.append(i)
+        delete_idxs.sort(reverse=True)
+        for i in range(len(delete_idxs)):
+            idx = delete_idxs[i]
+            for key in data.keys():
+                del data[key][idx]
         return data
-    '''
     
     #
     def _trim_data_by_csn(self, data):
@@ -110,5 +102,6 @@ class Reader_base(object):
         data = self._read_data_file(raw_data_files_dict, raw_data_file)
         if self.project_data['flags']['trim_data_by_csn']:
             data = self._trim_data_by_csn(data)
-        #data = self._trim_data_by_patient_identifier(data)
+        if 'patient_list' in self.project_data:
+            data = self._trim_data_by_patient_list(data)
         return data

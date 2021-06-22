@@ -6,6 +6,9 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
+import re
+
+#
 from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
 from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
@@ -23,6 +26,7 @@ class Named_entity_recognition(Preprocessor_base):
         self._general_command('(?i)estrogen receptor( \( ER( , clone [A-Z0-9]+)? \))?', {None : 'ER'})
         self._general_command('(?i)HER(-| / )?2(( | / )?neu)?( \( cerb2 \))?', {None : 'HER2'})
         self._general_command('(?i)progesterone receptor( \( PR( , clone [A-Z0-9]+)? \))?', {None : 'PR'})
+        self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
 
 #
 class Postprocessor(Postprocessor_base):
@@ -36,11 +40,13 @@ class Postprocessor(Postprocessor_base):
     def _extract_data_value(self, text_list):
         if len(text_list) > 0:
             biomarker_name_text_list = text_list[1]
-            biomarker_value_text_list = text_list[2]
-            context_text_list = text_list[3]
+            biomarker_score_text_list = text_list[3]
+            biomarker_status_text_list = text_list[2]
+            context_text_list = text_list[4]
         else:
             biomarker_name_text_list = []
-            biomarker_value_text_list = []
+            biomarker_score_text_list = []
+            biomarker_status_text_list = []
             context_text_list = []
         contexts = []
         for i in range(len(context_text_list)):
@@ -50,42 +56,85 @@ class Postprocessor(Postprocessor_base):
         her2_value_list = []
         pr_value_list = []
         for context in unique_contexts:
-            er_value_text_list = []
-            her2_value_text_list = []
-            pr_value_text_list = []
+            er_score_text_list = []
+            er_status_text_list = []
+            her2_score_text_list = []
+            her2_status_text_list = []
+            pr_score_text_list = []
+            pr_status_text_list = []
             for i in range(len(context_text_list)):
                 if context_text_list[i] == context:
                     biomarker_name = biomarker_name_text_list[i]
-                    biomarker_value = biomarker_value_text_list[i]
+                    biomarker_score = \
+                        self._process_score(biomarker_score_text_list[i])
+                    biomarker_status = \
+                        self._process_status(biomarker_status_text_list[i])
                     if biomarker_name == 'ER':
-                        er_value_text_list.append(biomarker_value.lower())
+                        if len(biomarker_score.lower()) > 0:
+                            er_score_text_list.append(biomarker_score.lower())
+                        if len(biomarker_status.lower()) > 0:
+                            er_status_text_list.append(biomarker_status.lower())
                     elif biomarker_name == 'HER2':
-                        her2_value_text_list.append(biomarker_value.lower())
+                        if len(biomarker_score.lower()) > 0:
+                            her2_score_text_list.append(biomarker_score.lower())
+                        if len(biomarker_status.lower()) > 0:
+                            her2_status_text_list.append(biomarker_status.lower())
                     elif biomarker_name == 'PR':
-                        pr_value_text_list.append(biomarker_value.lower())
-            er_value_list.append((er_value_text_list, context))
-            her2_value_list.append((her2_value_text_list, context))
-            pr_value_list.append((pr_value_text_list, context))
+                        if len(biomarker_score.lower()) > 0:
+                            pr_score_text_list.append(biomarker_score.lower())
+                        if len(biomarker_status.lower()) > 0:
+                            pr_status_text_list.append(biomarker_status.lower())
+            er_value_list.append((er_status_text_list, er_score_text_list, context))
+            her2_value_list.append((her2_status_text_list, her2_score_text_list, context))
+            pr_value_list.append((pr_status_text_list, pr_score_text_list, context))
         value_dict_list = []
         for value in er_value_list:
-            if len(value) > 0:
+            if len(value[0]) > 0 or len(value[1]) > 0:
                 value_dict = {}
-                value_dict['ER'] = value[0]
-                value_dict['CONTEXT'] = value[1]
+                if len(value[0]) > 0:
+                    value_dict['ER_STATUS'] = value[0]
+                if len(value[1]) > 0:
+                    value_dict['ER_SCORE'] = value[1]
+                value_dict['CONTEXT'] = value[2]
                 value_dict_list.append(value_dict)
         for value in her2_value_list:
-            if len(value) > 0:
+            if len(value[0]) > 0 or len(value[1]) > 0:
                 value_dict = {}
-                value_dict['HER2'] = value[0]
-                value_dict['CONTEXT'] = value[1]
+                if len(value[0]) > 0:
+                    value_dict['HER2_STATUS'] = value[0]
+                if len(value[1]) > 0:
+                    value_dict['HER2_SCORE'] = value[1]
+                value_dict['CONTEXT'] = value[2]
                 value_dict_list.append(value_dict)
         for value in pr_value_list:
-            if len(value) > 0:
+            if len(value[0]) > 0 or len(value[1]) > 0:
                 value_dict = {}
-                value_dict['PR'] = value[0]
-                value_dict['CONTEXT'] = value[1]
+                if len(value[0]) > 0:
+                    value_dict['PR_STATUS'] = value[0]
+                if len(value[1]) > 0:
+                    value_dict['PR_SCORE'] = value[1]
+                value_dict['CONTEXT'] = value[2]
                 value_dict_list.append(value_dict)
         return value_dict_list
+    
+    #
+    def _process_score(self, score):
+        score = re.sub(' (/|out of) [0-4](\+)?', '', score)
+        match = re.search('[0-4](\+)? \- [0-4](\+)?', score)
+        if match is not None:
+            score = re.sub(' \- ', ',', match.group(0))
+            score = '(' + score +')'
+        return score
+        
+    #
+    def _process_status(self, status):
+        if status.lower() == 'amplified':
+            status = 'positive'
+        if status.lower() == 'immunoreactive':
+            status = 'positive'
+        if status.lower() == 'non-amplified':
+            status = 'negative'
+        return status
 
 #
 class Summarization(Preprocessor_base):
@@ -116,6 +165,7 @@ class Summarization(Preprocessor_base):
         
     #
     def process_her2(self):
+        self._general_command(' \( PATHWAYTMHER2 kit , 4B5 \)', {None : ''})
         self._general_command('(?i)HER2( :)?( )?-', {None : 'HER2 negative'})
         self._general_command('(?i)HER2( :)?( )?\+', {None : 'HER2 positive'})
         for _ in range(7):

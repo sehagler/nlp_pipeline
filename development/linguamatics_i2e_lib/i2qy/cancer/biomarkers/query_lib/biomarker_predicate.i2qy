@@ -2,7 +2,15 @@ version: 6.3
 creationDate: '2018-05-16 13:46:36'
 query:
   document:
-  - link: {path: biomarkers_values.i2qy, id: link1}
+  - phrase:
+    - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarkers_polariities.i2qy, id: link2}
+    - phrase:
+        maxWordGap: -1
+        wordGapRestricted: false
+        of:
+        - (
+        - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/biomarkers/query_lib/biomarkers_scores.i2qy, id: link1}
+        - )
   - phrase:
       boundaries: Exact
       findMatches: longestOnly
@@ -257,13 +265,16 @@ query:
                       text: invasive
                       quantifier: {minimum: 0, maximum: 1}
                   - word: {text: cell, morphoVariants: true}
-              - link: {path: ../../../tools/parenthetical_query.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/OHSU_queries_revised_20210610/OHSU_queries_revised_20210610/Saved%20Queries/__private__/haglers/General/tools/parenthetical_query.i2qy}
       - link:
-          path: ../../../tools/parenthetical_query.i2qy
+          path: /api;type=saved_query/__private__/haglers/OHSU_queries_revised_20210610/OHSU_queries_revised_20210610/Saved%20Queries/__private__/haglers/General/tools/parenthetical_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - {id: phrase1}
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
   - id: link1.alternative1
     itemOptions: {}
     linkItemId: link1

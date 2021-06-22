@@ -47,9 +47,13 @@ class Section_header_normalizer(Preprocessor_base):
         if no_punctuation_flg:
             if isinstance(text_in, list):
                 for i in range(len(text_in)):
-                    text.append('(?<!<<<)' + text_in[i].upper())
+                    text_in_upper = text_in[i].upper()
+                    text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
+                    text.append('(?<!<<<)' + text_in_upper)
             else:
-                text.append('(?<!<<<)' + text_in.upper())
+                text_in_upper = text_in.upper()
+                text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
+                text.append('(?<!<<<)' + text_in_upper)
         self._clear_command_list()
         self._general_command(text, self._tagged_section_header(label), keyword_flg)
         self._process_command_list()
@@ -180,3 +184,11 @@ class Section_header_normalizer(Preprocessor_base):
             self._normalize_section_header(mode_flg, regex_list,
                                            section_header,
                                            no_punctuation_flg=no_punctuation_flg)
+            
+    #
+    def pull_dynamic_data_manager(self):
+        return self.dynamic_data_manager
+        
+    #
+    def push_dynamic_data_manager(self, dynamic_data_manager):
+        self.dynamic_data_manager = dynamic_data_manager

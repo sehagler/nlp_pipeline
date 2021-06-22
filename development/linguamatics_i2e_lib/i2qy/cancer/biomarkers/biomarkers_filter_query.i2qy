@@ -6,7 +6,7 @@ query:
       id: alternative1
       showMultipleColumns: true
       of:
-      - link: {path: biomarkers_query_context.i2qy}
+      - link: {path: biomarkers_query.i2qy}
       - alternative:
           includeInQuery: false
           of: [ER, PR, HER2]
@@ -20,6 +20,7 @@ output:
     itemOptions: {}
   - id: alternative1.col3
     itemOptions: {}
-  columnLocations: [0, 1, 3, 2]
+  - id: alternative1.col4
+    itemOptions: {}
   useOutputEditor: true
 creator: haglers

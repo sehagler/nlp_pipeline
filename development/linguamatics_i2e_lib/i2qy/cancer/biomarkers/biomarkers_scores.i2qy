@@ -1,0 +1,31 @@
+version: 6.3
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      findMatches: longestOnly
+      id: phrase1
+      of:
+      - alternative:
+          showInDefaultOutput: false
+          of:
+          - phrase:
+            - word: {text: '[0-4](\+)?', matchType: Regexp}
+            - phrase:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - word: {text: '-'}
+                - word: {text: '[0-4](\+)?', matchType: Regexp}
+            - phrase:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - alternative:
+                  - /
+                  - phrase: [out, of]
+                - word: {text: '[0-4](\+)?', matchType: Regexp}
+          - word: {text: '[0-4](\+)?', matchType: Regexp}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers

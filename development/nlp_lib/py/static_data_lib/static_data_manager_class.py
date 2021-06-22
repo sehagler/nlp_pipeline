@@ -27,6 +27,7 @@ class Static_data_manager(object):
         self.static_data['header_key'] = 'REPORT_HEADER'
         self.static_data['max_files_per_zip'] = 10000
         self.static_data['mrn_list'] = None
+        self.static_data['multiprocessing'] = True
         self.static_data['network_manager'] = network
         self.static_data['num_processes'] = 15
         self.static_data['operation_mode'] = operation_mode

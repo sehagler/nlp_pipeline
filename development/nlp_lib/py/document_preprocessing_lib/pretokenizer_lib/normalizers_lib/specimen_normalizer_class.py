@@ -36,6 +36,12 @@ class Specimen_normalizer(Preprocessor_base):
                 self._general_command(match_str, {term + '<HYPHEN>': ' '})
                 
     #
+    def _remove_false_specimen(self):
+        self._clear_command_list()
+        self._general_command('(?i) \((([a-l]|[o-s]|[u-z])+[0-9]+(,( )?)?)+\)', {None : ''})
+        self._process_command_list()
+                
+    #
     def process_specimens(self):
         self._indicate_nonspecimens('do')
         self._general_command('(?i)[ \t][a-z]:[ \t]', {':' : '.'})

@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jun 11 16:41:11 2021
+
+@author: haglers
+"""
+
+#
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
+from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.label_normalizer_class \
+    import Label_normalizer
+from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.section_header_normalizer_class \
+    import Section_header_normalizer
+from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.specimen_normalizer_class \
+    import Specimen_normalizer
+from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.table_normalizer_class \
+    import Table_normalizer
+from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.text_preparation_lib.text_preparation_class \
+    import Text_preparation
+from tool_lib.py.query_tools_lib.cancer_tools \
+    import Text_preparation as Text_preparation_cancer
+
+#
+class Pretokenizer(Preprocessor_base):
+    
+    #
+    def __init__(self, static_data):
+        Preprocessor_base.__init__(self, static_data)    
+        self.body_header = 'SUMMARY'
+        self.formatting = static_data['formatting']
+        self.label_normalizer = Label_normalizer(self.static_data)
+        self.section_header_normalizer = \
+            Section_header_normalizer(self.static_data)
+        self.specimen_normalizer = Specimen_normalizer(self.static_data)
+        self.table_normalizer = Table_normalizer(self.static_data)
+        self.text_preparation = Text_preparation(self.static_data)
+        self.text_preparation_cancer = \
+            Text_preparation_cancer(self.static_data)
+        
+    #
+    def _extract_section_headers(self):
+        self.dynamic_data_manager.append_keywords_text(self.body_header)
+        self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
+        self.section_header_normalizer.push_text(self.text)
+        self.section_header_normalizer.amendment_section_header(self.formatting)
+        self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
+        self.section_header_normalizer.history_section_header(self.formatting)
+        self.section_header_normalizer.person_section_header(self.formatting)
+        section_header_list = [ 'DATETIME' ]
+        self.section_header_normalizer.general_command(section_header_list,
+                                                       self.formatting)
+        section_header_list = \
+            [ 'ALLERGIES', 'ANTIBODIES TESTED', 'ASSESSMENT', 'BACKGROUND',
+              'BONE MARROW ASPIRATE SMEARS', 'BONE MARROW CLOT SECTION',
+              'BONE MARROW DIFFERENTIAL', 'CYTOGENETIC ANALYSIS SUMMARY',
+              'PREAMENDMENT DIAGNOSIS', 'DIAGNOSIS', 'EVALUATION',
+              'EXPLANATION', 'FISH ANALYSIS SUMMARY',
+              'FLOW CYTOMETRIC ANALYSIS', 'GOALS', 'HOSPITAL COURSE', 'ICD-9',
+              'IMMUNOLOGIC ANALYSIS', 'IMPRESSION AND RECOMMENDATION',
+              'INSURANCE', 'INTERPRETATION', 'INTERVENTION', 'KARYOTYPE',
+              'LAB DATA AND MEDICATION', 'MEDICATION', 'LAB DATA',
+              'MATERIALS RECEIVED', 'METHOD', 'MOLECULAR STUDIES',
+              'OBJECTIVE', 'OTHER', 'PERIPHERAL BLOOD MORPHOLOGY', 'REASON', 
+              'REFERENCES', 'SERVICE', 'SPECIAL STAINS', 'SUBJECTIVE',
+              'SURGICAL PATHOLOGY SUMMARY', 'SYNOPSIS', 'TECHNIQUE',
+              'TWENTY-FOUR HOUR EVENTS' ]
+        self.section_header_normalizer.normalize_section_header(section_header_list,
+                                                                self.formatting)
+        self.text = self.section_header_normalizer.pull_text()
+        self.dynamic_memory_manager = \
+            self.section_header_normalizer.pull_dynamic_data_manager()
+
+    '''    
+    #
+    def _normalize_punctuation(self):
+        Report_preprocessor_base_class._normalize_punctuation(self)
+        #self._clear_command_list()
+        #self._general_command('(?i)fine needle', {None : 'fine-needle'})
+        #self._general_command('(?i)over-expression', {None : 'overexpression'})
+        #self._process_command_list()
+    
+    #
+    def _normalize_terminology(self):
+        #Report_preprocessor_base_class._normalize_terminology(self)
+        #pretokenizer = Pretokenizer(self.static_data)
+        #pretokenizer.push_text(self.text)
+        #pretokenizer.process_initialisms()
+        #self.text = pretokenizer.pull_text()
+        self._clear_command_list()
+        self._general_command('(?i)margin\(s\)', {None : 'margins'})
+        self._general_command('(?i)from (the )?nipple', {None : 'fn'})
+        self._general_command('(?i)histologic grade', {None : 'grade'})
+        self._process_command_list()
+    '''
+    
+    #
+    def _normalize_table(self):
+        self.table_normalizer.push_text(self.text)
+        self.table_normalizer.normalize_table()
+        self.text = self.table_normalizer.pull_text()
+        
+    '''
+    #
+    def _process_punctuation(self):
+        self._clear_command_list()
+        self._general_command('(?i)(\n)[A-Z]:[ \t]', {':' : '.'})
+        self._general_command('(\s)?\(\n', {None : '\n'})
+        self._general_command('(?i)-grade', {None : ' grade'})
+        self._general_command('(?i)-to-', {None : ' to '})
+        self._general_command('____+(\n_+)*', {None : '' })
+        self._general_command('(?i)fine needle', {None : 'fine-needle'})
+        self._general_command('(?i)in-situ', {None : 'in situ'})
+        self._general_command('(?i)in-toto', {None : 'in toto'})
+        self._general_command('(?i)over-expression', {None : 'overexpression'})
+        self._process_command_list()
+    '''
+        
+    #
+    def _text_setup(self):
+        self._normalize_whitespace()
+        self.text_preparation.push_text(self.text)
+        self.text_preparation.correct_common_typos()
+        self.text_preparation.normalize_punctuation()
+        self.text_preparation.format_section_headers()
+        self.text_preparation.remove_extraneous_text()
+        self.text = self.text_preparation.pull_text()
+        self.text_preparation_cancer.push_text(self.text)
+        self.text_preparation_cancer.normalize_text()
+        self.text_preparation_cancer.setup_text()
+        self.text = self.text_preparation_cancer.pull_text()
+        self._normalize_whitespace()
+        
+    #
+    def process_document(self, dynamic_data_manager, text):
+        self.dynamic_data_manager = dynamic_data_manager
+        self.text = text
+        self._text_setup()
+        self._normalize_whitespace()
+        self._clear_command_list()
+        self._general_command('(?i)(\n)[A-Z]:[ \t]', {':' : '.'})
+        self._general_command('(\s)?\(\n', {None : '\n'})
+        self._general_command('(?i)-grade', {None : ' grade'})
+        self._general_command('(?i)-to-', {None : ' to '})
+        self._general_command('____+(\n_+)*', {None : '' })
+        self._general_command('(?i)fine needle', {None : 'fine-needle'})
+        self._general_command('(?i)in-situ', {None : 'in situ'})
+        self._general_command('(?i)in-toto', {None : 'in toto'})
+        self._general_command('(?i)over-expression', {None : 'overexpression'})
+        self._process_command_list()
+        self._clear_command_list()
+        self._general_command('(?i)margin\(s\)', {None : 'margins'})
+        self._general_command('(?i)from (the )?nipple', {None : 'fn'})
+        self._general_command('(?i)histologic grade', {None : 'grade'})
+        self._process_command_list()
+        self.specimen_normalizer.push_text(self.text)
+        self.specimen_normalizer.process_specimens()
+        self.text = self.specimen_normalizer.pull_text()
+        self.label_normalizer.push_text(self.text)
+        self.label_normalizer.process_labels()
+        self.text = self.label_normalizer.pull_text()
+        self._extract_section_headers()
+        self._normalize_whitespace()
+        self._normalize_table
+        return self.dynamic_data_manager, self.text

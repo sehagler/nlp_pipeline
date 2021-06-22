@@ -31,8 +31,8 @@ class Nlp_processor(object):
         self.nlp_pipeline.download_queries()
     
     #
-    def generate_training_data_sets(self):
-        self.nlp_pipeline.generate_training_data_sets()
+    def generate_training_data_sets(self, password):
+        self.nlp_pipeline.generate_training_data_sets(password)
     
     #
     def move_software(self):

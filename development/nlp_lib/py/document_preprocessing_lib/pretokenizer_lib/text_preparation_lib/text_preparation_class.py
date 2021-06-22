@@ -27,5 +27,16 @@ class Text_preparation(Preprocessor_base):
         self._general_command('(?i)progress note \d+/(\d+|\*+)/\d+', {'\d+/(\d+|\*+)/\d+' : ''})
         
     #
+    def normalize_punctuation(self):
+        self._general_command('(?i)(\n)[A-Z]:[ \t]', {':' : '.'})
+        self._general_command('(\s)?\(\n', {None : '\n'})
+        self._general_command('(?i)-grade', {None : ' grade'})
+        self._general_command('(?i)-to-', {None : ' to '})
+        self._general_command('(?i)in-situ', {None : 'in situ'})
+        self._general_command('(?i)in-toto', {None : 'in toto'})
+        self._general_command('(?i)over-expression', {None : 'overexpression'})
+        self._general_command('____+(\n_+)*', {None : '' })
+    
+    #
     def remove_extraneous_text(self):
         self._general_command('(?i)\(HCC\)', {None : ''})

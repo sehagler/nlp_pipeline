@@ -13,6 +13,7 @@ import pickle
 import random
 
 #
+from nlp_lib.py.metadata_lib.metadata_manager_class import Metadata_manager
 from nlp_lib.py.process_lib.process_manager_class import Process_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
@@ -28,40 +29,42 @@ class Pipeline_manager(object):
         try:
             self._project_imports(static_data_manager)
         except:
-            pass
+            print('Project imports failed')
         self._create_managers(static_data_manager, server_manager, password)
         
     #
     def _create_managers(self, static_data_manager, server_manager, password):
+        self.metadata_manager = Metadata_manager(static_data_manager)
         self.process_manager = Process_manager(static_data_manager, 
+                                               self.metadata_manager,
                                                server_manager, password)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(static_data_manager)
         except:
+            print('Performance data manager not found')
             self.performance_data_manager = None
 
     #
     def _get_metadata_values(self):
-        metadata_json_file = \
-            self.static_data['metadata_manager'].get_metadata_json_file()
+        metadata_json_file = self.metadata_manager.get_metadata_json_file()
         metadata = read_json_file(metadata_json_file)
         num_documents = len(metadata.keys())
         document_values = []
         patient_values = []
         date_values = []
         for key0 in metadata.keys():
-            for key1 in metadata[key0].keys():
+            for key1 in metadata[key0]['METADATA'].keys():
                 if key1 in self.static_data['datetime_identifiers'].keys():
-                    date_str = metadata[key0][key1]
+                    date_str = metadata[key0]['METADATA'][key1]
                     date_num = \
                         datetime2matlabdn(datetime.strptime(date_str,
                                                             self.static_data['datetime_identifiers'][key1]))
                     date_values.append(date_num)
                 if key1 in self.static_data['document_identifiers']:
-                    document_values.append(metadata[key0][key1])
+                    document_values.append(metadata[key0]['METADATA'][key1])
                 if key1 in self.static_data['patient_identifiers']:
-                    patient_values.append(metadata[key0][key1])
+                    patient_values.append(metadata[key0]['METADATA'][key1])
         document_values = list(set(document_values))
         patient_values = list(set(patient_values))
         date_values.sort()
@@ -100,14 +103,13 @@ class Pipeline_manager(object):
         self.process_manager.download_queries()
         
     #
-    def generate_training_data_sets(self):
-        doc_fraction = 0.1
+    def generate_training_data_sets(self, password):
+        doc_fraction = self.static_data['document_fraction']
         num_groups = 4
-        self.process_manager.preprocessor(1, False, preprocess_files_flg=False)
+        self.process_manager.preprocessor(password, 0, False,
+                                          preprocess_files_flg=False)
         document_values, patient_values, date_values = self._get_metadata_values()
         num_documents = len(document_values)
-        print(num_documents)
-        print(len(patient_values))
         random.shuffle(document_values)
         number_training_docs = math.floor(doc_fraction * len(document_values))
         training_docs = document_values[:number_training_docs]
@@ -134,7 +136,7 @@ class Pipeline_manager(object):
             
     #
     def prequeries(self, password, preprocessor_start_idx=0,
-                    preprocessor_cleanup_flg=True):
+                   preprocessor_cleanup_flg=True):
         if preprocessor_start_idx >= 0:
             if preprocessor_start_idx > 0:
                 preprocessor_cleanup_flg = False

@@ -3,79 +3,79 @@ creationDate: '2018-05-21 15:26:04'
 query:
   document:
   - phrase:
-      id: phrase1
-      of:
-      - phrase:
-          quantifier: {minimum: 0, maximum: 0}
-          of:
-          - alternative:
-            - link: {path: biomarker_predicate.i2qy}
-            - phrase:
-                displayChildren: false
-                of:
-                - word: {text: internal, morphoVariants: true}
-                - word: {text: control, morphoVariants: true}
-          - {class: /prep}
-      - link: {path: biomarker_subject.i2qy, id: link2}
-      - macro:
-          quantifier: {minimum: 0, maximum: 0}
-          snid: linguamatics_wc.WC_Conjunction
-          pt: conjunction
-          of:
-          - alternative:
-              macroPt: conjunction
-              macroSnid: linguamatics_wc.WC_Conjunction
+    - phrase:
+        quantifier: {minimum: 0, maximum: 0}
+        of:
+        - alternative:
+          - link: {path: /api;type=saved_query/__private__/haglers/OHSU_queries_revised_20210610/OHSU_queries_revised_20210610/Saved%20Queries/__private__/haglers/General/cancer/biomarkers/query_lib/biomarker_predicate.i2qy, id: link4}
+          - phrase:
+              displayChildren: false
               of:
-              - '&'
-              - after
-              - albeit
-              - although
-              - also
-              - and
-              - as
-              - phrase: [as, far, as]
-              - because
-              - before
-              - but
-              - either
-              - if
-              - moreover
-              - neither
-              - nor
-              - once
-              - or
-              - so
-              - than
-              - though
-              - unless
-              - versus
-              - vs
-              - vs.
-              - when
-              - whereas
-              - whereby
-              - whether
-              - while
-              - whilst
-              - yet
-      - alternative:
-          quantifier: {minimum: 0, maximum: 1}
-          of:
-          - {class: /vg}
-          - signals
-      - word:
-          text: ':'
-          quantifier: {minimum: 0, maximum: 1}
-      - link: {path: biomarker_predicate.i2qy, id: link3}
+              - word: {text: internal, morphoVariants: true}
+              - word: {text: control, morphoVariants: true}
+        - {class: /prep}
+    - link: {path: biomarker_subject.i2qy, id: link2}
+    - macro:
+        quantifier: {minimum: 0, maximum: 0}
+        snid: linguamatics_wc.WC_Conjunction
+        pt: conjunction
+        of:
+        - alternative:
+            macroPt: conjunction
+            macroSnid: linguamatics_wc.WC_Conjunction
+            of:
+            - '&'
+            - after
+            - albeit
+            - although
+            - also
+            - and
+            - as
+            - phrase: [as, far, as]
+            - because
+            - before
+            - but
+            - either
+            - if
+            - moreover
+            - neither
+            - nor
+            - once
+            - or
+            - so
+            - than
+            - though
+            - unless
+            - versus
+            - vs
+            - vs.
+            - when
+            - whereas
+            - whereby
+            - whether
+            - while
+            - whilst
+            - yet
+    - alternative:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - {class: /vg}
+        - signals
+    - word:
+        text: ':'
+        quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - {id: phrase1}
+  - id: link4.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link4
+  - id: link4.link1.alternative1
+    itemOptions: {}
+    linkItemId: link1.link4
   - id: link2.link3.alternative1
     itemOptions: {}
     linkItemId: link3.link2
-  - id: link3.link1.alternative1
-    itemOptions: {}
-    linkItemId: link1.link3
+  columnLocations: [2, 0, 1]
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers

@@ -1,0 +1,49 @@
+version: 6.3
+creationDate: '2021-06-03 20:28:50'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - link: {path: biomarkers_names.i2qy, id: link1}
+      - word:
+          text: ':'
+          quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - phrase:
+              maxWordGap: -1
+              quantifier: {minimum: 0, maximum: 1}
+              wordGapRestricted: false
+              of:
+              - (
+              - word:
+                  text: )
+                  quantifier: {minimum: 0, maximum: 0}
+          - link: {path: biomarkers_scores.i2qy, id: link2}
+          - phrase:
+              maxWordGap: -1
+              quantifier: {minimum: 0, maximum: 1}
+              wordGapRestricted: false
+              of:
+              - word:
+                  text: (
+                  quantifier: {minimum: 0, maximum: 0}
+              - )
+output:
+  columns:
+  - id: link1.alternative1
+    itemOptions: {}
+    linkItemId: link1
+  - {id: phrase1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  columnLocations: [1, 0, 2, 3]
+  useOutputEditor: true
+creator: haglers

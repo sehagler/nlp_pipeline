@@ -25,7 +25,6 @@ class AdverseEvents_project_manager(Static_data_manager):
         self.static_data['date_identifiers'][ 'NOTE_DATE' ] = '%d-%b-%y'
         self.static_data['document_identifiers'] = [ 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.static_data['flags'] = {}
-        self.static_data['flags']['multiprocessing'] = True
         self.static_data['flags']['remove_date'] = True
         self.static_data['flags']['trim_data_by_csn'] = True
         self.static_data['formatting'] = 'unformatted'
@@ -39,7 +38,6 @@ class AdverseEvents_project_manager(Static_data_manager):
         if self.project_subdir == 'test':
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml'] = {}
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['NLP_PROCESS'] = 'NOTE'
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files_sequence'] = [ 'Schuff_Hagler_AE_NLP_HNO_Notes.xml' ]
         else:

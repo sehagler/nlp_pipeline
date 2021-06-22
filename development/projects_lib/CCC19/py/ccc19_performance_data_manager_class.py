@@ -31,14 +31,25 @@ class CCC19_performance_data_manager(Performance_data_manager):
         data_out = {}
         data_out['CANCER_STAGE'] = \
             self._get_data_value(data_in, None, 'CANCER_STAGE_' + self.nlp_value_key, 'CANCER_STAGE', mode_flg='single_value')
+        if data_out['CANCER_STAGE'] is not None:
+            data_out['CANCER_STAGE'] = data_out['CANCER_STAGE'][0]
         data_out['NORMALIZED_ECOG_SCORE'] = \
             self._get_data_value(data_in, None, 'ECOG_SCORE_' + self.nlp_value_key, 'NORMALIZED_ECOG_SCORE', mode_flg='single_value')
+        if data_out['NORMALIZED_ECOG_SCORE'] is not None:
+            data_out['NORMALIZED_ECOG_SCORE'] = \
+                data_out['NORMALIZED_ECOG_SCORE'][0]
         data_out['NORMALIZED_SMOKING_HISTORY'] = \
             self._get_data_value(data_in, None, 'SMOKING_HISTORY_' + self.nlp_value_key, 'NORMALIZED_SMOKING_HISTORY', mode_flg='single_value')
+        if data_out['NORMALIZED_SMOKING_HISTORY'] is not None:
+            data_out['NORMALIZED_SMOKING_HISTORY'] = \
+                data_out['NORMALIZED_SMOKING_HISTORY'][0]
         data_out['NORMALIZED_SMOKING_PRODUCTS'] = \
             self._get_data_value(data_in, None, 'SMOKING_PRODUCTS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_PRODUCTS', mode_flg='multiple_values')
         data_out['NORMALIZED_SMOKING_STATUS'] = \
             self._get_data_value(data_in, None, 'SMOKING_STATUS_' + self.nlp_value_key, 'NORMALIZED_SMOKING_STATUS', mode_flg='single_value')
+        if data_out['NORMALIZED_SMOKING_STATUS'] is not None:
+            data_out['NORMALIZED_SMOKING_STATUS'] = \
+                data_out['NORMALIZED_SMOKING_STATUS'][0]
         del_keys = []
         for key in data_out:
             if data_out[key] is not None:
@@ -147,6 +158,21 @@ class CCC19_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[6])
                     validation_smoking_products_value = \
                         self._process_validation_item(item[7])
+            if validation_cancer_stage_value is not None:
+                validation_cancer_stage_value = \
+                    tuple([ validation_cancer_stage_value ])
+            if validation_ecog_score_value is not None:
+                validation_ecog_score_value = \
+                    tuple([ validation_ecog_score_value ])
+            if validation_smoking_status_value is not None:
+                validation_smoking_status_value = \
+                    tuple([ validation_smoking_status_value ])
+            if validation_smoking_history_value is not None:
+                validation_smoking_history_value = \
+                    tuple([ validation_smoking_history_value ])
+            if validation_smoking_products_value is not None:
+                validation_smoking_products_value = \
+                    tuple(validation_smoking_products_value)
             display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_cancer_stage_value,

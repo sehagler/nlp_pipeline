@@ -4,10 +4,13 @@ query:
   document:
   - alternative:
       id: alternative1
+      prioritization: within
       showMultipleColumns: true
       of:
-      - link: {path: query_lib/biomarker_predicate_subject.i2qy}
-      - link: {path: query_lib/biomarker_subject_predicate.i2qy}
+      - link: {path: biomarkers_query_0_context.i2qy}
+      - link: {path: biomarkers_query_1_context.i2qy}
+      - link: {path: biomarkers_query_2_context.i2qy}
+      - link: {path: biomarkers_query_3_context.i2qy}
 output:
   columns:
   - id: alternative1.col0
@@ -15,6 +18,10 @@ output:
   - id: alternative1.col1
     itemOptions: {}
   - id: alternative1.col2
+    itemOptions: {}
+  - id: alternative1.col3
+    itemOptions: {}
+  - id: alternative1.col4
     itemOptions: {}
   outputSettings: {maxResults: 10000}
   useOutputEditor: true

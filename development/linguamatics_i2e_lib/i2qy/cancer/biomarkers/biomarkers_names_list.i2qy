@@ -1,0 +1,30 @@
+version: 6.3
+creationDate: '2018-05-16 13:23:29'
+query:
+  document:
+  - phrase:
+    - phrase:
+        quantifier: {minimum: 0, maximum: none}
+        of:
+        - link: {path: biomarkers_names.i2qy}
+        - alternative:
+            quantifier: {minimum: 1, maximum: none}
+            view: {layout: list}
+            of: [and, or, ',', /]
+    - link: {path: biomarkers_names.i2qy, id: link3}
+    - phrase:
+        quantifier: {minimum: 0, maximum: none}
+        of:
+        - alternative:
+            quantifier: {minimum: 1, maximum: none}
+            view: {layout: list}
+            of: [and, or, ',', /]
+        - link: {path: biomarkers_names.i2qy}
+output:
+  columns:
+  - id: link3.alternative1
+    itemOptions: {}
+    linkItemId: link3
+  outputSettings: {allResults: true, allRows: true, allTime: true}
+  useOutputEditor: true
+creator: haglers

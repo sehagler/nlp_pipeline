@@ -1,24 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan 23 10:38:15 2020
+Created on Thu Jun 17 08:56:52 2021
 
 @author: haglers
 """
 
-#
+ #
 from word2number import w2n
 import re
 
 #
 from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
     import Preprocessor_base
+from tool_lib.py.query_tools_lib.date_tools import Tokenizer as Tokenizer_date
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
 
 #
 class Tokenizer(Preprocessor_base):
     
     #
-    def process_abbreviations(self):
+    def __init__(self, static_data):
+        Preprocessor_base.__init__(self, static_data)
+        self.tokenizer_date = Tokenizer_date(self.static_data)
+    
+    #
+    def _process_abbreviations(self):
         self._general_command('(?i)%age', {None : 'percentage'})
         self._general_command('(?<=[Dd])iagnosis', {None : 'x'})
         self._general_command('(?<=[Dd])iagnosed', {None : 'xed'})
@@ -33,7 +39,7 @@ class Tokenizer(Preprocessor_base):
         self._general_command('(?<=[Yy])ear', {None : 'r'})
         
     #
-    def process_chemical_abbreviations(self):
+    def _process_chemical_abbreviations(self):
         self._general_command('(?i)alcohol(?!i)', {'(?i)alcohol' : 'ETOH'})
         self._normalize_regular_initialism('(?i)butyrate esterase', 'BE')
         self._normalize_regular_initialism('(>i)methotrexate', 'MTX')
@@ -41,7 +47,7 @@ class Tokenizer(Preprocessor_base):
         self._normalize_regular_initialism('(?i)sudan black B', 'SBB')
         
     #
-    def process_measurements(self):
+    def _process_measurements(self):
         self._general_command('(?i)(<=(\d+)(\-|\+)?) ((out )?of|per) (?= [0-9])', 
                               {'(?i) ((out )?of|per) ' : '/'})
         self._normalize_regular_initialism('high(-| )?power(ed)? field' + s(), 'HPF')
@@ -58,7 +64,7 @@ class Tokenizer(Preprocessor_base):
         self._general_command('(?i)of(?=[0-9])', {None : 'of '})
         
     #
-    def process_initialisms(self):
+    def _process_initialisms(self):
         self._general_command('(?i)a( \. )?m( \. )', {None : 'AM'})
         self._general_command('(?i)D( \. )?O( \. )', {None : 'DO'})
         self._general_command('(?i)Dr( \. )', {None : 'Dr'})
@@ -74,14 +80,14 @@ class Tokenizer(Preprocessor_base):
         self._general_command('(?i)(U( \. )?S( \.)?)? Food and Drug Administration', {None : 'FDA'})
         
     #
-    def process_medical_abbreviations(self):
+    def _process_medical_abbreviations(self):
         self._general_command('(?<=[Ff])ollow( |\-)up', {None : ' / u'})
         self._general_command('(?<=[Hh])istory', {None : 'x'})
         self._general_command('(?<=[Hh])x of', {None : ' / o'})
         self._general_command('(?<=[Ss])urgical procedure', {None : ' / p '})
         
     #
-    def process_numbers(self):
+    def _process_numbers(self):
         word_list = list(set(filter(None, re.split('[ \n\t]+', self.text))))
         change_list = []
         for word in word_list:
@@ -106,7 +112,7 @@ class Tokenizer(Preprocessor_base):
             self._general_command('[ \n\t]' + change[0] + '[ \n\t]', {change[0] : change[1]})
         
     #
-    def process_punctuation(self):
+    def _process_punctuation(self):
         self._general_command('(?<!(:|\d))\d+-\d+%', {'-' : '%-'})
         self._general_command('(?<!(:|\d))\d+-\d+:00', {'-' : ' : 00-'})
         self._general_command('(?i)(?<=[0-9]) %', {None : '%'})
@@ -138,7 +144,25 @@ class Tokenizer(Preprocessor_base):
         self._general_command('\( ! \)', {None : ''})
         
     #
-    def process_simplifications(self):
+    def _process_simplifications(self):
         self._general_command('(?i)according to', {None : 'per'})
         self._general_command('(?i)for example', {None : 'e.g.'})
         self._general_command('(?i)w / ', {'(?i)w /' : 'with'})
+    
+    #
+    def process_document(self, text):
+        self.text = text
+        self._normalize_whitespace()
+        self._process_punctuation()
+        self._process_initialisms()
+        self._process_abbreviations()
+        self._process_chemical_abbreviations()
+        self._process_measurements()
+        self._process_medical_abbreviations()
+        self._process_numbers()
+        self._process_simplifications()
+        self.tokenizer_date.push_text(self.text)
+        self.tokenizer_date.process_month()
+        self.text = self.tokenizer_date.pull_text()
+        self._normalize_whitespace()
+        return self.text

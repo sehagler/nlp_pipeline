@@ -19,7 +19,7 @@ query:
           snid: /prep
       - link: {path: biomarker_subject.i2qy, id: link2}
       - link:
-          path: ../../../tools/parenthetical_query.i2qy
+          path: /api;type=saved_query/__private__/haglers/OHSU_queries_revised_20210610/OHSU_queries_revised_20210610/Saved%20Queries/__private__/haglers/General/tools/parenthetical_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
@@ -30,6 +30,9 @@ output:
   - id: link1.link1.alternative1
     itemOptions: {}
     linkItemId: link1.link1
+  - id: link1.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link1
   outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
   useOutputEditor: true
 creator: szhang

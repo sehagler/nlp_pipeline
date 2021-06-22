@@ -49,25 +49,18 @@ class Postprocessor(Postprocessor_base):
     def _process_smoking_status_text_list(self, smoking_status_text_list):
         value_list = []
         for text in smoking_status_text_list:
-            value_sublist = []
+            value = 'MANUAL_REVIEW'
             if re.search('(?i)(abstain|quit)', text) is not None:
-                value_sublist.append('former smoker')
+                value = 'former smoker'
             if re.search('(?i)current ((every|some) day )?(:|hx|smoker)', text) is not None:
-                value_sublist.append('current smoker')
+                value = 'current smoker'
             if re.search('(?i)former', text) is not None:
-                value_sublist.append('former smoker')
+                value = 'former smoker'
             if re.search('(?i)never', text) is not None:
-                value_sublist.append('never smoker')
+                value = 'never smoker'
             if re.search('(?i)(?!no )smoking (:|hx)', text) is not None:
-                value_sublist.append('current smoker')
+                value = 'current smoker'
             if re.search('(?i)no smoking hx', text) is not None:
-                value_sublist.append('never smoker')
-            value_sublist = list(set(value_sublist))
-            if len(value_sublist) > 0:
-                value_str = ''
-                for value in value_sublist:
-                    value_str += value + ''
-                value_list.append(value_str)
-            else:
-                value_list.append('MANUAL_REVIEW')
+                value = 'never smoker'
+            value_list.append(value)
         return value_list

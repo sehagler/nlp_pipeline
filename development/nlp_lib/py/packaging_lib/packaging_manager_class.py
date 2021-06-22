@@ -132,15 +132,17 @@ class Packaging_manager(object):
                 query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
             query_list = list(set(query_list))
             performance_statistics_dict_tmp = []
+            tmp_dict = {}
             for key in performance_statistics_dict.keys():
                 if key in query_list:
                     tmp_dict = performance_statistics_dict[key]
                     tmp_dict['QUERY'] = key
-            if production_json_filename is not None:
-                documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_metadata_key] = \
-                    nlp_performance_metadata
-            documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
-                tmp_dict
+            if tmp_dict:
+                if production_json_filename is not None:
+                    documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_metadata_key] = \
+                        nlp_performance_metadata
+                documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
+                    tmp_dict
         if include_datetime:
             now = datetime.now()
             datetime_str = now.strftime('_%Y%m%d_%H%M%S')
@@ -180,4 +182,3 @@ class Packaging_manager(object):
         performance_data_filename = \
             os.path.join(self.save_dir, project_name + '.performance.json')
         self._write_performance_data(performance_data_filename, None, False)
-        

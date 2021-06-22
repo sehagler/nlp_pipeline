@@ -44,8 +44,6 @@ class Xml_reader(Reader_base):
             data['FILENAME'] = []
         if 'NLP_MODE' not in data.keys():
             data['NLP_MODE'] = []
-        if 'NLP_PROCESS' not in data.keys():
-            data['NLP_PROCESS'] = []
         if 'SOURCE_SYSTEM' not in data.keys():
             data['SOURCE_SYSTEM'] = []
         for key in keys:
@@ -67,7 +65,6 @@ class Xml_reader(Reader_base):
                     data[key].append(None)
                 data['FILENAME'].append(os.path.basename(raw_data_file))
                 data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
-                data['NLP_PROCESS'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_PROCESS'])
                 data['SOURCE_SYSTEM'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['SOURCE_SYSTEM'])
                 keys_appended = []
         for text_identifier in text_identifiers:

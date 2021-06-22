@@ -108,31 +108,47 @@ class Specimens(Specimens_jsons):
                             del self.data_json[key0][key1][key2]['%.Blasts.in.BM']
                     except:
                         pass
-                                   
+                    
     #                 
-    def _evaluate_specific_diagnosis(self):
+    def _evaluate_diagnosis(self):
         data_json_tmp = self.data_json
         for key0 in data_json_tmp.keys():
             for key1 in data_json_tmp[key0].keys():
                 for key2 in data_json_tmp[key0][key1].keys():
-                    try:
-                        values = data_json_tmp[key0][key1][key2]['specificDx']
-                        values = values[0][0]
-                        #values = self._trim_data_value(values)
-                        #values = list(set(values))
-                        specific_diagnoses = []
-                        specific_diagnoses.append(''.join(values[1]))
-                        if len(specific_diagnoses) == 1:
-                            value = specific_diagnoses[0]
-                        elif len(specific_diagnoses) > 1:
+                    if 'dx' in data_json_tmp[key0][key1][key2].keys():
+                        dx_values = data_json_tmp[key0][key1][key2]['dx']
+                    else:
+                        dx_values = None
+                    if 'specificDx' in data_json_tmp[key0][key1][key2].keys():
+                        specificdx_values = \
+                            data_json_tmp[key0][key1][key2]['specificDx']
+                    else:
+                        specificdx_values = None
+                    values = []
+                    if dx_values is not None:
+                        dx_values = list(set(dx_values))
+                        for dx_value in dx_values:
+                            values.extend([dx_value[0]])
+                    if specificdx_values is not None:
+                        specificdx_values = list(set(specificdx_values))
+                        for specificdx_value in specificdx_values:
+                            values.append(specificdx_value[0])
+                    if len(values) > 0:
+                        values = [ values ]
+                    if len(values) > 0:
+                        values = self._trim_data_value(values)
+                        values = list(set(values))
+                        if len(values) == 1:
+                            value = values[0]
+                        elif len(values) > 1:
                             value = self.multiple_values
                         else:
                             value = None
                         if value is not None:
-                            self.data_json[key0][key1][key2]['specificDx'] = value
+                            self.data_json[key0][key1][key2]['dx'] = value
                         else:
-                            del self.data_json[key0][key1][key2]['specificDx']
-                    except:
+                            del self.data_json[key0][key1][key2]['dx']
+                    else:
                         pass
                     
     #
@@ -199,11 +215,12 @@ class Specimens(Specimens_jsons):
                 for key2 in data_json_tmp[key0][key1].keys():
                     try:
                         values = data_json_tmp[key0][key1][key2]['specificDx']
-                        values = values[0][0]
+                        values = values[0]
                         #values = self._trim_data_value(values)
                         #values = list(set(values))
                         specific_diagnoses = []
                         specific_diagnoses.append(''.join(values[1]))
+                        specific_diagnoses = list(set(specific_diagnoses))
                         if len(specific_diagnoses) == 1:
                             value = specific_diagnoses[0]
                         elif len(specific_diagnoses) > 1:

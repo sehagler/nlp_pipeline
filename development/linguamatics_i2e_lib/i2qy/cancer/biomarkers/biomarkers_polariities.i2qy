@@ -1,0 +1,25 @@
+version: 6.3
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      showInDefaultOutput: false
+      of:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          view: {layout: list}
+          of: [strongly, weakly]
+      - alternative:
+          id: alternative1
+          of: [equivocal, immunoreactive, negative, positive]
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - phrase:
+            - for
+            - alternative: [amplification, overexpression]
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
