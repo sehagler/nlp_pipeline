@@ -5,21 +5,21 @@ query:
   - phrase:
       id: phrase1
       of:
-      - link: {path: biomarkers_polariities.i2qy, id: link1}
-      - for
-      - link: {path: biomarkers_names_list.i2qy, id: link2}
+      - link: {path: biomarkers_score.i2qy, id: link2}
+      - link: {path: biomarkers_names.i2qy, id: link1}
+      - positivity
 output:
   columns:
   - id: link1.alternative1
     itemOptions: {}
     linkItemId: link1
-  - id: link2.link3.alternative1
-    itemOptions: {}
-    linkItemId: link3.link2
   - {id: phrase1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  columnLocations: [2, 1, 0, 3]
+  - id: link2.alternative1
+    itemOptions: {}
+    linkItemId: link2
+  columnLocations: [1, 0, 2, 3]
   useOutputEditor: true
 creator: haglers

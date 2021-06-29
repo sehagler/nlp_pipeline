@@ -105,6 +105,16 @@ class Summarization(Preprocessor_base):
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see (also )?' + \
                     'specimen' + s() + '( )?' + specimen_label() + '( to ' + specimen_label() + ')?'
         self._substitution_endings_list(match_str)
+        
+    #
+    def _substitution_endings_list(self, search_str):
+        self._general_command(search_str + '\n', {None : '\n'})
+        self._general_command(search_str + '\t', {None : '\t'})
+        self._general_command(search_str + ' ', {None : ' '})
+        self._general_command(search_str + ',', {None : ','})
+        self._general_command(search_str + '\.', {None : '.'})
+        self._general_command(search_str + ';', {None : ';'})
+        self._general_command(search_str + '( )?-', {None : '-'})
     
     #
     def process_document(self, text):

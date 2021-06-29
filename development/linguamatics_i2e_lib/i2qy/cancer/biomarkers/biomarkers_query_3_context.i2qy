@@ -58,9 +58,6 @@ output:
   - id: link5.phrase1
     itemOptions: {}
     linkItemId: link5
-  - id: link5.link2.link3.alternative1
-    itemOptions: {}
-    linkItemId: link3.link2.link5
   - id: link5.link1.alternative1
     itemOptions: {}
     linkItemId: link1.link5
@@ -68,6 +65,9 @@ output:
     columnOptions: [Empty]
     isValueColumn: true
     linkItemId: link5
+  - id: link5.link2.alternative1
+    itemOptions: {}
+    linkItemId: link2.link5
   columnLocations: [1, 2, 3, 4, 0]
   useOutputEditor: true
 creator: haglers

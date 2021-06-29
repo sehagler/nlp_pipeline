@@ -116,10 +116,10 @@ class Performance_data_manager(object):
                     result = 'true negative'
         else:
             result = 'multiple values'
-        #if result != 'true positive' and result != 'true negative':
-        #    print(x)
-        #    print(y)
-        #    print('')
+        if result != 'true positive' and result != 'true negative':
+            print(x)
+            print(y)
+            print('')
         return result, display_data_flg
     
     #

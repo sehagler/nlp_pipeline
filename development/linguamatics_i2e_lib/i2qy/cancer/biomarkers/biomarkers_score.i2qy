@@ -4,10 +4,9 @@ query:
   document:
   - phrase:
       findMatches: longestOnly
-      id: phrase1
       of:
       - alternative:
-          showInDefaultOutput: false
+          id: alternative1
           of:
           - phrase:
             - word: {text: '[0-4](\+)?', matchType: Regexp}
@@ -21,11 +20,18 @@ query:
                 of:
                 - alternative:
                   - /
-                  - phrase: [out, of]
+                  - phrase:
+                    - word:
+                        text: out
+                        quantifier: {minimum: 0, maximum: 1}
+                    - of
                 - word: {text: '[0-4](\+)?', matchType: Regexp}
           - word: {text: '[0-4](\+)?', matchType: Regexp}
+      - word:
+          text: positivity
+          quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - {id: phrase1}
+  - {id: alternative1}
   useOutputEditor: true
 creator: haglers

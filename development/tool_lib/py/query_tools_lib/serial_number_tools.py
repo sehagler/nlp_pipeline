@@ -27,7 +27,6 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)\s*\( part' + s() + '-' + part_label() + '((-to-|-)' + part_label() + ' )? \)', {None : ''})
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see (also )?' + \
             'part' + s() + '( )?' + part_label() + '( to ' + part_label() + ')?'
-        self._substitution_endings_list(match_str)
         
     #
     def _remove_slice(self):

@@ -11,8 +11,7 @@ import os
 #
 from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools \
-    import compare_texts
+from tool_lib.py.analysis_tools_lib.text_analysis_tools import compare_texts
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
@@ -188,9 +187,6 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                 validation_pr_score_value = \
                     tuple(validation_pr_score_value.split(', '))
             display_data_flg = True
-            print(nlp_er_status_value)
-            print(validation_er_status_value)
-            print('')
             performance, flg = \
                 self._compare_data_values(nlp_er_status_value,
                                           validation_er_status_value)

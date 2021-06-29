@@ -6,9 +6,12 @@ query:
       id: phrase1
       of:
       - link: {path: biomarkers_names.i2qy, id: link1}
-      - word:
-          text: ':'
+      - alternative:
           quantifier: {minimum: 0, maximum: 1}
+          of:
+          - ':'
+          - ;
+          - {class: /vg}
       - phrase:
           maxWordGap: -1
           wordGapRestricted: false
@@ -22,7 +25,31 @@ query:
               - word:
                   text: )
                   quantifier: {minimum: 0, maximum: 0}
-          - link: {path: biomarkers_scores.i2qy, id: link2}
+          - link: {path: biomarkers_score.i2qy, id: link3}
+          - phrase:
+              maxWordGap: -1
+              quantifier: {minimum: 0, maximum: 1}
+              wordGapRestricted: false
+              of:
+              - word:
+                  text: (
+                  quantifier: {minimum: 0, maximum: 0}
+              - )
+      - phrase:
+          maxWordGap: -1
+          quantifier: {minimum: 0, maximum: 1}
+          wordGapRestricted: false
+          of:
+          - phrase:
+              maxWordGap: -1
+              quantifier: {minimum: 0, maximum: 1}
+              wordGapRestricted: false
+              of:
+              - (
+              - word:
+                  text: )
+                  quantifier: {minimum: 0, maximum: 0}
+          - link: {path: biomarkers_status.i2qy, id: link4}
           - phrase:
               maxWordGap: -1
               quantifier: {minimum: 0, maximum: 1}
@@ -38,12 +65,12 @@ output:
     itemOptions: {}
     linkItemId: link1
   - {id: phrase1}
-  - id: value1
-    columnOptions: [Empty]
-    isValueColumn: true
-  - id: link2.phrase1
+  - id: link4.alternative1
     itemOptions: {}
-    linkItemId: link2
+    linkItemId: link4
+  - id: link3.alternative1
+    itemOptions: {}
+    linkItemId: link3
   columnLocations: [1, 0, 2, 3]
   useOutputEditor: true
 creator: haglers

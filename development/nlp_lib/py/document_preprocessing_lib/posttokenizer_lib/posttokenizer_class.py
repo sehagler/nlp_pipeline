@@ -49,7 +49,7 @@ class Posttokenizer(Preprocessor_base):
         self._process_general()
         self._process_medical_abbreviations()
         self._normalize_whitespace()  
-        self._clear_section_header_tags()
+        #self._clear_section_header_tags()
         self.posttokenizer_antigens.push_text(self.text)
         self.posttokenizer_antigens.process_antigens()
         self.text = self.posttokenizer_antigens.pull_text()
@@ -67,5 +67,5 @@ class Posttokenizer(Preprocessor_base):
         self._general_command('\( [0-9]+ - [0-9]+\.[0-9]+ \)', {' - ' : '.0 - '})
         self._general_command('day 0( is equal to | ?= ?)', {None : ''})
         self._process_command_list()
-        self._clear_section_header_tags()
+        #self._clear_section_header_tags()
         return self.text

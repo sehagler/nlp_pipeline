@@ -11,11 +11,10 @@ import re
 #
 from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools \
-    import compare_texts
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_class import Specimens
 from projects_lib.BeatAML_Waves_1_And_2.py.gold_standard_jsons_class \
     import Gold_standard_jsons
+from tool_lib.py.analysis_tools_lib.text_analysis_tools import compare_texts
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
 #

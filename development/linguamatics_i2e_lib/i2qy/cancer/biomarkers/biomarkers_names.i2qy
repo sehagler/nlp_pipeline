@@ -4,7 +4,7 @@ query:
   document:
   - alternative:
       id: alternative1
-      of: [CK5/6, ER, HER2, Ki67, PR]
+      of: [ER, HER2, PR]
 output:
   columns:
   - {id: alternative1}

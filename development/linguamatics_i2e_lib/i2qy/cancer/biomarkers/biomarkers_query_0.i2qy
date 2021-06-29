@@ -9,43 +9,37 @@ query:
       - phrase:
           quantifier: {minimum: 0, maximum: 1}
           of: [IHC, staining]
+      - word:
+          text: result
+          quantifier: {minimum: 0, maximum: 1}
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
           of:
           - ':'
-          - phrase:
-            - word:
-                text: result
-                quantifier: {minimum: 0, maximum: 1}
-            - is
-      - link: {path: biomarkers_polariities.i2qy, id: link2}
-      - phrase:
-          maxWordGap: -1
+          - ;
+          - {class: /vg}
+      - link: {path: biomarkers_status.i2qy, id: link4}
+      - alternative:
           quantifier: {minimum: 0, maximum: 1}
-          wordGapRestricted: false
+          of: [':', ;]
+      - alternative:
+          id: alternative1
+          quantifier: {minimum: 0, maximum: 1}
+          showMultipleColumns: true
           of:
-          - (
-          - word:
-              text: )
-              quantifier: {minimum: 0, maximum: 0}
-          - link: {path: biomarkers_scores.i2qy, id: link3}
-          - word:
-              text: (
-              quantifier: {minimum: 0, maximum: 0}
-          - )
+          - link: {path: biomarkers_score.i2qy}
+          - link: {path: biomarkers_score_parenthetical.i2qy}
 output:
   columns:
   - {id: phrase1}
   - id: link1.alternative1
     itemOptions: {}
     linkItemId: link1
-  - id: link3.phrase1
+  - id: link4.alternative1
     itemOptions: {}
-    linkItemId: link3
-  - id: link2.alternative1
+    linkItemId: link4
+  - id: alternative1.col0
     itemOptions: {}
-    linkItemId: link2
-  columnLocations: [0, 1, 3, 2]
   outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
   useOutputEditor: true
 creator: szhang

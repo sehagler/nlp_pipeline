@@ -38,6 +38,7 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
+        manual_review_str = 'MANUAL_REVIEW'
         if len(text_list) > 0:
             biomarker_name_text_list = text_list[1]
             biomarker_score_text_list = text_list[3]
@@ -91,35 +92,47 @@ class Postprocessor(Postprocessor_base):
         for value in er_value_list:
             if len(value[0]) > 0 or len(value[1]) > 0:
                 value_dict = {}
-                if len(value[0]) > 0:
+                if len(value[0]) == 1:
                     value_dict['ER_STATUS'] = value[0]
-                if len(value[1]) > 0:
+                elif len(value[0]) > 1:
+                    value_dict['ER_STATUS'] = manual_review_str
+                if len(value[1]) == 1:
                     value_dict['ER_SCORE'] = value[1]
+                elif len(value[0]) > 1:
+                    value_dict['ER_SCORE'] = manual_review_str
                 value_dict['CONTEXT'] = value[2]
                 value_dict_list.append(value_dict)
         for value in her2_value_list:
             if len(value[0]) > 0 or len(value[1]) > 0:
                 value_dict = {}
-                if len(value[0]) > 0:
+                if len(value[0]) == 1:
                     value_dict['HER2_STATUS'] = value[0]
-                if len(value[1]) > 0:
+                elif len(value[0]) > 1:
+                    value_dict['HER2_STATUS'] = manual_review_str
+                if len(value[1]) == 1:
                     value_dict['HER2_SCORE'] = value[1]
+                elif len(value[0]) > 1:
+                    value_dict['HER2_SCORE'] = manual_review_str
                 value_dict['CONTEXT'] = value[2]
                 value_dict_list.append(value_dict)
         for value in pr_value_list:
             if len(value[0]) > 0 or len(value[1]) > 0:
                 value_dict = {}
-                if len(value[0]) > 0:
+                if len(value[0]) == 1:
                     value_dict['PR_STATUS'] = value[0]
-                if len(value[1]) > 0:
+                elif len(value[0]) > 1:
+                    value_dict['PR_STATUS'] = manual_review_str
+                if len(value[1]) == 1:
                     value_dict['PR_SCORE'] = value[1]
+                elif len(value[0]) > 1:
+                    value_dict['PR_SCORE'] = manual_review_str
                 value_dict['CONTEXT'] = value[2]
                 value_dict_list.append(value_dict)
         return value_dict_list
     
     #
     def _process_score(self, score):
-        score = re.sub(' (/|out of) [0-4](\+)?', '', score)
+        score = re.sub(' (/|(out )?of) [0-4](\+)?', '', score)
         match = re.search('[0-4](\+)? \- [0-4](\+)?', score)
         if match is not None:
             score = re.sub(' \- ', ',', match.group(0))
@@ -128,12 +141,11 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _process_status(self, status):
-        if status.lower() == 'amplified':
-            status = 'positive'
-        if status.lower() == 'immunoreactive':
-            status = 'positive'
-        if status.lower() == 'non-amplified':
+        if status.lower() in [ 'absent', 'non-amplified' ]:
             status = 'negative'
+        elif status.lower() in [ 'amplified', 'immunoreactive', 'present',
+                                 'strong' ]:
+            status = 'positive'
         return status
 
 #

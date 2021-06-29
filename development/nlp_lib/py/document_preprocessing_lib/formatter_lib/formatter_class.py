@@ -6,11 +6,27 @@ Created on Wed Jun 16 12:58:14 2021
 """
 
 #
+import re
+
+#
 from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Formatter(Preprocessor_base):
+    
+    #
+    def __init__(self, static_data):
+        Preprocessor_base.__init__(self, static_data)
+        self.body_header = 'SUMMARY'
+    
+    #
+    def _add_body_header(self):
+        self.text = self.body_header + '\n' + self.text
+        self.text = re.sub('^' + self.body_header + '\n' + self.body_header,
+                           self.body_header + '\n', self.text)
+        self.text = re.sub('^' + self.body_header + '[\n\s]*',
+                           self.body_header + '\n\n', self.text)
     
     #
     def _format_beakerap(self):
@@ -108,6 +124,18 @@ class Formatter(Preprocessor_base):
         self._general_command('\nDIFFERENTIAL', {None : '\nMANUAL DIFFERENTIAL'})
         self._general_command('\nImmunologic Analysis\n', {None : ''})
         self._general_command('\nMicroscopic Description\n', {None : ''})
+        self._process_command_list()
+        
+    #
+    def _pull_out_section_header(self, command):
+        self._clear_command_list()
+        self.command_list.append([ 1, command ])
+        self._process_command_list()
+        
+    #
+    def _pull_out_table_entry(self, command):
+        self._clear_command_list()
+        self.command_list.append([ 2, command ])
         self._process_command_list()
         
     #

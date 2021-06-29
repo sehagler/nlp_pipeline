@@ -44,6 +44,7 @@ class Pretokenizer(Preprocessor_base):
         self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         self.section_header_normalizer.push_text(self.text)
         self.section_header_normalizer.amendment_section_header(self.formatting)
+        self.section_header_normalizer.biomarkers_tests_section_header(self.formatting)
         self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
         self.section_header_normalizer.history_section_header(self.formatting)
         self.section_header_normalizer.person_section_header(self.formatting)
@@ -67,6 +68,7 @@ class Pretokenizer(Preprocessor_base):
               'TWENTY-FOUR HOUR EVENTS' ]
         self.section_header_normalizer.normalize_section_header(section_header_list,
                                                                 self.formatting)
+        self.section_header_normalizer.clear_section_header_tags()
         self.text = self.section_header_normalizer.pull_text()
         self.dynamic_memory_manager = \
             self.section_header_normalizer.pull_dynamic_data_manager()

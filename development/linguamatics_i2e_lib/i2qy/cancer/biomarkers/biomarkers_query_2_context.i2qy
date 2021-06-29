@@ -61,13 +61,12 @@ output:
   - id: link6.link1.link3.alternative1
     itemOptions: {}
     linkItemId: link3.link1.link6
+  - id: link6.link2.alternative1
+    itemOptions: {}
+    linkItemId: link2.link6
   - id: link6.link3.alternative1
     itemOptions: {}
     linkItemId: link3.link6
-  - id: link6.value1
-    columnOptions: [Empty]
-    isValueColumn: true
-    linkItemId: link6
   columnLocations: [1, 2, 3, 4, 0]
   useOutputEditor: true
 creator: haglers

@@ -9,7 +9,7 @@ query:
       - link: {path: biomarkers_query.i2qy}
       - alternative:
           includeInQuery: false
-          of: [ER, PR, HER2]
+          of: [ER, HER2, PR, TNBC]
 output:
   columns:
   - id: alternative1.col0
