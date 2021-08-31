@@ -15,7 +15,7 @@ class Software_manager(object):
     
     #
     def __init__(self, static_data_manager, server_manager):
-        self.static_data = static_data_manager.get_project_data()
+        self.static_data = static_data_manager.get_static_data()
         self.server_manager = server_manager
         self.directory_manager = self.static_data['directory_manager']
         self.network_manager = self.static_data['network_manager']

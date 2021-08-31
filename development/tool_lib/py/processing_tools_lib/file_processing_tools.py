@@ -6,6 +6,7 @@ Created on Tue Feb 25 14:46:48 2020
 """
 
 #
+from datetime import datetime
 import json
 import math
 import os
@@ -15,6 +16,10 @@ import xlrd
 import xml.etree.ElementTree as ET
 from xmldiff import main
 from zipfile import ZipFile
+
+#
+from tool_lib.py.processing_tools_lib.directory_processing_tools \
+    import create_directory
 
 #
 def __max_retries():
@@ -90,7 +95,15 @@ def _sort_files(files):
     return file_array, is_numeric
 
 #
-def _write_file(mode_flg, filename, data):
+def _write_file(filename, data, include_datetime_flg, verbose_flg):
+    extension = os.path.splitext(filename)[1]
+    if include_datetime_flg:
+        now = datetime.now()
+        datetime_str = now.strftime('_%Y%m%d_%H%M%S')
+        filename = os.path.splitext(filename)[0]
+        filename = filename + datetime_str + extension
+    if verbose_flg:
+        print('Writing file: ' + filename)
     max_retries = __max_retries()
     retry_sleep = __retry_sleep()
     _remove_file(filename)
@@ -98,12 +111,12 @@ def _write_file(mode_flg, filename, data):
     wrote_file = False
     while (not wrote_file) and (retry_ctr < max_retries):
         try:
-            if mode_flg == 0:
-                with open(filename, 'w+') as f:
-                    f.write(data)
-            elif mode_flg == 1:
+            if extension == '.json':
                 with open(filename, 'w') as f:
                     json.dump(data, f, indent=4)
+            else:
+                with open(filename, 'w+') as f:
+                    f.write(data)
             wrote_file = True
         except:
             if retry_ctr == 0:
@@ -169,83 +182,8 @@ def _write_zip_file(filename, data_files, zip_path, max_files_per_zip, remove_fi
 def read_json_file(filename):
     return _read_file(0, filename)
 
+'''
 #
-def read_nlp_data_from_package_json_file(static_data):
-    
-    json_structure_manager = static_data['json_structure_manager']
-    document_wrapper_key = \
-        json_structure_manager.pull_key('document_wrapper_key')
-    documents_wrapper_key = \
-        json_structure_manager.pull_key('documents_wrapper_key')
-    metadata_key = \
-        json_structure_manager.pull_key('metadata_key')
-    nlp_data_key = \
-        json_structure_manager.pull_key('nlp_data_key')
-    nlp_datum_key = \
-        json_structure_manager.pull_key('nlp_datum_key')
-    nlp_metadata_key = \
-        json_structure_manager.pull_key('nlp_metadata_key')
-    nlp_query_key = \
-        json_structure_manager.pull_key('nlp_query_key')
-    nlp_section_key = \
-        json_structure_manager.pull_key('nlp_section_key')
-    nlp_specimen_key = \
-        json_structure_manager.pull_key('nlp_specimen_key')
-    nlp_tool_output_key = \
-        json_structure_manager.pull_key('nlp_tool_output_key')
-    
-    nlp_data_tmp = read_package_json_file(static_data)
-    patient_identifiers = static_data['patient_identifiers']
-    if 'patient_list' in static_data.keys():
-        patient_list = static_data['patient_list']
-    else:
-        patient_list = None
-    nlp_data_tmp = nlp_data_tmp[documents_wrapper_key]
-    nlp_data = {}
-    for item in nlp_data_tmp:
-        for patient_identifier in patient_identifiers:
-            try:
-                patient = \
-                    item[document_wrapper_key][metadata_key][patient_identifier]
-            except:
-                pass
-        document_idx = \
-            item[document_wrapper_key][nlp_metadata_key]['NLP_DOCUMENT_IDX']
-        if patient_list is None or patient in patient_list:
-            nlp_data[document_idx] = {}
-            for key in item[document_wrapper_key].keys():
-                if key not in [nlp_data_key]:
-                    nlp_data[document_idx][key] = \
-                        item[document_wrapper_key][key]
-                else:
-                    data_in = item[document_wrapper_key][key]
-            data = {}
-            for item in data_in:
-                nlp_query_key_tmp = \
-                    item[nlp_datum_key][nlp_query_key]
-                nlp_section_key_tmp = \
-                    item[nlp_datum_key][nlp_section_key]
-                try:
-                    nlp_specimen_key_tmp = \
-                        item[nlp_datum_key][nlp_specimen_key]
-                except:
-                    nlp_specimen_key_tmp = ''
-                key_0 = str((nlp_section_key_tmp, nlp_specimen_key_tmp))
-                for key_1 in item[nlp_datum_key].keys():
-                    if key_0 not in data.keys():
-                        data[key_0] = {}
-                    if key_1 not in [nlp_query_key,
-                                     nlp_section_key,
-                                     nlp_specimen_key]:
-                        if key_1 == 'DIAGNOSIS':
-                            data[key_0]['DIAGNOSIS VALUE'] = \
-                                item[nlp_datum_key][key_1]
-                        else:
-                            data[key_0][nlp_query_key_tmp + '_' + key_1] = \
-                                item[nlp_datum_key][key_1]
-            nlp_data[document_idx][nlp_data_key] = data
-    return nlp_data
-
 def read_package_json_file(static_data):
     project_name = static_data['project_name']
     directory_manager = static_data['directory_manager']
@@ -253,6 +191,7 @@ def read_package_json_file(static_data):
     nlp_data = \
         read_json_file(os.path.join(data_dir, project_name + '.json'))
     return nlp_data
+'''
 
 #
 def read_xlsx_file(filename):
@@ -265,87 +204,23 @@ def read_xml_file(filename):
 #
 def remove_file(filename):
     _remove_file(filename)
-
-#
-def write_general_file(filename, data):
-    _write_file(0, filename, data)
         
 #
-def write_json_file(filename, data):
-    _write_file(1, filename, data)
-    
-#
-def write_nlp_data_to_package_json_file(static_data, data_in):
-    directory_manager = static_data['directory_manager']
-    
-    json_structure_manager = static_data['json_structure_manager']
-    document_wrapper_key = \
-        json_structure_manager.pull_key('document_wrapper_key')
-    documents_wrapper_key = \
-        json_structure_manager.pull_key('documents_wrapper_key')
-    metadata_key = \
-        json_structure_manager.pull_key('metadata_key')
-    nlp_data_key = \
-        json_structure_manager.pull_key('nlp_data_key')
-    nlp_datetime_key = \
-        json_structure_manager.pull_key('nlp_datetime_key')
-    nlp_datum_key = \
-        json_structure_manager.pull_key('nlp_datum_key')
-    nlp_metadata_key = \
-        json_structure_manager.pull_key('nlp_metadata_key')
-    nlp_performance_key = \
-        json_structure_manager.pull_key('nlp_performance_key')
-    nlp_query_key = \
-        json_structure_manager.pull_key('nlp_query_key')
-    nlp_section_key = \
-        json_structure_manager.pull_key('nlp_section_key')
-    nlp_specimen_key = \
-        json_structure_manager.pull_key('nlp_specimen_key')
-    nlp_source_text_key = \
-        json_structure_manager.pull_key('nlp_source_text_key')
-    nlp_text_element_key = \
-        json_structure_manager.pull_key('nlp_text_element_key')
-    nlp_text_key = \
-        json_structure_manager.pull_key('nlp_text_key')
-    nlp_tool_output_key = \
-        json_structure_manager.pull_key('nlp_tool_output_key')
-    nlp_value_key = \
-        json_structure_manager.pull_key('nlp_value_key')
-        
-    # to be moved to appropriate location
-    multiple_specimens = \
-        json_structure_manager.pull_key('multiple_specimens')
-    multiple_values = \
-        json_structure_manager.pull_key('multiple_values')
-    #
-    
-    project_name = static_data['project_name']
-    save_dir = directory_manager.pull_directory('processing_data_dir')
-    
-    documents = []
-    for key_0 in data_in.keys():
-        document_in = data_in[key_0]
-        document = {}
-        for key_1 in document_in.keys():
-            if key_1 != 'RAW_TEXT':
-                if key_1 not in [nlp_data_key, 'PREPROCESSED_TEXT']:
-                    document[key_1] = document_in[key_1]
-                elif key_1 == 'PREPROCESSED_TEXT':
-                    document[nlp_source_text_key] = document_in[key_1]
-                else:
-                    data_tmp = document_in[key_1]
-        data = []
-        for key_1 in data_tmp:
-            for key_2 in data_tmp[key_1]:
-                data.append({ nlp_datum_key : data_tmp[key_1][key_2] })
-        document[nlp_data_key] = data
-        document_wrapper = {}
-        document_wrapper[document_wrapper_key] = document
-        documents.append(document_wrapper)
-    documents_wrapper = {}
-    documents_wrapper[documents_wrapper_key] = documents
-    write_json_file(os.path.join(save_dir, project_name + '.json'),
-                    documents_wrapper)
+def write_file(filename, data, include_datetime_flg, multiple_files_flg):
+    if multiple_files_flg:
+        max_documents = 1000
+        documents = data['DOCUMENTS']
+        documents_chunks = []
+        while len(documents) > max_documents:
+            documents_chunks.append(documents[0:max_documents])
+            del documents[0:max_documents]
+        documents_chunks.append(documents)
+        for chunk in documents_chunks:
+            data = {}
+            data['DOCUMENTS'] = chunk
+            _write_file(filename, data, include_datetime_flg, True)
+    else:
+        _write_file(filename, data, include_datetime_flg, False)
     
 #
 def write_zip_file(filename, data, zip_path, max_files_per_zip, remove_file_flg=True):

@@ -20,10 +20,12 @@ from tool_lib.py.query_tools_lib.date_tools import compare_dates
 class CCC19_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, project_manager):
-        project_data = project_manager.get_project_data()
-        Performance_data_manager.__init__(self, project_manager)
-        self.project_data = project_data
+    def __init__(self, static_data_manager, performance_json_manager,
+                 project_json_manager):
+        Performance_data_manager.__init__(self, static_data_manager, 
+                                          performance_json_manager,
+                                          project_json_manager)
+        self.static_data = static_data_manager.get_static_data()
     
     #
     def _get_nlp_data(self, data_in):
@@ -33,7 +35,7 @@ class CCC19_performance_data_manager(Performance_data_manager):
         if data_out['CANCER_STAGE'] is not None:
             data_out['CANCER_STAGE'] = data_out['CANCER_STAGE'][0]
         data_out['NORMALIZED_ECOG_SCORE'] = \
-            self._get_data_value(data_in, None, 'ECOG_SCORE_' + self.nlp_value_key, 'NORMALIZED_ECOG_SCORE', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'ECOG_STATUS_' + self.nlp_value_key, 'NORMALIZED_ECOG_SCORE', mode_flg='single_value')
         if data_out['NORMALIZED_ECOG_SCORE'] is not None:
             data_out['NORMALIZED_ECOG_SCORE'] = \
                 data_out['NORMALIZED_ECOG_SCORE'][0]
@@ -62,10 +64,10 @@ class CCC19_performance_data_manager(Performance_data_manager):
         return data_out
         
     #
-    def _read_validation_data(self, project_data):
-        directory_manager = project_data['directory_manager']
-        patient_list = project_data['patient_list']
-        project_name = project_data['project_name']
+    def _read_validation_data(self, static_data):
+        directory_manager = static_data['directory_manager']
+        patient_list = static_data['patient_list']
+        project_name = static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         book = read_xlsx_file(os.path.join(data_dir, 'ccc19_testing.xlsx'))
         sheet = book.sheet_by_index(0)
@@ -93,8 +95,8 @@ class CCC19_performance_data_manager(Performance_data_manager):
     #
     def calculate_performance(self):
         nlp_data = self.nlp_data
-        validation_data = self._read_validation_data(self.project_data)
-        csn_list = self.project_data['document_list']
+        validation_data = self._read_validation_data(self.static_data)
+        csn_list = self.static_data['document_list']
         validation_mrn_list = []
         validation_csn_list =  []
         for item in validation_data:
@@ -110,6 +112,7 @@ class CCC19_performance_data_manager(Performance_data_manager):
         nlp_smoking_products_performance = []
         nlp_smoking_status_performance = []
         for csn in validation_csn_list:
+            print(csn)
             data_out = nlp_values[csn]
             if data_out is not None:
                 if 'CANCER_STAGE' in data_out.keys():
@@ -217,7 +220,7 @@ class CCC19_performance_data_manager(Performance_data_manager):
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_ecog_score_performance)
-            performance_statistics_dict['ECOG_SCORE'] = \
+            performance_statistics_dict['ECOG_STATUS'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_smoking_history_performance)
@@ -229,7 +232,7 @@ class CCC19_performance_data_manager(Performance_data_manager):
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_smoking_status_performance)
-            performance_statistics_dict['SMOKING STATUS'] = \
+            performance_statistics_dict['SMOKING_STATUS'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             print('\n')
             print('number of docs:\t\t%d' % num_docs)

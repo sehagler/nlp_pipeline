@@ -9,36 +9,38 @@ Created on Thu Apr 16 09:39:27 2020
 import ast
 import collections
 from copy import deepcopy
-import re
-
-#
 from distutils.dir_util import copy_tree
 import getpass
 from jsondiff import diff
 import os
+import re
 import shutil
 
 #
+from nlp_lib.py.file_lib.json_manager_class import Json_manager
 from nlp_lib.py.logger_lib.logger_class import Logger
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_nlp_data_from_package_json_file, write_json_file, xml_diff
+    import write_file, xml_diff
 
 #
 class Performance_data_manager(object):
     
     #
-    def __init__(self, static_data_manager):
-        project_data = static_data_manager.get_project_data()
-        self.directory_manager = project_data['directory_manager']
+    def __init__(self, static_data_manager, performance_json_manager,
+                 project_json_manager):
+        self.performance_json_manager = performance_json_manager
+        self.project_json_manager = project_json_manager
+        static_data = static_data_manager.get_static_data()
+        self.directory_manager = static_data['directory_manager']
         self.save_dir = \
             self.directory_manager.pull_directory('processing_data_dir')
-        self.project_data = project_data
         
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
-        self.static_data = project_data
+        self.static_data = static_data
+        self.static_data_manager = static_data_manager
        
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -71,14 +73,12 @@ class Performance_data_manager(object):
             json_structure_manager.pull_key('nlp_value_key')
             
         # to be moved to appropriate location
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.multiple_specimens = \
             json_structure_manager.pull_key('multiple_specimens')
         self.multiple_values = \
             json_structure_manager.pull_key('multiple_values')
         #
-    
-        self.directory_manager = project_data['directory_manager']
         
     #
     def _compare_data_values(self, x, y):
@@ -381,10 +381,9 @@ class Performance_data_manager(object):
             
     #
     def read_nlp_data(self):
-        self.nlp_data = read_nlp_data_from_package_json_file(self.static_data)
+        self.nlp_data = \
+            self.project_json_manager.read_nlp_data_from_package_json_file()
          
     #
     def write_performance_data(self):
-        project_name = self.project_data['project_name']
-        write_json_file(os.path.join(self.save_dir, project_name + '.performance.json'),
-                        self.performance_statistics_dict)
+        self.performance_json_manager.write_file(self.performance_statistics_dict)

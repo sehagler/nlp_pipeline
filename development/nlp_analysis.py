@@ -10,33 +10,44 @@ import getpass
 import sys
 
 #
+sys.dont_write_bytecode = True
+
+#
 server_base = '/home/groups/hopper2/RDW_NLP_WORKSPACE/NLP'
 x_root_base = 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP'
 z_root_base = 'Z:/NLP'
 
 #
-operation_modes = [ 'development', 'production' ]
 project_names = [ 'AdverseEvents', 'BeatAML_Waves_1_And_2',
                   'BeatAML_Waves_3_And_4', 'BreastCancerPathology', 'CCC19' ]
 project_subdirs = [ 'production', 'test' ]
-root_dir_flg = [ 'X', 'Z', 'server' ]
+root_dirs = [ 'X', 'Z', 'server' ]
+servers = [ 'development', 'production' ]
 
 #
-mode_flgs = [ 'prequeries', 'postqueries' ]
+pipeline_mode_flgs = [ 'prequeries', 'postqueries' ]
 
 #
-operation_mode = operation_modes[0]
-project_name = project_names[3]
+mode_flgs = [ 'update', 'run' ]
+
+#
+project_name = project_names[2]
 project_subdir = project_subdirs[1]
-root_dir_flg = root_dir_flg[2]
-mode_flg = mode_flgs[0]
+root_dir = root_dirs[2]
+server = servers[0]
 
 #
-if root_dir_flg == 'server':
+pipeline_mode_flg = pipeline_mode_flgs[0]
+
+#
+mode_flg = mode_flgs[1]
+
+#
+if root_dir == 'server':
     root_base = server_base + '/NLP_Sandbox/' + getpass.getuser()
-elif root_dir_flg == 'X':
+elif root_dir == 'X':
     root_base = x_root_base + '/NLP_Sandbox/' + getpass.getuser()
-elif root_dir_flg == 'Z':
+elif root_dir == 'Z':
     root_base = z_root_base + '/NLP_Sandbox/' + getpass.getuser()
 else:
     print('unknown root_base')
@@ -45,7 +56,7 @@ else:
 software_base = root_base + '/NLP_Software/'
 
 #
-if False:
+if mode_flg == 'update':
                 
     #
     software_path = software_base + 'development'
@@ -53,24 +64,24 @@ if False:
     from nlp_lib.py.nlp_processor_lib.nlp_processor import Nlp_processor
     password = getpass.getpass()
     nlp_process = Nlp_processor()
-    nlp_process.software_manager(password, root_dir_flg)
+    nlp_process.software_manager(password, root_dir)
     nlp_process.move_software()
     
-#
-if True:
+elif mode_flg == 'run':
 
     #
-    software_path = software_base + operation_mode
+    software_path = software_base + server
     sys.path.insert(0, software_path)
     from nlp_lib.py.nlp_processor_lib.nlp_processor import Nlp_processor
     password = getpass.getpass()
     nlp_process = Nlp_processor()
-    nlp_process.pipeline_manager(password, operation_mode, project_name,
-                                 project_subdir, root_dir_flg)
+    nlp_process.pipeline_manager(server, root_dir, project_subdir,
+                                 project_name, password)
+    #nlp_process.fix_linguamatics_i2e_queries()
     #nlp_process.generate_training_data_sets(password)
-    if mode_flg == 'prequeries':
+    if pipeline_mode_flg == 'prequeries':
         nlp_process.prequeries(password)
-    elif mode_flg == 'postqueries':
+    elif pipeline_mode_flg == 'postqueries':
         nlp_process.postqueries_preperformance()
         if project_subdir == 'test':
             nlp_process.calculate_performance()

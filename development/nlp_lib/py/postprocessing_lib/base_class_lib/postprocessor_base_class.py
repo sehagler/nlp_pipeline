@@ -7,14 +7,18 @@ Created on Fri Oct 26 13:39:32 2018
 
 #
 import csv
+import os
 import re
 
 #
 class Postprocessor_base(object):
     
     #
-    def __init__(self, project_data, label, data_file):
-        json_structure_manager = project_data['json_structure_manager']
+    def __init__(self, static_data, data_file, query_name=None):
+        directory_manager = static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+        data_file = os.path.join(data_dir, data_file)
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -53,7 +57,11 @@ class Postprocessor_base(object):
             json_structure_manager.pull_key('multiple_values')
         #
         
-        self.label = label
+        if query_name is None:
+            base = os.path.basename(data_file)
+            query_name = os.path.splitext(base)[0]
+            query_name = query_name.upper()
+        self.query_name = query_name
         self.data_csv = {}
         try:
             with open(data_file,'r') as f:
@@ -61,9 +69,12 @@ class Postprocessor_base(object):
                 line_count = 0
                 for row in csv_reader:
                     if line_count > 0:
-                        if row[1] not in self.data_csv.keys():
-                            self.data_csv[row[1]] = []
-                        self.data_csv[row[1]].append(row[2:])
+                        #if row[1] not in self.data_csv.keys():
+                        #    self.data_csv[row[1]] = []
+                        #self.data_csv[row[1]].append(row[2:])
+                        if row[2] not in self.data_csv.keys():
+                            self.data_csv[row[2]] = []
+                        self.data_csv[row[2]].append(row[3:])
                     line_count += 1
         except:
             pass
@@ -79,14 +90,14 @@ class Postprocessor_base(object):
                 value_list = list(set(value_list))
             except:
                 pass
-            self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_value_key] \
+            self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_value_key] \
                 = value_list
-        self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_query_key] \
-            = self.label
-        self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_section_key] \
+        self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_query_key] \
+            = self.query_name
+        self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_section_key] \
             = key[0]
         if key[1]:
-            self.data_dict_list[idx][self.nlp_data_key][key][self.label][self.nlp_specimen_key] \
+            self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_specimen_key] \
                 = key[1]
     
     #
@@ -108,7 +119,8 @@ class Postprocessor_base(object):
             entry.append(item[0])
             entry.append(item[5])
             document_frame.append(entry)
-            num_elements = len(item) - 15
+            #num_elements = len(item) - 15
+            num_elements = len(item) - 11
             for i in range(num_elements):
                 entry.append(item[6+i])
         return(document_frame)
@@ -127,18 +139,19 @@ class Postprocessor_base(object):
                     elements = []
                 if key not in self.data_dict_list[i][self.nlp_data_key].keys():
                     self.data_dict_list[i][self.nlp_data_key][key] = {}
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
-                if self.nlp_tool_output_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label]:
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key] = {}
-                if self.nlp_datetime_key not in self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key].keys():
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_datetime_key] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
-                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_datetime_key].append(datetime)
-                self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(text)
+                if self.query_name not in self.data_dict_list[i][self.nlp_data_key][key]:
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name] = {}
+                if self.nlp_tool_output_key not in self.data_dict_list[i][self.nlp_data_key][key][self.query_name]:
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key] = {}
+                if self.nlp_datetime_key not in self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys():
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_datetime_key] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
+                self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_datetime_key].append(datetime)
+                self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(text)
                 for j in range(len(elements)):
-                    if self.nlp_element_key+str(j+1) not in self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key].keys():
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key+str(j+1)] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key+str(j+1)].append(elements[j])
+                    if self.nlp_element_key+str(j+1) not in self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys():
+                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key+str(j+1)] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key+str(j+1)].append(elements[j])
     
     #
     def _create_data_structure(self, match_str):
@@ -149,10 +162,11 @@ class Postprocessor_base(object):
                     entry_text = entry[2]
                     if key not in self.data_dict_list[i][self.nlp_data_key]:
                         self.data_dict_list[i][self.nlp_data_key][key] = {}
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label] = {}
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key] = {}
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
-                    self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(entry_text)
+                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name] = {}
+                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key] = {}
+                    if self.nlp_element_key + str(0) not in self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys():
+                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(entry_text)
     
     #
     def _extract_data_value(self, text_list):
@@ -164,7 +178,7 @@ class Postprocessor_base(object):
             for key in self.data_dict_list[i][self.nlp_data_key]:
                 try:
                     text_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(0)]
+                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)]
                 except:
                     text_list = []
                 value_list = self._extract_data_value(text_list)
@@ -176,13 +190,13 @@ class Postprocessor_base(object):
             for key in self.data_dict_list[i][self.nlp_data_key]:
                 try:
                     keys = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key].keys()
+                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys()
                     element_keys = [k for k in keys if self.nlp_element_key in k]
                     element_keys = list(set(element_keys))
                     if len(element_keys) > 0:
                         text_list = []
                         for j in range(len(element_keys)):
-                            text_list.append(self.data_dict_list[i][self.nlp_data_key][key][self.label][self.nlp_tool_output_key][self.nlp_element_key + str(j)])
+                            text_list.append(self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(j)])
                 except:
                     text_list = []
                 value_list = self._extract_data_value(text_list)

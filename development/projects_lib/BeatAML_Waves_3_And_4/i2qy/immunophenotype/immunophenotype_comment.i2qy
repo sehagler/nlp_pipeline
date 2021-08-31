@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2019-04-10 18:20:03'
 query:
   document:
@@ -36,7 +36,7 @@ query:
                     view: {layout: list}
                     of: [negative, positive]
                 - for
-          - link: {path: ../../General/cancer/immunophenotype/immunophenotype_query.i2qy}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy}
 output:
   columns:
   - {id: alternative1}

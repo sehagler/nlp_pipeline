@@ -11,15 +11,15 @@ import re
 #
 from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
 
     #
-    def __init__(self, project_data, data_file, label):
-        Postprocessor_base.__init__(self, project_data, label, data_file,
-                                    None, None)
+    def __init__(self, static_data, data_file):
+        Postprocessor_base.__init__(self, static_data, data_file)
         #self._find_text_instances()
         #self._remove_commas_from_extracted_text()
         #self._atomize_tnm_stage()
@@ -71,6 +71,23 @@ class Postprocessor(Postprocessor_base):
 
 #
 class Summarization(Preprocessor_base):
+    
+    #
+    def process_tnm_staging(self):
+        self._clear_command_list()
+        text_list = []
+        text_list.append('(?i)(pathologic( tumor)?|TNM) stag(e|ing)')
+        text_list.append('(?i)stage summary')
+        for text_str in text_list:
+            self._general_command(text_str, {None : 'Stage'})
+        self._process_command_list()
+        
+    #
+    def remove_extraneous_text(self):
+        self._clear_command_list()
+        self._general_command('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', {None : ''})
+        self._general_command('(?i)(\( )?AJCC( \))?', {None : ''})
+        self._process_command_list()
     
     #
     def remove_tnm_staging(self):

@@ -22,8 +22,8 @@ from tool_lib.py.query_tools_lib.date_tools import get_date_difference
 class Specimens_jsons(Specimens_base):
     
     #
-    def __init__(self, project_data, data_json):
-        self.directory_manager = project_data['directory_manager']
+    def __init__(self, static_data, data_json):
+        self.directory_manager = static_data['directory_manager']
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
         specimen_tree = self._identify_documents_with_same_proc_nm(deepcopy(data_json))

@@ -6,11 +6,12 @@ Created on Thu Dec 19 12:35:50 2019
 """
 
 #
-from nlp_lib.py.static_data_lib.directory_manager_class \
+from nlp_lib.py.static_data_lib.manager_lib.directory_manager_class \
     import Directory_manager
 from tool_lib.py.structure_tools_lib.json_structure_tools \
     import Json_structure_tools
-from nlp_lib.py.static_data_lib.network_manager_class import Network_manager
+from nlp_lib.py.static_data_lib.manager_lib.network_manager_class \
+    import Network_manager
 
 #
 class Static_data_manager(object):
@@ -45,5 +46,5 @@ class Static_data_manager(object):
             Json_structure_tools()
         
     #
-    def get_project_data(self):
+    def get_static_data(self):
         return self.static_data

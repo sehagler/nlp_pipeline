@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2018-10-26 16:03:06'
 query:
   document:
@@ -23,7 +23,7 @@ query:
               pt: Specimen Description
               where:
               - link: {path: immunophenotype_comment.i2qy, id: link2}
-  - link: {path: /api;type=saved_query/__private__/haglers/BeatAML_Waves_1_And_2/tools_lib/document_filter_query.i2qy}
+  - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:
   - {id: region1}

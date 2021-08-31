@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2019-01-30 17:22:01'
 query:
   document:
@@ -28,7 +28,7 @@ query:
           displayChildren: false
           quantifier: {minimum: 0, maximum: 0}
           of: [peripheral, blood]
-      - link: {path: ../../General/cancer/blast_%/bone_marrow_blast_%/bone_marrow_blast_%_query.i2qy, id: link2}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/bone_marrow_blast_%25/bone_marrow_blast_%25_query.i2qy, id: link2}
 output:
   columns:
   - id: link2.phrase1

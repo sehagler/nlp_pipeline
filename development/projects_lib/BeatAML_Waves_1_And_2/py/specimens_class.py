@@ -22,9 +22,9 @@ from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 class Specimens(Specimens_jsons):
     
     #
-    def __init__(self, project_data, metadata_dict_dict, data_json):
+    def __init__(self, static_data, metadata_dict_dict, data_json):
             
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -66,10 +66,10 @@ class Specimens(Specimens_jsons):
         #
         
         self.metadata_dict_dict = metadata_dict_dict
-        directory_manager = project_data['directory_manager']
+        directory_manager = static_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
-        Specimens_jsons.__init__(self, project_data, data_json)
+        Specimens_jsons.__init__(self, static_data, data_json)
     
     #                 
     def _evaluate_antibodies_tested(self):

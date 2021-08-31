@@ -1,0 +1,73 @@
+version: 6.3
+creationDate: '2021-08-11 21:32:49'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - phrase:
+        - phrase:
+            maxWordGap: -1
+            wordGapRestricted: false
+            of:
+            - phrase:
+              - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link1}
+              - word: {text: result, morphoVariants: true, showInDefaultOutput: false}
+            - link:
+                path: ../breast_cancer_biomarkers_names_list.i2qy
+                quantifier: {minimum: 0, maximum: 0}
+            - word: {text: ':', showInDefaultOutput: false}
+        - link: {path: ../breast_cancer_biomarkers_status.i2qy, id: link2}
+      - link:
+          path: ../breast_cancer_biomarkers_names_list.i2qy
+          quantifier: {minimum: 0, maximum: 0}
+      - phrase:
+        - phrase:
+            maxWordGap: -1
+            wordGapRestricted: false
+            of:
+            - phrase:
+              - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, showInDefaultOutput: false}
+              - word: {text: '%', showInDefaultOutput: false}
+            - link:
+                path: ../breast_cancer_biomarkers_names_list.i2qy
+                quantifier: {minimum: 0, maximum: 0}
+            - word: {text: ':', showInDefaultOutput: false}
+        - link: {path: ../breast_cancer_biomarkers_percentage.i2qy, id: link7}
+      - link:
+          path: ../breast_cancer_biomarkers_names_list.i2qy
+          quantifier: {minimum: 0, maximum: 0}
+      - phrase:
+        - phrase:
+            maxWordGap: -1
+            wordGapRestricted: false
+            of:
+            - phrase:
+              - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, showInDefaultOutput: false}
+              - word: {text: stain, morphoVariants: true, showInDefaultOutput: false}
+            - link:
+                path: ../breast_cancer_biomarkers_names_list.i2qy
+                quantifier: {minimum: 0, maximum: 0}
+            - word: {text: ':', showInDefaultOutput: false}
+        - link: {path: ../breast_cancer_biomarkers_score.i2qy, id: link12}
+output:
+  columns:
+  - id: link2.alternative1
+    itemOptions: {}
+    linkItemId: link2
+  - id: link7.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link7
+  - {id: phrase1}
+  - id: link12.phrase1
+    itemOptions: {}
+    linkItemId: link12
+  - id: link1.link4.class1
+    itemOptions: {}
+    linkItemId: link4.link1
+  columnLocations: [2, 4, 0, 3, 1]
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+creator: haglers

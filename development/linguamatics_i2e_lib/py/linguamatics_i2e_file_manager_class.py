@@ -9,10 +9,10 @@ Created on Fri Jan 18 08:18:53 2019
 class Linguamatics_i2e_file_manager(object):
 
     #
-    def __init__(self, project_data):
-        project_name = project_data['project_name']
-        directory_manager = project_data['directory_manager']
-        json_files_key_value = project_data['json_files_key_value']
+    def __init__(self, static_data):
+        project_name = static_data['project_name']
+        directory_manager = static_data['directory_manager']
+        json_files_key_value = static_data['json_files_key_value']
         self.directory_manager = directory_manager
         source_data_filename = project_name + ".source_data.zip"
         keywords_filename = project_name + ".keywords.txt"
@@ -31,7 +31,7 @@ class Linguamatics_i2e_file_manager(object):
         self.keywords_filename = \
             self.directory_manager.pull_directory('processing_data_dir') + '/' + keywords_filename
         self.query_bundle_path = \
-            '/Repository/Saved Queries/__private__/' + project_data['user'] + '/'
+            '/Repository/Saved Queries/__private__/' + static_data['user'] + '/'
         self.resource_files_dict = {}
         self.resource_files_dict['region_list'] = \
             self.directory_manager.pull_directory('processing_data_dir') + '/' + regions_filename

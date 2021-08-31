@@ -25,8 +25,9 @@ class Named_entity_recognition(Preprocessor_base):
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, project_data, data_file, label):
-        Postprocessor_base.__init__(self, project_data, label, data_file)
+    def __init__(self, static_data, data_file):
+        Postprocessor_base.__init__(self, static_data, data_file,
+                                    query_name='KARYOTYPE')
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}
         self._create_data_structure('(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')

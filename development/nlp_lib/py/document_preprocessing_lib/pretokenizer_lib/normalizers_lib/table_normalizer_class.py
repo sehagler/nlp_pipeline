@@ -71,7 +71,8 @@ class Table_normalizer(Preprocessor_base):
         return('(?i)\n')
     
     #
-    def normalize_table(self):
+    def process_text(self, text):
+        self.push_text(text)
         self._general_command('(?i),? POC', {None : ''})
         self._normalize_atypical_cell()
         self._normalize_basophil()
@@ -81,10 +82,12 @@ class Table_normalizer(Preprocessor_base):
         self._normalize_ig()
         self._normalize_lymphocyte()
         self._normalize_monocyte()
-        self._normalize_myeocyte()
+        self._normalize_myelocyte()
         self._normalize_neutrophil()
         self._normalize_nrbc()
         self._general_command(self._pre_punct() + 'plt', {None : '\nPLT'})
         self._general_command(self._pre_punct() + 'PLATELET COUNT', {None : '\nPLT'})
         self._general_command(self._pre_punct() + 'RED CELL COUNT', {None : '\nRBC'})
         self._general_command(self._pre_punct() + 'WHITE CELL COUNT', {None : '\nWBC'})
+        text = self.pull_text()
+        return text

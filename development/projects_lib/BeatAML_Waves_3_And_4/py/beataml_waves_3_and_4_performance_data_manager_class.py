@@ -21,10 +21,14 @@ from tool_lib.py.query_tools_lib.date_tools import compare_dates
 class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager):
-        project_data = static_data_manager.get_project_data()
+    def __init__(self, static_data_manager, performance_json_manager,
+                 project_json_manager):
+        Performance_data_manager.__init__(self, static_data_manager,
+                                          performance_json_manager,
+                                          project_json_manager)
+        static_data = static_data_manager.get_static_data()
         
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -62,9 +66,8 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         self.multiple_values = \
             json_structure_manager.pull_key('multiple_values')
         #
-        
-        Performance_data_manager.__init__(self, static_data_manager)
-        self.project_data = project_data
+
+        self.static_data = static_data
     
     #
     def _compare_values_antigens(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
@@ -446,7 +449,7 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         if data_out['specificDx'] is not None:
             data_out['specificDx'] = data_out['specificDx'][0]
         data_out['Surface.Antigens.(Immunohistochemical.Stains)'] = \
-            self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SURFACE_ANTIGENS_' + self.nlp_value_key, 'IMMUNOPHENOTYPE')
+            self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE_' + self.nlp_value_key, 'IMMUNOPHENOTYPE')
         if data_out['Surface.Antigens.(Immunohistochemical.Stains)'] is not None:
             data_out['Surface.Antigens.(Immunohistochemical.Stains)'] = \
                 data_out['Surface.Antigens.(Immunohistochemical.Stains)'][0]
@@ -515,14 +518,14 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
                     data_json[mrn][specimen_date][proc_nm] = {}
                 if doc_name not in data_json[mrn][specimen_date][proc_nm].keys():
                     data_json[mrn][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
-        validation_object = Specimens(self.project_data, metadata_dict_dict, data_json)
+        validation_object = Specimens(self.static_data, metadata_dict_dict, data_json)
         validation_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
         nlp_values = validation_object.get_data_json()
         return nlp_values
     
     #
-    def _read_validation_data(self, project_data, nlp_data):
-        mrn_list = project_data['patient_list']
+    def _read_validation_data(self, static_data, nlp_data):
+        mrn_list = static_data['patient_list']
         gold_standard_object = Gold_standard_jsons(self.directory_manager, mrn_list)
         gold_standard_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'gold_standard.json')
         validation_data = gold_standard_object.get_data_json()
@@ -532,7 +535,7 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     def calculate_performance(self):
         nlp_data = self.nlp_data
         validation_data = \
-            self._read_validation_data(self.project_data, nlp_data)
+            self._read_validation_data(self.static_data, nlp_data)
         full_specimen_ctr = 0
         gs_record_ctr = 0
         patient_ids_list = []

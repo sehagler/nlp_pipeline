@@ -11,13 +11,16 @@ import re
 #
 from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self,project_data, data_file, label):
-        Postprocessor_base.__init__(self, project_data, label, data_file)
+    def __init__(self,static_data, data_file):
+        Postprocessor_base.__init__(self, static_data, data_file,
+                                    query_name='FISH_ANALYSIS_SUMMARY')
         for i in range(len(self.data_dict_list)):
             self.data_dict_list[i][self.nlp_data_key] = {}
         self._create_data_structure('FISH ANALYSIS SUMMARY \d')
@@ -30,7 +33,7 @@ class Postprocessor(Postprocessor_base):
         entry_text = text_list[0]
         entry_text = re.sub('\( ', '(', entry_text)
         entry_text = re.sub(' (?=(:|,|\)))', '', entry_text)
-        entry_text = re.sub('(?i)preliminary (report date|results).*', '', entry_text)
+        entry_text = re.sub('(?i)preliminary (report|results).*', '', entry_text)
         entry_text = re.sub('(?i)\*\*amended (for|to).*', '', entry_text)
         entry_text = re.sub(':[ \n\t]*$', '', entry_text)
         value_list = []
@@ -41,3 +44,12 @@ class Postprocessor(Postprocessor_base):
             value_dict['FISH_ANALYSIS_SUMMARY'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
+    
+#
+class Summarization(Preprocessor_base):
+    
+    #
+    def remove_extraneous_text(self):
+        self._clear_command_list()
+        self._general_command('(?i)[\n\s]+by FISH', {None : ''})
+        self._process_command_list()

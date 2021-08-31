@@ -1,0 +1,16 @@
+version: 6.3
+creationDate: '2021-06-23 23:16:00'
+query:
+  document:
+  - phrase:
+    - (
+    - word:
+        text: )
+        quantifier: {minimum: 0, maximum: 0}
+    - link: {path: breast_cancer_biomarkers_status.i2qy}
+    - word:
+        text: (
+        quantifier: {minimum: 0, maximum: 0}
+    - )
+output: {useOutputEditor: true}
+creator: haglers

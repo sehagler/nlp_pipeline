@@ -33,7 +33,7 @@ class Document_preprocessing_manager(object):
     
     #
     def __init__(self, static_data_manager):
-        static_data = static_data_manager.get_project_data()
+        static_data = static_data_manager.get_static_data()
         self.deidentifier = Deidentifier(static_data)
         self.formatter = Formatter(static_data)
         self.named_entity_recognition = Named_entity_recognition(static_data)

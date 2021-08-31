@@ -19,7 +19,7 @@ class Preprocessing_worker(object):
     
     #
     def __init__(self, static_data_manager, preprocess_files_flg):
-        self.static_data = static_data_manager.get_project_data()
+        self.static_data = static_data_manager.get_static_data()
         self.preprocess_files_flg = preprocess_files_flg
         self.server = self.static_data['acc_server'][2]
         self.user = self.static_data['user']

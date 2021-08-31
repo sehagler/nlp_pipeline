@@ -12,13 +12,15 @@ import statistics
 #
 from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, project_data, data_file, label):
-        Postprocessor_base.__init__(self, project_data, label, data_file)
+    def __init__(self, static_data, data_file):
+        Postprocessor_base.__init__(self, static_data, data_file)
         self._extract_data_values()
         
     #
@@ -34,7 +36,7 @@ class Postprocessor(Postprocessor_base):
                 value_list.append(match.group(0))
                 if re.search('(?i)(blast|cell|involve|WBC)', text):
                     value_flg = True
-            elif re.search('(?i)(occasional|no definitive)', text) is not None:
+            elif re.search('(?i)(occasional|no definitive|rare)', text) is not None:
             #elif re.search('(?i)(no definitive)', text) is not None:
                 value_list.append('0')
                 if re.search('(?i)(blast|cell|involve|WBC)', text):
@@ -172,6 +174,23 @@ class Postprocessor(Postprocessor_base):
             value_dict['BLAST_PERCENTAGE'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
+    
+#
+class Named_entity_recognition(Preprocessor_base):
+    
+    #
+    def process_biomarkers(self):
+        self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
+    
+#
+class Summarization(Preprocessor_base):
+    
+    #
+    def remove_extraneous_text(self):
+        self._clear_command_list()
+        self._general_command('(?i)[\n\s]+by IHC', {None : ''})
+        self._general_command('(?i)[\n\s]+by immunostain', {None : ''})
+        self._process_command_list()
 
 #
 def get_blast_value(blast_value_list):

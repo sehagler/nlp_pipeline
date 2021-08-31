@@ -15,48 +15,57 @@ import shutil
 import time
 
 #
-from linguamatics_i2e_lib.py.linguamatics_i2e_manager_class \
-    import Linguamatics_i2e_manager
 from nlp_lib.py.dynamic_data_lib.dynamic_data_manager_class \
     import Dynamic_data_manager
 from nlp_lib.py.packaging_lib.packaging_manager_class import Packaging_manager
 from nlp_lib.py.process_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
+from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
+    import Postprocessing_manager
 from nlp_lib.py.raw_data_lib.raw_data_manager_class import Raw_data_manager
 
 #
 class Process_manager(object):
     
     #
-    def __init__(self, static_data_manager, metadata_manager, server_manager,
-                 password):
+    def __init__(self, static_data_manager, linguamatics_i2e_manager,
+                 metadata_manager, server_manager, performance_json_manager,
+                 project_json_manager, password):
         self.static_data_manager = static_data_manager
+        self.linguamatics_i2e_manager = linguamatics_i2e_manager
         self.metadata_manager = metadata_manager
         self.server_manager = server_manager
         self._project_imports(static_data_manager)
-        self._create_managers(static_data_manager, server_manager, password)
+        self._create_managers(static_data_manager, server_manager, 
+                              performance_json_manager, project_json_manager,
+                              password)
         self.password = password
-        self.static_data = static_data_manager.get_project_data()
+        self.static_data = static_data_manager.get_static_data()
         
     #
-    def _create_managers(self, static_data_manager, server_manager, password):
+    def _create_managers(self, static_data_manager, server_manager, 
+                         performance_json_manager, project_json_manager,
+                         password):
         self.dynamic_data_manager = Dynamic_data_manager()
-        self.linguamatics_i2e_manager = \
-            Linguamatics_i2e_manager(static_data_manager, server_manager,
-                                     password)
-        self.packaging_manager = Packaging_manager(static_data_manager)
-        self.postprocessing_manager = Postprocessor(static_data_manager,
-                                                    self.metadata_manager)
+        self.packaging_manager = Packaging_manager(static_data_manager,
+                                                   performance_json_manager,
+                                                   project_json_manager)
+        self.postprocessing_manager = Postprocessing_manager(static_data_manager,
+                                                             self.metadata_manager)
         
     #
     def _project_imports(self, static_data_manager):
-        static_data = static_data_manager.get_project_data()
+        static_data = static_data_manager.get_static_data()
         project_name = static_data['project_name']
-        import_cmd = 'from projects_lib.' + project_name + '.py.' + \
-                     project_name.lower() + \
-                     '_postprocessor_class import ' + project_name + \
-                     '_postprocessor as Postprocessor'
-        exec(import_cmd, globals())
+        try:
+            import_cmd = 'from projects_lib.' + project_name + '.py.' + \
+                         project_name.lower() + \
+                         '_postprocessor_class import ' + project_name + \
+                         '_postprocessor as Postprocessing_manager'
+            exec(import_cmd, globals())
+            print('Postprocessor: ' + project_name + '_postprocessor')
+        except Exception as e:
+            print(e)
         
     #
     def download_queries(self):

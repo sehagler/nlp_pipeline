@@ -17,8 +17,8 @@ from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_clas
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, project_data, data_file, label):
-        Postprocessor_base.__init__(self, project_data, label, data_file)
+    def __init__(self, static_data, data_file):
+        Postprocessor_base.__init__(self, static_data, data_file)
         self._extract_data_values()
         
     #
@@ -88,14 +88,14 @@ class Postprocessor(Postprocessor_base):
                         scores_processed = score_processed.split(' , ')
                         for k in range(len(scores_processed)):
                             scores_processed[k] = int(scores_processed[k])
-                        if test in [ 'karnofsky', 'lansky' ]:
+                        if test.lower() in [ 'karnofsky', 'lansky' ]:
                             for k in range(len(scores_processed)):
                                 scores_processed[k] = \
                                     self._map_to_zubrod(scores_processed[k])
                         scores_processed = [ int(x) for x in scores_processed ]
                         score_processed = str(tuple(sorted(scores_processed)))
                     else:
-                        if test in [ 'karnofsky', 'lansky' ]:
+                        if test.lower() in [ 'karnofsky', 'lansky' ]:
                             score_processed = self._map_to_zubrod(score_processed)
             processed_score_list.append(score_processed)
         return processed_score_list

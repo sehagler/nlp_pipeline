@@ -1,0 +1,73 @@
+version: 6.3
+creationDate: '2021-06-03 20:28:50'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      id: phrase2
+      of:
+      - word:
+          text: for
+          quantifier: {minimum: 0, maximum: 0}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - alternative:
+            - word: {text: assay, morphoVariants: true}
+            - word: {text: immunostain, morphoVariants: true}
+            - word: {text: result, morphoVariants: true}
+            - word: {text: stain, morphoVariants: true}
+            - staining
+          - for
+      - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link5}
+      - phrase:
+          unordered: true
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - ':'
+              - ','
+              - ;
+              - {class: /vg}
+          - phrase:
+            - word:
+                text: (
+                quantifier: {minimum: 0, maximum: 1}
+            - link: {path: ../breast_cancer_biomarkers_score.i2qy, id: link1}
+            - word:
+                text: )
+                quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          id: alternative2
+          quantifier: {minimum: 0, maximum: 1}
+          showMultipleColumns: true
+          of:
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_2.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_4.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_5.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_6.i2qy}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - for
+          - link: {path: ../breast_cancer_biomarkers_names.i2qy}
+output:
+  columns:
+  - {id: phrase2}
+  - id: alternative2.col0
+    itemOptions: {}
+  - id: alternative2.col1
+    itemOptions: {}
+  - id: link5.link4.class1
+    itemOptions: {}
+    linkItemId: link4.link5
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  columnLocations: [0, 3, 1, 4, 2]
+  useOutputEditor: true
+parameters: {BIOMARKER: ''}
+creator: haglers

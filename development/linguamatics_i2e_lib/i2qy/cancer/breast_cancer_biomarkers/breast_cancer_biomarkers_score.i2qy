@@ -1,0 +1,51 @@
+version: 6.3
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      of:
+      - word:
+          text: intensity
+          quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          id: phrase1
+          of:
+          - link:
+              path: ../../tools/inequality_modifier_query.i2qy
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+              showInDefaultOutput: false
+              of:
+              - phrase:
+                - word: {text: '[0-4](( )?(\+))?', matchType: Regexp}
+                - phrase:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of:
+                    - alternative:
+                      - word: {text: '-'}
+                      - to
+                    - word: {text: '[0-4](( )?(\+))?', matchType: Regexp}
+                - phrase:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of:
+                    - alternative:
+                      - /
+                      - phrase:
+                        - word:
+                            text: out
+                            quantifier: {minimum: 0, maximum: 1}
+                        - of
+                    - word: {text: '[0-4](( )?(\+))?', matchType: Regexp}
+              - phrase:
+                - word: {text: '[0-9]\.[0-9]', matchType: Regexp}
+              - phrase: ['no', staining]
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of: [intensity, positivity, staining]
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers

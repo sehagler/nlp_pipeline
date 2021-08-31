@@ -10,5 +10,5 @@ class General_base(object):
     
     #
     def __init__(self, static_data):
-        self.project_data = static_data
+        self.static_data = static_data
         self.static_data = static_data

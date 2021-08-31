@@ -1,0 +1,76 @@
+version: 6.3
+creationDate: '2015-12-14 15:22:31'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      id: phrase1
+      of:
+      - word:
+          text: for
+          quantifier: {minimum: 0, maximum: 0}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - alternative:
+            - word: {text: assay, morphoVariants: true}
+            - word: {text: immunostain, morphoVariants: true}
+            - word: {text: result, morphoVariants: true}
+            - word: {text: stain, morphoVariants: true}
+            - staining
+          - for
+      - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link10}
+      - phrase:
+          unordered: true
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - ':'
+              - ','
+              - ;
+              - {class: /vg}
+          - link: {path: ../breast_cancer_biomarkers_status.i2qy, id: link6}
+      - phrase:
+          findMatches: longestOnly
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - class:
+              quantifier: {minimum: 0, maximum: 1}
+              snid: /prep
+          - alternative:
+              id: alternative1
+              showMultipleColumns: true
+              of:
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_0.i2qy}
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_1.i2qy}
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_2.i2qy}
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_3.i2qy}
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_4.i2qy}
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_5.i2qy}
+              - link: {path: breast_cancer_biomarkers_query_0_subquery_6.i2qy}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - for
+          - link: {path: ../breast_cancer_biomarkers_names.i2qy}
+output:
+  columns:
+  - {id: phrase1}
+  - id: link6.alternative1
+    itemOptions: {}
+    linkItemId: link6
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  - id: link10.link4.class1
+    itemOptions: {}
+    linkItemId: link4.link10
+  columnLocations: [0, 4, 1, 2, 3]
+  outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
+  useOutputEditor: true
+parameters: {BIOMARKER: PR}
+runAsSmartQuery: true
+creator: szhang

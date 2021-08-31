@@ -20,38 +20,52 @@ from tool_lib.py.query_tools_lib.date_tools import compare_dates
 class BreastCancerPathology_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, project_manager):
-        project_data = project_manager.get_project_data()
-        Performance_data_manager.__init__(self, project_manager)
-        self.project_data = project_data
+    def __init__(self, static_data_manager, performance_json_manager,
+                 project_json_manager):
+        Performance_data_manager.__init__(self,  static_data_manager,
+                                          performance_json_manager,
+                                          project_json_manager)
+        self.static_data = static_data_manager.get_static_data()
     
     #
     def _get_nlp_data(self, data_in):
         data_out = {}
         data_out['ER_SCORE'] = \
-            self._get_data_value(data_in, None, 'BIOMARKERS_' + self.nlp_value_key, 'ER_SCORE', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_ER_' + self.nlp_value_key, 'ER_SCORE', mode_flg='single_value')
         if data_out['ER_SCORE'] is not None:
             data_out['ER_SCORE'] = data_out['ER_SCORE'][0]
         data_out['ER_STATUS'] = \
-            self._get_data_value(data_in, None, 'BIOMARKERS_' + self.nlp_value_key, 'ER_STATUS', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_ER_' + self.nlp_value_key, 'ER_STATUS', mode_flg='single_value')
         if data_out['ER_STATUS'] is not None:
             data_out['ER_STATUS'] = data_out['ER_STATUS'][0]
+        data_out['ER_PERCENTAGE'] = \
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_ER_' + self.nlp_value_key, 'ER_PERCENTAGE', mode_flg='single_value')
+        if data_out['ER_PERCENTAGE'] is not None:
+            data_out['ER_PERCENTAGE'] = data_out['ER_PERCENTAGE'][0]
         data_out['HER2_SCORE'] = \
-            self._get_data_value(data_in, None, 'BIOMARKERS_' + self.nlp_value_key, 'HER2_SCORE', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_HER2_' + self.nlp_value_key, 'HER2_SCORE', mode_flg='single_value')
         if data_out['HER2_SCORE'] is not None:
             data_out['HER2_SCORE'] = data_out['HER2_SCORE'][0]
         data_out['HER2_STATUS'] = \
-            self._get_data_value(data_in, None, 'BIOMARKERS_' + self.nlp_value_key, 'HER2_STATUS', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_HER2_' + self.nlp_value_key, 'HER2_STATUS', mode_flg='single_value')
         if data_out['HER2_STATUS'] is not None:
             data_out['HER2_STATUS'] = data_out['HER2_STATUS'][0]
+        data_out['HER2_PERCENTAGE'] = \
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_HER2_' + self.nlp_value_key, 'HER2_PERCENTAGE', mode_flg='single_value')
+        if data_out['HER2_PERCENTAGE'] is not None:
+            data_out['HER2_PERCENTAGE'] = data_out['HER2_PERCENTAGE'][0]
         data_out['PR_SCORE'] = \
-            self._get_data_value(data_in, None, 'BIOMARKERS_' + self.nlp_value_key, 'PR_SCORE', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_PR_' + self.nlp_value_key, 'PR_SCORE', mode_flg='single_value')
         if data_out['PR_SCORE'] is not None:
             data_out['PR_SCORE'] = data_out['PR_SCORE'][0]
         data_out['PR_STATUS'] = \
-            self._get_data_value(data_in, None, 'BIOMARKERS_' + self.nlp_value_key, 'PR_STATUS', mode_flg='single_value')
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_PR_' + self.nlp_value_key, 'PR_STATUS', mode_flg='single_value')
         if data_out['PR_STATUS'] is not None:
             data_out['PR_STATUS'] = data_out['PR_STATUS'][0]
+        data_out['PR_PERCENTAGE'] = \
+            self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_PR_' + self.nlp_value_key, 'PR_PERCENTAGE', mode_flg='single_value')
+        if data_out['PR_PERCENTAGE'] is not None:
+            data_out['PR_PERCENTAGE'] = data_out['PR_PERCENTAGE'][0]
         del_keys = []
         for key in data_out:
             if data_out[key] is not None:
@@ -65,13 +79,13 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
         return data_out
         
     #
-    def _read_validation_data(self, project_data):
-        directory_manager = project_data['directory_manager']
-        if 'patient_list' in project_data.keys():
-            patient_list = project_data['patient_list']
+    def _read_validation_data(self, static_data):
+        directory_manager = static_data['directory_manager']
+        if 'patient_list' in static_data.keys():
+            patient_list = static_data['patient_list']
         else:
             patient_list = None
-        project_name = project_data['project_name']
+        project_name = static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         book = read_xlsx_file(os.path.join(data_dir, 'breastcancerpathology_testing.xlsx'))
         sheet = book.sheet_by_index(0)
@@ -98,10 +112,11 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                 
     #
     def calculate_performance(self):
+        manual_review_str = 'MANUAL_REVIEW'
         nlp_data = self.nlp_data
-        validation_data = self._read_validation_data(self.project_data)
-        if 'document_list' in self.project_data.keys():
-            csn_list = self.project_data['document_list']
+        validation_data = self._read_validation_data(self.static_data)
+        if 'document_list' in self.static_data.keys():
+            csn_list = self.static_data['document_list']
         else:
             csn_list = None
         validation_mrn_list = []
@@ -113,79 +128,141 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
         validation_mrn_list = list(set(validation_mrn_list))
         validation_csn_list = list(set(validation_csn_list))
         nlp_values = self._read_nlp_value_data(validation_csn_list, nlp_data)
-        nlp_er_score_performance = []
         nlp_er_status_performance = []
-        nlp_her2_score_performance = []
+        nlp_er_score_performance = []
+        nlp_er_percentage_performance = []
         nlp_her2_status_performance = []
-        nlp_pr_score_performance = []
+        nlp_her2_score_performance = []
+        nlp_her2_percentage_performance = []
         nlp_pr_status_performance = []
+        nlp_pr_score_performance = []
+        nlp_pr_percentage_performance = []
         for csn in validation_csn_list:
             data_out = nlp_values[csn]
             print(csn)
             if data_out is not None:
-                if 'ER_SCORE' in data_out.keys():
-                    nlp_er_score_value = data_out['ER_SCORE']
-                else:
-                    nlp_er_score_value = None
                 if 'ER_STATUS' in data_out.keys():
                     nlp_er_status_value = data_out['ER_STATUS']
                 else:
                     nlp_er_status_value = None
-                if 'HER2_SCORE' in data_out.keys():
-                    nlp_her2_score_value = data_out['HER2_SCORE']
+                if 'ER_SCORE' in data_out.keys():
+                    nlp_er_score_value = data_out['ER_SCORE']
                 else:
-                    nlp_her2_score_value = None
+                    nlp_er_score_value = None
+                if 'ER_PERCENTAGE' in data_out.keys():
+                    nlp_er_percentage_value = data_out['ER_PERCENTAGE']
+                else:
+                    nlp_er_percentage_value = None
                 if 'HER2_STATUS' in data_out.keys():
                     nlp_her2_status_value = data_out['HER2_STATUS']
                 else:
                     nlp_her2_status_value = None
-                if 'PR_SCORE' in data_out.keys():
-                    nlp_pr_score_value = data_out['PR_SCORE']
+                if 'HER2_SCORE' in data_out.keys():
+                    nlp_her2_score_value = data_out['HER2_SCORE']
                 else:
-                    nlp_pr_score_value = None
+                    nlp_her2_score_value = None
+                if 'HER2_PERCENTAGE' in data_out.keys():
+                    nlp_her2_percentage_value = data_out['HER2_PERCENTAGE']
+                else:
+                    nlp_her2_percentage_value = None
                 if 'PR_STATUS' in data_out.keys():
                     nlp_pr_status_value = data_out['PR_STATUS']
                 else:
                     nlp_pr_status_value = None
+                if 'PR_SCORE' in data_out.keys():
+                    nlp_pr_score_value = data_out['PR_SCORE']
+                else:
+                    nlp_pr_score_value = None
+                if 'PR_PERCENTAGE' in data_out.keys():
+                    nlp_pr_percentage_value = data_out['PR_PERCENTAGE']
+                else:
+                    nlp_pr_percentage_value = None
             else:
-                nlp_er_score_value = None
                 nlp_er_status_value = None
-                nlp_her2_score_value = None
+                nlp_er_score_value = None
+                nlp_er_percentage_value = None
                 nlp_her2_status_value = None
-                nlp_pr_score_value = None
+                nlp_her2_score_value = None
+                nlp_her2_percentage_value = None
                 nlp_pr_status_value = None
+                nlp_pr_score_value = None
+                nlp_pr_percentage_value = None
             for item in validation_data:
                 if item[2] == csn:
-                    validation_er_score_value = \
-                        self._process_validation_item(item[4])
                     validation_er_status_value = \
                         self._process_validation_item(item[3])
-                    validation_her2_score_value = \
+                    validation_er_score_value = \
+                        self._process_validation_item(item[4])
+                    validation_er_percentage_value = \
+                        self._process_validation_item(item[5])
+                    validation_pr_status_value = \
+                        self._process_validation_item(item[6])
+                    validation_pr_score_value = \
+                        self._process_validation_item(item[8])
+                    validation_pr_percentage_value = \
                         self._process_validation_item(item[9])
                     validation_her2_status_value = \
-                        self._process_validation_item(item[8])
-                    validation_pr_score_value = \
-                        self._process_validation_item(item[6])
-                    validation_pr_status_value = \
-                        self._process_validation_item(item[5])
+                        self._process_validation_item(item[10])
+                    validation_her2_score_value = \
+                        self._process_validation_item(item[11])
+                    validation_her2_percentage_value = \
+                        self._process_validation_item(item[12])
+            '''
+            if ( nlp_er_status_value is not None and \
+                 manual_review_str in nlp_er_status_value ) or \
+               ( nlp_er_score_value is not None and \
+                 manual_review_str in nlp_er_score_value ) or \
+               ( nlp_er_percentage_value is not None and \
+                 manual_review_str in nlp_er_percentage_value ):
+                nlp_er_status_value = (manual_review_str)
+                nlp_er_score_value = (manual_review_str)
+                nlp_er_percentage_value = (manual_review_str)
+            if ( nlp_pr_status_value is not None and \
+                 manual_review_str in nlp_pr_status_value ) or \
+               ( nlp_pr_score_value is not None and \
+                 manual_review_str in nlp_pr_score_value ) or \
+               ( nlp_pr_percentage_value is not None and \
+                 manual_review_str in nlp_pr_percentage_value ):
+                nlp_pr_status_value = (manual_review_str)
+                nlp_pr_score_value = (manual_review_str)
+                nlp_pr_percentage_value = (manual_review_str)
+            if ( nlp_her2_status_value is not None and \
+                 manual_review_str in nlp_her2_status_value ) or \
+               ( nlp_her2_score_value is not None and \
+                 manual_review_str in nlp_her2_score_value ) or \
+               ( nlp_her2_percentage_value is not None and \
+                 manual_review_str in nlp_her2_percentage_value ):
+                nlp_her2_status_value = (manual_review_str)
+                nlp_her2_score_value = (manual_review_str)
+                nlp_her2_percentage_value = (manual_review_str)
+            '''
             if validation_er_status_value is not None:
                 validation_er_status_value = \
                     tuple(validation_er_status_value.split(', '))
             if validation_er_score_value is not None:
                 validation_er_score_value = \
                     tuple(validation_er_score_value.split(', '))
+            if validation_er_percentage_value is not None:
+                validation_er_percentage_value = \
+                    tuple(validation_er_percentage_value.split(', '))
             if validation_her2_status_value is not None:
                 validation_her2_status_value = \
                     tuple(validation_her2_status_value.split(', '))
             if validation_her2_score_value is not None:
                 validation_her2_score_value = \
                     tuple(validation_her2_score_value.split(', '))
+            if validation_her2_percentage_value is not None:
+                validation_her2_percentage_value = \
+                    tuple(validation_her2_percentage_value.split(', '))
             if validation_pr_status_value is not None:
                 validation_pr_status_value = \
                     tuple(validation_pr_status_value.split(', '))
             if validation_pr_score_value is not None:
                 validation_pr_score_value = \
                     tuple(validation_pr_score_value.split(', '))
+            if validation_pr_percentage_value is not None:
+                validation_pr_percentage_value = \
+                    tuple(validation_pr_percentage_value.split(', '))
             display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_er_status_value,
@@ -197,6 +274,12 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                 self._compare_data_values(nlp_er_score_value,
                                           validation_er_score_value)
             nlp_er_score_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_er_percentage_value,
+                                          validation_er_percentage_value)
+            nlp_er_percentage_performance.append(performance)
             if flg:
                 display_data_flg = True
             performance, flg = \
@@ -212,6 +295,12 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             if flg:
                 display_data_flg = True
             performance, flg = \
+                self._compare_data_values(nlp_her2_percentage_value,
+                                          validation_her2_percentage_value)
+            nlp_her2_percentage_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            performance, flg = \
                 self._compare_data_values(nlp_pr_status_value,
                                           validation_pr_status_value)
             nlp_pr_status_performance.append(performance)
@@ -221,6 +310,12 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                 self._compare_data_values(nlp_pr_score_value,
                                           validation_pr_score_value)
             nlp_pr_score_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_pr_percentage_value,
+                                          validation_pr_percentage_value)
+            nlp_pr_percentage_performance.append(performance)
             if flg:
                 display_data_flg = True
             if False:
@@ -240,12 +335,8 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             performance_statistics_dict['ER_SCORE'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_her2_status_performance)
-            performance_statistics_dict['HER2_STATUS'] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_her2_score_performance)
-            performance_statistics_dict['HER2_SCORE'] = \
+                self._performance_values(nlp_er_percentage_performance)
+            performance_statistics_dict['ER_PERCENTAGE'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_pr_status_performance)
@@ -254,6 +345,22 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_pr_score_performance)
             performance_statistics_dict['PR_SCORE'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_pr_percentage_performance)
+            performance_statistics_dict['PR_PERCENTAGE'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_her2_status_performance)
+            performance_statistics_dict['HER2_STATUS'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_her2_score_performance)
+            performance_statistics_dict['HER2_SCORE'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_her2_percentage_performance)
+            performance_statistics_dict['HER2_PERCENTAGE'] = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             print('\n')
             print('number of docs:\t\t%d' % num_docs)

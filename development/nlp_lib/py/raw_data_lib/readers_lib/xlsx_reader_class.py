@@ -18,9 +18,9 @@ class Xlsx_reader(Reader_base):
     
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
-        datetime_keys = self.project_data['datetime_keys']
-        header_key = self.project_data['header_key']
-        header_value_list = self.project_data['header_values']
+        datetime_keys = self.static_data['datetime_keys']
+        header_key = self.static_data['header_key']
+        header_value_list = self.static_data['header_values']
         if header_key != []:
             data = \
                 self._read_data_file_key(raw_data_files_dict, raw_data_file,

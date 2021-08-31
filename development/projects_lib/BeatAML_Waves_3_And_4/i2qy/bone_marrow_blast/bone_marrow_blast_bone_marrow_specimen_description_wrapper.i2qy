@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2018-10-26 16:03:06'
 query:
   document:
@@ -28,7 +28,7 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: ../../General/cancer/blast_%/bone_marrow_blast_%/bone_marrow_blast_%_query.i2qy, id: link3}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/bone_marrow_blast_%25/bone_marrow_blast_%25_query.i2qy, id: link3}
   - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:

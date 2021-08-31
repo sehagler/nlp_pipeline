@@ -16,9 +16,9 @@ import time
 class Server_manager(object):
     
     #
-    def __init__(self, project_data, password):
-        self.server = project_data['acc_server'][1]
-        self.user = project_data['user']
+    def __init__(self, static_data, password):
+        self.server = static_data['acc_server'][1]
+        self.user = static_data['user']
         self.password = password
         
     #
