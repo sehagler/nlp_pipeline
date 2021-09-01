@@ -219,6 +219,7 @@ def write_file(filename, data, include_datetime_flg, multiple_files_flg):
             data = {}
             data['DOCUMENTS'] = chunk
             _write_file(filename, data, include_datetime_flg, True)
+            time.sleep(1)
     else:
         _write_file(filename, data, include_datetime_flg, False)
     

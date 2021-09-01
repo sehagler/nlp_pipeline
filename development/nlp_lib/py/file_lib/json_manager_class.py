@@ -6,8 +6,10 @@ Created on Wed Aug 25 16:17:52 2021
 """
 
 #
+from collections import Counter
 from datetime import datetime
 import os
+import re
 
 #
 from tool_lib.py.processing_tools_lib.file_processing_tools \
@@ -68,6 +70,66 @@ class Json_manager(object):
         #
         
         self.project_name = self.static_data['project_name']
+        
+    #
+    def _trim_data(self, documents_wrapper_in):
+        document_wrappers_in = \
+            documents_wrapper_in[self.documents_wrapper_key]
+        document_wrappers = []
+        for document_wrapper in document_wrappers_in:
+            document = document_wrapper[self.document_wrapper_key]
+            nlp_data = document[self.nlp_data_key]
+            delete_idxs = []
+            for i in range(len(nlp_data)):
+                section_i = \
+                    nlp_data[i][self.nlp_datum_key][self.nlp_section_key]
+                section_i_lbl = re.sub(' \d+', '', section_i)
+                try:
+                    section_i_num = int(re.sub('[A-Z ]*', '', section_i))
+                except:
+                    section_i_num = None
+                nlp_output_i = \
+                    nlp_data[i][self.nlp_datum_key][self.nlp_value_key]
+                if section_i_num is not None:
+                    for item_i in nlp_output_i:
+                        keys_i = list(item_i.keys())
+                        keys_i.remove('CONTEXT')
+                        for j in range(len(nlp_data)-i-1):
+                            section_j = \
+                                nlp_data[i+j+1][self.nlp_datum_key][self.nlp_section_key]
+                            section_j_lbl = re.sub(' \d+', '', section_j)
+                            try:
+                                section_j_num = int(re.sub('[A-Z ]*', '', section_j))
+                            except:
+                                section_j_num = None
+                            nlp_output_j = \
+                                nlp_data[i+j+1][self.nlp_datum_key][self.nlp_value_key]
+                            if section_j_num is not None and \
+                               ( section_i_lbl == section_j_lbl ) and \
+                               ( section_i_num <= section_j_num ):
+                                for item_j in nlp_output_j:
+                                    keys_j = list(item_j.keys())
+                                    keys_j.remove('CONTEXT')
+                                    if Counter(keys_i) == Counter(keys_j):
+                                        delete_key = True
+                                        for key in keys_i:
+                                            if item_i[key] != item_j[key]:
+                                                delete_key = False
+                                        if delete_key:
+                                            delete_idxs.append(i+j+1)
+            delete_idxs = list(set(delete_idxs))
+            delete_idxs.sort(reverse=True)
+            for i in range(len(delete_idxs)):
+                del nlp_data[delete_idxs[i]]
+            document[self.nlp_data_key] = nlp_data
+            document_wrapper = {}
+            document_wrapper[self.document_wrapper_key] = \
+                document
+            document_wrappers.append(document_wrapper)
+        documents_wrapper = {}
+        documents_wrapper[self.documents_wrapper_key] = \
+            document_wrappers
+        return documents_wrapper
         
     #
     def read_json_file(self):
@@ -188,6 +250,7 @@ class Json_manager(object):
             list(set(nlp_performance_metadata['NOTE_TYPES']))
                 
         documents_wrapper = read_json_file(project_json_filename)
+        documents_wrapper = self._trim_data(documents_wrapper)
         for i in range(len(documents_wrapper[self.documents_wrapper_key])):
             nlp_data = \
                 documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_data_key]
