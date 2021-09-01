@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2020-03-10 00:28:46'
 query:
   document:
@@ -125,7 +125,7 @@ query:
                       - within
                       - without
           - {class: /vg}
-      - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_phrase.i2qy'}
+      - link: {path: margin_phrase.i2qy}
       - link:
           path: margin_text_phrase_post.i2qy
           quantifier: {minimum: 0, maximum: 1}

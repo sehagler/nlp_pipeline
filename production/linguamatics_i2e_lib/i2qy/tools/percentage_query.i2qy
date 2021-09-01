@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2019-02-26 17:24:53'
 query:
   document:
@@ -6,6 +6,9 @@ query:
       id: phrase1
       view: {height: 138, width: 578}
       of:
+      - word:
+          text: '-'
+          quantifier: {minimum: 0, maximum: 0}
       - macro:
           quantifier: {minimum: 0, maximum: 1}
           snid: linguamatics_wc.WC_Determiner
@@ -15,12 +18,11 @@ query:
               macroPt: determiner
               macroSnid: linguamatics_wc.WC_Determiner
               of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
-      - alternative:
+      - link:
+          path: inequality_modifier_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
-          view: {layout: list}
-          of: [estimated, '~', '>', <]
       - word:
-          text: ([0-9]+(\.[0-9]+)?%\-)?[0-9]+(\.[0-9]+)?%
+          text: (([0-9]+(\.[0-9]+)?)%?\-)?[0-9]+(\.[0-9]+)?%
           matchType: Regexp
           view: {height: 55, width: 324}
 output:

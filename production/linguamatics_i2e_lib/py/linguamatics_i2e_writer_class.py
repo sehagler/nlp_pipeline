@@ -14,10 +14,8 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 #
-from linguamatics_i2e_lib.py.linguamatics_i2e_file_manager_class \
-    import Linguamatics_i2e_file_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import remove_file, write_general_file, write_zip_file
+    import remove_file, write_file, write_zip_file
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible
 
@@ -25,12 +23,12 @@ from tool_lib.py.processing_tools_lib.text_processing_tools \
 class Linguamatics_i2e_writer(object):
     
     #
-    def __init__(self, project_data, server_manager):
-        self.project_data = project_data
+    def __init__(self, static_data, linguamatics_i2e_file_manager,
+                 server_manager):
+        self.static_data = static_data
+        self.linguamatics_i2e_file_manager = linguamatics_i2e_file_manager
         self.clear_keywords_text()
         self.metadata_keys = []
-        self.linguamatics_i2e_file_manager = \
-            Linguamatics_i2e_file_manager(self.project_data)
         self.server_manager = server_manager
         
     #
@@ -43,7 +41,7 @@ class Linguamatics_i2e_writer(object):
         
     #
     def _generate_query_bundle_file_component(self, filename, queries_dir, dest_path_base):
-        max_files_per_zip = self.project_data['max_files_per_zip']
+        max_files_per_zip = self.static_data['max_files_per_zip']
         for path, subdirs, files in os.walk(queries_dir):
             rel_path = os.path.relpath(path, queries_dir)
             dest_path = os.path.join (dest_path_base, rel_path)
@@ -75,7 +73,7 @@ class Linguamatics_i2e_writer(object):
         xml_str = minidom.parseString(ET.tostring(report)).toprettyxml(indent = "   ")
         outdir = self.linguamatics_i2e_file_manager.preprocessing_data_directory()
         filename = str(ctr) + '.xml'
-        write_general_file(os.path.join(outdir, filename), xml_str)
+        write_file(os.path.join(outdir, filename), xml_str, False, False)
         
     #
     def _read_file_metadata(self):
@@ -106,7 +104,8 @@ class Linguamatics_i2e_writer(object):
         self.keywords_list.sort()
         for keyword in self.keywords_list:
             text += keyword + '\n'
-        write_general_file(self.linguamatics_i2e_file_manager.keywords_file(), text)
+        write_file(self.linguamatics_i2e_file_manager.keywords_file(), text,
+                   False, False)
         
     #
     def generate_query_bundle_file(self, project_name):
@@ -151,11 +150,12 @@ class Linguamatics_i2e_writer(object):
         text.append('\tlinguamatics.relativepath\t"Relative Path"\tlinguamatics.metadata\tleaf,shadow\n')
         text.append('\tlinguamatics.sourcetype\t"Source Type"\tlinguamatics.metadata\tleaf,shadow\n')
         text = ''.join(text)
-        write_general_file(self.linguamatics_i2e_file_manager.resource_file('region_list'), text)
+        write_file(self.linguamatics_i2e_file_manager.resource_file('region_list'),
+                   text, False, False)
         
     #
     def generate_source_data_file(self, project_name):
-        max_files_per_zip = self.project_data['max_files_per_zip']
+        max_files_per_zip = self.static_data['max_files_per_zip']
         data_dir = self.linguamatics_i2e_file_manager.preprocessing_data_directory()
         data_files = [os.path.join(data_dir, file) for file in os.listdir(data_dir) if os.path.splitext(file)[1] == '.xml']
         write_zip_file(self.linguamatics_i2e_file_manager.resource_file('source_data'), data_files, None, max_files_per_zip)
@@ -200,7 +200,8 @@ class Linguamatics_i2e_writer(object):
         text.append('regions\n')
         text.append('include\t*\t0\n')
         text = ''.join(text)
-        write_general_file(self.linguamatics_i2e_file_manager.resource_file('xml_and_html_config_file'), text)
+        write_file(self.linguamatics_i2e_file_manager.resource_file('xml_and_html_config_file'),
+                   text, False, False)
         
     #
     def generate_xml_file(self, ctr, metadata, raw_text, rpt_text):

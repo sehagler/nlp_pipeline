@@ -1,0 +1,33 @@
+version: 6.3
+creationDate: '2021-07-08 00:10:38'
+query:
+  document:
+  - phrase:
+    - link: {path: ../../tools/percentage_query.i2qy, id: link1}
+    - phrase:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - of
+        - phrase:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - DCIS
+              - phrase:
+                - word:
+                    text: invasive
+                    quantifier: {minimum: 0, maximum: 1}
+                - word: {text: tumor, morphoVariants: true}
+          - alternative:
+            - word: {text: cell, morphoVariants: true}
+            - word: {text: nucleus, morphoVariants: true}
+          - word:
+              text: staining
+              quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers

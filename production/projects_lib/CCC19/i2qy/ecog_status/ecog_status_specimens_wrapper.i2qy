@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2020-05-27 17:10:02'
 query:
   document:
@@ -6,14 +6,7 @@ query:
       snid: hc.titled_section
       pt: Titled Section
       where:
-      - region:
-          id: region1
-          snid: hc.section_title
-          pt: Section Title
-          where:
-          - word:
-              text: HISTORY
-              quantifier: {minimum: 0, maximum: 0}
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
       - region:
           snid: hc.section_body
           pt: Section Body

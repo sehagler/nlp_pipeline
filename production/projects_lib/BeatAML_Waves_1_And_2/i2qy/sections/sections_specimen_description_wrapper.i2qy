@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2019-02-01 21:57:54'
 query:
   document:
@@ -20,7 +20,7 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: ../../General/tools/sections_query.i2qy, id: link3}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/tools/sections_query.i2qy, id: link3}
   - alternative:
     - link: {path: ../tools_lib/document_filter_query.i2qy}
     - region:

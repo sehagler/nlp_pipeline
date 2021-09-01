@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Document Join:
@@ -8,5 +8,5 @@ multiquery:
     - ecog_status/ecog_status_specimens_wrapper.i2qy
     - Subtraction: [ecog_status/ecog_status_sections_wrapper.i2qy, ecog_status/ecog_status_specimen_description_wrapper.i2qy]
 output:
-  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers

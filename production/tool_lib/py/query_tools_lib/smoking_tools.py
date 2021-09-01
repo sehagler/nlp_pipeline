@@ -6,7 +6,8 @@ Created on Mon Nov  9 15:04:20 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 
 #
 class Named_entity_recognition(Preprocessor_base):
@@ -21,3 +22,12 @@ class Named_entity_recognition(Preprocessor_base):
         self._normalize_regular_initialism(' ppw', ' PPW')
         self._normalize_regular_initialism('packs?( (/|per))? yrs?', 'PPY')
         self._normalize_regular_initialism(' ppy', ' PPY')
+        
+#
+class Summarization(Preprocessor_base):
+    
+    #
+    def remove_extraneous_text(self):
+        self._clear_command_list()
+        self._general_command('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', {None : ''})
+        self._process_command_list()

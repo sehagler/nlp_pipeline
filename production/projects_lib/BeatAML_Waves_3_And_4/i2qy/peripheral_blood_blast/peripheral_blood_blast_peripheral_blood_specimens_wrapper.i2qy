@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2018-10-26 16:03:06'
 query:
   document:
@@ -29,8 +29,8 @@ query:
               - alternative:
                   id: alternative1
                   of:
-                  - link: {path: ../../General/cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast.i2qy}
-                  - link: {path: ../../General/cancer/blast_%/peripheral_blood_blast_%/query_lib/peripheral_blood_blast_peripheral_blood.i2qy}
+                  - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/peripheral_blood_blast.i2qy}
+                  - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/query_lib/peripheral_blood_blast_peripheral_blood.i2qy}
   - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:

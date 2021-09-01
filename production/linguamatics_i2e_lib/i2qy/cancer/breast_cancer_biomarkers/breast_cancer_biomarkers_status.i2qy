@@ -1,0 +1,54 @@
+version: 6.3
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      findMatches: longestOnly
+      showInDefaultOutput: false
+      of:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          view: {layout: list}
+          of: [strongly, weakly]
+      - alternative:
+          id: alternative1
+          of:
+          - absent
+          - amplified
+          - equivocal
+          - favorable
+          - immunoreactive
+          - immunoreactivity
+          - negative
+          - negativity
+          - 'no'
+          - phrase: [not, amplified]
+          - non-amplified
+          - nonreactive
+          - phrase:
+            - phrase:
+                quantifier: {minimum: 0, maximum: 0}
+                of: [present, and]
+            - positive
+          - positivity
+          - reactive
+          - strong
+          - unamplified
+          - unfavorable
+          - weak
+          - phrase: [without, immunoreactivity]
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - phrase:
+            - for
+            - alternative: [amplification, overexpression]
+          - staining
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of: [in, invasive, carcinoma]
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

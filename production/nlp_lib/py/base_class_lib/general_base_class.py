@@ -9,5 +9,6 @@ Created on Thu Nov 19 10:47:38 2020
 class General_base(object):
     
     #
-    def __init__(self, project_data):
-        self.project_data = project_data
+    def __init__(self, static_data):
+        self.static_data = static_data
+        self.static_data = static_data

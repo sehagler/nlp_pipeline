@@ -18,6 +18,7 @@ from i2e.wsapi.common import (ClientConnectionSettings, I2EConnection,
 from i2e.wsapi.serialize import Resource
 from i2e.wsapi.task import MakeIndexConfiguration, TaskLauncher
 import json
+import logging
 import os
 import requests
 import shutil
@@ -26,6 +27,8 @@ import time
 import urllib
 
 #
+from linguamatics_i2e_lib.py.check_queries \
+    import QuerySetFixer, get_logger, yaml_constructor
 from linguamatics_i2e_lib.py.linguamatics_i2e_file_manager_class \
     import Linguamatics_i2e_file_manager
 from linguamatics_i2e_lib.py.linguamatics_i2e_writer_class \
@@ -36,14 +39,16 @@ class Linguamatics_i2e_manager(object):
     
     #
     def __init__(self, static_data_manager, server_manager, password):
-        self.static_data = static_data_manager.get_project_data()
+        self.static_data = static_data_manager.get_static_data()
         self.project_name = self.static_data['project_name']
         self.server = self.static_data['acc_server'][2]
         self.user = self.static_data['user']
         self.linguamatics_i2e_file_manager = \
             Linguamatics_i2e_file_manager(self.static_data)
         self.linguamatics_i2e_writer = \
-            Linguamatics_i2e_writer(self.static_data, server_manager)
+            Linguamatics_i2e_writer(self.static_data,
+                                    self.linguamatics_i2e_file_manager,
+                                    server_manager)
         self.i2e_server = I2EServer(self.server)
         self.i2e_user = I2EUser(self.user, password)
         self.connection_settings = ClientConnectionSettings.create()
@@ -51,6 +56,28 @@ class Linguamatics_i2e_manager(object):
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
+        
+    #
+    def _fix_queries(self, query_paths):
+        '''
+        args = None
+        parser = get_parser()
+        parsed_args = parser.parse_args(args=args)
+        '''
+        log_level = logging.INFO
+        '''
+        if parsed_args.debug:
+            log_level = logging.DEBUG
+        elif parsed_args.errors_only:
+            log_level = logging.WARNING
+        '''
+        with yaml_constructor():
+            query_fixer = QuerySetFixer(query_paths,
+                                        dry_run=False,
+                                        logger=get_logger(log_level,
+                                                          log_file_path=None))
+            all_queries_ok = query_fixer.check_queries()
+        return 0 if all_queries_ok else 1
         
     #
     def _folder_downloader(self, request_maker, folder_name, parent_folder,
@@ -104,6 +131,15 @@ class Linguamatics_i2e_manager(object):
         resource = Resource(resource)
         request_maker = RequestMaker(self.conn)
         request_maker.delete_resource(resource)
+        
+    #
+    def fix_queries(self):
+        general_queries_dir = \
+            self.linguamatics_i2e_file_manager.general_queries_source_directory()
+        project_queries_dir = \
+            self.linguamatics_i2e_file_manager.project_queries_source_directory()
+        ret_val = self._fix_queries(general_queries_dir)
+        ret_val = self._fix_queries(project_queries_dir)
 
     #
     def folder_downloader(self, query_folder, local_destination):

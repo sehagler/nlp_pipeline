@@ -6,86 +6,60 @@ Created on Mon Mar 15 10:18:29 2021
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.report_preprocessor_lib.breast_cancer_report_preprocessor_class \
-    import Breast_cancer_report_preprocessor
-from nlp_lib.py.document_preprocessing_lib.report_preprocessor_lib.cytogenetics_report_preprocessor_class \
-    import Cytogenetics_report_preprocessor
-from nlp_lib.py.document_preprocessing_lib.report_preprocessor_lib.hematopathology_report_preprocessor_class \
-    import Hematopathology_report_preprocessor
-from nlp_lib.py.document_preprocessing_lib.report_preprocessor_lib.note_preprocessor_class \
-    import Note_preprocessor
-from nlp_lib.py.document_preprocessing_lib.report_preprocessor_lib.raw_report_preprocessor_class \
-    import Raw_report_preprocessor
+import copy
+
+#
+from nlp_lib.py.document_preprocessing_lib.deidentifier_lib.deidentifier_class \
+    import Deidentifier
+from nlp_lib.py.document_preprocessing_lib.formatter_lib.formatter_class \
+    import Formatter
+from nlp_lib.py.document_preprocessing_lib.named_entity_recognition_lib.named_entity_recognition_class \
+    import Named_entity_recognition
+from nlp_lib.py.document_preprocessing_lib.posttokenizer_lib.posttokenizer_class \
+    import Posttokenizer
+from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.pretokenizer_class \
+    import Pretokenizer
+from nlp_lib.py.document_preprocessing_lib.summarization_lib.summarization_class \
+    import Summarization
+from nlp_lib.py.document_preprocessing_lib.text_cleanup_lib.text_cleanup_class \
+    import Text_cleanup
+from nlp_lib.py.document_preprocessing_lib.tokenizer_lib.tokenizer_class \
+    import Tokenizer
+from tool_lib.py.processing_tools_lib.text_processing_tools \
+    import make_ascii, make_xml_compatible
 
 #
 class Document_preprocessing_manager(object):
     
     #
     def __init__(self, static_data_manager):
-        self.static_data = static_data_manager.get_project_data()
-        self.format_flg = self.static_data['formatting']
+        static_data = static_data_manager.get_static_data()
+        self.deidentifier = Deidentifier(static_data)
+        self.formatter = Formatter(static_data)
+        self.named_entity_recognition = Named_entity_recognition(static_data)
+        self.posttokenizer = Posttokenizer(static_data)
+        self.pretokenizer = Pretokenizer(static_data)
+        self.summarization = Summarization(static_data)
+        self.text_cleanup = Text_cleanup(static_data)
+        self.tokenizer = Tokenizer(static_data)
             
     #
-    def format_report(self, source_system):
-        self.report_preprocessor.format_report(source_system)
-            
-    #
-    def normalize_report(self):
-        self.report_preprocessor.normalize_report()
-        
-    #
-    def pull_dynamic_data_manager(self):
-        dynamic_data_manager = \
-            self.report_preprocessor.pull_dynamic_data_manager()
-        return dynamic_data_manager
-        
-    #
-    def pull_text(self):
-        text = self.report_preprocessor.pull_text()
-        return text
-            
-    #
-    def push_dynamic_data_manager(self, dynamic_data_manager):
-        self.report_preprocessor.push_dynamic_data_manager(dynamic_data_manager)
-        
-    #
-    def push_text(self, text):
-        self.report_preprocessor.push_text(text)
-        
-    #
-    def raw_report_preprocessor_normalize_report(self):
-        self.raw_report_preprocessor.normalize_report()
-        
-    #
-    def raw_report_preprocessor_pull_text(self):
-        text = self.raw_report_preprocessor.pull_text()
-        return text
-        
-    #
-    def raw_report_preprocessor_push_text(self, text):
-        self.raw_report_preprocessor.push_text(text)
-        
-    #
-    def set_raw_report_preprocessor(self, static_data):
-        self.raw_report_preprocessor = Raw_report_preprocessor(static_data)
-        
-    #
-    def set_report_preprocessor(self, xml_metadata):
-        if xml_metadata['NLP_PROCESS'] == 'BREAST_CANCER_PATHOLOGY_REPORT':
-            self.report_preprocessor = \
-                Breast_cancer_report_preprocessor(self.static_data, self.format_flg)
-        elif xml_metadata['NLP_PROCESS'] == 'CYTOGENETICS_REPORT':
-            self.report_preprocessor = \
-                Cytogenetics_report_preprocessor(self.static_data, self.format_flg)
-            #self.report_preprocessor = \
-            #    BeatAML_report_preprocessor(self.static_data, self.format_flg)
-        elif xml_metadata['NLP_PROCESS'] == 'HEMATOPATHOLOGY_REPORT':
-            self.report_preprocessor = \
-                Hematopathology_report_preprocessor(self.static_data, self.format_flg)
-            #self.report_preprocessor = \
-            #    BeatAML_report_preprocessor(self.static_data, self.format_flg)
-        elif xml_metadata['NLP_PROCESS'] == 'NOTE':
-            self.report_preprocessor = \
-                Note_preprocessor(self.static_data, self.format_flg)
-        else:
-            print('invalid NLP_PROCESS')
+    def process_document(self, dynamic_data_manager, text, source_system):
+        text = make_ascii(text)
+        self.deidentifier.push_text(text)
+        self.deidentifier.remove_phi()
+        text = self.deidentifier.pull_text()
+        raw_text = text
+        rpt_text = copy.copy(text)
+        rpt_text = self.formatter.process_document(rpt_text, source_system)
+        dynamic_data_manager, rpt_text = \
+            self.pretokenizer.process_document(dynamic_data_manager,
+                                               rpt_text)
+        rpt_text = self.tokenizer.process_document(rpt_text)
+        rpt_text = self.posttokenizer.process_document(rpt_text)
+        rpt_text = self.named_entity_recognition.process_document(rpt_text)
+        rpt_text = self.summarization.process_document(rpt_text)
+        rpt_text = self.text_cleanup.process_document(rpt_text)
+        raw_text = make_xml_compatible(raw_text)
+        rpt_text = make_xml_compatible(rpt_text)
+        return dynamic_data_manager, raw_text, rpt_text

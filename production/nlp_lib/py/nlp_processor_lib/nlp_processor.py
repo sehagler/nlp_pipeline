@@ -29,10 +29,14 @@ class Nlp_processor(object):
     #
     def download_queries(self):
         self.nlp_pipeline.download_queries()
+        
+    #
+    def fix_linguamatics_i2e_queries(self):
+        self.nlp_pipeline.fix_linguamatics_i2e_queries()
     
     #
-    def generate_training_data_sets(self):
-        self.nlp_pipeline.generate_training_data_sets()
+    def generate_training_data_sets(self, password):
+        self.nlp_pipeline.generate_training_data_sets(password)
     
     #
     def move_software(self):
@@ -45,25 +49,25 @@ class Nlp_processor(object):
         self.nlp_software.copy_x_nlp_software_to_nlp_sandbox(dest_drive)
         
     #
-    def pipeline_manager(self, password, operation_mode, project_name,
-                         project_subdir, root_dir_flg):
-        if root_dir_flg == 'server':
-            if operation_mode == 'development':
-                root_dir_flg = 'dev_server'
-            elif operation_mode == 'production':
-                root_dir_flg = 'prod_server'
+    def pipeline_manager(self, server, root_dir, project_subdir, project_name,
+                         password):
+        if root_dir == 'server':
+            if server == 'development':
+                root_dir = 'dev_server'
+            elif server == 'production':
+                root_dir = 'prod_server'
         import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                      project_name.lower() + \
-                     '_project_manager_class import ' + project_name + \
-                     '_project_manager as Project_manager'
+                     '_static_data_manager_class import ' + project_name + \
+                     '_static_data_manager as Static_data_manager'
         exec(import_cmd, globals())
         user = getpass.getuser()
-        static_data_manager = Project_manager(operation_mode, project_subdir,
-                                              user, root_dir_flg)
-        static_data = static_data_manager.get_project_data()
+        static_data_manager = Static_data_manager(server, project_subdir,
+                                                  user, root_dir)
+        static_data = static_data_manager.get_static_data()
         server_manager = Server_manager(static_data, password)
         self.nlp_pipeline = Pipeline_manager(static_data_manager,
-                                             server_manager, root_dir_flg,
+                                             server_manager, root_dir,
                                              password)
         
     #
@@ -88,7 +92,7 @@ class Nlp_processor(object):
         user = getpass.getuser()
         static_data_manager = \
             Static_data_manager('development', None, None, user, root_dir_flg)
-        static_data = static_data_manager.get_project_data()
+        static_data = static_data_manager.get_static_data()
         server_manager = Server_manager(static_data, password)
         self.nlp_software = Software_manager(static_data_manager,
                                              server_manager)

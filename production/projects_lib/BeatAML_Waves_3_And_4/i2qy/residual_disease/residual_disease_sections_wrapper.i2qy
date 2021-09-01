@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2018-10-26 15:56:12'
 query:
   document:
@@ -19,7 +19,7 @@ query:
           snid: hc.section_body
           pt: Section Body
           where:
-          - link: {path: ../../General/cancer/residual_disease/residual_disease_query.i2qy, id: link2}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/residual_disease/residual_disease_query.i2qy, id: link2}
   - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:

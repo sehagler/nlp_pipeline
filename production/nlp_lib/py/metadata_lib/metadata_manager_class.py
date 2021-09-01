@@ -10,14 +10,14 @@ import os
 
 #
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_json_file, write_json_file
+    import read_json_file, write_file
 
 #
 class Metadata_manager(object):
     
     #
     def __init__(self, static_data_manager):
-        self.static_data = static_data_manager.get_project_data()
+        self.static_data = static_data_manager.get_static_data()
         directory_manager = self.static_data['directory_manager']
         
         json_structure_manager = self.static_data['json_structure_manager']
@@ -122,4 +122,5 @@ class Metadata_manager(object):
     #
     def save_metadata(self):
         self._sort_metadata_dict()
-        write_json_file(self.metadata_json_file, self.metadata_dict_dict)
+        write_file(self.metadata_json_file, self.metadata_dict_dict,
+                        False, False)

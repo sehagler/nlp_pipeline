@@ -9,36 +9,38 @@ Created on Thu Apr 16 09:39:27 2020
 import ast
 import collections
 from copy import deepcopy
-import re
-
-#
 from distutils.dir_util import copy_tree
 import getpass
 from jsondiff import diff
 import os
+import re
 import shutil
 
 #
+from nlp_lib.py.file_lib.json_manager_class import Json_manager
 from nlp_lib.py.logger_lib.logger_class import Logger
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_nlp_data_from_package_json_file, write_json_file, xml_diff
+    import write_file, xml_diff
 
 #
 class Performance_data_manager(object):
     
     #
-    def __init__(self, static_data_manager):
-        project_data = static_data_manager.get_project_data()
-        self.directory_manager = project_data['directory_manager']
+    def __init__(self, static_data_manager, performance_json_manager,
+                 project_json_manager):
+        self.performance_json_manager = performance_json_manager
+        self.project_json_manager = project_json_manager
+        static_data = static_data_manager.get_static_data()
+        self.directory_manager = static_data['directory_manager']
         self.save_dir = \
             self.directory_manager.pull_directory('processing_data_dir')
-        self.project_data = project_data
         
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
-        self.static_data = project_data
+        self.static_data = static_data
+        self.static_data_manager = static_data_manager
        
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -71,14 +73,12 @@ class Performance_data_manager(object):
             json_structure_manager.pull_key('nlp_value_key')
             
         # to be moved to appropriate location
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.multiple_specimens = \
             json_structure_manager.pull_key('multiple_specimens')
         self.multiple_values = \
             json_structure_manager.pull_key('multiple_values')
         #
-    
-        self.directory_manager = project_data['directory_manager']
         
     #
     def _compare_data_values(self, x, y):
@@ -116,6 +116,10 @@ class Performance_data_manager(object):
                     result = 'true negative'
         else:
             result = 'multiple values'
+        if result != 'true positive' and result != 'true negative':
+            print(x)
+            print(y)
+            print('')
         return result, display_data_flg
     
     #
@@ -193,55 +197,61 @@ class Performance_data_manager(object):
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
                         mode_flg='multiple_values'):
-        self.data_dict_list = []
-        self._walk(node, target_key, [], section_key_list)
-        data_value = []
+        self.section_data_list = []
+        self._walk(node, target_key, data_key, [], section_key_list)
+        data_values = []
         if section_key_list is not None:
             for i in range(len(section_key_list)):
-                label = section_key_list[i]
-                if len(data_value) == 0:
-                    for item in self.data_dict_list:
-                        if item[0] == label:
-                            data_value.append(item[1])
+                section_key = section_key_list[i]
+                if len(data_values) == 0:
+                    for j in range(len(self.section_data_list)):
+                        section_data = self.section_data_list[j]
+                        if section_data[0] == section_key:
+                            data_item = section_data[1]
+                            if not isinstance(data_item, list):
+                                data_tmp = []
+                                data_tmp.append(data_item)
+                                data_item = data_tmp
+                            data_values.append(tuple(data_item))
         else:
-            for item in self.data_dict_list:
-                data_value.append(item[1])
-        self.data_dict_list = data_value
+            for j in range(len(self.section_data_list)):
+                section_data = self.section_data_list[j]
+                data_item = section_data[1]
+                if not isinstance(data_item, list):
+                    data_tmp = []
+                    data_tmp.append(data_item)
+                    data_item = data_tmp
+                data_values.append(tuple(data_item))
+        #data_values = list(set(data_values))
+        data_values = [tuple(i) for i in set(tuple(i) for i in data_values)]
         data_value = []
         if section_key_list is not None:  
-            if len(self.data_dict_list) > 0:
-                for data_dict in self.data_dict_list[0]:
-                    data_tmp = data_dict[data_key]
-                    if isinstance(data_tmp, list):
-                        data_tmp = tuple(data_tmp)
-                    elif isinstance(data_tmp, tuple):
-                        data_tmp = tuple(data_tmp)
-                    data_value.append(data_tmp)
-            else:
-                data_value = self.data_dict_list
+            data_value = data_values
         else:
-            if len(self.data_dict_list) > 0:
-                for data_dict in self.data_dict_list[0]:
-                    if data_key in data_dict.keys():
-                        data_tmp = data_dict[data_key]
-                        if mode_flg == 'multiple_values':
-                            data_tmp = data_dict[data_key].split(', ')
-                            data_tmp = tuple(data_tmp)
-                        elif mode_flg == 'single_value':
-                            pass
-                        if isinstance(data_tmp, list):
-                            data_tmp = tuple(data_tmp)
-                        data_value.append(data_tmp)
+            if len(data_values) > 0:
+                if mode_flg == 'multiple_values':
+                    data_tmp = data_values[0][0].split(', ')
+                    data_tmp = tuple(data_tmp)
+                elif mode_flg == 'single_value':
+                    data_tmp = data_values
+                if isinstance(data_tmp, list):
+                    data_tmp = tuple(data_tmp)
+                elif isinstance(data_tmp, tuple):
+                    data_tmp = tuple(data_tmp)
+                data_value.append(data_tmp)
             else:
-                data_value = self.data_dict_list
-        data_value = list(set(data_value))
+                data_value = data_values
+        #data_value = list(set(data_value))
+        data_value = [tuple(i) for i in set(tuple(i) for i in data_value)]
         if mode_flg == 'single_value':
             if len(data_value) == 0:
                 data_value = None
-            elif len(data_value) == 1:
-                data_value = data_value[0]
-            elif len(data_value) > 1:
-                data_value = self.multiple_values
+            elif len(data_value[0]) == 1:
+                data_value = [ data_value[0][0] ]
+            elif len(data_value[0]) > 1:
+                data_value = [ 'MANUAL_REVIEW' ]
+                data_value = tuple(data_value)
+                data_value = [ data_value ]
         elif mode_flg == 'multiple_values':
             if len(data_value) == 0:
                 data_value = None
@@ -336,7 +346,7 @@ class Performance_data_manager(object):
         return s
     
     #
-    def _walk(self, node, target_key, key_list_in, section_key_list):
+    def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
         for k, v in node.items():
             key_list = deepcopy(key_list_in)
             key_list.append(k)
@@ -345,11 +355,15 @@ class Performance_data_manager(object):
                 section_key = re.sub(' [0-9]+$', '', section_key)
                 if section_key_list is not None:
                     if section_key in section_key_list:
-                        self.data_dict_list.append(tuple([section_key, v]))
+                        for v_item in v:
+                            if data_key in v_item.keys():
+                                self.section_data_list.append(tuple([section_key, v_item[data_key]]))
                 else:
-                    self.data_dict_list.append(tuple([section_key, v]))
+                    for v_item in v:
+                        if data_key in v_item.keys():
+                            self.section_data_list.append(tuple([section_key, v_item[data_key]]))
             elif isinstance(v, dict):
-                self._walk(v, target_key, key_list, section_key_list)
+                self._walk(v, target_key, data_key, key_list, section_key_list)
         
     #
     def display_performance_data(self):
@@ -367,10 +381,9 @@ class Performance_data_manager(object):
             
     #
     def read_nlp_data(self):
-        self.nlp_data = read_nlp_data_from_package_json_file(self.static_data)
+        self.nlp_data = \
+            self.project_json_manager.read_nlp_data_from_package_json_file()
          
     #
     def write_performance_data(self):
-        project_name = self.project_data['project_name']
-        write_json_file(os.path.join(self.save_dir, project_name + '.performance.json'),
-                        self.performance_statistics_dict)
+        self.performance_json_manager.write_file(self.performance_statistics_dict)

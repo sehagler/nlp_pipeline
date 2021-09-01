@@ -18,8 +18,8 @@ from tool_lib.py.processing_tools_lib.text_processing_tools \
 class Reader_base(object):
     
     #
-    def __init__(self, project_data, server_manager, password):
-        self.project_data = project_data
+    def __init__(self, static_data, server_manager, password):
+        self.static_data = static_data
         self.server_manager = server_manager
         
     #
@@ -32,40 +32,32 @@ class Reader_base(object):
             datetime_str = ''
         return datetime_str
     
-    '''
     #
-    def _trim_data_by_patient_identifier(self, data):
-        if 'patient_list' in self.project_data:
-            patient_list = self.project_data['patient_list']
-        else:
-            patient_list = None
-        patient_identifier = None
-        for key in self.project_data['patient_identifiers']:
-            try:
-                patient_identifier = list(set(data[key]))
-            except:
-                pass
-        if len(patient_identifier) < 2:
-            if patient_identifier_list is not None:
-                if patient_identifier[0] in patient_identifier_list:
-                    do_analysis_flg = True
-                else:
-                    do_analysis_flg = False
-            else:
-                do_analysis_flg = True
-        #print(patient_identifier)
+    def _trim_data_by_patient_list(self, data):
+        patient_list = self.static_data['patient_list']
+        delete_idxs = []
+        for key in self.static_data['patient_identifiers']:
+            if key in data.keys():
+                patient_identifiers = data[key]
+                for i in range(len(patient_identifiers)):
+                    if patient_identifiers[i] not in patient_list:
+                        delete_idxs.append(i)
+        delete_idxs.sort(reverse=True)
+        for i in range(len(delete_idxs)):
+            idx = delete_idxs[i]
+            for key in data.keys():
+                del data[key][idx]
         return data
-    '''
     
     #
     def _trim_data_by_csn(self, data):
-        document_identifiers = self.project_data['document_identifiers']
+        document_identifiers = self.static_data['document_identifiers']
         data_csn_list = []
         for document_identifier in document_identifiers:
             if document_identifier in data.keys():
                 data_csn_list.extend(data[document_identifier])
-        if 'document_list' in self.project_data.keys():
-            document_list = self.project_data['document_list']
+        if 'document_list' in self.static_data.keys():
+            document_list = self.static_data['document_list']
         else:
             document_list = list(set(data_csn_list))
         csn_list = []
@@ -83,13 +75,13 @@ class Reader_base(object):
         
     #
     def _trim_data_by_csn(self, data):
-        document_identifiers = self.project_data['document_identifiers']
+        document_identifiers = self.static_data['document_identifiers']
         data_csn_list = []
         for document_identifier in document_identifiers:
             if document_identifier in data.keys():
                 data_csn_list.extend(data[document_identifier])
-        if 'document_list' in self.project_data.keys():
-            document_list = self.project_data['document_list']
+        if 'document_list' in self.static_data.keys():
+            document_list = self.static_data['document_list']
         else:
             document_list = list(set(data_csn_list))
         csn_list = []
@@ -108,7 +100,8 @@ class Reader_base(object):
     #
     def read_files(self, raw_data_files_dict, raw_data_file):
         data = self._read_data_file(raw_data_files_dict, raw_data_file)
-        if self.project_data['flags']['trim_data_by_csn']:
+        if self.static_data['flags']['trim_data_by_csn']:
             data = self._trim_data_by_csn(data)
-        #data = self._trim_data_by_patient_identifier(data)
+        if 'patient_list' in self.static_data:
+            data = self._trim_data_by_patient_list(data)
         return data

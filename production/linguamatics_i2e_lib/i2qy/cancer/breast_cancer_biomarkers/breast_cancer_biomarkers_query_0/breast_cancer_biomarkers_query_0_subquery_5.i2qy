@@ -1,0 +1,27 @@
+version: 6.3
+creationDate: '2021-06-29 22:50:58'
+query:
+  document:
+  - phrase:
+    - word:
+        text: (
+        quantifier: {minimum: 0, maximum: 1}
+    - link: {path: ../breast_cancer_biomarkers_percentage.i2qy, id: link3}
+    - phrase:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - word:
+            text: ','
+            quantifier: {minimum: 0, maximum: 1}
+        - link: {path: ../breast_cancer_biomarkers_score.i2qy, id: link2}
+output:
+  columns:
+  - id: link3.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link3
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  columnLocations: [1, 0]
+  useOutputEditor: true
+creator: haglers

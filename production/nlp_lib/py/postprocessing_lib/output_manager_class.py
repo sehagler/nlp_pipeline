@@ -12,7 +12,7 @@ import urllib3
 
 #
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_xml_file, write_json_file
+    import read_xml_file, write_file
 
 #
 urllib3.disable_warnings()
@@ -21,8 +21,8 @@ urllib3.disable_warnings()
 class Output_manager(object):
 
     #
-    def __init__(self, project_data, metadata_manager):
-        json_structure_manager = project_data['json_structure_manager']
+    def __init__(self, static_data, metadata_manager):
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -63,7 +63,7 @@ class Output_manager(object):
             json_structure_manager.pull_key('multiple_values')
         #
     
-        self.project_name = project_data['project_name']
+        self.project_name = static_data['project_name']
         self.metadata_manager = metadata_manager
         self.merged_data_dict_list = []
         self.data_dict_classes_list = []
@@ -121,7 +121,8 @@ class Output_manager(object):
                     outdir = self.data_out
                     filename = data_dict['DOCUMENT_ID'] + '.json'
                     data_dict.pop('DOCUMENT_ID', None)
-                    write_json_file(os.path.join(outdir, filename), data_dict)
+                    write_file(os.path.join(outdir, filename), data_dict,
+                                    False, False)
     
     #
     def get_data(self):

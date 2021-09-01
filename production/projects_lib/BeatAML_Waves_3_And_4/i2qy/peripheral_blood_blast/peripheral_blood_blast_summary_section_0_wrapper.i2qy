@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2019-01-31 21:55:38'
 query:
   document:
@@ -24,7 +24,7 @@ query:
           - phrase:
               quantifier: {minimum: 0, maximum: 0}
               of: [bone, marrow]
-          - link: {path: ../../General/cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast.i2qy, id: link3}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/peripheral_blood_blast.i2qy, id: link3}
   - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:

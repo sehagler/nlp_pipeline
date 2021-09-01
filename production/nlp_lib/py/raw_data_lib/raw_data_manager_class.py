@@ -22,17 +22,17 @@ from tool_lib.py.processing_tools_lib.variable_processing_tools \
 class Raw_data_manager(object):
     
     #
-    def __init__(self, project_data, server_manager, password):
-        self.project_data = project_data
-        self.xml_reader = Xml_reader(project_data, server_manager, password)
-        self.xlsx_reader = Xlsx_reader(project_data, server_manager, password)
+    def __init__(self, static_data, server_manager, password):
+        self.static_data = static_data
+        self.xml_reader = Xml_reader(static_data, server_manager, password)
+        self.xlsx_reader = Xlsx_reader(static_data, server_manager, password)
         self._read_raw_data_from_source_files()
         
     #
     def _finish_document_data(self, document_data, document_ctr):
         try:
             multiprocessing_flg = \
-                self.project_data['flags']['multiprocessing']
+                self.static_data['multiprocessing']
         except:
             multiprocessing_flg = False
         if multiprocessing_flg:
@@ -41,14 +41,14 @@ class Raw_data_manager(object):
             document_idx = document_ctr
             document_data['NLP_DOCUMENT_IDX'] = []
             document_data['NLP_DOCUMENT_IDX'].append(document_idx)
-        if 'header_values' in self.project_data.keys():
-            if len(self.project_data['header_values']) > 1:
+        if 'header_values' in self.static_data.keys():
+            if len(self.static_data['header_values']) > 1:
                 raw_text = ''
-                for header_value in self.project_data['header_values']:
+                for header_value in self.static_data['header_values']:
                     header_value = re.sub(':', '', header_value)
-                    for i in range(len(document_data[self.project_data['header_key']])):
+                    for i in range(len(document_data[self.static_data['header_key']])):
                         data_value = \
-                            re.sub(':', '', document_data[self.project_data['header_key']][i])
+                            re.sub(':', '', document_data[self.static_data['header_key']][i])
                         if header_value.lower() == data_value.lower():
                             raw_text += '\n' + header_value + '\n'
                             raw_text += '\n' + document_data['RAW_TEXT'][i] + '\n'
@@ -76,9 +76,9 @@ class Raw_data_manager(object):
     
     #
     def _partition_data_by_thread(self, data):
-        num_processes = self.project_data['num_processes']
+        num_processes = self.static_data['num_processes']
         try:
-            multiprocessing_flg = self.project_data['flags']['multiprocessing']
+            multiprocessing_flg = self.static_data['multiprocessing']
         except:
             multiprocessing_flg = False
         partitioned_data = {}
@@ -114,44 +114,6 @@ class Raw_data_manager(object):
         delete_key(metadata, 'REPORT_HEADER')
         delete_key(metadata, 'REPORT_LINE')
         return metadata
-    
-    #
-    def _read_data(self, project_data, data_tmp, password, i2e_version,
-                   num_processes, process_idx):
-        if 'RAW_TEXT' in data_tmp.keys() and \
-           data_tmp['RAW_TEXT'][0] is not None:
-            raw_text = data_tmp['RAW_TEXT']
-            raw_text = ''.join(raw_text)
-            raw_text = remove_repeated_substrings(raw_text)
-            rpt_text = raw_text
-        else:
-            raw_text = None
-            rpt_text = None
-        source_metadata = {}
-        for key in data_tmp.keys():
-            source_metadata[key] = data_tmp[key][0]
-        source_metadata = self._prune_metadata(source_metadata)
-        nlp_metadata = {}
-        nlp_metadata = _get_nlp_metadata(project_data, password, i2e_version,
-                                         num_processes, process_idx)
-        nlp_metadata['FILENAME'] = source_metadata['FILENAME']
-        del source_metadata['FILENAME']
-        nlp_metadata['NLP_DOCUMENT_IDX'] = \
-            str(source_metadata['NLP_DOCUMENT_IDX'])
-        del source_metadata['NLP_DOCUMENT_IDX']
-        nlp_metadata['NLP_MODE'] = source_metadata['NLP_MODE']
-        del source_metadata['NLP_MODE']
-        nlp_metadata['NLP_PROCESS'] = \
-            source_metadata['NLP_PROCESS']
-        del source_metadata['NLP_PROCESS']
-        try:
-            nlp_metadata['NOTE_TYPE'] = \
-                source_metadata['NOTE_TYPE']
-            xml_metadata_keys = ['NLP_PROCESS', 'NOTE_TYPE']
-        except:
-            xml_metadata_keys = ['NLP_PROCESS' ]
-        return [source_metadata], [nlp_metadata], [raw_text], [rpt_text], \
-               xml_metadata_keys
                
     #
     def _read_beakerap_data(self, poject_datda, data_tmp, password,
@@ -159,8 +121,7 @@ class Raw_data_manager(object):
         
         # initialize lists
         metadata_list = []
-        raw_text_list = []
-        rpt_text_list = []
+        text_list = []
         
         # iterate through filtered data by result IDs
         RESULT_IDS = sorted(set(data_tmp['RESULT_ID']))
@@ -191,8 +152,7 @@ class Raw_data_manager(object):
                         
                 #
                 raw_text = ''.join(raw_text)
-                raw_text = remove_repeated_substrings(raw_text)
-                rpt_text = raw_text
+                text = remove_repeated_substrings(raw_text)
                 
                 #
                 source_metadata = {}
@@ -202,13 +162,12 @@ class Raw_data_manager(object):
                 
                 #
                 source_metadata_list.append(source_metadata)
-                raw_text_list.append(raw_text)
-                rpt_text_list.append(rpt_text)
+                text_list.append(text)
                 
         #
         nlp_metadata_list = []
         for i in range(len(source_metadata_list)):
-            nlp_metadata = _get_nlp_metadata(project_data, password, i2e_version,
+            nlp_metadata = _get_nlp_metadata(static_data, password, i2e_version,
                                              num_processes, process_idx)
             nlp_metadata['FILENAME'] = source_metadata_list[i]['FILENAME']
             del source_metadata_list[i]['FILENAME']
@@ -217,55 +176,84 @@ class Raw_data_manager(object):
             del source_metadata_list[i]['NLP_DOCUMENT_IDX']
             nlp_metadata['NLP_MODE'] = source_metadata_list[i]['NLP_MODE']
             del source_metadata_list[i]['NLP_MODE']
-            nlp_metadata['NLP_PROCESS'] = \
-                source_metadata_list[i]['NLP_PROCESS']
-            del source_metadata_list[i]['NLP_PROCESS']
             try:
                 nlp_metadata['NOTE_TYPE'] = \
                     source_metadata_list[i]['NOTE_TYPE']
-                xml_metadata_keys = ['NLP_PROCESS', 'NOTE_TYPE']
+                xml_metadata_keys = ['NOTE_TYPE']
             except:
-                xml_metadata_keys = ['NLP_PROCESS' ]
+                xml_metadata_keys = []
             nlp_metadata_list.append(nlp_metadata)
                 
         #
-        return source_metadata_list, nlp_metadata_list, raw_text_list, \
-               rpt_text_list, xml_metadata_keys
+        return source_metadata_list, nlp_metadata_list, text_list, \
+               xml_metadata_keys
+               
+    #
+    def _read_data(self, static_data, data_tmp, password, i2e_version,
+                   num_processes, process_idx):
+        if 'RAW_TEXT' in data_tmp.keys() and \
+           data_tmp['RAW_TEXT'][0] is not None:
+            raw_text = data_tmp['RAW_TEXT']
+            raw_text = ''.join(raw_text)
+            text = remove_repeated_substrings(raw_text)
+        else:
+            text = None
+        source_metadata = {}
+        for key in data_tmp.keys():
+            source_metadata[key] = data_tmp[key][0]
+        source_metadata = self._prune_metadata(source_metadata)
+        nlp_metadata = {}
+        nlp_metadata = _get_nlp_metadata(static_data, password, i2e_version,
+                                         num_processes, process_idx)
+        nlp_metadata['FILENAME'] = source_metadata['FILENAME']
+        del source_metadata['FILENAME']
+        nlp_metadata['NLP_DOCUMENT_IDX'] = \
+            str(source_metadata['NLP_DOCUMENT_IDX'])
+        del source_metadata['NLP_DOCUMENT_IDX']
+        nlp_metadata['NLP_MODE'] = source_metadata['NLP_MODE']
+        del source_metadata['NLP_MODE']
+        try:
+            nlp_metadata['NOTE_TYPE'] = \
+                source_metadata['NOTE_TYPE']
+            xml_metadata_keys = [ 'NOTE_TYPE']
+        except:
+            xml_metadata_keys = []
+        return [source_metadata], [nlp_metadata], [text], xml_metadata_keys
     
     #
-    def _read_data_wrapper(self, project_data, password, data_tmp,
+    def _read_data_wrapper(self, static_data, password, data_tmp,
                            i2e_version, num_processes, process_idx):
-        do_beakerap_flg = project_data['do_beakerap_flg']
+        do_beakerap_flg = static_data['do_beakerap_flg']
         if 'SOURCE_SYSTEM' in data_tmp.keys():
             source_system = data_tmp['SOURCE_SYSTEM'][0]
         else:
             source_system = 'UNKNOWN'
         if do_beakerap_flg and source_system == 'BeakderAP':
-            source_metadata_list, nlp_metadata_list, raw_text_list, \
-                rpt_text_list, xml_metadata_keys = \
-                    self._read_beakerap_data(project_data, data_tmp, password, 
+            source_metadata_list, nlp_metadata_list, text_list, \
+            xml_metadata_keys = \
+                    self._read_beakerap_data(static_data, data_tmp, password, 
                                              i2e_version, num_processes,
                                              process_idx)
         else:
-            source_metadata_list, nlp_metadata_list, raw_text_list, \
-                rpt_text_list, xml_metadata_keys = \
-                    self._read_data(project_data, data_tmp, password,
+            source_metadata_list, nlp_metadata_list, text_list, \
+            xml_metadata_keys = \
+                    self._read_data(static_data, data_tmp, password,
                                     i2e_version, num_processes, process_idx)
-        return source_metadata_list, nlp_metadata_list, raw_text_list, \
-               rpt_text_list, xml_metadata_keys, source_system
+        return source_metadata_list, nlp_metadata_list, text_list, \
+               xml_metadata_keys, source_system
     
     #
     def _read_raw_data_from_source_files(self):
-        raw_data_files_dict = self.project_data['raw_data_files']
-        if 'raw_data_files_sequence' in self.project_data.keys():
-            raw_data_files_seq = self.project_data['raw_data_files_sequence']
+        raw_data_files_dict = self.static_data['raw_data_files']
+        if 'raw_data_files_sequence' in self.static_data.keys():
+            raw_data_files_seq = self.static_data['raw_data_files_sequence']
         else:
             raw_data_files_seq = None
         if raw_data_files_seq is None:
             raw_data_files_seq = list(raw_data_files_dict.keys())
         raw_data_files = []
         for i in range(len(raw_data_files_seq)):
-            raw_data_files.append(os.path.join(self.project_data['directory_manager'].pull_directory('raw_data_dir'),
+            raw_data_files.append(os.path.join(self.static_data['directory_manager'].pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))
         data = []
         data_datetimes = []
@@ -304,15 +292,15 @@ class Raw_data_manager(object):
             self._finish_document_data(document_data, document_ctr)
             
         #
-        source_metadata_list, nlp_metadata_list, raw_text_list, \
-            rpt_text_list, xml_metadata_keys, source_system = \
-                self._read_data_wrapper(self.project_data, password,
+        source_metadata_list, nlp_metadata_list, text_list, \
+            xml_metadata_keys, source_system = \
+                self._read_data_wrapper(self.static_data, password,
                                         document_data, i2e_version,
                                         num_processes, process_idx)
         #
         
         xml_metadata_list = []
-        for i in range(len(rpt_text_list)):
+        for i in range(len(text_list)):
             source_metadata = source_metadata_list[i]
             nlp_metadata = nlp_metadata_list[i]
             xml_metadata = {}
@@ -323,8 +311,7 @@ class Raw_data_manager(object):
                 xml_metadata[key] = nlp_metadata[key]
             xml_metadata_list.append(xml_metadata)
         return document_data, document_idx, source_metadata_list, \
-            nlp_metadata_list, raw_text_list, rpt_text_list, \
-            xml_metadata_list, source_system
+               nlp_metadata_list, text_list, xml_metadata_list, source_system
     
     #
     def get_data_by_document_value(self, data_file, document_value_key,
@@ -337,15 +324,15 @@ class Raw_data_manager(object):
             self._finish_document_data(document_data, document_ctr)
         
         #
-        source_metadata_list, nlp_metadata_list, raw_text_list, \
-            rpt_text_list, xml_metadata_keys, source_system = \
-                self._read_data_wrapper(self.project_data, password,
+        source_metadata_list, nlp_metadata_list, text_list, \
+            xml_metadata_keys, source_system = \
+                self._read_data_wrapper(self.static_data, password,
                                         document_data, i2e_version,
                                         num_processes, process_idx)
         #
         
         xml_metadata_list = []
-        for i in range(len(rpt_text_list)):
+        for i in range(len(text_list)):
             source_metadata = source_metadata_list[i]
             nlp_metadata = nlp_metadata_list[i]
             xml_metadata = {}
@@ -356,8 +343,7 @@ class Raw_data_manager(object):
                 xml_metadata[key] = nlp_metadata[key]
             xml_metadata_list.append(xml_metadata)
         return document_data, document_idx, source_metadata_list, \
-            nlp_metadata_list, raw_text_list, rpt_text_list, \
-            xml_metadata_list, source_system
+               nlp_metadata_list, text_list, xml_metadata_list, source_system
       
     #
     def get_document_numbers(self):
@@ -365,7 +351,7 @@ class Raw_data_manager(object):
         for data in self.data:
             keys = list(data.keys())
             doc_num += len(data[keys[0]])
-        document_numbers = list(range(doc_num))
+        document_numbers = sorted(list(range(doc_num)))
         return document_numbers
     
     #
@@ -385,7 +371,8 @@ class Raw_data_manager(object):
                 document_value_list = []
                 idxs = [j for j, x in enumerate(data_label0) if x == item ]
                 document_value_list.append([data_label1[j] for j in idxs])
-                document_value_dict[i][item] = sorted(list(set(document_value_list[0])))
+                document_value_dict[i][item] = \
+                    sorted(list(set(document_value_list[0])))
         return document_value_dict
     
     #
@@ -402,7 +389,7 @@ class Raw_data_manager(object):
         self.data = self.partitioned_data[process_idx]
         
 #
-def _get_nlp_metadata(project_data, password, i2e_version, num_processes,
+def _get_nlp_metadata(static_data, password, i2e_version, num_processes,
                       process_idx):
     python_version = \
         str(sys.version_info[0]) + '.' + \

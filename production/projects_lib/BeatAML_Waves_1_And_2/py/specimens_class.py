@@ -10,19 +10,21 @@ import json
 import os
 
 #
-from tool_lib.py.processing_tools_lib.file_processing_tools import read_json_file
-from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools import prune_surface_antigens
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_jsons_class \
     import Specimens_jsons
+from tool_lib.py.analysis_tools_lib.text_analysis_tools \
+    import prune_surface_antigens
+from tool_lib.py.processing_tools_lib.file_processing_tools \
+    import read_json_file
 from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
 
 #
 class Specimens(Specimens_jsons):
     
     #
-    def __init__(self, project_data, metadata_dict_dict, data_json):
+    def __init__(self, static_data, metadata_dict_dict, data_json):
             
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -64,10 +66,10 @@ class Specimens(Specimens_jsons):
         #
         
         self.metadata_dict_dict = metadata_dict_dict
-        directory_manager = project_data['directory_manager']
+        directory_manager = static_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
-        Specimens_jsons.__init__(self, project_data, data_json)
+        Specimens_jsons.__init__(self, static_data, data_json)
     
     #                 
     def _evaluate_antibodies_tested(self):
@@ -121,15 +123,18 @@ class Specimens(Specimens_jsons):
                         dx_values = None
                     if 'specificDx' in data_json_tmp[key0][key1][key2].keys():
                         specificdx_values = \
-                            data_json_tmp[key0][key1][key2]['specificDx'][0]
+                            data_json_tmp[key0][key1][key2]['specificDx']
                     else:
                         specificdx_values = None
                     values = []
                     if dx_values is not None:
-                        values.extend(dx_values[0])
+                        dx_values = list(set(dx_values))
+                        for dx_value in dx_values:
+                            values.extend([dx_value[0]])
                     if specificdx_values is not None:
-                        for item in specificdx_values:
-                            values.append(item[0])
+                        specificdx_values = list(set(specificdx_values))
+                        for specificdx_value in specificdx_values:
+                            values.append(specificdx_value[0])
                     if len(values) > 0:
                         values = [ values ]
                     if len(values) > 0:
@@ -212,11 +217,12 @@ class Specimens(Specimens_jsons):
                 for key2 in data_json_tmp[key0][key1].keys():
                     try:
                         values = data_json_tmp[key0][key1][key2]['specificDx']
-                        values = values[0][0]
+                        values = values[0]
                         #values = self._trim_data_value(values)
                         #values = list(set(values))
                         specific_diagnoses = []
                         specific_diagnoses.append(''.join(values[1]))
+                        specific_diagnoses = list(set(specific_diagnoses))
                         if len(specific_diagnoses) == 1:
                             value = specific_diagnoses[0]
                         elif len(specific_diagnoses) > 1:

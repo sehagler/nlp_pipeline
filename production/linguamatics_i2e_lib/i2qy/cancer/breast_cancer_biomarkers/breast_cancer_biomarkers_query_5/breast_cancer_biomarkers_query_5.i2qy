@@ -1,0 +1,55 @@
+version: 6.3
+creationDate: '2021-06-07 17:36:39'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      id: phrase2
+      of:
+      - alternative:
+          id: alternative1
+          showMultipleColumns: true
+          of:
+          - link: {path: breast_cancer_biomarkers_query_5_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_5_subquery_1.i2qy}
+      - word:
+          text: for
+          quantifier: {minimum: 0, maximum: 1}
+      - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link5}
+      - phrase:
+          maxWordGap: -1
+          quantifier: {minimum: 0, maximum: 1}
+          wordGapRestricted: false
+          of:
+          - (
+          - word:
+              text: )
+              quantifier: {minimum: 0, maximum: 0}
+          - link: {path: ../breast_cancer_biomarkers_percentage.i2qy, id: link6}
+          - word:
+              text: (
+              quantifier: {minimum: 0, maximum: 0}
+          - )
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - for
+          - link: {path: ../breast_cancer_biomarkers_names.i2qy}
+output:
+  columns:
+  - id: link6.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link6
+  - {id: phrase2}
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  - id: link5.link4.class1
+    itemOptions: {}
+    linkItemId: link4.link5
+  columnLocations: [1, 4, 2, 3, 0]
+  useOutputEditor: true
+parameters: {BIOMARKER: ''}
+creator: haglers

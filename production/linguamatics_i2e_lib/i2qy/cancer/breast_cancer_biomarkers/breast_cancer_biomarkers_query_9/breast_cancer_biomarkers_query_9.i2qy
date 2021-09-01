@@ -1,0 +1,51 @@
+version: 6.3
+creationDate: '2015-12-14 15:22:31'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      id: phrase1
+      of:
+      - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link10}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of: [IHC, staining]
+      - word:
+          text: result
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - ':'
+          - ','
+          - ;
+          - {class: /vg}
+      - alternative:
+          findMatches: longestOnly
+          id: alternative1
+          showMultipleColumns: true
+          of:
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_1.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_2.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_3.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_4.i2qy}
+output:
+  columns:
+  - {id: phrase1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  - id: link10.link4.class1
+    itemOptions: {}
+    linkItemId: link4.link10
+  columnLocations: [0, 4, 1, 2, 3]
+  outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
+  useOutputEditor: true
+parameters: {BIOMARKER: ''}
+creator: szhang

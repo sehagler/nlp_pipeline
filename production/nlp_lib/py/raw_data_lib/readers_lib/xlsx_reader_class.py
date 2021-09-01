@@ -18,9 +18,9 @@ class Xlsx_reader(Reader_base):
     
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
-        datetime_keys = self.project_data['datetime_keys']
-        header_key = self.project_data['header_key']
-        header_value_list = self.project_data['header_values']
+        datetime_keys = self.static_data['datetime_keys']
+        header_key = self.static_data['header_key']
+        header_value_list = self.static_data['header_values']
         if header_key != []:
             data = \
                 self._read_data_file_key(raw_data_files_dict, raw_data_file,
@@ -44,8 +44,6 @@ class Xlsx_reader(Reader_base):
             data['FILENAME'] = []
         if 'NLP_MODE' not in data.keys():
             data['NLP_MODE'] = []
-        if 'NLP_PROCESS' not in data.keys():
-            data['NLP_PROCESS'] = []
         for key in keys:
             if key not in data.keys():
                 data[key] = []
@@ -56,7 +54,6 @@ class Xlsx_reader(Reader_base):
             if REPORT_KEY_tmp.lower() in map(str.lower, key_value_list):
                 data['FILENAME'].append(os.path.basename(raw_data_file))
                 data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
-                data['NLP_PROCESS'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_PROCESS'])
                 for i in range(len(keys)):
                     if keys[i] in dt_labels:
                         data[keys[i]].append(self._read_datetime(book, row[i].value))
@@ -81,8 +78,6 @@ class Xlsx_reader(Reader_base):
             data['FILENAME'] = []
         if 'NLP_MODE' not in data.keys():
             data['NLP_MODE'] = []
-        if 'NLP_PROCESS' not in data.keys():
-            data['NLP_PROCESS'] = []
         for key in keys:
             if key not in data.keys():
                 data[key] = []
@@ -90,7 +85,6 @@ class Xlsx_reader(Reader_base):
             row = sheet.row(row_idx)
             data['FILENAME'].append(os.path.basename(raw_data_file))
             data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
-            data['NLP_PROCESS'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_PROCESS'])
             for i in range(len(keys)):
                 if keys[i] in dt_labels:
                     data[keys[i]].append(self._read_datetime(book, row[i].value))

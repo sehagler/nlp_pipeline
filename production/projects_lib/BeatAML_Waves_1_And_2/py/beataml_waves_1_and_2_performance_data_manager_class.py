@@ -11,21 +11,24 @@ import re
 #
 from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from nlp_lib.py.tool_lib.analysis_tools_lib.text_analysis_tools \
-    import compare_texts
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_class import Specimens
 from projects_lib.BeatAML_Waves_1_And_2.py.gold_standard_jsons_class \
     import Gold_standard_jsons
+from tool_lib.py.analysis_tools_lib.text_analysis_tools import compare_texts
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
 #
 class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager):
-        project_data = static_data_manager.get_project_data()
+    def __init__(self, static_data_manager, performance_json_manager,
+                 project_json_manager):
+        Performance_data_manager.__init__(self, static_data_manager,
+                                          performance_json_manager,
+                                          project_json_manager)
+        static_data = static_data_manager.get_static_data()
         
-        json_structure_manager = project_data['json_structure_manager']
+        json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
         self.documents_wrapper_key = \
@@ -64,8 +67,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             json_structure_manager.pull_key('multiple_values')
         #
         
-        Performance_data_manager.__init__(self, static_data_manager)
-        self.project_data = project_data
+        self.static_data = static_data
     
     #
     def _compare_values_antigens(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
@@ -400,30 +402,57 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         data_out = {}
         data_out['Antibodies.Tested'] = \
             self._get_data_value(data_in, [ 'ANTIBODIES TESTED' ], 'ANTIBODIES_TESTED_' + self.nlp_value_key, 'ANTIBODIES_TESTED')
+        if data_out['Antibodies.Tested'] is not None:
+            data_out['Antibodies.Tested'] = data_out['Antibodies.Tested'][0]
         data_out['dx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS_' + self.nlp_value_key, 'DIAGNOSIS')
+        if data_out['dx'] is not None:
+            data_out['dx'] = data_out['dx'][0]
         data_out['dx.Date'] = \
             self._get_data_value(data_in, [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE_' + self.nlp_value_key, 'DATE')
+        if data_out['dx.Date'] is not None:
+            data_out['dx.Date'] = data_out['dx.Date'][0]
         data_out['Extramedullary.dx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE_' + self.nlp_value_key, 'EXTRAMEDULLARY_DISEASE')
+        if data_out['Extramedullary.dx'] is not None:
+            data_out['Extramedullary.dx'] = data_out['Extramedullary.dx'][0]
         data_out['FAB/Blast.Morphology'] = \
             self._get_data_value(data_in, [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION_' + self.nlp_value_key, 'FAB_CLASSIFICATION')
+        if data_out['FAB/Blast.Morphology'] is not None:
+            data_out['FAB/Blast.Morphology'] = data_out['FAB/Blast.Morphology'][0]
         data_out['FISH.Analysis.Summary'] = \
             self._get_data_value(data_in, [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY_' + self.nlp_value_key, 'FISH_ANALYSIS_SUMMARY')
+        if data_out['FISH.Analysis.Summary'] is not None:
+            data_out['FISH.Analysis.Summary'] = data_out['FISH.Analysis.Summary'][0]
         data_out['Karyotype'] = \
             self._get_data_value(data_in, [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE_' + self.nlp_value_key, 'KARYOTYPE' )
+        if data_out['Karyotype'] is not None:
+            data_out['Karyotype'] = data_out['Karyotype'][0]
         data_out['%.Blasts.in.BM'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST_' + self.nlp_value_key, 'BLAST_PERCENTAGE')
+        if data_out['%.Blasts.in.BM'] is not None:
+            data_out['%.Blasts.in.BM'] = data_out['%.Blasts.in.BM'][0]
         data_out['%.Blasts.in.PB'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST_' + self.nlp_value_key, 'BLAST_PERCENTAGE')
+        if data_out['%.Blasts.in.PB'] is not None:
+            data_out['%.Blasts.in.PB'] = data_out['%.Blasts.in.PB'][0]
         data_out['Relapse.Date'] = \
             self._get_data_value(data_in, [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE_' + self.nlp_value_key, 'DATE')
+        if data_out['Relapse.Date'] is not None:
+            data_out['Relapse.Date'] = data_out['Relapse.Date'][0]
         data_out['Residual.dx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE_' + self.nlp_value_key, 'DIAGNOSIS')
+        if data_out['Residual.dx'] is not None:
+            data_out['Residual.dx'] = data_out['Residual.dx'][0]
         data_out['specificDx'] = \
             self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS_' + self.nlp_value_key, 'DIAGNOSIS')
+        if data_out['specificDx'] is not None:
+            data_out['specificDx'] = data_out['specificDx'][0]
         data_out['Surface.Antigens.(Immunohistochemical.Stains)'] = \
-            self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SURFACE_ANTIGENS_' + self.nlp_value_key, 'IMMUNOPHENOTYPE')
+            self._get_data_value(data_in, [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE_' + self.nlp_value_key, 'IMMUNOPHENOTYPE')
+        if data_out['Surface.Antigens.(Immunohistochemical.Stains)'] is not None:
+            data_out['Surface.Antigens.(Immunohistochemical.Stains)'] = \
+                data_out['Surface.Antigens.(Immunohistochemical.Stains)'][0]
         del_keys = []
         for key in data_out:
             if data_out[key] is not None:
@@ -489,14 +518,14 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                     data_json[mrn][specimen_date][proc_nm] = {}
                 if doc_name not in data_json[mrn][specimen_date][proc_nm].keys():
                     data_json[mrn][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
-        validation_object = Specimens(self.project_data, metadata_dict_dict, data_json)
+        validation_object = Specimens(self.static_data, metadata_dict_dict, data_json)
         validation_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
         nlp_values = validation_object.get_data_json()
         return nlp_values
     
     #
-    def _read_validation_data(self, project_data, nlp_data):
-        mrn_list = project_data['patient_list']
+    def _read_validation_data(self, static_data, nlp_data):
+        mrn_list = static_data['patient_list']
         gold_standard_object = Gold_standard_jsons(self.directory_manager, mrn_list)
         gold_standard_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'gold_standard.json')
         validation_data = gold_standard_object.get_data_json()
@@ -505,8 +534,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     #
     def calculate_performance(self):
         nlp_data = self.nlp_data
-        validation_data = self._read_validation_data(self.project_data, nlp_data)
-        validation_data = validation_data
+        validation_data = \
+            self._read_validation_data(self.static_data, nlp_data)
         full_specimen_ctr = 0
         gs_record_ctr = 0
         patient_ids_list = []

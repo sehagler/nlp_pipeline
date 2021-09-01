@@ -1,9 +1,9 @@
-version: 6.2
+version: 6.3
 creationDate: '2020-03-10 00:39:46'
 query:
   document:
   - phrase:
-    - link: {path: 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/tumor/tumor_margin/query_lib/margin_text_phrase_pre_1.i2qy'}
+    - link: {path: margin_text_phrase_pre_1.i2qy}
     - link: {path: margin_description.i2qy}
     - phrase:
         quantifier: {minimum: 0, maximum: 0}

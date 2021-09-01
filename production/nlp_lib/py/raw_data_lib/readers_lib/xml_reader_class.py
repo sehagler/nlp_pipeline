@@ -21,10 +21,10 @@ class Xml_reader(Reader_base):
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
         filename, file_extension = os.path.splitext(raw_data_file)
         tmp_file = filename + '.tmp'
-        dt_labels = self.project_data['datetime_keys']
-        text_identifiers = self.project_data['text_identifiers']
+        dt_labels = self.static_data['datetime_keys']
+        text_identifiers = self.static_data['text_identifiers']
         with open(raw_data_file, 'rb') as f:
-            xml_txt = f.read().decode(self.project_data['raw_data_encoding'], 'ignore')
+            xml_txt = f.read().decode(self.static_data['raw_data_encoding'], 'ignore')
         xml_txt = re.sub('&#8226;', '*', xml_txt)
         xml_txt = re.sub('&#[0-9]+;', '', xml_txt)
         with open(tmp_file, 'w') as f:
@@ -44,8 +44,6 @@ class Xml_reader(Reader_base):
             data['FILENAME'] = []
         if 'NLP_MODE' not in data.keys():
             data['NLP_MODE'] = []
-        if 'NLP_PROCESS' not in data.keys():
-            data['NLP_PROCESS'] = []
         if 'SOURCE_SYSTEM' not in data.keys():
             data['SOURCE_SYSTEM'] = []
         for key in keys:
@@ -67,7 +65,6 @@ class Xml_reader(Reader_base):
                     data[key].append(None)
                 data['FILENAME'].append(os.path.basename(raw_data_file))
                 data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
-                data['NLP_PROCESS'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_PROCESS'])
                 data['SOURCE_SYSTEM'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['SOURCE_SYSTEM'])
                 keys_appended = []
         for text_identifier in text_identifiers:

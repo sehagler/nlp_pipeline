@@ -8,14 +8,17 @@ Created on Fri Mar 08 12:13:29 2019
 #
 from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
     import Postprocessor_base
+from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+    import Preprocessor_base
 from tool_lib.py.query_tools_lib.antigens_tools import correct_antibodies
 
 #
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, project_data, data_file, label):
-        Postprocessor_base.__init__(self, project_data, label, data_file)
+    def __init__(self, static_data, data_file):
+        Postprocessor_base.__init__(self, static_data, data_file,
+                                    query_name='IMMUNOPHENOTYPE')
         self._extract_data_values()
 
     #
@@ -33,3 +36,12 @@ class Postprocessor(Postprocessor_base):
             value_dict['IMMUNOPHENOTYPE'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
+    
+#
+class Summarization(Preprocessor_base):
+    
+    #
+    def remove_extraneous_text(self):
+        self._clear_command_list()
+        self._general_command('(?i)[\n\s]+(by)?(\( )?ARUP lab(s)?( \))?', {None : ''})
+        self._process_command_list()
