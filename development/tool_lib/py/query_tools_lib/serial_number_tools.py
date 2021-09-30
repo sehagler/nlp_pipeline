@@ -13,9 +13,11 @@ from tool_lib.py.processing_tools_lib.text_processing_tools \
 #
 class Summarization(Preprocessor_base):
     
+    '''
     #
     def _remove_block(self):
         self._general_command('(?i)(\n\s*)?\( block' + s() + ' (#( )?)?' + block_label() + '(-' + block_label() + ')? \)', {None : ''})
+    '''
     
     #
     def _remove_case_number(self):
@@ -52,7 +54,6 @@ class Summarization(Preprocessor_base):
         
     #
     def remove_extraneous_text(self):
-        self._remove_block()
         self._remove_case_number()
         self._remove_part()
         self._remove_slice()

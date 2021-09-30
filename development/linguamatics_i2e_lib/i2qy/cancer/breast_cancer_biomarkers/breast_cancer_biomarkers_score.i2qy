@@ -44,6 +44,9 @@ query:
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
           of: [intensity, positivity, staining]
+      - word:
+          text: ratio
+          quantifier: {minimum: 0, maximum: 0}
 output:
   columns:
   - {id: phrase1}

@@ -8,19 +8,15 @@ query:
       id: phrase1
       of:
       - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link10}
-      - phrase:
-          quantifier: {minimum: 0, maximum: 1}
-          of: [IHC, staining]
-      - word:
-          text: result
-          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+        - IHC
+        - word: {text: result, morphoVariants: true}
+        - word: {text: stain, morphoVariants: true}
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
           of:
-          - ':'
-          - ','
-          - ;
-          - {class: /vg}
+          - link: {path: ../breast_cancer_biomarkers_relation_verbal.i2qy}
+          - alternative: [':', ',', ;]
       - alternative:
           findMatches: longestOnly
           id: alternative1

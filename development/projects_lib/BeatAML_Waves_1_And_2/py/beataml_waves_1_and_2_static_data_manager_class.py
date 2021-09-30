@@ -32,7 +32,6 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
         self.static_data['flags'] = {}
         self.static_data['flags']['remove_date'] = False
         self.static_data['flags']['trim_data_by_csn'] = False
-        self.static_data['formatting'] = 'formatted'
         self.static_data['header_values'] = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
                                                'Karyotype', 'Clinical History', 'Immunologic Analysis',
                                                'Laboratory Data', 'Microscopic Description',

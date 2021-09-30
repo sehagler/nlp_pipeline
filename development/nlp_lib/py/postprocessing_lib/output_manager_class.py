@@ -57,10 +57,8 @@ class Output_manager(object):
             json_structure_manager.pull_key('nlp_value_key')
             
         # to be moved to appropriate location
-        self.multiple_specimens = \
-            json_structure_manager.pull_key('multiple_specimens')
-        self.multiple_values = \
-            json_structure_manager.pull_key('multiple_values')
+        self.manual_review = \
+            json_structure_manager.pull_key('manual_review')
         #
     
         self.project_name = static_data['project_name']

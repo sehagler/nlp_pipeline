@@ -149,8 +149,10 @@ class Process_manager(object):
                                                  self.server_manager, password)
             
         # Read data kludge to be done properly later
+        operation_mode = self.static_data['operation_mode']
+        pkl_file = 'raw_data_' + operation_mode + '.pkl'
         self.raw_data_manager.print_num_of_docs_in_preprocessing_set()
-        pickle.dump(self.raw_data_manager, open('raw_data.pkl', 'wb'))
+        pickle.dump(self.raw_data_manager, open(pkl_file, 'wb'))
         del self.raw_data_manager
         # Read data klude to be done properly later
             
@@ -186,7 +188,7 @@ class Process_manager(object):
             p.join()
             
         # Read data kludge to be done properly later
-        os.remove('raw_data.pkl')
+        os.remove(pkl_file)
         # Read data kludge to be done properly later
         
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))

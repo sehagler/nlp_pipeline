@@ -32,8 +32,7 @@ class Json_structure_tools(object):
         self.json_structure_dict['nlp_value_key'] = 'NLP_OUTPUT'
         
         # to be moved to appropriate location
-        self.json_structure_dict['multiple_specimens'] = 'MULTIPLE_SPECIMENS'
-        self.json_structure_dict['multiple_values'] = 'MULTIPLE_VALUES'
+        self.json_structure_dict['manual_review'] = 'MANUAL_REVIEW'
         #
         
     #

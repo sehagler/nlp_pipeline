@@ -44,11 +44,10 @@ class Pretokenizer(Preprocessor_base):
         self.dynamic_data_manager.append_keywords_text(self.body_header)
         self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         self.section_header_normalizer.push_text(self.text)
-        self.section_header_normalizer.amendment_section_header(self.formatting)
-        self.section_header_normalizer.biomarkers_tests_section_header(self.formatting)
         self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
         self.section_header_normalizer.history_section_header(self.formatting)
         self.section_header_normalizer.normalize_section_header(self.formatting)
+        self.section_header_normalizer.amendment_section_header(self.formatting)
         self.section_header_normalizer.clear_section_header_tags()
         self.section_header_normalizer.fix_section_headers()
         self.text = self.section_header_normalizer.pull_text()
@@ -69,6 +68,10 @@ class Pretokenizer(Preprocessor_base):
         self._general_command('(?i)in-toto', {None : 'in toto'})
         self._general_command('(?i)over-expression', {None : 'overexpression'})
         self._general_command('____+(\n_+)*', {None : '' })
+        text_list = [ 'negative', 'positive']
+        for text_str in text_list:
+            regex_str = '(?i)(?<=' + text_str + ')\('
+            self._general_command(regex_str, {None : ' ('})
     
     #
     def _remove_extraneous_text(self):

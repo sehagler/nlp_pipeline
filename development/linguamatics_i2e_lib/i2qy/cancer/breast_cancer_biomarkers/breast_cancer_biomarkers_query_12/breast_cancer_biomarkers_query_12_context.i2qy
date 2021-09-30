@@ -2,7 +2,7 @@ version: 6.3
 creationDate: '2020-06-16 19:40:40'
 query:
   document:
-  - link: {path: breast_cancer_biomarkers_query_4.i2qy, id: link1}
+  - link: {path: breast_cancer_biomarkers_query_12.i2qy, id: link2}
   - alternative:
       findMatches: longestOnly
       id: alternative1
@@ -16,7 +16,7 @@ query:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
           - {class: /chunk}
-          - link: {path: breast_cancer_biomarkers_query_4.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_12.i2qy}
           - {class: /chunk}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
@@ -28,7 +28,7 @@ query:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
           - {class: /chunk}
-          - link: {path: breast_cancer_biomarkers_query_4.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_12.i2qy}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
       - phrase:
@@ -38,7 +38,7 @@ query:
           of:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
-          - link: {path: breast_cancer_biomarkers_query_4.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_12.i2qy}
           - {class: /chunk}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
@@ -49,28 +49,28 @@ query:
           of:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
-          - link: {path: breast_cancer_biomarkers_query_4.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_12.i2qy}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - {id: alternative1}
-  - id: link1.phrase3
+  - id: link2.phrase3
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.link5.phrase1
+    linkItemId: link2
+  - id: link2.link3.link4.class1
     itemOptions: {}
-    linkItemId: link5.link1
-  - id: link1.link3.link4.class1
+    linkItemId: link4.link3.link2
+  - id: link2.link6.alternative1
     itemOptions: {}
-    linkItemId: link4.link3.link1
-  - id: link1.link4.link1.phrase1
+    linkItemId: link6.link2
+  - id: link2.link4.link1.phrase1
     itemOptions: {}
-    linkItemId: link1.link4.link1
-  - id: link1.link6.alternative1
+    linkItemId: link1.link4.link2
+  - id: link2.link1.phrase1
     itemOptions: {}
-    linkItemId: link6.link1
-  columnLocations: [1, 3, 5, 2, 4, 0]
+    linkItemId: link1.link2
+  columnLocations: [1, 2, 3, 5, 4, 0]
   useOutputEditor: true
 parameters: {Biomarker: ''}
 creator: haglers

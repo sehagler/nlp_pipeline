@@ -5,7 +5,29 @@ query:
   - phrase:
     - alternative:
         id: alternative1
-        of: [ER, HER2, Ki67, PR]
+        of: [CK5/6, ER, HER2, Ki67, PR]
+    - phrase:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - word:
+            text: (
+            quantifier: {minimum: 0, maximum: 1}
+        - alternative:
+            of:
+            - word: {text: '[0-9]{2}', matchType: Regexp}
+            - word: {text: '[A-Z].*[0-9]/*', matchType: Regexp}
+            - word: {text: '[0-9].*[A-Z].*', matchType: Regexp}
+            where:
+            - word:
+                text: HER2
+                quantifier: {minimum: 0, maximum: 0}
+        - word:
+            text: )
+            quantifier: {minimum: 0, maximum: 1}
+    - word:
+        text: stain
+        morphoVariants: true
+        quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - {id: alternative1}

@@ -96,7 +96,7 @@ class Specimens_jsons(Specimens_base):
                         self._merge_documents(documents)
                 else:
                     corrected_data_json[correction_patientIds[i]][correction_labIds[i]] = \
-                        self.multiple_specimens
+                        self.manual_review
         else:
             corrected_data_json = {}
         return corrected_data_json

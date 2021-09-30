@@ -25,9 +25,18 @@ class Named_entity_recognition(Preprocessor_base):
                               {None : 'ER and PR'})
         self._general_command('(?i)progesterone and estrogen( receptor' + s() + ')?',
                               {None : 'PR and ER'})
-        self._general_command('(?i)estrogen receptor( \( ER( , clone [A-Z0-9]+)? \))?', {None : 'ER'})
+        self._general_command('(?i)estrogen receptor', {None : 'ER'})
+        self._general_command('(?i)ER \( ER \)', {None : 'ER'})
+        self._general_command('(?i)ER \( ER , clone [A-Z0-9]+ \)', {'ER , clone' : ''})
+        self._general_command('(?i)ER results , clone [A-Z0-9]+', {'results , clone' : ''})
         self._general_command('(?i)HER(-| / )?2(( | / )?(c-)?neu)?( \( cerb2 \))?', {None : 'HER2'})
-        self._general_command('(?i)progesterone receptor( \( PR( , clone [A-Z0-9]+)? \))?', {None : 'PR'})
+        self._general_command('(?i)HER2- / (c-)?neu( \( cerb2 \))?', {None : 'HER2'})
+        self._general_command('(?i)C-ERB B2 \( HER2 \)', {None: 'HER2'})
+        self._general_command('(?i)Ki-67( \(mm-1\))?', {None : 'KI67'})
+        self._general_command('(?i)progesterone receptor', {None : 'PR'})
+        self._general_command('(?i)PR \( PR \)', {None : 'PR'})
+        self._general_command('(?i)PR \( PR , clone [A-Z0-9]+ \)', {'PR , clone' : ''})
+        self._general_command('(?i)PR results , clone [A-Z0-9]+', {'results , clone' : ''})
         self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
 
 #
@@ -59,6 +68,7 @@ class Postprocessor(Postprocessor_base):
         unique_contexts = list(set(contexts))
         er_value_list = []
         her2_value_list = []
+        ki67_value_list = []
         pr_value_list = []
         for context in unique_contexts:
             er_status_text_list = []
@@ -67,6 +77,9 @@ class Postprocessor(Postprocessor_base):
             her2_status_text_list = []
             her2_score_text_list = []
             her2_percentage_text_list = []
+            ki67_status_text_list = []
+            ki67_score_text_list = []
+            ki67_percentage_text_list = []
             pr_status_text_list = []
             pr_score_text_list = []
             pr_percentage_text_list = []
@@ -74,7 +87,8 @@ class Postprocessor(Postprocessor_base):
                 if context_text_list[i] == context:
                     biomarker_name = biomarker_name_text_list[i]
                     biomarker_status = \
-                        self._process_status(biomarker_status_text_list[i])
+                        self._process_status(biomarker_name,
+                                             biomarker_status_text_list[i])
                     biomarker_score = \
                         self._process_score(biomarker_score_text_list[i])
                     biomarker_percentage = \
@@ -93,6 +107,13 @@ class Postprocessor(Postprocessor_base):
                             her2_score_text_list.append(biomarker_score.lower())
                         if len(biomarker_percentage.lower()) > 0:
                             her2_percentage_text_list.append(biomarker_percentage.lower())
+                    elif biomarker_name == 'Ki67':
+                        if len(biomarker_status.lower()) > 0:
+                            ki67_status_text_list.append(biomarker_status.lower())
+                        if len(biomarker_score.lower()) > 0:
+                            ki67_score_text_list.append(biomarker_score.lower())
+                        if len(biomarker_percentage.lower()) > 0:
+                            ki67_percentage_text_list.append(biomarker_percentage.lower())
                     elif biomarker_name == 'PR':
                         if len(biomarker_status.lower()) > 0:
                             pr_status_text_list.append(biomarker_status.lower())
@@ -103,18 +124,30 @@ class Postprocessor(Postprocessor_base):
             er_status_text_list = list(set(er_status_text_list))
             er_score_text_list = list(set(er_score_text_list))
             er_percentage_text_list = list(set(er_percentage_text_list))
-            er_value_list.append((er_status_text_list, er_score_text_list, er_percentage_text_list, context))
+            er_value_list.append((er_status_text_list, er_score_text_list,
+                                  er_percentage_text_list, context))
             her2_status_text_list = list(set(her2_status_text_list))
             her2_score_text_list = list(set(her2_score_text_list))
             her2_percentage_text_list = list(set(her2_percentage_text_list))
             if len(her2_status_text_list) > 1:
-                her2_status_text_list = [ x for x in her2_status_text_list \
-                                          if x != 'equivocal' ]
-            her2_value_list.append((her2_status_text_list, her2_score_text_list, her2_percentage_text_list, context))
+                her2_status_text_list_tmp = [ x for x in her2_status_text_list \
+                                              if x != 'equivocal' ]
+                if len(her2_status_text_list_tmp) > 0:
+                    her2_status_text_list = her2_status_text_list_tmp
+            her2_value_list.append((her2_status_text_list, 
+                                    her2_score_text_list,
+                                    her2_percentage_text_list, context))
+            ki67_status_text_list = list(set(ki67_status_text_list))
+            ki67_score_text_list = list(set(ki67_score_text_list))
+            ki67_percentage_text_list = list(set(ki67_percentage_text_list))
+            ki67_value_list.append((ki67_status_text_list,
+                                    ki67_score_text_list,
+                                    ki67_percentage_text_list, context))
             pr_status_text_list = list(set(pr_status_text_list))
             pr_score_text_list = list(set(pr_score_text_list))
             pr_percentage_text_list = list(set(pr_percentage_text_list))
-            pr_value_list.append((pr_status_text_list, pr_score_text_list, pr_percentage_text_list, context))
+            pr_value_list.append((pr_status_text_list, pr_score_text_list,
+                                  pr_percentage_text_list, context))
         value_dict_list = []
         for value in er_value_list:
             if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
@@ -136,6 +169,17 @@ class Postprocessor(Postprocessor_base):
                 if len(value[0]) > 0: value_dict['HER2_STATUS'] = value[0]
                 if len(value[1]) > 0: value_dict['HER2_SCORE'] = value[1]
                 if len(value[2]) > 0: value_dict['HER2_PERCENTAGE'] = value[2]
+                value_dict['CONTEXT'] = value[3]
+                value_dict_list.append(value_dict)
+        for value in ki67_value_list:
+            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
+                value_dict = {}
+                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
+                    value = (manual_review_str, manual_review_str,
+                             manual_review_str, value[3])
+                if len(value[0]) > 0: value_dict['KI67_STATUS'] = value[0]
+                #if len(value[1]) > 0: value_dict['KI67_SCORE'] = value[1]
+                if len(value[2]) > 0: value_dict['KI67_PERCENTAGE'] = value[2]
                 value_dict['CONTEXT'] = value[3]
                 value_dict_list.append(value_dict)
         for value in pr_value_list:
@@ -173,17 +217,18 @@ class Postprocessor(Postprocessor_base):
         return score
         
     #
-    def _process_status(self, status):
-        if status.lower() in [ 'borderline' ]:
-            status = 'equivocal'
-        elif status.lower() in [ 'absent', 'negativity', 'no', 'non-amplified', 
-                                 'nonreactive', 'not amplified', 'unamplified',
-                                 'unfavorable', 'without immunoreactivity']:
-            status = 'negative'
-        elif status.lower() in [ 'amplified', 'favorable', 'immunoreactive',
-                                 'immunoreactivity', 'positivity', 'present',
-                                 'reactive', 'strong' ]:
-            status = 'positive'
+    def _process_status(self, biomarker_name, status):
+        if biomarker_name in [ 'ER', 'HER2', 'PR' ]:
+            if status.lower() in [ 'borderline' ]:
+                status = 'equivocal'
+            elif status.lower() in [ 'negativity', 'no', 'non-amplified', 
+                                     'nonreactive', 'not amplified', 'unamplified',
+                                     'unfavorable', 'without immunoreactivity']:
+                status = 'negative'
+            elif status.lower() in [ 'amplified', 'favorable', 'immunoreactive',
+                                     'immunoreactivity', 'positivity', 'present',
+                                     'reactive', 'strong', 'variable' ]:
+                status = 'positive'
         return status
 
 #
@@ -194,10 +239,15 @@ class Summarization(Preprocessor_base):
         return('(ampification|antigen|clone|(over)?expression|immunoreactivity|protein|receptor|status)')
         
     #
+    def _process_CK56(self):
+        self._clear_command_list()
+        self._general_command('(?i)CK5 / 6', {None : 'CK5/6'})
+        self._process_command_list()
+    
+    #
     def _process_ER(self):
         self._general_command('(?i)\nERs', {None : '\nER'})
         self._general_command('(?i)\sERs', {None : ' ER'})
-        self._general_command('(?i)ER SP1', {None : 'ER'})
         self._general_command('[\n\s]+ER-', {None : ' ER '})
         search_str = 'ER ' + self._receptor_predicate() + s()
         for _ in range(3):
@@ -215,8 +265,6 @@ class Summarization(Preprocessor_base):
         
     #
     def _process_HER2(self):
-        self._general_command('(?i) \( PATHWAYTMHER2 kit , 4B5 \)', {None : ''})
-        self._general_command('(?i) \( Hereceptest \)', {None : ''})
         self._general_command('(?i)HER2( :)?( )?-', {None : 'HER2 negative'})
         self._general_command('(?i)HER2( :)?( )?\+', {None : 'HER2 positive'})
         for _ in range(7):
@@ -230,16 +278,9 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)HER2 ' + self._receptor_predicate(), {None : 'HER2'})
         
     #
-    def _process_Ki67(self):
-        self._clear_command_list()
-        self._general_command('(?i)ki-67( \(mm-1\))?', {None : 'Ki67'})
-        self._process_command_list()
-        
-    #
     def _process_PR(self):
         self._general_command('(?i)\nPRs', {None : '\nPR'})
         self._general_command('(?i)\sPRs', {None : ' PR'})
-        self._general_command('(?i)PR IE2', {None : 'PR'})
         self._general_command('[\n\s]+PR-', {None : ' PR '})
         search_str = 'PR ' + self._receptor_predicate() + s()
         for _ in range(3):
@@ -257,10 +298,12 @@ class Summarization(Preprocessor_base):
         
     #
     def _remove_extraneous_text(self):
+        self._general_command('(?i) \( Hereceptest \)', {None : ''})
         self._general_command('(?i)by IHC', {None : ''})
         self._general_command('(?i)' + article() + ' positive ER or PR result requires.*moderate to strong nuclear staining( \.)?', {None : ''})
         self._general_command('(?i)(, )?Pathway TM', {None : ''})
-        self._general_command('(?i)\( PATHWAYTMHER2 kit \)', {None : ''})
+        self._general_command('(?i) \( PATHWAYTMHER2 kit , 4B5 \)', {None : ''})
+        self._general_command('(?i)\( PATHWAY(TMHER2| \( TM \) HER2) Kit( , clone [0-9A-Z]+)? \)', {None : ''})
         self._general_command('(?i)\* ' + article() + ' asterisk indicates that ' + article() + ' IHC.*computer assisted quantitative image analysis( \.)?', {None : ''})
         self._general_command('(?i)\( analyte specific reagents.*clinical lab testing( \.)? \)( \.)?', {None : ''})
         self._general_command('(?i)\( analyte specific reagents.*FDA( \.)? \)( \.)?', {None : ''})
@@ -276,13 +319,14 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)HER2 (expression )?' + be() + ' expressed by ' + article() + ' ACIS score(.*\n)*.*confirm HER2 DNA amplification( \.)?', {None : ''})
         self._general_command('(?i)' + article() + ' HER2 analysis is done(.*\n)*.*tissue sent for confirmation by FISH analysis( \.)?', {None : ''})
         self._general_command('(?i)' + article() + ' ER , PR and HER2 IHC stains are performed(.*\n)*.*Inadequate specimens[\- ]are not reported \.', {None : ''})
+        self._general_command('(?i); see ISH results below', {None : ''})
         
     #
     def process_text(self, text):
         self.push_text(text)
+        self._process_CK56()
         self._process_ER()
         self._process_HER2()
-        self._process_Ki67()
         self._process_PR()
         self._remove_extraneous_text()
         text = self.pull_text()

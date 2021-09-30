@@ -17,11 +17,6 @@ query:
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
         - link: {path: breast_cancer_biomarkers_names.i2qy}
         - alternative:
-            quantifier: {minimum: 0, maximum: 1}
-            of:
-            - word: {text: '[A-Z].*[0-9]/*', matchType: Regexp}
-            - word: {text: '[0-9].*[A-Z].*', matchType: Regexp}
-        - alternative:
             quantifier: {minimum: 1, maximum: none}
             view: {layout: list}
             of: [and, or, ',', /]
@@ -34,12 +29,30 @@ query:
             macroPt: determiner
             macroSnid: linguamatics_wc.WC_Determiner
             of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
-    - link: {path: breast_cancer_biomarkers_smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link4}
-    - alternative:
-        quantifier: {minimum: 0, maximum: 1}
-        of:
-        - word: {text: '[A-Z].*[0-9]/*', matchType: Regexp}
-        - word: {text: '[0-9].*[A-Z].*', matchType: Regexp}
+    - phrase:
+      - link: {path: breast_cancer_biomarkers_smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link4}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - word:
+              text: (
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+              of:
+              - word: {text: '[0-9]{2}', matchType: Regexp}
+              - word: {text: '[A-Z].*[0-9]/*', matchType: Regexp}
+              - word: {text: '[0-9].*[A-Z].*', matchType: Regexp}
+              where:
+              - word:
+                  text: HER2
+                  quantifier: {minimum: 0, maximum: 0}
+          - word:
+              text: )
+              quantifier: {minimum: 0, maximum: 1}
+      - word:
+          text: stain
+          morphoVariants: true
+          quantifier: {minimum: 0, maximum: 1}
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:
@@ -64,11 +77,6 @@ query:
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
         - link: {path: breast_cancer_biomarkers_names.i2qy, showInDefaultOutput: false}
-        - alternative:
-            quantifier: {minimum: 0, maximum: 1}
-            of:
-            - word: {text: '[A-Z].*[0-9]/*', matchType: Regexp}
-            - word: {text: '[0-9].*[A-Z].*', matchType: Regexp}
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:

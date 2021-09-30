@@ -5,7 +5,7 @@ query:
   - alternative:
       id: alternative1
       view: {layout: list}
-      of: ['~', '>', <]
+      of: ['~', '>', '>=', <, <=]
 output:
   columns:
   - {id: alternative1}

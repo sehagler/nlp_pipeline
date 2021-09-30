@@ -61,10 +61,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             json_structure_manager.pull_key('nlp_value_key')
             
         # to be moved to appropriate location
-        self.multiple_specimens = \
-            json_structure_manager.pull_key('multiple_specimens')
-        self.multiple_values = \
-            json_structure_manager.pull_key('multiple_values')
+        self.manual_review = \
+            json_structure_manager.pull_key('manual_review')
         #
         
         self.static_data = static_data
@@ -92,7 +90,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         cond10 = gold_standard_value is not None
         cond11 = gold_standard_value is None
         if cond00 and cond10:
-            if validation_value != self.multiple_values:
+            if validation_value != self.manual_review:
                 text_score = compare_texts(gold_standard_value, validation_value, True)
                 if text_score[0] == 0:
                     score[data_item][0] += 1
@@ -131,7 +129,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         cond10 = gold_standard_value is not None
         cond11 = gold_standard_value is None
         if cond00 and cond10:
-            if validation_value != self.multiple_values:
+            if validation_value != self.manual_review:
                 if validation_value == gold_standard_value:
                     score[data_item][0] += 1
                 elif validation_value[0] == '>':
@@ -222,7 +220,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         cond10 = gold_standard_value is not None
         cond11 = gold_standard_value is None
         if cond00 and cond10:
-            if validation_value != self.multiple_values:
+            if validation_value != self.manual_review:
                 text_score = compare_dates(gold_standard_value, validation_value)
                 if text_score:
                     score[data_item][0] += 1
@@ -245,8 +243,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
     def _compare_values_karyotypes(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        multiple_values = self.multiple_values
-        multiple_values = re.sub(' ', '', multiple_values)
+        manual_review = self.manual_review
+        manual_review = re.sub(' ', '', manual_review)
         if data_item in validation_record.keys():
             validation_value = validation_record[data_item]
             validation_value = re.sub(' ', '', validation_value)
@@ -271,7 +269,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         cond10 = gold_standard_value is not None
         cond11 = gold_standard_value is None
         if cond00 and cond10:
-            if validation_value != multiple_values:
+            if validation_value != manual_review:
                 if validation_value == gold_standard_value:
                     score[data_item][0] += 1
                 else:
@@ -292,9 +290,9 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
     def _compare_values_residual_diagnosis(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        multiple_values = self.multiple_values
-        multiple_values = re.sub(' ', '', multiple_values)
-        multiple_values = multiple_values.lower()
+        manual_review = self.manual_review
+        manual_review = re.sub(' ', '', manual_review)
+        manual_review = manual_review.lower()
         if data_item in validation_record.keys():
             validation_value = validation_record[data_item]
             validation_value = re.sub(' ', '', validation_value)
@@ -319,7 +317,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         cond10 = gold_standard_value is not None
         cond11 = gold_standard_value is None
         if cond00 and cond10:
-            if validation_value != multiple_values:
+            if validation_value != manual_review:
                 if validation_value == gold_standard_value:
                     score[data_item][0] += 1
                 else:
@@ -342,9 +340,9 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     def _compare_values_specific_diagnosis(self, validation_record, 
                                            gold_standard_record, item, 
                                            item_score, patientId, labId):
-        multiple_values = self.multiple_values
-        multiple_values = re.sub(' ', '', multiple_values)
-        multiple_values = multiple_values.lower()
+        manual_review = self.manual_review
+        manual_review = re.sub(' ', '', manual_review)
+        manual_review = manual_review.lower()
         if item in validation_record.keys():
             #print(validation_record)
             validation_value = validation_record[item]
@@ -378,8 +376,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     #
     def _compare_values_texts(self, validation_record, gold_standard_record, 
                               item, item_score, patientId, labId):
-        multiple_values = self.multiple_values
-        multiple_values = re.sub(' ', '', multiple_values)
+        manual_review = self.manual_review
+        manual_review = re.sub(' ', '', manual_review)
         if item in validation_record.keys():
             validation_value = validation_record[item]
             validation_value = re.sub(' ', '', validation_value)

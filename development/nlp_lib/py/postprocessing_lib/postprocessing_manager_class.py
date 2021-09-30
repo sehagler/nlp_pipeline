@@ -60,6 +60,7 @@ class Postprocessing_manager(object):
                                                             filename))
         elif filename in [ 'breast_cancer_biomarkers_er.csv', 
                            'breast_cancer_biomarkers_her2.csv',
+                           'breast_cancer_biomarkers_ki67.csv',
                            'breast_cancer_biomarkers_pr.csv' ]:
             self.output_manager.append(Postprocessor_breast_cancer_biomarkers(self.static_data,
                                                                               filename))

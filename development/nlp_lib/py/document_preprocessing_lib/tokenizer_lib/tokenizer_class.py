@@ -118,7 +118,7 @@ class Tokenizer(Preprocessor_base):
         self._general_command('(?i)less th(a|e)n(?= \d)', {None : '<'})
         self._general_command('\*', {None : ''})
         self._general_command('(?i)(?<=\d) %', {None : '%'})
-        self._general_command('(?<!(:|\d))\d+-\d+%', {'-' : '%-'})
+        self._general_command('(?<!(:|\d))\d+ ?- ?\d+%', {' ?- ?' : '%-'})
         self._general_command('(?<!(:|\d))\d+ to \d+%', {' to ' : '%-'})
         self._general_command('(?<!(:|\d))\d+-\d+:00', {'-' : ' : 00-'})
         self._general_command('\)\(', {None : ') ('})

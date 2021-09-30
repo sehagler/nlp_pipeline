@@ -58,19 +58,19 @@ output:
   - id: link2.phrase2
     itemOptions: {}
     linkItemId: link2
-  - id: link2.alternative1.col0
+  - id: link2.link5.link4.class1
     itemOptions: {}
-    linkItemId: link2
-  - id: link2.alternative1.col1
+    linkItemId: link4.link5.link2
+  - id: link2.link4.alternative1
+    itemOptions: {}
+    linkItemId: link4.link2
+  - id: link2.alternative2.col0
     itemOptions: {}
     linkItemId: link2
   - id: link2.link6.link1.phrase1
     itemOptions: {}
     linkItemId: link1.link6.link2
-  - id: link2.link5.link4.class1
-    itemOptions: {}
-    linkItemId: link4.link5.link2
-  columnLocations: [1, 5, 2, 3, 4, 0]
+  columnLocations: [1, 2, 3, 4, 5, 0]
   useOutputEditor: true
 parameters: {BIOMARKER: ''}
 creator: haglers

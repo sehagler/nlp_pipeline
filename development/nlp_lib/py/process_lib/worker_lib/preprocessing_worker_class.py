@@ -153,7 +153,9 @@ class Preprocessing_worker(object):
         self.process_idx = process_idx
         
         # Read data kludge to be done properly later
-        self.raw_data_manager = pickle.load(open('raw_data.pkl', 'rb'))
+        operation_mode = self.static_data['operation_mode']
+        pkl_file = 'raw_data_' + operation_mode + '.pkl'
+        self.raw_data_manager = pickle.load(open(pkl_file, 'rb'))
         self.raw_data_manager.select_process(process_idx)
         # Read data kludge to be done properly later
         

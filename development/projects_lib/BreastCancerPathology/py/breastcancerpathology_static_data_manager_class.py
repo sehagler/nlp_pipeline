@@ -33,7 +33,6 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         self.static_data['flags'] = {}
         self.static_data['flags']['remove_date'] = True
         self.static_data['flags']['trim_data_by_csn'] = True
-        self.static_data['formatting'] = 'formatted'
         self.static_data['header_values'] = [ 'Final Pathologic Diagnosis' ]
         self.static_data['json_files_key_value'] = [ ('biomarker_json_file', 'biomarker.json'),
                                                       ('hist_diff_json_file', 'hist diff.json'),

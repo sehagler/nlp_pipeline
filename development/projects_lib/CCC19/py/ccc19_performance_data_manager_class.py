@@ -62,6 +62,182 @@ class CCC19_performance_data_manager(Performance_data_manager):
         if not data_out:
             data_out = None
         return data_out
+    
+    #
+    def _process_cancer_stage_performance(self, N, validation_csn_list,
+                                          nlp_values, validation_data):
+        nlp_cancer_stage_performance = []
+        for csn in validation_csn_list:
+            data_out = nlp_values[csn]
+            print(csn)
+            if data_out is not None:
+                if 'CANCER_STAGE' in data_out.keys():
+                    nlp_cancer_stage_value = data_out['CANCER_STAGE']
+                else:
+                    nlp_cancer_stage_value = None
+            else:
+                nlp_cancer_stage_value = None
+            for item in validation_data:
+                if item[2] == csn:
+                    validation_cancer_stage_value = \
+                        self._process_validation_item(item[3])
+            if validation_cancer_stage_value is not None:
+                validation_cancer_stage_value = \
+                    tuple([ validation_cancer_stage_value ])
+            display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_cancer_stage_value,
+                                          validation_cancer_stage_value)
+            nlp_cancer_stage_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_cancer_stage_performance)
+            self.performance_statistics_dict['CANCER_STAGE'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                
+    #
+    def _process_ecog_status_performance(self, N, validation_csn_list,
+                                         nlp_values, validation_data):
+        nlp_ecog_status_performance = []
+        for csn in validation_csn_list:
+            data_out = nlp_values[csn]
+            print(csn)
+            if data_out is not None:
+                if 'NORMALIZED_ECOG_SCORE' in data_out.keys():
+                    nlp_ecog_status_value = data_out['NORMALIZED_ECOG_SCORE']
+                else:
+                    nlp_ecog_status_value = None
+            else:
+                nlp_ecog_status_value = None
+            for item in validation_data:
+                if item[2] == csn:
+                    validation_ecog_status_value = \
+                        self._process_validation_item(item[4])
+            if validation_ecog_status_value is not None:
+                validation_ecog_status_value = \
+                    tuple([ validation_ecog_status_value ])
+            display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_ecog_status_value,
+                                          validation_ecog_status_value)
+            nlp_ecog_status_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_ecog_status_performance)
+            self.performance_statistics_dict['ECOG_STATUS'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                
+    #
+    def _process_smoking_history_performance(self, N, validation_csn_list,
+                                             nlp_values, validation_data):
+        nlp_smoking_history_performance = []
+        for csn in validation_csn_list:
+            data_out = nlp_values[csn]
+            print(csn)
+            if data_out is not None:
+                if 'NORMALIZED_SMOKING_HISTORY' in data_out.keys():
+                    nlp_smoking_history_value = \
+                        data_out['NORMALIZED_SMOKING_HISTORY']
+                else:
+                    nlp_smoking_history_value = None
+            else:
+                nlp_smoking_history_value = None
+            for item in validation_data:
+                if item[2] == csn:
+                    validation_smoking_history_value = \
+                        self._process_validation_item(item[6])
+            if validation_smoking_history_value is not None:
+                validation_smoking_history_value = \
+                    tuple([ validation_smoking_history_value ])
+            display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_smoking_history_value,
+                                          validation_smoking_history_value)
+            nlp_smoking_history_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_smoking_history_performance)
+            self.performance_statistics_dict['SMOKING_HISTORY'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                
+    #
+    def _process_smoking_products_performance(self, N, validation_csn_list,
+                                              nlp_values, validation_data):
+        nlp_smoking_products_performance = []
+        for csn in validation_csn_list:
+            data_out = nlp_values[csn]
+            print(csn)
+            if data_out is not None:
+                if 'NORMALIZED_SMOKING_PRODUCTS' in data_out.keys():
+                    nlp_smoking_products_value = \
+                        data_out['NORMALIZED_SMOKING_PRODUCTS']
+                    nlp_smoking_products_value_tmp = \
+                        nlp_smoking_products_value
+                    nlp_smoking_products_value = []
+                    for item0 in nlp_smoking_products_value_tmp:
+                        for item1 in item0:
+                            nlp_smoking_products_value.append(item1)
+                    nlp_smoking_products_value = \
+                        list(set(nlp_smoking_products_value))
+                else:
+                    nlp_smoking_products_value = None
+            else:
+                nlp_smoking_products_value = None
+            for item in validation_data:
+                if item[2] == csn:
+                    validation_smoking_products_value = \
+                        self._process_validation_item(item[7])
+            if validation_smoking_products_value is not None:
+                validation_smoking_products_value = \
+                    tuple(validation_smoking_products_value)
+            display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_smoking_products_value,
+                                          validation_smoking_products_value)
+            nlp_smoking_products_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_smoking_products_performance)
+            self.performance_statistics_dict['SMOKING_PRODUCTS'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                
+    #
+    def _process_smoking_status_performance(self, N, validation_csn_list,
+                                            nlp_values, validation_data):
+        nlp_smoking_status_performance = []
+        for csn in validation_csn_list:
+            data_out = nlp_values[csn]
+            print(csn)
+            if data_out is not None:
+                if 'NORMALIZED_SMOKING_STATUS' in data_out.keys():
+                    nlp_smoking_status_value = \
+                        data_out['NORMALIZED_SMOKING_STATUS']
+                else:
+                    nlp_smoking_status_value = None
+            else:
+                nlp_smoking_status_value = None
+            for item in validation_data:
+                if item[2] == csn:
+                    validation_smoking_status_value = \
+                        self._process_validation_item(item[5])
+            if validation_smoking_status_value is not None:
+                validation_smoking_status_value = \
+                    tuple([ validation_smoking_status_value ])
+            display_data_flg = True
+            performance, flg = \
+                self._compare_data_values(nlp_smoking_status_value,
+                                          validation_smoking_status_value)
+            nlp_smoking_status_performance.append(performance)
+            if flg:
+                display_data_flg = True
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_smoking_status_performance)
+            self.performance_statistics_dict['SMOKING_STATUS'] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
         
     #
     def _read_validation_data(self, static_data):
@@ -106,135 +282,21 @@ class CCC19_performance_data_manager(Performance_data_manager):
         validation_mrn_list = list(set(validation_mrn_list))
         validation_csn_list = list(set(validation_csn_list))
         nlp_values = self._read_nlp_value_data(validation_csn_list, nlp_data)
-        nlp_cancer_stage_performance = []
-        nlp_ecog_score_performance = []
-        nlp_smoking_history_performance = []
-        nlp_smoking_products_performance = []
-        nlp_smoking_status_performance = []
-        for csn in validation_csn_list:
-            print(csn)
-            data_out = nlp_values[csn]
-            if data_out is not None:
-                if 'CANCER_STAGE' in data_out.keys():
-                    nlp_cancer_stage_value = data_out['CANCER_STAGE']
-                else:
-                    nlp_cancer_stage_value = None
-                if 'NORMALIZED_ECOG_SCORE' in data_out.keys():
-                    nlp_ecog_score_value = data_out['NORMALIZED_ECOG_SCORE']
-                else:
-                    nlp_ecog_score_value = None
-                if 'NORMALIZED_SMOKING_HISTORY' in data_out.keys():
-                    nlp_smoking_history_value = data_out['NORMALIZED_SMOKING_HISTORY']
-                else:
-                    nlp_smoking_history_value = None
-                if 'NORMALIZED_SMOKING_PRODUCTS' in data_out.keys():
-                    nlp_smoking_products_value = data_out['NORMALIZED_SMOKING_PRODUCTS']
-                    nlp_smoking_products_value_tmp = nlp_smoking_products_value
-                    nlp_smoking_products_value = []
-                    for item0 in nlp_smoking_products_value_tmp:
-                        for item1 in item0:
-                            nlp_smoking_products_value.append(item1)
-                    nlp_smoking_products_value = \
-                        list(set(nlp_smoking_products_value))
-                else:
-                    nlp_smoking_products_value = None
-                if 'NORMALIZED_SMOKING_STATUS' in data_out.keys():
-                    nlp_smoking_status_value = data_out['NORMALIZED_SMOKING_STATUS']
-                else:
-                    nlp_smoking_status_value = None
-            else:
-                nlp_cancer_stage_value = None
-                nlp_ecog_score_value = None
-                nlp_smoking_history_value = None
-                nlp_smoking_products_value = None
-                nlp_smoking_status_value = None
-            for item in validation_data:
-                if item[2] == csn:
-                    validation_cancer_stage_value = \
-                        self._process_validation_item(item[3])
-                    validation_ecog_score_value = \
-                        self._process_validation_item(item[4])
-                    validation_smoking_status_value = \
-                        self._process_validation_item(item[5])
-                    validation_smoking_history_value = \
-                        self._process_validation_item(item[6])
-                    validation_smoking_products_value = \
-                        self._process_validation_item(item[7])
-            if validation_cancer_stage_value is not None:
-                validation_cancer_stage_value = \
-                    tuple([ validation_cancer_stage_value ])
-            if validation_ecog_score_value is not None:
-                validation_ecog_score_value = \
-                    tuple([ validation_ecog_score_value ])
-            if validation_smoking_status_value is not None:
-                validation_smoking_status_value = \
-                    tuple([ validation_smoking_status_value ])
-            if validation_smoking_history_value is not None:
-                validation_smoking_history_value = \
-                    tuple([ validation_smoking_history_value ])
-            if validation_smoking_products_value is not None:
-                validation_smoking_products_value = \
-                    tuple(validation_smoking_products_value)
-            display_data_flg = True
-            performance, flg = \
-                self._compare_data_values(nlp_cancer_stage_value,
-                                          validation_cancer_stage_value)
-            nlp_cancer_stage_performance.append(performance)
-            if flg:
-                display_data_flg = True
-            performance, flg = \
-                self._compare_data_values(nlp_ecog_score_value,
-                                          validation_ecog_score_value)
-            nlp_ecog_score_performance.append(performance)
-            if flg:
-                display_data_flg = True
-            performance, flg = \
-                self._compare_data_values(nlp_smoking_history_value,
-                                          validation_smoking_history_value)
-            nlp_smoking_history_performance.append(performance)
-            if flg:
-                display_data_flg = True
-            performance, flg = \
-                self._compare_data_values(nlp_smoking_products_value,
-                                          validation_smoking_products_value)
-            nlp_smoking_products_performance.append(performance)
-            if flg:
-                display_data_flg = True
-            performance, flg = \
-                self._compare_data_values(nlp_smoking_status_value,
-                                          validation_smoking_status_value)
-            nlp_smoking_status_performance.append(performance)
-            if flg:
-                display_data_flg = True
-            if False:
-                if display_data_flg:
-                    print(csn)
-        if True:
-            performance_statistics_dict = {}
-            num_docs = len(validation_csn_list)
-            num_pats = len(validation_mrn_list)
-            N = num_docs
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_cancer_stage_performance)
-            performance_statistics_dict['CANCER_STAGE'] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_ecog_score_performance)
-            performance_statistics_dict['ECOG_STATUS'] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_smoking_history_performance)
-            performance_statistics_dict['SMOKING_HISTORY'] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_smoking_products_performance)
-            performance_statistics_dict['SMOKING_PRODUCTS'] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_smoking_status_performance)
-            performance_statistics_dict['SMOKING_STATUS'] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            print('\n')
-            print('number of docs:\t\t%d' % num_docs)
-            print('number of patients:\t%d' % num_pats)
-        return performance_statistics_dict
+        num_docs = len(validation_csn_list)
+        num_pats = len(validation_mrn_list)
+        N = num_docs
+        self.performance_statistics_dict = {}
+        self._process_cancer_stage_performance(N, validation_csn_list,
+                                               nlp_values, validation_data)
+        self._process_ecog_status_performance(N, validation_csn_list,
+                                              nlp_values, validation_data)
+        self._process_smoking_history_performance(N, validation_csn_list,
+                                                  nlp_values, validation_data)
+        self._process_smoking_products_performance(N, validation_csn_list,
+                                                   nlp_values, validation_data)
+        self._process_smoking_status_performance(N, validation_csn_list,
+                                                 nlp_values, validation_data)
+        print('\n')
+        print('number of docs:\t\t%d' % num_docs)
+        print('number of patients:\t%d' % num_pats)
+        return self.performance_statistics_dict

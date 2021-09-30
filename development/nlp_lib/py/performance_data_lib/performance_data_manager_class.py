@@ -74,10 +74,8 @@ class Performance_data_manager(object):
             
         # to be moved to appropriate location
         json_structure_manager = static_data['json_structure_manager']
-        self.multiple_specimens = \
-            json_structure_manager.pull_key('multiple_specimens')
-        self.multiple_values = \
-            json_structure_manager.pull_key('multiple_values')
+        self.manual_review = \
+            json_structure_manager.pull_key('manual_review')
         #
         
     #
@@ -93,11 +91,16 @@ class Performance_data_manager(object):
     def _compare_lists(self, x, y):
         display_data_flg = False
         try:
-            if self.multiple_values in x:
-                x = self.multiple_values
+            if self.manual_review in x:
+                x = self.manual_review
         except:
             pass
-        if x is not self.multiple_values:
+        try:
+            if len(x) == 0:
+                x = None
+        except:
+            pass
+        if x != self.manual_review:
             if y is not None:
                 if x is not None:
                     if collections.Counter(x) == collections.Counter(y):
@@ -115,8 +118,16 @@ class Performance_data_manager(object):
                 else:
                     result = 'true negative'
         else:
-            result = 'multiple values'
-        if result != 'true positive' and result != 'true negative':
+            if y is not None:
+                if self.manual_review in y:
+                    result = 'manual review true positive'
+                else:
+                    result = 'manual review false positive + false negative'
+            else:
+                result = 'manual review false positive'
+        if False:
+            result = result.replace('manual review ', '')
+        if 'true positive' not in result and 'true negative' not in result:
             print(x)
             print(y)
             print('')
@@ -126,11 +137,11 @@ class Performance_data_manager(object):
     def _compare_strings(self, x, y):
         display_data_flg = False
         try:
-            if self.multiple_values in x:
-                x = self.multiple_values
+            if self.manual_review in x:
+                x = self.manual_review
         except:
             pass
-        if x is not self.multiple_values:
+        if x != self.manual_review:
             if y is not None:
                 if x is not None:
                     if str(x) in str(y):
@@ -148,18 +159,26 @@ class Performance_data_manager(object):
                 else:
                     result = 'true negative'
         else:
-            result = 'multiple values'
+            if y is not None:
+                if self.manual_review in y:
+                    result = 'manual review true positive'
+                else:
+                    result = 'manual review false positive + false negative'
+            else:
+                result = 'manual review false positive'
+        if False:
+            result = result.replace('manual review ', '')
         return result, display_data_flg
         
     #
     def _compare_values(self, x, y):
         display_data_flg = False
         try:
-            if self.multiple_values in x:
-                x = self.multiple_values
+            if self.manual_review in x:
+                x = self.manual_review
         except:
             pass
-        if x is not self.multiple_values:
+        if x != self.manual_review:
             if y is not None:
                 if x is not None:
                     if str(x) == str(y):
@@ -177,7 +196,15 @@ class Performance_data_manager(object):
                 else:
                     result = 'true negative'
         else:
-            result = 'multiple values'
+            if y is not None:
+                if self.manual_review in y:
+                    result = 'manual review true positive'
+                else:
+                    result = 'manual review false positive + false negative'
+            else:
+                result = 'manual review false positive'
+        if False:
+            result = result.replace('manual review ', '')
         return result, display_data_flg
     
     #
@@ -196,7 +223,7 @@ class Performance_data_manager(object):
     
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
-                        mode_flg='multiple_values'):
+                        mode_flg='manual_review'):
         self.section_data_list = []
         self._walk(node, target_key, data_key, [], section_key_list)
         data_values = []
@@ -229,7 +256,7 @@ class Performance_data_manager(object):
             data_value = data_values
         else:
             if len(data_values) > 0:
-                if mode_flg == 'multiple_values':
+                if mode_flg == 'manual_review':
                     data_tmp = data_values[0][0].split(', ')
                     data_tmp = tuple(data_tmp)
                 elif mode_flg == 'single_value':
@@ -243,6 +270,12 @@ class Performance_data_manager(object):
                 data_value = data_values
         #data_value = list(set(data_value))
         data_value = [tuple(i) for i in set(tuple(i) for i in data_value)]
+        if len(data_value) > 0:
+            if len(data_value[0]) > 1:
+                data_tmp = list(data_value[0])
+                data_tmp = [ x for x in data_tmp if x != ('equivocal',) ]
+                data_tmp = tuple(data_tmp)
+                data_value[0] = data_tmp
         if mode_flg == 'single_value':
             if len(data_value) == 0:
                 data_value = None
@@ -252,7 +285,7 @@ class Performance_data_manager(object):
                 data_value = [ 'MANUAL_REVIEW' ]
                 data_value = tuple(data_value)
                 data_value = [ data_value ]
-        elif mode_flg == 'multiple_values':
+        elif mode_flg == 'manual_review':
             if len(data_value) == 0:
                 data_value = None
         return data_value

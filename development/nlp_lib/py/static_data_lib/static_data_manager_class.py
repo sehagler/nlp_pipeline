@@ -25,6 +25,7 @@ class Static_data_manager(object):
         self.static_data['datetime_keys'] = \
             ['RESULT_COMPLETED_DT','SPECIMEN_COLL_DT']
         self.static_data['do_beakerap_flg'] = False
+        self.static_data['formatting'] = 'formatted'
         self.static_data['header_key'] = 'REPORT_HEADER'
         self.static_data['max_files_per_zip'] = 10000
         self.static_data['mrn_list'] = None
