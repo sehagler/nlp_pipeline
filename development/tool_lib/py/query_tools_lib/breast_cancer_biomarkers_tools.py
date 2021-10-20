@@ -94,60 +94,60 @@ class Postprocessor(Postprocessor_base):
                     biomarker_percentage = \
                         self._process_percentage(biomarker_percentage_text_list[i])
                     if biomarker_name == 'ER':
-                        if len(biomarker_status.lower()) > 0:
+                        if len(biomarker_status) > 0:
                             er_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
+                        if len(biomarker_score) > 0:
                             er_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
+                        if len(biomarker_percentage) > 0:
                             er_percentage_text_list.append(biomarker_percentage.lower())
                     elif biomarker_name == 'HER2':
-                        if len(biomarker_status.lower()) > 0:
+                        if len(biomarker_status) > 0:
                             her2_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
+                        if len(biomarker_score) > 0:
                             her2_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
+                        if len(biomarker_percentage) > 0:
                             her2_percentage_text_list.append(biomarker_percentage.lower())
                     elif biomarker_name == 'Ki67':
-                        if len(biomarker_status.lower()) > 0:
+                        if len(biomarker_status) > 0:
                             ki67_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
+                        if len(biomarker_score) > 0:
                             ki67_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
+                        if len(biomarker_percentage) > 0:
                             ki67_percentage_text_list.append(biomarker_percentage.lower())
                     elif biomarker_name == 'PR':
-                        if len(biomarker_status.lower()) > 0:
+                        if len(biomarker_status) > 0:
                             pr_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
+                        if len(biomarker_score) > 0:
                             pr_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
+                        if len(biomarker_percentage) > 0:
                             pr_percentage_text_list.append(biomarker_percentage.lower())
-            er_status_text_list = list(set(er_status_text_list))
-            er_score_text_list = list(set(er_score_text_list))
-            er_percentage_text_list = list(set(er_percentage_text_list))
-            er_value_list.append((er_status_text_list, er_score_text_list,
-                                  er_percentage_text_list, context))
-            her2_status_text_list = list(set(her2_status_text_list))
-            her2_score_text_list = list(set(her2_score_text_list))
-            her2_percentage_text_list = list(set(her2_percentage_text_list))
-            if len(her2_status_text_list) > 1:
-                her2_status_text_list_tmp = [ x for x in her2_status_text_list \
-                                              if x != 'equivocal' ]
-                if len(her2_status_text_list_tmp) > 0:
-                    her2_status_text_list = her2_status_text_list_tmp
-            her2_value_list.append((her2_status_text_list, 
-                                    her2_score_text_list,
-                                    her2_percentage_text_list, context))
-            ki67_status_text_list = list(set(ki67_status_text_list))
-            ki67_score_text_list = list(set(ki67_score_text_list))
-            ki67_percentage_text_list = list(set(ki67_percentage_text_list))
-            ki67_value_list.append((ki67_status_text_list,
-                                    ki67_score_text_list,
-                                    ki67_percentage_text_list, context))
-            pr_status_text_list = list(set(pr_status_text_list))
-            pr_score_text_list = list(set(pr_score_text_list))
-            pr_percentage_text_list = list(set(pr_percentage_text_list))
-            pr_value_list.append((pr_status_text_list, pr_score_text_list,
-                                  pr_percentage_text_list, context))
+                er_status_text_list = list(set(er_status_text_list))
+                er_score_text_list = list(set(er_score_text_list))
+                er_percentage_text_list = list(set(er_percentage_text_list))
+                er_value_list.append((er_status_text_list, er_score_text_list,
+                                      er_percentage_text_list, context))
+                her2_status_text_list = list(set(her2_status_text_list))
+                her2_score_text_list = list(set(her2_score_text_list))
+                her2_percentage_text_list = list(set(her2_percentage_text_list))
+                if len(her2_status_text_list) > 1:
+                    her2_status_text_list_tmp = [ x for x in her2_status_text_list \
+                                                  if x != 'equivocal' ]
+                    if len(her2_status_text_list_tmp) > 0:
+                        her2_status_text_list = her2_status_text_list_tmp
+                her2_value_list.append((her2_status_text_list, 
+                                        her2_score_text_list,
+                                        her2_percentage_text_list, context))
+                ki67_status_text_list = list(set(ki67_status_text_list))
+                ki67_score_text_list = list(set(ki67_score_text_list))
+                ki67_percentage_text_list = list(set(ki67_percentage_text_list))
+                ki67_value_list.append((ki67_status_text_list,
+                                        ki67_score_text_list,
+                                        ki67_percentage_text_list, context))
+                pr_status_text_list = list(set(pr_status_text_list))
+                pr_score_text_list = list(set(pr_score_text_list))
+                pr_percentage_text_list = list(set(pr_percentage_text_list))
+                pr_value_list.append((pr_status_text_list, pr_score_text_list,
+                                      pr_percentage_text_list, context))
         value_dict_list = []
         for value in er_value_list:
             if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:

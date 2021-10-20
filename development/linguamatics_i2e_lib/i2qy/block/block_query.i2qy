@@ -1,0 +1,119 @@
+version: 6.3
+creationDate: '2021-10-04 17:17:13'
+query:
+  document:
+  - phrase:
+      id: phrase2
+      of:
+      - word: {text: block, morphoVariants: true}
+      - word:
+          text: test
+          morphoVariants: true
+          quantifier: {minimum: 0, maximum: 1}
+      - word:
+          text: ':'
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          quantifier: {minimum: 0, maximum: none}
+          of:
+          - word: {text: '[A-Z][0-9]+( ?- ?[A-Z]?[0-9]+)?', matchType: Regexp, showInDefaultOutput: false}
+          - macro:
+              snid: linguamatics_wc.WC_Conjunction
+              pt: conjunction
+              of:
+              - alternative:
+                  macroPt: conjunction
+                  macroSnid: linguamatics_wc.WC_Conjunction
+                  of:
+                  - '&'
+                  - after
+                  - albeit
+                  - also
+                  - although
+                  - and
+                  - as
+                  - phrase: [as, far, as]
+                  - because
+                  - before
+                  - but
+                  - either
+                  - if
+                  - moreover
+                  - neither
+                  - nor
+                  - once
+                  - or
+                  - so
+                  - than
+                  - though
+                  - unless
+                  - versus
+                  - vs
+                  - vs.
+                  - when
+                  - whereas
+                  - whereby
+                  - whether
+                  - while
+                  - whilst
+                  - yet
+          - ','
+      - phrase:
+          id: phrase1
+          of:
+          - word: {text: '[A-Z][0-9]+( ?- ?[A-Z]?[0-9]+)?', matchType: Regexp, showInDefaultOutput: false}
+      - phrase:
+          quantifier: {minimum: 0, maximum: none}
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: none}
+              of:
+              - macro:
+                  snid: linguamatics_wc.WC_Conjunction
+                  pt: conjunction
+                  of:
+                  - alternative:
+                      macroPt: conjunction
+                      macroSnid: linguamatics_wc.WC_Conjunction
+                      of:
+                      - '&'
+                      - after
+                      - albeit
+                      - also
+                      - although
+                      - and
+                      - as
+                      - phrase: [as, far, as]
+                      - because
+                      - before
+                      - but
+                      - either
+                      - if
+                      - moreover
+                      - neither
+                      - nor
+                      - once
+                      - or
+                      - so
+                      - than
+                      - though
+                      - unless
+                      - versus
+                      - vs
+                      - vs.
+                      - when
+                      - whereas
+                      - whereby
+                      - whether
+                      - while
+                      - whilst
+                      - yet
+              - ','
+          - word: {text: '[A-Z][0-9]+( ?- ?[A-Z]?[0-9]+)?', matchType: Regexp, showInDefaultOutput: false}
+output:
+  columns:
+  - {id: phrase1}
+  - {id: phrase2}
+  columnLocations: [1, 0]
+  useOutputEditor: true
+creator: haglers

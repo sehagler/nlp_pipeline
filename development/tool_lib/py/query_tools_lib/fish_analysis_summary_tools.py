@@ -34,7 +34,7 @@ class Postprocessor(Postprocessor_base):
         entry_text = re.sub('\( ', '(', entry_text)
         entry_text = re.sub(' (?=(:|,|\)))', '', entry_text)
         entry_text = re.sub('(?i)preliminary (report|results).*', '', entry_text)
-        entry_text = re.sub('(?i)\*\*amended (for|to).*', '', entry_text)
+        entry_text = re.sub('(?i)(\*\*)?amended (for|to).*', '', entry_text)
         entry_text = re.sub(':[ \n\t]*$', '', entry_text)
         value_list = []
         value_list.append(entry_text)

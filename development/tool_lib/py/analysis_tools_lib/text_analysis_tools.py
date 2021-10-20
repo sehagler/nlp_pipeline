@@ -9,8 +9,9 @@ Created on Mon Apr  6 15:33:03 2020
 import re
 
 #
-from tool_lib.py.query_tools_lib.antigens_tools import extract_antigens
+#from tool_lib.py.query_tools_lib.antigens_tools import extract_antigens
 
+'''
 #
 def compare_texts(text0, text1, strip_commas_flg=False):
     text0 = re.sub('dim', 'dim ', text0)
@@ -61,6 +62,7 @@ def compare_texts(text0, text1, strip_commas_flg=False):
         else:
             go_flg = False
     return [ diff0, diff1, distance, excess_ctr ]
+'''
 
 #
 def levenshtein_distance(s1, s2):

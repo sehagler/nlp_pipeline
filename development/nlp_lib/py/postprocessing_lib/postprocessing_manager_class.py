@@ -12,6 +12,8 @@ import os
 from nlp_lib.py.postprocessing_lib.output_manager_class import Output_manager
 from tool_lib.py.query_tools_lib.blasts_tools \
     import Postprocessor as Postprocessor_blasts
+from tool_lib.py.query_tools_lib.block_tools \
+    import Postprocessor as Postprocessor_block
 from tool_lib.py.query_tools_lib.breast_cancer_biomarkers_tools \
     import Postprocessor as Postprocessor_breast_cancer_biomarkers
 from tool_lib.py.query_tools_lib.cancer_stage_tools \
@@ -54,10 +56,14 @@ class Postprocessing_manager(object):
     
     #
     def _select_postprocessor(self, filename):
+        print('Processing ' + filename)
         if filename in [ 'bone_marrow_blast.csv',
                          'peripheral_blood_blast.csv' ]:
             self.output_manager.append(Postprocessor_blasts(self.static_data,
                                                             filename))
+        elif filename in [ 'block.csv' ]:
+            self.output_manager.append(Postprocessor_block(self.static_data,
+                                                           filename))
         elif filename in [ 'breast_cancer_biomarkers_er.csv', 
                            'breast_cancer_biomarkers_her2.csv',
                            'breast_cancer_biomarkers_ki67.csv',

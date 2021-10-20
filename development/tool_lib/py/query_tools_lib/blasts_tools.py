@@ -266,6 +266,6 @@ def get_blast_value(blast_value_list):
     if len(blast_value) == 1:
         return blast_value[0]
     elif len(blast_value) > 1:
-        return 'MULTIPLE VALUES'
+        return 'MANUAL_REVIEW'
     else:
         return None

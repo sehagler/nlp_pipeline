@@ -6,12 +6,12 @@ Created on Mon Mar 04 12:29:38 2019
 """
 
 #
+import ast
 import os
 
 #
 from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from tool_lib.py.analysis_tools_lib.text_analysis_tools import compare_texts
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
@@ -30,6 +30,10 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
     #
     def _get_nlp_data(self, data_in):
         data_out = {}
+        data_out['BLOCK'] = \
+            self._get_data_value(data_in, None, 'BLOCK_' + self.nlp_value_key, 'BLOCK', mode_flg='single_value')
+        if data_out['BLOCK'] is not None:
+            data_out['BLOCK'] = data_out['BLOCK'][0]
         data_out['ER_SCORE'] = \
             self._get_data_value(data_in, None, 'BREAST_CANCER_BIOMARKERS_ER_' + self.nlp_value_key, 'ER_SCORE', mode_flg='single_value')
         if data_out['ER_SCORE'] is not None:
@@ -87,8 +91,56 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
         return data_out
     
     #
-    def _process_er_performance(self, N, validation_csn_list, nlp_values,
-                                  validation_data):
+    def _get_validation_csn_list(self, validation_data):
+        if 'document_list' in self.static_data.keys():
+            csn_list = self.static_data['document_list']
+        else:
+            csn_list = None
+        validation_csn_list =  []
+        for item in validation_data:
+            if csn_list is None or item[2] in csn_list:
+                validation_csn_list.append(item[2])
+        validation_csn_list = list(set(validation_csn_list))
+        return validation_csn_list
+    
+    #
+    def _process_block_performance(self, nlp_values, validation_data):
+        validation_csn_list = \
+            self._get_validation_csn_list(validation_data)
+        N = len(validation_csn_list)
+        nlp_block_performance = []
+        for csn in validation_csn_list:
+            data_out = nlp_values[csn]
+            print(csn)
+            if data_out is not None:
+                if 'BLOCK' in data_out.keys():
+                    nlp_block_value = data_out['BLOCK']
+                else:
+                    nlp_block_value = None
+            else:
+                nlp_block_value = None
+            for item in validation_data:
+                if item[2] == csn:
+                    validation_block_value = \
+                        self._process_validation_item(item[3])
+            nlp_block_value = \
+                self._nlp_to_tuple(nlp_block_value)
+            validation_block_value = \
+                self._validation_to_tuple(validation_block_value)
+            performance, flg = \
+                self._compare_data_values(nlp_block_value,
+                                          validation_block_value)
+            nlp_block_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_block_performance)
+        self.performance_statistics_dict['BLOCK'] = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+    
+    #
+    def _process_er_performance(self, nlp_values, validation_data):
+        validation_csn_list = \
+            self._get_validation_csn_list(validation_data)
+        N = len(validation_csn_list)
         nlp_er_status_performance = []
         nlp_er_score_performance = []
         nlp_er_percentage_performance = []
@@ -120,34 +172,30 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[5])
                     validation_er_percentage_value = \
                         self._process_validation_item(item[6])
-            if validation_er_status_value is not None:
-                validation_er_status_value = \
-                    tuple(validation_er_status_value.split(', '))
-            if validation_er_score_value is not None:
-                validation_er_score_value = \
-                    tuple(validation_er_score_value.split(', '))
-            if validation_er_percentage_value is not None:
-                validation_er_percentage_value = \
-                    tuple(validation_er_percentage_value.split(', '))
-            display_data_flg = True
+            nlp_er_status_value = \
+                self._nlp_to_tuple(nlp_er_status_value)
+            nlp_er_score_value = \
+                self._nlp_to_tuple(nlp_er_score_value)
+            nlp_er_percentage_value = \
+                self._nlp_to_tuple(nlp_er_percentage_value)
+            validation_er_status_value = \
+                self._validation_to_tuple(validation_er_status_value)
+            validation_er_score_value = \
+                self._validation_to_tuple(validation_er_score_value)
+            validation_er_percentage_value = \
+                self._validation_to_tuple(validation_er_percentage_value)
             performance, flg = \
                 self._compare_data_values(nlp_er_status_value,
                                           validation_er_status_value)
             nlp_er_status_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_er_score_value,
                                           validation_er_score_value)
             nlp_er_score_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_er_percentage_value,
                                           validation_er_percentage_value)
             nlp_er_percentage_performance.append(performance)
-            if flg:
-                display_data_flg = True
         FN, FP, FP_plus_FN, TN, TP = \
             self._performance_values(nlp_er_status_performance)
         self.performance_statistics_dict['ER_STATUS'] = \
@@ -162,8 +210,10 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
     
     #
-    def _process_her2_performance(self, N, validation_csn_list, nlp_values,
-                                  validation_data):
+    def _process_her2_performance(self, nlp_values, validation_data):
+        validation_csn_list = \
+            self._get_validation_csn_list(validation_data)
+        N = len(validation_csn_list)
         nlp_her2_status_performance = []
         nlp_her2_score_performance = []
         nlp_her2_percentage_performance = []
@@ -195,34 +245,30 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[12])
                     validation_her2_percentage_value = \
                         self._process_validation_item(item[13])
-            if validation_her2_status_value is not None:
-                validation_her2_status_value = \
-                    tuple(validation_her2_status_value.split(', '))
-            if validation_her2_score_value is not None:
-                validation_her2_score_value = \
-                    tuple(validation_her2_score_value.split(', '))
-            if validation_her2_percentage_value is not None:
-                validation_her2_percentage_value = \
-                    tuple(validation_her2_percentage_value.split(', '))
-            display_data_flg = True
+            nlp_her2_status_value = \
+                self._nlp_to_tuple(nlp_her2_status_value)
+            nlp_her2_score_value = \
+                self._nlp_to_tuple(nlp_her2_score_value)
+            nlp_her2_percentage_value = \
+                self._nlp_to_tuple(nlp_her2_percentage_value)
+            validation_her2_status_value = \
+                self._validation_to_tuple(validation_her2_status_value)
+            validation_her2_score_value = \
+                self._validation_to_tuple(validation_her2_score_value)
+            validation_her2_percentage_value = \
+                self._validation_to_tuple(validation_her2_percentage_value)
             performance, flg = \
                 self._compare_data_values(nlp_her2_status_value,
                                           validation_her2_status_value)
             nlp_her2_status_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_her2_score_value,
                                           validation_her2_score_value)
             nlp_her2_score_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_her2_percentage_value,
                                           validation_her2_percentage_value)
             nlp_her2_percentage_performance.append(performance)
-            if flg:
-                display_data_flg = True
         FN, FP, FP_plus_FN, TN, TP = \
             self._performance_values(nlp_her2_status_performance)
         self.performance_statistics_dict['HER2_STATUS'] = \
@@ -237,8 +283,10 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N) 
     
     #
-    def _process_ki67_performance(self, N, validation_csn_list, nlp_values,
-                                  validation_data):
+    def _process_ki67_performance(self, nlp_values, validation_data):
+        validation_csn_list = \
+            self._get_validation_csn_list(validation_data)
+        N = len(validation_csn_list)
         nlp_ki67_status_performance = []
         nlp_ki67_percentage_performance = []
         for csn in validation_csn_list:
@@ -262,25 +310,22 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[14])
                     validation_ki67_percentage_value = \
                         self._process_validation_item(item[15])
-            if validation_ki67_status_value is not None:
-                validation_ki67_status_value = \
-                    tuple(validation_ki67_status_value.split(', '))
-            if validation_ki67_percentage_value is not None:
-                validation_ki67_percentage_value = \
-                    tuple(validation_ki67_percentage_value.split(', '))
-            display_data_flg = True
+            nlp_ki67_status_value = \
+                self._nlp_to_tuple(nlp_ki67_status_value)
+            nlp_ki67_percentage_value = \
+                self._nlp_to_tuple(nlp_ki67_percentage_value)
+            validation_ki67_status_value = \
+                self._validation_to_tuple(validation_ki67_status_value)
+            validation_ki67_percentage_value = \
+                self._validation_to_tuple(validation_ki67_percentage_value)
             performance, flg = \
                 self._compare_data_values(nlp_ki67_status_value,
                                           validation_ki67_status_value)
             nlp_ki67_status_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_ki67_percentage_value,
                                           validation_ki67_percentage_value)
             nlp_ki67_percentage_performance.append(performance)
-            if flg:
-                display_data_flg = True
         FN, FP, FP_plus_FN, TN, TP = \
             self._performance_values(nlp_ki67_status_performance)
         self.performance_statistics_dict['KI67_STATUS'] = \
@@ -291,8 +336,18 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             
     #
-    def _process_pr_performance(self, N, validation_csn_list, nlp_values,
-                                  validation_data):
+    def _process_performance(self, nlp_values, validation_data):
+        self._process_block_performance(nlp_values, validation_data)
+        self._process_er_performance(nlp_values, validation_data)
+        self._process_pr_performance( nlp_values, validation_data)
+        self._process_her2_performance(nlp_values, validation_data)
+        self._process_ki67_performance( nlp_values, validation_data)
+            
+    #
+    def _process_pr_performance(self, nlp_values, validation_data):
+        validation_csn_list = \
+            self._get_validation_csn_list(validation_data)
+        N = len(validation_csn_list)
         nlp_pr_status_performance = []
         nlp_pr_score_performance = []
         nlp_pr_percentage_performance = []
@@ -324,34 +379,30 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                         self._process_validation_item(item[9])
                     validation_pr_percentage_value = \
                         self._process_validation_item(item[10])
-            if validation_pr_status_value is not None:
-                validation_pr_status_value = \
-                    tuple(validation_pr_status_value.split(', '))
-            if validation_pr_score_value is not None:
-                validation_pr_score_value = \
-                    tuple(validation_pr_score_value.split(', '))
-            if validation_pr_percentage_value is not None:
-                validation_pr_percentage_value = \
-                    tuple(validation_pr_percentage_value.split(', '))
-            display_data_flg = True
+            nlp_pr_status_value = \
+                self._nlp_to_tuple(nlp_pr_status_value)
+            nlp_pr_score_value = \
+                self._nlp_to_tuple(nlp_pr_score_value)
+            nlp_pr_percentage_value = \
+                self._nlp_to_tuple(nlp_pr_percentage_value)
+            validation_pr_status_value = \
+                self._validation_to_tuple(validation_pr_status_value)
+            validation_pr_score_value = \
+                self._validation_to_tuple(validation_pr_score_value)
+            validation_pr_percentage_value = \
+                self._validation_to_tuple(validation_pr_percentage_value)
             performance, flg = \
                 self._compare_data_values(nlp_pr_status_value,
                                           validation_pr_status_value)
             nlp_pr_status_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_pr_score_value,
                                           validation_pr_score_value)
             nlp_pr_score_performance.append(performance)
-            if flg:
-                display_data_flg = True
             performance, flg = \
                 self._compare_data_values(nlp_pr_percentage_value,
                                           validation_pr_percentage_value)
             nlp_pr_percentage_performance.append(performance)
-            if flg:
-                display_data_flg = True
         FN, FP, FP_plus_FN, TN, TP = \
             self._performance_values(nlp_pr_status_performance)
         self.performance_statistics_dict['PR_STATUS'] = \
@@ -366,13 +417,13 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
         
     #
-    def _read_validation_data(self, static_data):
-        directory_manager = static_data['directory_manager']
-        if 'patient_list' in static_data.keys():
-            patient_list = static_data['patient_list']
+    def _read_validation_data(self):
+        directory_manager = self.static_data['directory_manager']
+        if 'patient_list' in self.static_data.keys():
+            patient_list = self.static_data['patient_list']
         else:
             patient_list = None
-        project_name = static_data['project_name']
+        project_name = self.static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         book = read_xlsx_file(os.path.join(data_dir, 'breastcancerpathology_testing.xlsx'))
         sheet = book.sheet_by_index(0)
@@ -396,38 +447,3 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                     validation_data_tmp.append(cell_value)
                 validation_data.append(validation_data_tmp)
         return validation_data
-                
-    #
-    def calculate_performance(self):
-        manual_review_str = 'MANUAL_REVIEW'
-        nlp_data = self.nlp_data
-        validation_data = self._read_validation_data(self.static_data)
-        if 'document_list' in self.static_data.keys():
-            csn_list = self.static_data['document_list']
-        else:
-            csn_list = None
-        validation_mrn_list = []
-        validation_csn_list =  []
-        for item in validation_data:
-            if csn_list is None or item[2] in csn_list:
-                validation_mrn_list.append(item[1])
-                validation_csn_list.append(item[2])
-        validation_mrn_list = list(set(validation_mrn_list))
-        validation_csn_list = list(set(validation_csn_list))
-        nlp_values = self._read_nlp_value_data(validation_csn_list, nlp_data)
-        num_docs = len(validation_csn_list)
-        num_pats = len(validation_mrn_list)
-        N = num_docs
-        self.performance_statistics_dict = {}
-        self._process_er_performance(N, validation_csn_list, nlp_values,
-                                     validation_data)
-        self._process_pr_performance(N, validation_csn_list, nlp_values,
-                                     validation_data)
-        self._process_her2_performance(N, validation_csn_list, nlp_values,
-                                       validation_data)
-        self._process_ki67_performance(N, validation_csn_list, nlp_values,
-                                       validation_data)
-        print('\n')
-        print('number of docs:\t\t%d' % num_docs)
-        print('number of patients:\t%d' % num_pats)
-        return self.performance_statistics_dict

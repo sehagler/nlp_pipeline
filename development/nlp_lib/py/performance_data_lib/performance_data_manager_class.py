@@ -79,12 +79,15 @@ class Performance_data_manager(object):
         #
         
     #
-    def _compare_data_values(self, x, y):
-        if (isinstance(x, list) or isinstance(x, tuple) or x is None) and \
-           (isinstance(y, list) or isinstance(y, tuple) or y is None):
-            result, display_data_flg = self._compare_lists(x, y)
+    def _compare_data_values(self, x, y, value_range=None):
+        if value_range is None:
+            if (isinstance(x, list) or isinstance(x, tuple) or x is None) and \
+               (isinstance(y, list) or isinstance(y, tuple) or y is None):
+                result, display_data_flg = self._compare_lists(x, y)
+            else:
+                result, display_data_flg = self._compare_values(x, y)
         else:
-            result, display_data_flg = self._compare_values(x, y)
+            result, display_data_flg = self._compare_values_range(x, y, value_range)
         return result, display_data_flg
         
     #
@@ -133,6 +136,7 @@ class Performance_data_manager(object):
             print('')
         return result, display_data_flg
     
+    '''
     #
     def _compare_strings(self, x, y):
         display_data_flg = False
@@ -168,7 +172,12 @@ class Performance_data_manager(object):
                 result = 'manual review false positive'
         if False:
             result = result.replace('manual review ', '')
+        if 'true positive' not in result and 'true negative' not in result:
+            print(x)
+            print(y)
+            print('')
         return result, display_data_flg
+    '''
         
     #
     def _compare_values(self, x, y):
@@ -205,6 +214,51 @@ class Performance_data_manager(object):
                 result = 'manual review false positive'
         if False:
             result = result.replace('manual review ', '')
+        if 'true positive' not in result and 'true negative' not in result:
+            print(x)
+            print(y)
+            print('')
+        return result, display_data_flg
+    
+    #
+    def _compare_values_range(self, x, y, value_range):
+        display_data_flg = False
+        try:
+            if self.manual_review in x:
+                x = self.manual_review
+        except:
+            pass
+        if x != self.manual_review:
+            if y is not None:
+                if x is not None:
+                    if abs(float(x[0]) - float(y[0])) <= value_range:
+                        result = 'true positive'
+                    else:
+                        display_data_flg = True
+                        result = 'false positive + false negative'
+                elif x is None:
+                    display_data_flg = True
+                    result = 'false negative'
+            else:
+                if x is not None:
+                    display_data_flg = True
+                    result = 'false positive'
+                else:
+                    result = 'true negative'
+        else:
+            if y is not None:
+                if self.manual_review in y:
+                    result = 'manual review true positive'
+                else:
+                    result = 'manual review false positive + false negative'
+            else:
+                result = 'manual review false positive'
+        if False:
+            result = result.replace('manual review ', '')
+        if 'true positive' not in result and 'true negative' not in result:
+            print(x)
+            print(y)
+            print('')
         return result, display_data_flg
     
     #
@@ -223,7 +277,7 @@ class Performance_data_manager(object):
     
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
-                        mode_flg='manual_review'):
+                        mode_flg='multiple_values'):
         self.section_data_list = []
         self._walk(node, target_key, data_key, [], section_key_list)
         data_values = []
@@ -239,7 +293,8 @@ class Performance_data_manager(object):
                                 data_tmp = []
                                 data_tmp.append(data_item)
                                 data_item = data_tmp
-                            data_values.append(tuple(data_item))
+                            #data_values.append(tuple(data_item))
+                            data_values.extend(data_item)
         else:
             for j in range(len(self.section_data_list)):
                 section_data = self.section_data_list[j]
@@ -248,15 +303,21 @@ class Performance_data_manager(object):
                     data_tmp = []
                     data_tmp.append(data_item)
                     data_item = data_tmp
-                data_values.append(tuple(data_item))
-        #data_values = list(set(data_values))
+                #data_values.append(tuple(data_item))
+                data_values.extend(data_item)
+        if len(data_values) > 0:
+            data_values = list(set(data_values))
+            data_values.sort()
+            data_values_tuple = tuple(data_values)
+            data_values = []
+            data_values.append(data_values_tuple)
         data_values = [tuple(i) for i in set(tuple(i) for i in data_values)]
         data_value = []
         if section_key_list is not None:  
             data_value = data_values
         else:
             if len(data_values) > 0:
-                if mode_flg == 'manual_review':
+                if mode_flg == 'multiple_values':
                     data_tmp = data_values[0][0].split(', ')
                     data_tmp = tuple(data_tmp)
                 elif mode_flg == 'single_value':
@@ -285,15 +346,39 @@ class Performance_data_manager(object):
                 data_value = [ 'MANUAL_REVIEW' ]
                 data_value = tuple(data_value)
                 data_value = [ data_value ]
-        elif mode_flg == 'manual_review':
+        elif mode_flg == 'multiple_values':
             if len(data_value) == 0:
                 data_value = None
         return data_value
     
     #
+    def _get_validation_csn_list(self, validation_data):
+        if 'document_list' in self.static_data.keys():
+            csn_list = self.static_data['document_list']
+        else:
+            csn_list = None
+        validation_csn_list =  []
+        for item in validation_data:
+            if csn_list is None or item[2] in csn_list:
+                validation_csn_list.append(item[2])
+        validation_csn_list = list(set(validation_csn_list))
+        return validation_csn_list
+    
+    #
     def _intersection(self, x, y):
         z = list(set(x) & set(y))
         return z
+    
+    #
+    def _nlp_to_tuple(self, value):
+        if value is not None:
+            value = list(value)
+            for i in range(len(value)):
+                value[i] = value[i].replace(' ', '')
+            value_tuple = tuple(value)
+        else:
+            value_tuple = None
+        return value_tuple
     
     #
     def _performance_values(self, input_list):
@@ -356,7 +441,9 @@ class Performance_data_manager(object):
         return metadata_keys, metadata_dict_dict
     
     #
-    def _read_nlp_value_data(self, validation_csn_list, nlp_data):
+    def _read_nlp_value_data(self, nlp_data, validation_data):
+        validation_csn_list = \
+            self._get_validation_csn_list(validation_data)
         nlp_values = {}
         for csn in validation_csn_list:
             data_out = None
@@ -377,6 +464,27 @@ class Performance_data_manager(object):
             else:
                 s.update(self._unique(el))
         return s
+        
+    #
+    def _validation_to_tuple(self, text):
+        if text is not None:
+            text = text.replace(' ', '')
+            text = text.replace(',', '\',\'')
+            text = text.replace('(', '(\'')
+            text = text.replace(')', '\')')
+            text = '[\'' + text + '\']'
+            text = text.replace('\'(', '(')
+            text = text.replace(')\'', ')')
+            text_list = eval(text)
+            for i in range(len(text_list)):
+                if isinstance(text_list[i], tuple):
+                    text_list[i] = str(text_list[i])
+                    text_list[i] = text_list[i].replace('\'', '')
+                    text_list[i] = text_list[i].replace(' ', '')
+            text_tuple = tuple(text_list)
+        else:
+            text_tuple = None
+        return text_tuple
     
     #
     def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
@@ -397,6 +505,14 @@ class Performance_data_manager(object):
                             self.section_data_list.append(tuple([section_key, v_item[data_key]]))
             elif isinstance(v, dict):
                 self._walk(v, target_key, data_key, key_list, section_key_list)
+                
+    #
+    def calculate_performance(self):
+        validation_data = self._read_validation_data()
+        nlp_values = self._read_nlp_value_data(self.nlp_data, validation_data)
+        self.performance_statistics_dict = {}
+        self._process_performance(nlp_values, validation_data)
+        return self.performance_statistics_dict
         
     #
     def display_performance_data(self):

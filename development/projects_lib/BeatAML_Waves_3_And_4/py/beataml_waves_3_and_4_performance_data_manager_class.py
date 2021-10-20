@@ -14,7 +14,7 @@ from nlp_lib.py.performance_data_lib.performance_data_manager_class \
 from projects_lib.BeatAML_Waves_3_And_4.py.specimens_class import Specimens
 from projects_lib.BeatAML_Waves_3_And_4.py.gold_standard_jsons_class \
     import Gold_standard_jsons
-from tool_lib.py.analysis_tools_lib.text_analysis_tools import compare_texts
+from tool_lib.py.query_tools_lib.antigens_tools import extract_antigens
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
 #
@@ -66,334 +66,6 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         #
 
         self.static_data = static_data
-    
-    #
-    def _compare_values_antigens(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        if data_item in validation_record.keys():
-            validation_value = validation_record[data_item]
-            if validation_value == '':
-                validation_value = None
-        else:
-            validation_value = None
-        if data_item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[data_item]
-            gold_standard_value = re.sub('(?i)n/a', '', gold_standard_value)
-            gold_standard_value = re.sub('(?i)not (available|run)', '', gold_standard_value)
-            if gold_standard_value == '':
-                gold_standard_value = None
-        else:
-            gold_standard_value = None
-        if data_item not in score.keys():
-            score[data_item] = [ 0, 0, 0, 0, 0, 0 ]
-        cond00 = validation_value is not None
-        cond01 = validation_value is None
-        cond10 = gold_standard_value is not None
-        cond11 = gold_standard_value is None
-        if cond00 and cond10:
-            if validation_value != self.manual_review:
-                text_score = compare_texts(gold_standard_value, validation_value, True)
-                if text_score[0] == 0:
-                    score[data_item][0] += 1
-                else:
-                    score[data_item][3] += 1
-                    self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-            else:
-                score[data_item][2] += 1
-                self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond00 and cond11:
-            score[data_item][4] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond10:
-            score[data_item][5] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond11:
-            score[data_item][1] += 1
-        return score
-    
-    #
-    def _compare_values_blasts(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        if data_item in validation_record.keys():
-            validation_value = validation_record[data_item]
-        else:
-            validation_value = None
-        if data_item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[data_item]
-            if gold_standard_value == '':
-                gold_standard_value = None
-        else:
-            gold_standard_value = None
-        if data_item not in score.keys():
-            score[data_item] = [ 0, 0, 0, 0, 0, 0 ]
-        cond00 = validation_value is not None
-        cond01 = validation_value is None
-        cond10 = gold_standard_value is not None
-        cond11 = gold_standard_value is None
-        if cond00 and cond10:
-            if validation_value != self.manual_review:
-                if validation_value == gold_standard_value:
-                    score[data_item][0] += 1
-                elif validation_value[0] == '>':
-                    if gold_standard_value[0] == '>':
-                        score[data_item[0]] += 1
-                    elif gold_standard_value[0] == '<':
-                        try:
-                            test_flg = float(gold_standard_value[2:]) - float(validation_value[2:]) >= 0.0
-                        except:
-                            test_flg = False
-                        if test_flg:
-                            score[data_item][0] += 1
-                        else:
-                            score[data_item][3] += 1
-                            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-                    else:
-                        try:
-                            test_flg = float(gold_standard_value) - float(validation_value[2:]) >= 0.0
-                        except:
-                            test_flg = False
-                        if test_flg:
-                            score[data_item][0] += 1
-                        else:
-                            score[data_item][3] += 1
-                            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-                elif validation_value[0] == '<':
-                    if gold_standard_value[0] == '<':
-                        score[data_item[0]] += 1
-                    elif gold_standard_value[0] == '>':
-                        try:
-                            test_flg = float(gold_standard_value[2:]) - float(validation_value[2:]) >= 0.0
-                        except:
-                            test_flg = False
-                        if test_flg:
-                            score[data_item][0] += 1
-                        else:
-                            score[data_item][3] += 1
-                            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-                    else:
-                        try:
-                            test_flg = float(validation_value[2:]) - float(gold_standard_value) >= 0.0
-                        except:
-                            test_flg = False
-                        if test_flg:
-                            score[data_item][0] += 1
-                        else:
-                            score[data_item][3] += 1
-                            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-                else:
-                    try:
-                        test_flg = abs(float(validation_value) - float(gold_standard_value)) <= 5.0
-                    except:
-                        test_flg = False
-                    if test_flg:
-                        score[data_item][0] += 1
-                    else:
-                        score[data_item][3] += 1
-                        self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-            else:
-                score[data_item][2] += 1
-                self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond00 and cond11:
-            score[data_item][4] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond10:
-            score[data_item][5] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond11:
-            score[data_item][1] += 1
-        return score
-    
-    #
-    def _compare_values_dates(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        if data_item in validation_record.keys():
-            validation_value = validation_record[data_item]
-        else:
-            validation_value = None
-        if data_item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[data_item]
-            if gold_standard_value == '':
-                gold_standard_value = None
-        else:
-            gold_standard_value = None
-        if data_item not in score.keys():
-            score[data_item] = [ 0, 0, 0, 0, 0, 0 ]
-        cond00 = validation_value is not None
-        cond01 = validation_value is None
-        cond10 = gold_standard_value is not None
-        cond11 = gold_standard_value is None
-        if cond00 and cond10:
-            if validation_value != self.manual_review:
-                text_score = compare_dates(gold_standard_value, validation_value)
-                if text_score:
-                    score[data_item][0] += 1
-                else:
-                    score[data_item][3] += 1
-                    self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-            else:
-                score[data_item][2] += 1
-                self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond00 and cond11:
-            score[data_item][4] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond10:
-            score[data_item][5] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond11:
-            score[data_item][1] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        return score
-    
-    #
-    def _compare_values_karyotypes(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        manual_review = self.manual_review
-        manual_review = re.sub(' ', '', manual_review)
-        if data_item in validation_record.keys():
-            validation_value = validation_record[data_item]
-            validation_value = re.sub(' ', '', validation_value)
-            validation_value = re.sub('//', '/', validation_value)
-        else:
-            validation_value = None
-        if data_item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[data_item]
-            gold_standard_value = re.sub('(?i)n/a', '', gold_standard_value)
-            gold_standard_value = re.sub('(?i)not (available|run)', '', gold_standard_value)
-            gold_standard_value = re.sub(' ', '', gold_standard_value)
-            if gold_standard_value == '':
-                gold_standard_value = None
-            elif gold_standard_value[-1] == ',':
-                gold_standard_value = gold_standard_value[:-1]
-        else:
-            gold_standard_value = None
-        if data_item not in score.keys():
-            score[data_item] = [ 0, 0, 0, 0, 0, 0 ]
-        cond00 = validation_value is not None
-        cond01 = validation_value is None
-        cond10 = gold_standard_value is not None
-        cond11 = gold_standard_value is None
-        if cond00 and cond10:
-            if validation_value != manual_review:
-                if validation_value == gold_standard_value:
-                    score[data_item][0] += 1
-                else:
-                    score[data_item][3] += 1
-                    self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-            else:
-                score[data_item][2] += 1
-                self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond00 and cond11:
-            score[data_item][4] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond10:
-            score[data_item][5] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond11:
-            score[data_item][1] += 1
-        return score
-    
-    #
-    def _compare_values_residual_diagnosis(self, validation_record, gold_standard_record, data_item, score, patientId, labId):
-        manual_review = self.manual_review
-        manual_review = re.sub(' ', '', manual_review)
-        manual_review = manual_review.lower()
-        if data_item in validation_record.keys():
-            validation_value = validation_record[data_item]
-            validation_value = re.sub(' ', '', validation_value)
-            validation_value = validation_value.lower()
-        else:
-            validation_value = None
-        if data_item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[data_item]
-            gold_standard_value = re.sub('(?i)acute myeloid leukemia', 'AML', gold_standard_value)
-            gold_standard_value = re.sub(' ', '', gold_standard_value)
-            gold_standard_value = gold_standard_value.lower()
-            if gold_standard_value == '':
-                gold_standard_value = None
-            elif gold_standard_value[-1] == ',':
-                gold_standard_value = gold_standard_value[:-1]
-        else:
-            gold_standard_value = None
-        if data_item not in score.keys():
-            score[data_item] = [ 0, 0, 0, 0, 0, 0 ]
-        cond00 = validation_value is not None
-        cond01 = validation_value is None
-        cond10 = gold_standard_value is not None
-        cond11 = gold_standard_value is None
-        if cond00 and cond10:
-            if validation_value != manual_review:
-                if validation_value == gold_standard_value:
-                    score[data_item][0] += 1
-                else:
-                    score[data_item][3] += 1
-                    self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-            else:
-                score[data_item][2] += 1
-                self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond00 and cond11:
-            score[data_item][4] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond10:
-            score[data_item][5] += 1
-            self.logger.log_entry(patientId, labId, data_item, gold_standard_value, validation_value)
-        elif cond01 and cond11:
-            score[data_item][1] += 1
-        return score
-    
-    #
-    def _compare_values_specific_diagnosis(self, validation_record, 
-                                           gold_standard_record, item, 
-                                           item_score, patientId, labId):
-        manual_review = self.manual_review
-        manual_review = re.sub(' ', '', manual_review)
-        manual_review = manual_review.lower()
-        if item in validation_record.keys():
-            #print(validation_record)
-            validation_value = validation_record[item]
-            #print(validation_value)
-            validation_value = re.sub('/', 'and', validation_value)
-            validation_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', validation_value)
-            validation_value = re.sub(' ', '', validation_value)
-            validation_value = validation_value.lower()
-            #print(validation_value)
-            #print('')
-        else:
-            validation_value = None
-        if item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[item]
-            gold_standard_value = re.sub('(?i)acute myeloid leukemia', 'AML', gold_standard_value)
-            gold_standard_value = re.sub('(?i)acute myelomonocytic leukemia', 'AMML', gold_standard_value)
-            gold_standard_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', gold_standard_value)
-            gold_standard_value = re.sub(' ', '', gold_standard_value)
-            gold_standard_value = gold_standard_value.lower()
-            if gold_standard_value == '':
-                gold_standard_value = None
-            elif gold_standard_value[-1] == ',':
-                gold_standard_value = gold_standard_value[:-1]
-        else:
-            gold_standard_value = None
-        performance, flg = \
-            self._compare_strings(validation_value, gold_standard_value)
-        item_score = self._performance_values(item, item_score, performance)
-        return item_score
-    
-    #
-    def _compare_values_texts(self, validation_record, gold_standard_record, 
-                              item, item_score, patientId, labId):
-        manual_review = self.manual_review
-        manual_review = re.sub(' ', '', manual_review)
-        if item in validation_record.keys():
-            validation_value = validation_record[item]
-            validation_value = re.sub(' ', '', validation_value)
-        else:
-            validation_value = None
-        if item in gold_standard_record.keys():
-            gold_standard_value = gold_standard_record[item]
-            gold_standard_value = re.sub(' ', '', gold_standard_value)
-            if gold_standard_value == '':
-                gold_standard_value = None
-        else:
-            gold_standard_value = None
-        performance, flg = \
-            self._compare_values(validation_value, gold_standard_value)
-        item_score = self._performance_values(item, item_score, performance)
-        return item_score
     
     #
     def _get_nlp_data(self, data_in):
@@ -464,25 +136,948 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         return data_out
     
     #
-    def _performance_values(self, item, item_score, performance):
-        if item not in item_score.keys():
-            item_score[item] = [ 0, 0, 0, 0, 0, 0 ]
-        if performance == 'false negative':
-            item_score[item][5] += 1
-        elif performance == 'false positive':
-            item_score[item][4] += 1
-        elif performance == 'false positive + false negative':
-            item_score[item][3] += 1
-        elif performance == 'true negative':
-            item_score[item][1] += 1
-        elif performance == 'true positive':
-            item_score[item][0] += 1
-        elif performance == 'multiple values':
-            item_score[item][2] += 1
-        return item_score
+    def _process_antibodies_tested_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_antibodies_tested_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                if 'Antibodies.Tested' in validation_record.keys():
+                    validation_value = validation_record['Antibodies.Tested']
+                    if validation_value == '':
+                        validation_value = None
+                else:
+                    validation_value = None
+                if 'Antibodies.Tested' in gold_standard_record.keys():
+                    gold_standard_value = gold_standard_record['Antibodies.Tested']
+                    gold_standard_value = re.sub('(?i)n/a', '', gold_standard_value)
+                    gold_standard_value = re.sub('(?i)not (available|run)', '', gold_standard_value)
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                else:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value = re.sub('dim', 'dim ', validation_value)
+                    validation_value = re.sub('\+', ' +', validation_value)
+                    validation_value = re.sub('(?i)(-)?positive', ' +', validation_value)
+                    validation_value = extract_antigens(validation_value)
+                    validation_value = list(set(validation_value))
+                if gold_standard_value is not None:
+                    gold_standard_value = re.sub('dim', 'dim ', gold_standard_value)
+                    gold_standard_value = re.sub('\+', ' +', gold_standard_value)
+                    gold_standard_value = re.sub('(?i)(-)?positive', ' +', gold_standard_value)
+                    gold_standard_value = extract_antigens(gold_standard_value)
+                    gold_standard_value = list(set(gold_standard_value))
+                if validation_value is not None:
+                    nlp_antibodies_tested_value = tuple(validation_value)
+                else:
+                    nlp_antibodies_tested_value = None
+                if gold_standard_value is not None:
+                    validation_antibodies_tested_value = \
+                        tuple(gold_standard_value)
+                else:
+                    validation_antibodies_tested_value = None
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_antibodies_tested_value,
+                                              validation_antibodies_tested_value)
+                nlp_antibodies_tested_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_antibodies_tested_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['ANTIBODIES_TESTED'] = \
+            performance_statistics
     
     #
-    def _read_nlp_value_data(self, nlp_data):
+    def _process_bone_marrow_blast_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_bone_marrow_blast_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                if '%.Blasts.in.BM' in validation_record.keys():
+                    validation_value = validation_record['%.Blasts.in.BM']
+                else:
+                    validation_value = None
+                if '%.Blasts.in.BM' in gold_standard_record.keys():
+                    gold_standard_value = gold_standard_record['%.Blasts.in.BM']
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                else:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value = validation_value.replace('~', '')
+                    validation_value = validation_value.replace('>', '')
+                    validation_value = validation_value.replace('<', '')
+                    validation_value = validation_value.replace('.0', '')
+                if gold_standard_value is not None:
+                    gold_standard_value = gold_standard_value.replace('~', '')
+                    gold_standard_value = gold_standard_value.replace('>', '')
+                    gold_standard_value = gold_standard_value.replace('<', '')
+                    gold_standard_value = gold_standard_value.replace('.0', '')
+                    gold_standard_value = gold_standard_value.replace('None', '0')
+                if validation_value is not None:
+                    nlp_bone_marrow_blast_value = []
+                    nlp_bone_marrow_blast_value.append(validation_value)
+                else:
+                    nlp_bone_marrow_blast_value = None
+                validation_bone_marrow_blast_value = gold_standard_value
+                nlp_bone_marrow_blast_value = \
+                    self._nlp_to_tuple(nlp_bone_marrow_blast_value)
+                validation_bone_marrow_blast_value = \
+                    self._validation_to_tuple(validation_bone_marrow_blast_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_bone_marrow_blast_value,
+                                              validation_bone_marrow_blast_value,
+                                              value_range=5.0)
+                nlp_bone_marrow_blast_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_bone_marrow_blast_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['BONE_MARROW_BLAST'] = \
+            performance_statistics
+            
+    #
+    def _process_diagnosis_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_diagnosis_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['dx']
+                    validation_value = \
+                        re.sub('SYNDROME(?!S)', 'SYNDROMES', validation_value)
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['dx']
+                    gold_standard_value = \
+                        re.sub('SYNDROME(?!S)', 'SYNDROMES', gold_standard_value)
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    nlp_diagnosis_value = []
+                    nlp_diagnosis_value.append(validation_value)
+                    nlp_diagnosis_value = tuple(nlp_diagnosis_value)
+                else:
+                    nlp_diagnosis_value = None
+                if gold_standard_value is not None:
+                    validation_diagnosis_value = []
+                    validation_diagnosis_value.append(gold_standard_value)
+                    validation_diagnosis_value = tuple(validation_diagnosis_value)
+                else:
+                    validation_diagnosis_value = None
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_diagnosis_value,
+                                              validation_diagnosis_value)
+                nlp_diagnosis_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_diagnosis_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['DIAGNOSIS'] = \
+            performance_statistics
+            
+    #
+    def _process_diagnosis_date_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_diagnosis_date_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['dx.Date']
+                    validation_value = \
+                        re.sub('(?<=/)20(?=[0-9][0-9])', '', validation_value)
+                    validation_value = \
+                        re.sub('(?<=/)0(?=[0-9]/)', '', validation_value)
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['dx.Date']
+                    gold_standard_value = \
+                        re.sub('(?<=/)20(?=[0-9][0-9])', '', gold_standard_value)
+                    gold_standard_value = \
+                        re.sub('(?<=/)0(?=[0-9]/)', '', gold_standard_value)
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                else:
+                    validation_value = None
+                nlp_diagnosis_date_value = validation_value
+                validation_diagnosis_date_value = gold_standard_value
+                nlp_diagnosis_date_value = \
+                    self._nlp_to_tuple(nlp_diagnosis_date_value)
+                validation_diagnosis_date_value = \
+                    self._validation_to_tuple(validation_diagnosis_date_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_diagnosis_date_value,
+                                              validation_diagnosis_date_value)
+                nlp_diagnosis_date_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_diagnosis_date_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['DIAGNOSIS_DATE'] = \
+            performance_statistics
+            
+    #
+    def _process_extramedullary_disease_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_extramedullary_disease_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['Extramedullary.dx']
+                    validation_value = re.sub('SYNDROME', 'SYNDROMES', validation_value)
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['Extramedullary.dx']
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                else:
+                    validation_value = None
+                nlp_extramedullary_disease_value = \
+                    self._nlp_to_tuple(validation_value)
+                validation_extramedullary_disease_value = \
+                    self._validation_to_tuple(gold_standard_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_extramedullary_disease_value,
+                                              validation_extramedullary_disease_value)
+                nlp_extramedullary_disease_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_extramedullary_disease_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['EXTRAMEDULARY_DISEASE'] = \
+            performance_statistics
+            
+    #
+    def _process_fab_classification_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_fab_classification_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['FAB/Blast.Morphology']
+                    validation_value = re.sub('SYNDROME', 'SYNDROMES', validation_value)
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['FAB/Blast.Morphology']
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                else:
+                    validation_value = None
+                nlp_fab_classification_value = \
+                    self._nlp_to_tuple(validation_value)
+                validation_fab_classification_value = \
+                    self._validation_to_tuple(gold_standard_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_fab_classification_value,
+                                              validation_fab_classification_value)
+                nlp_fab_classification_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_fab_classification_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['FAB_CLASSIFICATION'] = \
+            performance_statistics
+            
+    #
+    def _process_fish_analysis_summary_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_fish_analysis_summary_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['FISH.Analysis.Summary']
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['FISH.Analysis.Summary']
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value_tmp = \
+                        validation_value_tmp.replace(' ', '')
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                    nlp_fish_analysis_summary_value = tuple(validation_value)
+                else:
+                    nlp_fish_analysis_summary_value = None
+                if gold_standard_value is not None:
+                    gold_standard_value_tmp = gold_standard_value
+                    gold_standard_value_tmp = \
+                        gold_standard_value_tmp.replace(' ', '')
+                    gold_standard_value = []
+                    gold_standard_value.append(gold_standard_value_tmp)
+                    validation_fish_analysis_summary_value = \
+                        tuple(gold_standard_value)
+                else:
+                    validation_fish_analysis_summary_value = None
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_fish_analysis_summary_value,
+                                              validation_fish_analysis_summary_value)
+                nlp_fish_analysis_summary_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_fish_analysis_summary_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['FISH_ANALYSIS_SUMMARY'] = \
+            performance_statistics
+            
+    #
+    def _process_karyotype_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_karyotype_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['Karyotype']
+                    validation_value = validation_value.replace('//', '/')
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['Karyotype']
+                    gold_standard_value = gold_standard_value.replace('//', '/')
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                    if gold_standard_value == 'N/A':
+                        gold_standard_value = None
+                    if gold_standard_value == 'Not available':
+                        gold_standard_value = None
+                    if gold_standard_value == 'None':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value_tmp = \
+                        validation_value_tmp.replace(' ', '')
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                    nlp_karyotype_value = tuple(validation_value)
+                else:
+                    nlp_karyotype_value = None
+                if gold_standard_value is not None:
+                    gold_standard_value_tmp = gold_standard_value
+                    gold_standard_value_tmp = \
+                        gold_standard_value_tmp.replace(' ', '')
+                    gold_standard_value = []
+                    gold_standard_value.append(gold_standard_value_tmp)
+                    validation_karyotype_value = \
+                        tuple(gold_standard_value)
+                else:
+                    validation_karyotype_value = None
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_karyotype_value,
+                                              validation_karyotype_value)
+                nlp_karyotype_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_karyotype_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['KARYOTYPE'] = \
+            performance_statistics
+            
+    #
+    def _process_performance(self, nlp_values, validation_data):
+        self._process_antibodies_tested_performance(nlp_values, validation_data)
+        self._process_bone_marrow_blast_performance(nlp_values, validation_data)
+        self._process_diagnosis_performance(nlp_values, validation_data)
+        self._process_diagnosis_date_performance(nlp_values, validation_data)
+        self._process_extramedullary_disease_performance(nlp_values, validation_data)
+        self._process_fab_classification_performance(nlp_values, validation_data)
+        self._process_fish_analysis_summary_performance(nlp_values, validation_data)
+        self._process_karyotype_performance(nlp_values, validation_data)
+        self._process_peripheral_blood_blast_performance(nlp_values, validation_data)
+        self._process_relapse_date_performance(nlp_values, validation_data)
+        self._process_residual_disease_performance(nlp_values, validation_data)
+        self._process_specific_diagnosis_performance(nlp_values, validation_data)
+        self._process_surface_antigens_performance(nlp_values, validation_data)
+    
+    #
+    def _process_peripheral_blood_blast_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_peripheral_blood_blast_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                if '%.Blasts.in.PB' in validation_record.keys():
+                    validation_value = validation_record['%.Blasts.in.PB']
+                else:
+                    validation_value = None
+                if '%.Blasts.in.PB' in gold_standard_record.keys():
+                    gold_standard_value = gold_standard_record['%.Blasts.in.PB']
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                else:
+                    gold_standard_value = None 
+                if validation_value is not None:
+                    validation_value = validation_value.replace('~', '')
+                    validation_value = validation_value.replace('>', '')
+                    validation_value = validation_value.replace('<', '')
+                    validation_value = validation_value.replace('.0', '')
+                if gold_standard_value is not None:
+                    gold_standard_value = gold_standard_value.replace('~', '')
+                    gold_standard_value = gold_standard_value.replace('>', '')
+                    gold_standard_value = gold_standard_value.replace('<', '')
+                    gold_standard_value = gold_standard_value.replace('.0', '')
+                    gold_standard_value = gold_standard_value.replace('None', '0')
+                if validation_value is not None:
+                    nlp_peripheral_blood_blast_value = []
+                    nlp_peripheral_blood_blast_value.append(validation_value)
+                else:
+                    nlp_peripheral_blood_blast_value = None
+                validation_peripheral_blood_blast_value = gold_standard_value
+                nlp_peripheral_blood_blast_value = \
+                    self._nlp_to_tuple(nlp_peripheral_blood_blast_value)
+                validation_peripheral_blood_blast_value = \
+                    self._validation_to_tuple(validation_peripheral_blood_blast_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_peripheral_blood_blast_value,
+                                              validation_peripheral_blood_blast_value,
+                                              value_range=5.0)
+                nlp_peripheral_blood_blast_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_peripheral_blood_blast_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['PERIPHERAL_BLOOD_BLAST'] = \
+            performance_statistics
+    
+    #
+    def _process_relapse_date_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_relapse_date_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['Relapse.Date']
+                    validation_value = \
+                        re.sub('(?<=/)20(?=[0-9][0-9])', '', validation_value)
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['Relapse.Date']
+                    gold_standard_value = \
+                        re.sub('(?<=/)20(?=[0-9][0-9])', '', gold_standard_value)
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                else:
+                    validation_value = None
+                nlp_relapse_date_value = validation_value
+                validation_relapse_date_value = gold_standard_value
+                nlp_relapse_date_value = \
+                    self._nlp_to_tuple(nlp_relapse_date_value)
+                validation_relapse_date_value = \
+                    self._validation_to_tuple(validation_relapse_date_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_relapse_date_value,
+                                              validation_relapse_date_value)
+                nlp_relapse_date_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_relapse_date_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['RELAPSE_DATE'] = \
+            performance_statistics
+    
+    #
+    def _process_residual_disease_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_residual_disease_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                try:
+                    validation_value = validation_record['Residual.dx']
+                    validation_value = validation_value.lower()
+                except:
+                    validation_value = None
+                try:
+                    gold_standard_value = gold_standard_record['Residual.dx']
+                    gold_standard_value = re.sub('(?i)acute myeloid leukemia', 'AML', gold_standard_value)
+                    gold_standard_value = gold_standard_value.lower()
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                except:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                else:
+                    validation_value = None
+                nlp_residual_disease_value = validation_value
+                validation_residual_disease_value = gold_standard_value
+                nlp_residual_disease_value = \
+                    self._nlp_to_tuple(nlp_residual_disease_value)
+                validation_residual_disease_value = \
+                    self._validation_to_tuple(validation_residual_disease_value)
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_residual_disease_value,
+                                              validation_residual_disease_value)
+                nlp_residual_disease_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_residual_disease_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['RESIDUAL_DISEASE'] = \
+            performance_statistics
+            
+    #
+    def _process_specific_diagnosis_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        item_score = {}
+        nlp_specific_diagnosis_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                if 'specificDx' in validation_record.keys():
+                    validation_value = validation_record['specificDx']
+                    validation_value = re.sub('/', 'and', validation_value)
+                    validation_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', validation_value)
+                    validation_value = re.sub(' ', '', validation_value)
+                    validation_value = validation_value.lower()
+                else:
+                    validation_value = None
+                if 'specificDx' in gold_standard_record.keys():
+                    gold_standard_value = gold_standard_record['specificDx']
+                    gold_standard_value = re.sub('(?i)acute myeloid leukemia', 'AML', gold_standard_value)
+                    gold_standard_value = re.sub('(?i)acute myelomonocytic leukemia', 'AMML', gold_standard_value)
+                    gold_standard_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', gold_standard_value)
+                    gold_standard_value = re.sub(' ', '', gold_standard_value)
+                    gold_standard_value = gold_standard_value.lower()
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                    elif gold_standard_value[-1] == ',':
+                        gold_standard_value = gold_standard_value[:-1]
+                else:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    validation_value_tmp = validation_value
+                    validation_value = []
+                    validation_value.append(validation_value_tmp)
+                if gold_standard_value is not None:
+                    gold_standard_value_tmp = gold_standard_value
+                    gold_standard_value = []
+                    gold_standard_value.append(gold_standard_value_tmp)
+                if validation_value is not None:
+                    nlp_specific_diagnosis_value = tuple(validation_value)
+                else:
+                    nlp_specific_diagnosis_value = None
+                if gold_standard_value is not None:
+                    validation_specific_diagnosis_value = tuple(gold_standard_value)
+                else:
+                    validation_specific_diagnosis_value = None
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_specific_diagnosis_value,
+                                              validation_specific_diagnosis_value)
+                nlp_specific_diagnosis_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_specific_diagnosis_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['SPECIFIC_DIAGNOSIS'] = \
+            performance_statistics
+    
+    #
+    def _process_surface_antigens_performance(self, nlp_values, validation_data):
+        patientIds = nlp_values.keys()
+        patientIds = list(set(patientIds))
+        nlp_surface_antigens_performance = []
+        N = 0
+        for patientId in patientIds:
+            if patientId in validation_data:
+                validation_patient = validation_data[patientId]
+            else:
+                validation_patient = {}
+            if patientId in nlp_values:
+                nlp_patient = nlp_values[patientId]
+            else:
+                nlp_patient = {}
+            labIds = []
+            labIds.extend(nlp_patient.keys())
+            for labId in labIds:
+                print(labId)
+                if labId in nlp_patient.keys():
+                    validation_record_tmp = nlp_patient[labId]
+                    keys0 = list(validation_record_tmp)
+                    validation_record = validation_record_tmp[keys0[0]]
+                else:
+                    validation_record = {}
+                if labId in validation_patient.keys():
+                    gold_standard_record = validation_patient[labId]
+                else:
+                    gold_standard_record = {}
+                if 'Surface.Antigens.(Immunohistochemical.Stains)' in validation_record.keys():
+                    validation_value = validation_record['Surface.Antigens.(Immunohistochemical.Stains)']
+                    if validation_value == '':
+                        validation_value = None
+                else:
+                    validation_value = None
+                if 'Surface.Antigens.(Immunohistochemical.Stains)' in gold_standard_record.keys():
+                    gold_standard_value = gold_standard_record['Surface.Antigens.(Immunohistochemical.Stains)']
+                    gold_standard_value = re.sub('(?i)n/a', '', gold_standard_value)
+                    gold_standard_value = re.sub('(?i)not (available|run)', '', gold_standard_value)
+                    if gold_standard_value == '':
+                        gold_standard_value = None
+                else:
+                    gold_standard_value = None
+                if validation_value is not None:
+                    if isinstance(validation_value, list):
+                        validation_value = self.manual_review
+                if validation_value is not None and \
+                   validation_value is not self.manual_review:
+                    validation_value = re.sub('dim', 'dim ', validation_value)
+                    validation_value = re.sub('\+', ' +', validation_value)
+                    validation_value = re.sub('(?i)(-)?positive', ' +', validation_value)
+                    validation_value = extract_antigens(validation_value)
+                    validation_value = list(set(validation_value))
+                if gold_standard_value is not None:
+                    gold_standard_value = re.sub('dim', 'dim ', gold_standard_value)
+                    gold_standard_value = re.sub('\+', ' +', gold_standard_value)
+                    gold_standard_value = re.sub('(?i)(-)?positive', ' +', gold_standard_value)
+                    gold_standard_value = extract_antigens(gold_standard_value)
+                    gold_standard_value = list(set(gold_standard_value))
+                if validation_value is not None and \
+                   validation_value is not self.manual_review:
+                    nlp_surface_antigens_value = tuple(validation_value)
+                elif validation_value is None:
+                    nlp_surface_antigens_value = None
+                if gold_standard_value is not None:
+                    validation_surface_antigens_value = \
+                        tuple(gold_standard_value)
+                else:
+                    validation_surface_antigens_value = None
+                N += 1
+                performance, flg = \
+                    self._compare_data_values(nlp_surface_antigens_value,
+                                              validation_surface_antigens_value)
+                nlp_surface_antigens_performance.append(performance)
+        FN, FP, FP_plus_FN, TN, TP = \
+            self._performance_values(nlp_surface_antigens_performance)
+        performance_statistics = \
+            self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+        self.performance_statistics_dict['SURFACE_ANTIGENS'] = \
+            performance_statistics
+    
+    #
+    def _read_nlp_value_data(self, nlp_data, validation_data):
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
         data_json = {}
         for key in nlp_data.keys():
@@ -522,161 +1117,9 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         return nlp_values
     
     #
-    def _read_validation_data(self, static_data, nlp_data):
-        mrn_list = static_data['patient_list']
+    def _read_validation_data(self):
+        mrn_list = self.static_data['patient_list']
         gold_standard_object = Gold_standard_jsons(self.directory_manager, mrn_list)
         gold_standard_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'gold_standard.json')
         validation_data = gold_standard_object.get_data_json()
         return validation_data
-    
-    #
-    def calculate_performance(self):
-        nlp_data = self.nlp_data
-        validation_data = \
-            self._read_validation_data(self.static_data, nlp_data)
-        full_specimen_ctr = 0
-        gs_record_ctr = 0
-        patient_ids_list = []
-        for patientId in validation_data.keys():
-            validation_patient = validation_data[patientId]
-            gs_record_ctr += len(validation_patient.keys())
-        patientIds = []
-        #patientIds.extend(validation_data.keys())
-        nlp_values = self._read_nlp_value_data(nlp_data)
-        self.nlp_values = nlp_values
-        patientIds = self.nlp_values.keys()
-        patientIds = list(set(patientIds))
-        labids_score = [ 0, 0, 0, 0 ]
-        item_score = {}
-        missing_specimens = {}
-        for patientId in patientIds:
-            if patientId in validation_data:
-                validation_patient = validation_data[patientId]
-            else:
-                validation_patient = {}
-            if patientId in self.nlp_values:
-                nlp_patient = self.nlp_values[patientId]
-            else:
-                nlp_patient = {}
-            labIds = []
-            #labIds.extend(validation_patient.keys())
-            labIds.extend(nlp_patient.keys())
-            for labId in labIds:
-                if labId in nlp_patient.keys():
-                    validation_record_tmp = nlp_patient[labId]
-                    keys0 = list(validation_record_tmp)
-                    validation_record = validation_record_tmp[keys0[0]]
-                else:
-                    validation_record = {}
-                if labId in validation_patient.keys():
-                    gold_standard_record = validation_patient[labId]
-                else:
-                    gold_standard_record = {}
-                if not bool(validation_record) and bool(gold_standard_record):
-                    missing_specimens[patientId] = labId
-                else:
-                    patient_ids_list.append(patientId)
-                    docs_list = list(validation_record_tmp)
-                    if '_' in docs_list[0]:
-                        full_specimen_ctr += 1
-                cond00 = len(validation_record) > 0
-                cond01 = len(validation_record) == 0
-                cond10 = len(gold_standard_record) > 0
-                cond11 = len(gold_standard_record) == 0
-                if cond00 and cond10:
-                    labids_score[0] += 1
-                elif cond00 and cond11:
-                    labids_score[1] += 1
-                elif cond01 and cond10:
-                    labids_score[2] += 1
-                elif cond01 and cond11:
-                    labids_score[3] += 1
-                for item in [ 'Antibodies.Tested', 'dx.Date', 'dx', 'Extramedullary.dx',
-                              'FAB/Blast.Morphology', 'FISH.Analysis.Summary', 
-                              'Karyotype', '%.Blasts.in.BM', '%.Blasts.in.PB',
-                              'Relapse.Date', 'Residual.dx', 'specificDx',
-                              'Surface.Antigens.(Immunohistochemical.Stains)' ]:
-                    if item in [ '%.Blasts.in.BM', '%.Blasts.in.PB' ]:
-                        item_score = \
-                            self._compare_values_blasts(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    elif item in [ 'Antibodies.Tested', 'Surface.Antigens.(Immunohistochemical.Stains)' ]:
-                        item_score = \
-                            self._compare_values_antigens(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    elif item in [ 'dx.Date', 'Relapse.Date' ]:
-                        item_score = \
-                            self._compare_values_dates(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    elif item in [ 'FISH.Analysis.Summary' ]:
-                        item_score = \
-                            self._compare_values_texts(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    elif item in [ 'Karyotype' ]:
-                        item_score = \
-                            self._compare_values_karyotypes(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    elif item in [ 'Residual.dx' ]:
-                        item_score = \
-                            self._compare_values_residual_diagnosis(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    elif item in [ 'specificDx' ]:
-                        item_score = \
-                            self._compare_values_specific_diagnosis(validation_record, gold_standard_record, item, item_score, patientId, labId)
-                    else:
-                        try:
-                            validation_value = validation_record[item]
-                            validation_value = re.sub('SYNDROME', 'SYNDROMES', validation_value)
-                        except:
-                            validation_value = None
-                        try:
-                            gold_standard_value = gold_standard_record[item]
-                            if gold_standard_value == '':
-                                gold_standard_value = None
-                        except:
-                            gold_standard_value = None
-                        performance, flg = \
-                            self._compare_data_values(validation_value,
-                                                      gold_standard_value)
-                        item_score = \
-                            self._performance_values(item, item_score, performance)
-        performance_statistics_dict = {}
-        for key in item_score.keys():
-            performance_key = {}
-            performance_key['Antibodies.Tested'] = 'ANTIBODIES_TESTED'
-            performance_key['dx'] = 'DIAGNOSIS'
-            performance_key['dx.Date'] = 'DIAGNOSIS_DATE'
-            performance_key['Extramedullary.dx'] = 'EXTRAMEDULARY_DISEASE'
-            performance_key['FAB/Blast.Morphology'] = 'FAB_CLASSIFICATION'
-            performance_key['FISH.Analysis.Summary'] = 'FISH_ANALYSIS_SUMMARY'
-            performance_key['Karyotype'] = 'KARYOTYPE'
-            performance_key['%.Blasts.in.BM'] = 'BONE_MARROW_BLAST'
-            performance_key['%.Blasts.in.PB'] = 'PERIPHERAL_BLOOD_BLAST'
-            performance_key['Relapse.Date'] = 'RELAPSE_DATE'
-            performance_key['Residual.dx'] = 'RESIDUAL_DISEASE'
-            performance_key['specificDx'] = 'SPECIFIC_DIAGNOSIS'
-            performance_key['Surface.Antigens.(Immunohistochemical.Stains)'] = \
-                'SURFACE_ANTIGENS'
-            M = item_score[key][2]
-            FN = item_score[key][5]
-            FP = item_score[key][4]
-            FP_plus_FN = item_score[key][3]
-            TN = item_score[key][1]
-            TP = item_score[key][0]
-            N = sum(item_score[key])
-            print('--' + key + '--')
-            print(item_score[key])
-            print(f'\tnumber docs: ' + str(N))
-            print(f'\tmultiple vals: ' + str(M))
-            print(f'\tfalse neg: ' + str(FN))
-            print(f'\tfalse pos: ' + str(FP))
-            print(f'\tfalse pos + false neg: ' + str(FP_plus_FN))
-            performance_statistics = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
-            performance_statistics_dict[performance_key[key]] = \
-                performance_statistics
-        self.logger.create_file('log.txt')
-        print('\n')
-        print(gs_record_ctr)
-        print(missing_specimens)
-        print(full_specimen_ctr)
-        print(len(list(set(patient_ids_list))))
-        return performance_statistics_dict
-        
-    #
-    def display_performance(self, performance_statistics_dict):
-        self._display_performance_statistics(performance_statistics_dict)
