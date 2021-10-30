@@ -12,7 +12,6 @@ class Linguamatics_i2e_file_manager(object):
     def __init__(self, static_data):
         project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
-        json_files_key_value = static_data['json_files_key_value']
         self.directory_manager = directory_manager
         source_data_filename = project_name + ".source_data.zip"
         keywords_filename = project_name + ".keywords.txt"

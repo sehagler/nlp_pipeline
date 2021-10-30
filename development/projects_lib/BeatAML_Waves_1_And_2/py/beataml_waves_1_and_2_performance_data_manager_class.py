@@ -28,6 +28,16 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                                           performance_json_manager,
                                           project_json_manager)
         static_data = static_data_manager.get_static_data()
+        static_data['json_files_key_value'] = [ ('bone_marrow_blast_file', 'bone_marrow_blast.json'),
+                                                ('diagnosis_file', 'diagnosis.json'),
+                                                ('diagnosis_date_file', 'diagnosis_date.json'),
+                                                ('extramedullary_disease_file', 'extramedullary_disease.json'),
+                                                ('fab_classification_file', 'fab_classification.json'),
+                                                ('immunophenotype_file', 'immunophenotype.json'),
+                                                ('peripheral_blood_blast_file', 'peripheral_blood_blast.json'),
+                                                ('relapse_date_file', 'relapse_date.json'),
+                                                ('residual_disease_file', 'residual_disease.json'),
+                                                ('sections_file', 'sections.json') ]
         
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \

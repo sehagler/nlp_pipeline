@@ -83,61 +83,64 @@ class Preprocessing_worker(object):
     #
     def _preprocess_documents(self, raw_data_manager, start_idx,
                               document_ctr, fail_ctr, password):
-        if self.static_data['read_data_mode'] == 'get_data_by_document_number':
-            document_numbers = raw_data_manager.get_document_numbers()
-            for i in range(len(document_numbers)):
-                document_number = document_numbers[i]
-                data_tmp, document_idx, source_metadata_list, \
-                nlp_metadata_list, text_list, xml_metadata_list, \
-                source_system = \
-                    raw_data_manager.get_data_by_document_number(document_number,
-                                                                 document_ctr,
-                                                                 self.i2e_version,
-                                                                 self.num_processes,
-                                                                 self.process_idx,
-                                                                 password)
-                if bool(data_tmp):
-                    document_ctr, fail_ctr = \
-                        self._preprocess_document(raw_data_manager, data_tmp, 
-                                                  start_idx, document_idx,
-                                                  source_metadata_list,
-                                                  nlp_metadata_list,
-                                                  xml_metadata_list,
-                                                  text_list, source_system, 
-                                                  document_ctr, fail_ctr,
-                                                  password)
-        else:
-            document_value_dict = raw_data_manager.get_document_values()
-            for data_file in document_value_dict:
-                document_value_keys = sorted(document_value_dict[data_file].keys())
-                for i in range(len(document_value_keys)):
-                    document_value_key = document_value_keys[i]
-                    document_values = sorted(document_value_dict[data_file][document_value_key])
-                    for j in range(len(document_values)):
-                        document_value = document_values[j]
-                        data_tmp, document_idx, source_metadata_list, \
-                        nlp_metadata_list, text_list, xml_metadata_list, \
-                        source_system = \
-                            raw_data_manager.get_data_by_document_value(data_file,
-                                                                        document_value_key,
-                                                                        document_value,
-                                                                        document_ctr,
-                                                                        self.i2e_version,
-                                                                        self.num_processes,
-                                                                        self.process_idx,
-                                                                        password)
-                        if bool(data_tmp):
-                            document_ctr, fail_ctr = \
-                                self._preprocess_document(raw_data_manager, data_tmp, 
-                                                          start_idx, document_idx,
-                                                          source_metadata_list,
-                                                          nlp_metadata_list,
-                                                          xml_metadata_list,
-                                                          text_list,
-                                                          source_system,
-                                                          document_ctr, 
-                                                          fail_ctr,
-                                                          password)
+        raw_data_files_dict = self.static_data['raw_data_files']
+        raw_data_files = list(raw_data_files_dict.keys())
+        for data_file in raw_data_files:
+            extension = data_file.split('.')[-1]
+            if extension == 'xml':
+                document_numbers = \
+                    raw_data_manager.get_document_numbers(data_file)
+                for document_number in document_numbers:
+                    data_tmp, document_idx, source_metadata_list, \
+                    nlp_metadata_list, text_list, xml_metadata_list, \
+                    source_system = \
+                        raw_data_manager.get_data_by_document_number(data_file,
+                                                                     document_number,
+                                                                     document_ctr,
+                                                                     self.i2e_version,
+                                                                     self.num_processes,
+                                                                     self.process_idx,
+                                                                     password)
+                    if bool(data_tmp):
+                        document_ctr, fail_ctr = \
+                            self._preprocess_document(raw_data_manager, data_tmp, 
+                                                      start_idx, document_idx,
+                                                      source_metadata_list,
+                                                      nlp_metadata_list,
+                                                      xml_metadata_list,
+                                                      text_list, source_system, 
+                                                      document_ctr, fail_ctr,
+                                                      password)
+            elif extension == 'xls' or extension == 'xlsx':
+                document_values = \
+                    raw_data_manager.get_document_values(data_file)
+                for i in range(len(document_values)):
+                    document_value = document_values[i]
+                    data_tmp, document_idx, source_metadata_list, \
+                    nlp_metadata_list, text_list, xml_metadata_list, \
+                    source_system = \
+                        raw_data_manager.get_data_by_document_value(data_file,
+                                                                    document_value[0],
+                                                                    document_value[1],
+                                                                    document_ctr,
+                                                                    self.i2e_version,
+                                                                    self.num_processes,
+                                                                    self.process_idx,
+                                                                    password)
+                    if bool(data_tmp):
+                        document_ctr, fail_ctr = \
+                            self._preprocess_document(raw_data_manager, data_tmp, 
+                                                      start_idx, document_idx,
+                                                      source_metadata_list,
+                                                      nlp_metadata_list,
+                                                      xml_metadata_list,
+                                                      text_list,
+                                                      source_system,
+                                                      document_ctr, 
+                                                      fail_ctr,
+                                                      password)
+            else:
+                print('Unrecognized file extension')
         return document_ctr, fail_ctr
         
     #

@@ -18,22 +18,18 @@ class Xlsx_reader(Reader_base):
     
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
-        datetime_keys = self.static_data['datetime_keys']
-        header_key = self.static_data['header_key']
-        header_value_list = self.static_data['header_values']
-        if header_key != []:
-            data = \
-                self._read_data_file_key(raw_data_files_dict, raw_data_file,
-                                         datetime_keys, header_key,
-                                         header_value_list)
-        else:
-            data = \
-                self._read_data_file_nokey(raw_data_files_dict, raw_data_file,
-                                           datetime_keys)
-        return data
-    
-    #
-    def _read_data_file_key(self, raw_data_files_dict, raw_data_file, dt_labels, key_label, key_value_list):
+        dt_labels = self.static_data['datetime_keys']
+        #key_label = self.static_data['header_key']
+        key_label = 'REPORT_HEADER'
+        if self.static_data['flags']['project'] == 'BeatAML':
+            key_value_list = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
+                               'Karyotype', 'Clinical History',
+                               'Immunologic Analysis', 'Laboratory Data',
+                               'Microscopic Description',
+                               'Cytogenetic Analysis Summary',
+                               'Impressions and Recommendations' ]
+        elif self.static_data['flags']['project'] == 'BreastCancerPathology':
+            key_value_list = [ 'Final Pathologic Diagnosis' ]
         data = {}
         book = read_xlsx_file(raw_data_file)
         sheet = book.sheet_by_index(0)
@@ -66,6 +62,7 @@ class Xlsx_reader(Reader_base):
         del data[keys[-1]]
         return data
     
+    '''
     #
     def _read_data_file_nokey(self, raw_data_files_dict, raw_data_file, dt_labels):
         data = {}
@@ -96,3 +93,4 @@ class Xlsx_reader(Reader_base):
             data['RAW_TEXT'].extend(data[keys[-1]])
         del data[keys[-1]]
         return data
+    '''

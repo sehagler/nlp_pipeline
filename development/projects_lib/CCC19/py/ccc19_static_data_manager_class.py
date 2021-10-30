@@ -34,13 +34,12 @@ class CCC19_static_data_manager(Static_data_manager):
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.static_data['flags'] = {}
+        self.static_data['flags']['header_values'] = False
         self.static_data['flags']['remove_date'] = True
         self.static_data['flags']['trim_data_by_csn'] = True
         self.static_data['formatting'] = 'unformatted'
-        self.static_data['json_files_key_value'] = []
         self.static_data['patient_identifiers'] = [ 'OHSU_MRN' ]
         self.static_data['raw_data_files'] = {}
-        self.static_data['read_data_mode'] = 'get_data_by_document_number'
         self.static_data['text_identifiers'] = [ 'COMMENT_TEXT', 'NOTE_TEXT',
                                                  'PATHOLOGY_REPORT', 'RESULT_TEXT' ]
         if self.project_subdir == 'production':

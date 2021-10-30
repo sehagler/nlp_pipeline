@@ -30,27 +30,14 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
         self.static_data['datetime_identifiers'][ 'RESULT_COMPLETED_DT' ] = '%m/%d/%Y'
         self.static_data['document_identifiers'] = [ 'CSN' ]
         self.static_data['flags'] = {}
+        self.static_data['flags']['header_values'] = True
+        self.static_data['flags']['project'] = 'BeatAML'
         self.static_data['flags']['remove_date'] = False
         self.static_data['flags']['trim_data_by_csn'] = False
-        self.static_data['header_values'] = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
-                                               'Karyotype', 'Clinical History', 'Immunologic Analysis',
-                                               'Laboratory Data', 'Microscopic Description',
-                                               'Cytogenetic Analysis Summary', 'Impressions and Recommendations' ]
-        self.static_data['json_files_key_value'] = [ ('bone_marrow_blast_file', 'bone_marrow_blast.json'),
-                                                      ('diagnosis_file', 'diagnosis.json'),
-                                                      ('diagnosis_date_file', 'diagnosis_date.json'),
-                                                      ('extramedullary_disease_file', 'extramedullary_disease.json'),
-                                                      ('fab_classification_file', 'fab_classification.json'),
-                                                      ('immunophenotype_file', 'immunophenotype.json'),
-                                                      ('peripheral_blood_blast_file', 'peripheral_blood_blast.json'),
-                                                      ('relapse_date_file', 'relapse_date.json'),
-                                                      ('residual_disease_file', 'residual_disease.json'),
-                                                      ('sections_file', 'sections.json') ]
         self.static_data['multiprocessing'] = False
         self.static_data['patient_identifiers'] = ['MRN']
         self.static_data['raw_data_encoding'] = 'utf-8'
         self.static_data['raw_data_files'] = {}
-        self.static_data['read_data_mode'] = 'get_data_by_document_value'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files']['Beaker Results.xls'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls']['NLP_MODE'] = 'RESULT_ID'

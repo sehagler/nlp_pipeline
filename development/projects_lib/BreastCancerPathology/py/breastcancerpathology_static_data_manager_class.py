@@ -31,22 +31,18 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         self.static_data['document_fraction'] = 0.5
         self.static_data['document_identifiers'] = [ 'CSN' ]
         self.static_data['flags'] = {}
+        self.static_data['flags']['header_values'] = True
+        self.static_data['flags']['project'] = 'BreastCancerPathology'
         self.static_data['flags']['remove_date'] = True
         self.static_data['flags']['trim_data_by_csn'] = True
-        self.static_data['header_values'] = [ 'Final Pathologic Diagnosis' ]
-        self.static_data['json_files_key_value'] = [ ('biomarker_json_file', 'biomarker.json'),
-                                                      ('hist_diff_json_file', 'hist diff.json'),
-                                                      ('hist_grade_json_file', 'hist grade.json'),
-                                                      ('tumor_margin_json_file', 'tumor_margin.json'),
-                                                      ('section_json_file', 'section.json'),
-                                                      ('tumor_size_json_file', 'tumor size.json') ]
         self.static_data['patient_identifiers'] = ['MRN']
         self.static_data['raw_data_encoding'] = 'utf-8'
-        self.static_data['raw_data_files'] = {}
-        self.static_data['read_data_mode'] = 'get_data_by_document_value'
         if self.project_subdir == 'test':
+            self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['NLP_MODE'] = 'RESULT_ID'
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211026_095557.XML'] = {}
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211026_095557.XML']['NLP_MODE'] = 'RESULT_ID'
 
             #
             if True:
