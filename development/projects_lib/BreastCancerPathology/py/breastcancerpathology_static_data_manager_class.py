@@ -26,23 +26,24 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
     
     #
     def get_static_data(self):
-        self.static_data['datetime_identifiers'] = {}
-        self.static_data['datetime_identifiers'][ 'RESULT_COMPLETED_DT' ] = '%m/%d/%Y'
-        self.static_data['document_fraction'] = 0.5
-        self.static_data['document_identifiers'] = [ 'CSN' ]
-        self.static_data['flags'] = {}
-        self.static_data['flags']['header_values'] = True
-        self.static_data['flags']['project'] = 'BreastCancerPathology'
-        self.static_data['flags']['remove_date'] = True
-        self.static_data['flags']['trim_data_by_csn'] = True
-        self.static_data['patient_identifiers'] = ['MRN']
-        self.static_data['raw_data_encoding'] = 'utf-8'
+        self.static_data['document_identifiers'] = [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
+            #self.static_data['raw_data_files']['test-converted.xml'] = {}
+            #self.static_data['raw_data_files']['test-converted.xml']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            #self.static_data['raw_data_files']['test-converted.xml']['DOCUMENT_FRACTION'] = 1.0
+            #self.static_data['raw_data_files']['test-converted.xml']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}
+            self.static_data['raw_data_files']['BreastCancerPathology.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['BreastCancerPathology.xls']['DOCUMENT_FRACTION'] = 0.5
+            self.static_data['raw_data_files']['BreastCancerPathology.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['NLP_MODE'] = 'RESULT_ID'
-            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211026_095557.XML'] = {}
-            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211026_095557.XML']['NLP_MODE'] = 'RESULT_ID'
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML'] = {}
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DOCUMENT_FRACTION'] = 1.0
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['FORMATTING'] = 'formatted'
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['NLP_MODE'] = 'RESULT_ID'
+            #self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
 
             #
             if True:

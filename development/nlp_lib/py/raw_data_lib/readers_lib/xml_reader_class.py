@@ -67,12 +67,16 @@ class Xml_reader(Reader_base):
                 data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
                 data['SOURCE_SYSTEM'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['SOURCE_SYSTEM'])
                 keys_appended = []
-        for text_identifier in text_identifiers:
-            if text_identifier in data.keys():
-                if 'RAW_TEXT' not in data.keys():
-                    data['RAW_TEXT'] = data[text_identifier]
-                else:
-                    data['RAW_TEXT'].extend(data[text_identifier])
-                del data[text_identifier]
+        #for text_identifier in text_identifiers:
+        #    if text_identifier in data.keys():
+        keys = list(data.keys())
+        for key in keys:
+            for text_identifier in text_identifiers:
+                if text_identifier in key:
+                    if 'RAW_TEXT' not in data.keys():
+                        data['RAW_TEXT'] = data[key]
+                    else:
+                        data['RAW_TEXT'].extend(data[key])
+                    del data[key]
         os.remove(tmp_file)
         return data

@@ -19,16 +19,15 @@ class Xlsx_reader(Reader_base):
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
         dt_labels = self.static_data['datetime_keys']
-        #key_label = self.static_data['header_key']
         key_label = 'REPORT_HEADER'
-        if self.static_data['flags']['project'] == 'BeatAML':
+        if 'BeatAML' in self.static_data['project_name']:
             key_value_list = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
                                'Karyotype', 'Clinical History',
                                'Immunologic Analysis', 'Laboratory Data',
                                'Microscopic Description',
                                'Cytogenetic Analysis Summary',
                                'Impressions and Recommendations' ]
-        elif self.static_data['flags']['project'] == 'BreastCancerPathology':
+        elif self.static_data['project_name'] == 'BreastCancerPathology':
             key_value_list = [ 'Final Pathologic Diagnosis' ]
         data = {}
         book = read_xlsx_file(raw_data_file)

@@ -146,12 +146,11 @@ class Json_manager(object):
         nlp_data_tmp = nlp_data_tmp[self.documents_wrapper_key]
         nlp_data = {}
         for item in nlp_data_tmp:
-            for patient_identifier in patient_identifiers:
-                try:
-                    patient = \
-                        item[self.document_wrapper_key][self.metadata_key][patient_identifier]
-                except:
-                    pass
+            for key in item[self.document_wrapper_key][self.metadata_key].keys():
+                for patient_identifier in patient_identifiers:
+                    if patient_identifier in key:
+                        patient = \
+                            item[self.document_wrapper_key][self.metadata_key][key]
             document_idx = \
                 item[self.document_wrapper_key][self.nlp_metadata_key]['NLP_DOCUMENT_IDX']
             if patient_list is None or patient in patient_list:

@@ -26,7 +26,6 @@ class Pretokenizer(Preprocessor_base):
     def __init__(self, static_data):
         Preprocessor_base.__init__(self, static_data)    
         self.body_header = 'SUMMARY'
-        self.formatting = static_data['formatting']
         self.personal_name_normalizer = \
             Personal_name_normalizer(self.static_data)
         self.section_header_normalizer = \
@@ -116,3 +115,7 @@ class Pretokenizer(Preprocessor_base):
         self._extract_section_headers()
         self._normalize_whitespace()
         return self.dynamic_data_manager, self.text
+    
+    #
+    def set_formatting(self, formatting):
+        self.formatting = formatting

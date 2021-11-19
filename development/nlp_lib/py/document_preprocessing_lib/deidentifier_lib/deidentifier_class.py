@@ -43,7 +43,7 @@ class Deidentifier(Preprocessor_base):
     #
     def remove_phi(self):
         self._remove_age()
-        if self.static_data['flags']['remove_date']:
+        if self.static_data['remove_date']:
             self._remove_date()
         self._remove_gender()
         self._remove_mrn()

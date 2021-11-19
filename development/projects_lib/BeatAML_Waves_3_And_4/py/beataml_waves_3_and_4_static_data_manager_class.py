@@ -26,34 +26,30 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
     
     #
     def get_static_data(self):
-        self.static_data['datetime_identifiers'] = {}
-        self.static_data['datetime_identifiers'][ 'RESULT_COMPLETED_DT' ] = '%m/%d/%Y'
         self.static_data['document_identifiers'] = [ 'CSN' ]
-        self.static_data['flags'] = {}
-        self.static_data['flags']['header_values'] = True
-        self.static_data['flags']['project'] = 'BeatAML'
-        self.static_data['flags']['remove_date'] = False
-        self.static_data['flags']['trim_data_by_csn'] = False
-        self.static_data['multiprocessing'] = False
-        self.static_data['patient_identifiers'] = ['MRN']
-        self.static_data['raw_data_encoding'] = 'utf-8'
-        self.static_data['raw_data_files'] = {}
+        self.static_data['remove_date'] = False
         if self.project_subdir == 'test':
+            self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}
+            self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx'] = {}
+            self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Beaker_Chromosome_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx'] = {}
+            self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Beaker_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx'] = {}
+            self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['PowerPath_Chromosome_Reports.xlsx']['NLP_MODE'] = 'CASE_NUMBER'
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx'] = {}
+            self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files_sequence'] = [ 'Beaker_Bone_Marrow_Morphology_Reports.xlsx',
-                                                            'Beaker_Chromosome_Reports.xlsx',
-                                                            'Beaker_Hematopathology_Reports.xlsx',
-                                                            'PowerPath_Chromosome_Reports.xlsx',
-                                                            'PowerPath_Hematopathology_Reports.xlsx' ]
         else:
             print('Bad project_subdir value')
         

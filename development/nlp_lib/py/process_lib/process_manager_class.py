@@ -137,16 +137,21 @@ class Process_manager(object):
             self.static_data['directory_manager'].cleanup_directory('preprocessing_data_out')
         i2e_version = \
             self.linguamatics_i2e_manager.get_i2e_version(password)
-        try:
-            multiprocessing_flg = self.static_data['multiprocessing']
-        except:
-            multiprocessing_flg = False
+        multiprocessing_flg = self.static_data['multiprocessing']
+        if multiprocessing_flg:
+            keys = list(self.static_data['raw_data_files'].keys())
+            for key in keys:
+                filename, extension = os.path.splitext(key)
+                if extension in [ '.xls', '.xlsx' ]:
+                    multiprocessing_flg = False
         if multiprocessing_flg:
             num_processes = self.static_data['num_processes']
         else:
             num_processes = 1
         self.raw_data_manager = Raw_data_manager(self.static_data, 
-                                                 self.server_manager, password)
+                                                 self.server_manager, 
+                                                 multiprocessing_flg,
+                                                 password)
             
         # Read data kludge to be done properly later
         operation_mode = self.static_data['operation_mode']

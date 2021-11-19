@@ -7,6 +7,7 @@ Created on Fri Feb  5 13:07:13 2021
 
 #
 import datetime
+import os
 import pickle
 import re
 
@@ -34,8 +35,8 @@ class Preprocessing_worker(object):
     def _preprocess_document(self, raw_data_manager, data_tmp, start_idx, 
                              document_idx, source_metadata_list,
                              nlp_metadata_list, xml_metadata_list,
-                             text_list, source_system, document_ctr, fail_ctr,
-                             password):
+                             text_list, source_system, formatting, 
+                             document_ctr, fail_ctr, password):
         document_ctr += 1
         if document_idx >= start_idx:
             if 'RAW_TEXT' in data_tmp.keys() and \
@@ -54,7 +55,8 @@ class Preprocessing_worker(object):
                         self.dynamic_data_manager, processed_raw_text, \
                         processed_report_text = \
                             self.document_preprocessing_manager.process_document(self.dynamic_data_manager,
-                                                                                 text_item, source_system)
+                                                                                 text_item, source_system,
+                                                                                 formatting)
                         xml_ret_val = \
                             self.linguamatics_i2e_manager.generate_xml_file(document_idx,
                                                                             xml_metadata,
@@ -86,32 +88,9 @@ class Preprocessing_worker(object):
         raw_data_files_dict = self.static_data['raw_data_files']
         raw_data_files = list(raw_data_files_dict.keys())
         for data_file in raw_data_files:
-            extension = data_file.split('.')[-1]
-            if extension == 'xml':
-                document_numbers = \
-                    raw_data_manager.get_document_numbers(data_file)
-                for document_number in document_numbers:
-                    data_tmp, document_idx, source_metadata_list, \
-                    nlp_metadata_list, text_list, xml_metadata_list, \
-                    source_system = \
-                        raw_data_manager.get_data_by_document_number(data_file,
-                                                                     document_number,
-                                                                     document_ctr,
-                                                                     self.i2e_version,
-                                                                     self.num_processes,
-                                                                     self.process_idx,
-                                                                     password)
-                    if bool(data_tmp):
-                        document_ctr, fail_ctr = \
-                            self._preprocess_document(raw_data_manager, data_tmp, 
-                                                      start_idx, document_idx,
-                                                      source_metadata_list,
-                                                      nlp_metadata_list,
-                                                      xml_metadata_list,
-                                                      text_list, source_system, 
-                                                      document_ctr, fail_ctr,
-                                                      password)
-            elif extension == 'xls' or extension == 'xlsx':
+            filename, extension = os.path.splitext(data_file)
+            formatting = self.static_data['raw_data_files'][data_file]['FORMATTING']
+            if extension.lower() in [ '.xls', '.xlsx' ]:
                 document_values = \
                     raw_data_manager.get_document_values(data_file)
                 for i in range(len(document_values)):
@@ -136,11 +115,35 @@ class Preprocessing_worker(object):
                                                       xml_metadata_list,
                                                       text_list,
                                                       source_system,
-                                                      document_ctr, 
+                                                      formatting, document_ctr, 
                                                       fail_ctr,
                                                       password)
+            elif extension.lower() in [ '.xml' ]:
+                document_numbers = \
+                    raw_data_manager.get_document_numbers(data_file)
+                for document_number in document_numbers:
+                    data_tmp, document_idx, source_metadata_list, \
+                    nlp_metadata_list, text_list, xml_metadata_list, \
+                    source_system = \
+                        raw_data_manager.get_data_by_document_number(data_file,
+                                                                     document_number,
+                                                                     document_ctr,
+                                                                     self.i2e_version,
+                                                                     self.num_processes,
+                                                                     self.process_idx,
+                                                                     password)
+                    if bool(data_tmp):
+                        document_ctr, fail_ctr = \
+                            self._preprocess_document(raw_data_manager, data_tmp, 
+                                                      start_idx, document_idx,
+                                                      source_metadata_list,
+                                                      nlp_metadata_list,
+                                                      xml_metadata_list,
+                                                      text_list, source_system, 
+                                                      formatting, document_ctr,
+                                                      fail_ctr, password)
             else:
-                print('Unrecognized file extension')
+                print('invalid file extension: ' + extension)
         return document_ctr, fail_ctr
         
     #

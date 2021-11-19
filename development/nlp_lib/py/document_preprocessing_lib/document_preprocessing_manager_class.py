@@ -44,7 +44,8 @@ class Document_preprocessing_manager(object):
         self.tokenizer = Tokenizer(static_data)
             
     #
-    def process_document(self, dynamic_data_manager, text, source_system):
+    def process_document(self, dynamic_data_manager, text, source_system,
+                         formatting):
         text = make_ascii(text)
         self.deidentifier.push_text(text)
         self.deidentifier.remove_phi()
@@ -52,9 +53,9 @@ class Document_preprocessing_manager(object):
         raw_text = text
         rpt_text = copy.copy(text)
         rpt_text = self.formatter.process_document(rpt_text, source_system)
+        self.pretokenizer.set_formatting(formatting)
         dynamic_data_manager, rpt_text = \
-            self.pretokenizer.process_document(dynamic_data_manager,
-                                               rpt_text)
+            self.pretokenizer.process_document(dynamic_data_manager, rpt_text)
         rpt_text = self.tokenizer.process_document(rpt_text)
         rpt_text = self.posttokenizer.process_document(rpt_text)
         rpt_text = self.named_entity_recognition.process_document(rpt_text)

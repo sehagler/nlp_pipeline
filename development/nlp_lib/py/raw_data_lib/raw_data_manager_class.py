@@ -22,26 +22,24 @@ from tool_lib.py.processing_tools_lib.variable_processing_tools \
 class Raw_data_manager(object):
     
     #
-    def __init__(self, static_data, server_manager, password):
+    def __init__(self, static_data, server_manager, multiprocessing_flg, 
+                 password):
         self.static_data = static_data
+        self.multiprocessing_flg = multiprocessing_flg
         self.xml_reader = Xml_reader(static_data, server_manager, password)
         self.xlsx_reader = Xlsx_reader(static_data, server_manager, password)
         self._read_raw_data_from_source_files()
         
     #
-    def _finish_document_data(self, document_data, document_ctr):
-        try:
-            multiprocessing_flg = \
-                self.static_data['multiprocessing']
-        except:
-            multiprocessing_flg = False
-        if multiprocessing_flg:
+    def _finish_document_data(self, data_file, document_data, document_ctr):
+        if self.multiprocessing_flg:
             document_idx = int(document_data['NLP_DOCUMENT_IDX'][0])
         else:
             document_idx = document_ctr
             document_data['NLP_DOCUMENT_IDX'] = []
             document_data['NLP_DOCUMENT_IDX'].append(document_idx)
-        if self.static_data['flags']['header_values']:
+        filename, extension = os.path.splitext(data_file)
+        if extension.lower() in [ '.xls', '.xlsx' ]:
             header_key = 'REPORT_HEADER'
             header_value_list = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
                                   'Karyotype', 'Clinical History',
@@ -49,9 +47,6 @@ class Raw_data_manager(object):
                                   'Microscopic Description',
                                   'Cytogenetic Analysis Summary',
                                   'Impressions and Recommendations' ]
-        else:
-            header_value_list = []
-        if len(header_value_list) > 1:
             raw_text = ''
             for header_value in header_value_list:
                 header_value = re.sub(':', '', header_value)
@@ -88,13 +83,9 @@ class Raw_data_manager(object):
     #
     def _partition_data_by_thread(self, data):
         num_processes = self.static_data['num_processes']
-        try:
-            multiprocessing_flg = self.static_data['multiprocessing']
-        except:
-            multiprocessing_flg = False
         partitioned_data = {}
         partitioned_data = {}
-        if multiprocessing_flg:
+        if self.multiprocessing_flg:
             for i in range(num_processes):
                 partitioned_data[i] = []
             for i in range(len(data)):
@@ -269,17 +260,17 @@ class Raw_data_manager(object):
         data = []
         data_datetimes = []
         for i in range(len(raw_data_files)):
-            filename, file_extension = os.path.splitext(raw_data_files[i])
-            if file_extension.lower() in [ '.xls', '.xlsx' ]:
+            filename, extension = os.path.splitext(raw_data_files[i])
+            if extension.lower() in [ '.xls', '.xlsx' ]:
                 data_tmp = self.xlsx_reader.read_files(raw_data_files_dict, 
                                                        raw_data_files[i])
                 data.append(data_tmp)
-            elif file_extension.lower() in [ '.xml' ]:
+            elif extension.lower() in [ '.xml' ]:
                 data_tmp = self.xml_reader.read_files(raw_data_files_dict, 
                                                       raw_data_files[i])
                 data.append(data_tmp)
             else:
-                print('invalid file extension: ' + file_extension)
+                print('invalid file extension: ' + extension)
         self.partitioned_data = \
             self._partition_data_by_thread(data)
     
@@ -298,7 +289,7 @@ class Raw_data_manager(object):
                     for key in keys:
                         document_data[key] = [ data[key][doc_idx] ]
         document_data, document_idx = \
-            self._finish_document_data(document_data, document_ctr)
+            self._finish_document_data(data_file, document_data, document_ctr)
             
         #
         source_metadata_list, nlp_metadata_list, text_list, \
@@ -330,7 +321,7 @@ class Raw_data_manager(object):
             self._get_data_by_document_value(data_file, document_value, 
                                              document_value_key)
         document_data, document_idx = \
-            self._finish_document_data(document_data, document_ctr)
+            self._finish_document_data(data_file, document_data, document_ctr)
         
         #
         source_metadata_list, nlp_metadata_list, text_list, \

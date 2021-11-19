@@ -25,13 +25,13 @@ root_dirs = [ 'X', 'Z', 'server' ]
 servers = [ 'development', 'production' ]
 
 #
-pipeline_mode_flgs = [ 'prequeries', 'postqueries' ]
+pipeline_mode_flgs = [ 'check_queries', 'training_sets', 'prequeries', 'postqueries' ]
 
 #
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[2]
+project_name = project_names[3]
 project_subdir = project_subdirs[1]
 root_dir = root_dirs[2]
 server = servers[0]
@@ -77,9 +77,11 @@ elif mode_flg == 'run':
     nlp_process = Nlp_processor()
     nlp_process.pipeline_manager(server, root_dir, project_subdir,
                                  project_name, password)
-    #nlp_process.fix_linguamatics_i2e_queries()
-    #nlp_process.generate_training_data_sets(password)
-    if pipeline_mode_flg == 'prequeries':
+    if pipeline_mode_flg == 'check_queries':
+        nlp_process.fix_linguamatics_i2e_queries()
+    elif pipeline_mode_flg == 'training_sets':
+        nlp_process.generate_training_data_sets(password)
+    elif pipeline_mode_flg == 'prequeries':
         nlp_process.prequeries(password)
     elif pipeline_mode_flg == 'postqueries':
         nlp_process.postqueries_preperformance()
