@@ -5,6 +5,7 @@ query:
   - phrase:
       findMatches: longestOnly
       id: phrase1
+      label: Extract
       view: {height: 682, width: 527}
       of:
       - alternative:

@@ -6,7 +6,7 @@ Created on Fri Oct 26 13:39:32 2018
 """
 
 #
-import csv
+#import csv
 import os
 import re
 
@@ -14,10 +14,7 @@ import re
 class Postprocessor_base(object):
     
     #
-    def __init__(self, static_data, data_file, query_name=None):
-        directory_manager = static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        data_file = os.path.join(data_dir, data_file)
+    def __init__(self, static_data, data_file, data_dict, query_name=None):
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
@@ -60,34 +57,14 @@ class Postprocessor_base(object):
             query_name = os.path.splitext(base)[0]
             query_name = query_name.upper()
         self.query_name = query_name
-        self.data_csv = {}
-        try:
-            with open(data_file,'r') as f:
-                csv_reader = csv.reader(f, delimiter=',')
-                line_count = 0
-                for row in csv_reader:
-                    if line_count > 0:
-                        #if row[1] not in self.data_csv.keys():
-                        #    self.data_csv[row[1]] = []
-                        #self.data_csv[row[1]].append(row[2:])
-                        if row[2] not in self.data_csv.keys():
-                            self.data_csv[row[2]] = []
-                        self.data_csv[row[2]].append(row[3:])
-                    line_count += 1
-        except:
-            pass
-        self.data_dict_list = []
-        if bool(self.data_csv):
-            self._build_data_dictionary()
+            
+        self.data_dict_list = data_dict
+            
         self._build_json_structure()
             
     #
     def _append_data(self, idx, key, value_list):
         if len(value_list) > 0:
-            try:
-                value_list = list(set(value_list))
-            except:
-                pass
             self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_value_key] \
                 = value_list
         self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_query_key] \
@@ -97,31 +74,6 @@ class Postprocessor_base(object):
         if key[1]:
             self.data_dict_list[idx][self.nlp_data_key][key][self.query_name][self.nlp_specimen_key] \
                 = key[1]
-    
-    #
-    def _build_data_dictionary(self):
-        for key in self.data_csv.keys():
-            document_dict = {}
-            document_dict['DOCUMENT_ID'] = key
-            document_frame = []
-            document_frame = self._build_document_frame(self.data_csv[key])
-            document_dict['DOCUMENT_FRAME'] = document_frame
-            self.data_dict_list.append(document_dict)
-            
-    #
-    def _build_document_frame(self, data_list):
-        document_frame = []
-        for item in data_list:
-            entry = []
-            entry.append(tuple([item[2], item[4]]))
-            entry.append(item[0])
-            entry.append(item[5])
-            document_frame.append(entry)
-            #num_elements = len(item) - 15
-            num_elements = len(item) - 11
-            for i in range(num_elements):
-                entry.append(item[6+i])
-        return(document_frame)
     
     #
     def _build_json_structure(self):
@@ -169,34 +121,19 @@ class Postprocessor_base(object):
     #
     def _extract_data_value(self, text_list):
         print('self._extract_data_value function not defined')
-        
-    #
-    def _extract_data_values(self):
-        for i in range(len(self.data_dict_list)):
-            for key in self.data_dict_list[i][self.nlp_data_key]:
-                try:
-                    text_list = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)]
-                except:
-                    text_list = []
-                value_list = self._extract_data_value(text_list)
-                self._append_data(i, key, value_list)
                 
     #
     def _extract_data_values(self):
         for i in range(len(self.data_dict_list)):
             for key in self.data_dict_list[i][self.nlp_data_key]:
-                try:
-                    keys = \
-                        self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys()
-                    element_keys = [k for k in keys if self.nlp_element_key in k]
-                    element_keys = list(set(element_keys))
-                    if len(element_keys) > 0:
-                        text_list = []
-                        for j in range(len(element_keys)):
-                            text_list.append(self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(j)])
-                except:
+                keys = \
+                    self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys()
+                element_keys = [k for k in keys if self.nlp_element_key in k]
+                element_keys = list(set(element_keys))
+                if len(element_keys) > 0:
                     text_list = []
+                    for j in range(len(element_keys)):
+                        text_list.append(self.data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(j)])
                 value_list = self._extract_data_value(text_list)
                 self._append_data(i, key, value_list)
     

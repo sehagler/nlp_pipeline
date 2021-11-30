@@ -12,6 +12,7 @@ Created on Fri Jan 04 10:50:12 2019
 """
 
 #
+import csv
 from i2e.wsapi.common import (ClientConnectionSettings, I2EConnection,
                               I2EServer, I2EUser, RequestMaker,
                               RequestConfiguration)
@@ -29,6 +30,8 @@ import urllib
 #
 from linguamatics_i2e_lib.py.check_queries \
     import QuerySetFixer, get_logger, yaml_constructor
+from linguamatics_i2e_lib.py.generate_gold \
+    import generate_gold
 from linguamatics_i2e_lib.py.linguamatics_i2e_file_manager_class \
     import Linguamatics_i2e_file_manager
 from linguamatics_i2e_lib.py.linguamatics_i2e_writer_class \
@@ -56,6 +59,30 @@ class Linguamatics_i2e_manager(object):
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
+        
+    #
+    def _build_data_dictionary(self):
+        for key in self.data_csv.keys():
+            document_dict = {}
+            document_dict['DOCUMENT_ID'] = key
+            document_frame = []
+            document_frame = self._build_document_frame(self.data_csv[key])
+            document_dict['DOCUMENT_FRAME'] = document_frame
+            self.data_dict_list.append(document_dict)
+            
+    #
+    def _build_document_frame(self, data_list):
+        document_frame = []
+        for item in data_list:
+            entry = []
+            entry.append(tuple([item[1], item[2]]))
+            entry.append(item[0])
+            entry.append(item[3])
+            document_frame.append(entry)
+            num_elements = len(item) - 5
+            for i in range(num_elements):
+                entry.append(item[4+i])
+        return(document_frame)
         
     #
     def _fix_queries(self, query_paths):
@@ -148,6 +175,41 @@ class Linguamatics_i2e_manager(object):
         download_path = os.path.normpath(local_destination) if local_destination is not None else os.path.normpath(os.getcwd())
         request_maker = RequestMaker(self.conn)
         self._folder_downloader(request_maker, folder, parent, download_path)
+        
+    #
+    def generate_csv_files(self):
+        directory_manager = self.static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+        for filename in os.listdir(data_dir):
+            filename_base, extension = os.path.splitext(filename)
+            if extension in [ '.xml' ]:
+                print('Converting ' + filename)
+                filename = data_dir + '/' + filename
+                generate_gold(filename, True)
+                
+    #
+    def generate_data_dict(self, data_file):
+        directory_manager = self.static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+        data_file = os.path.join(data_dir, data_file)
+        data_dict = {}
+        #try:
+        with open(data_file,'r') as f:
+            csv_reader = csv.reader(f, delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                if line_count > 0:
+                    if row[0] not in data_dict.keys():
+                        data_dict[row[0]] = []
+                    data_dict[row[0]].append(row[1:])
+                line_count += 1
+        #except:
+        #    pass
+        self.data_csv = data_dict
+        self.data_dict_list = []
+        if bool(self.data_csv):
+            self._build_data_dictionary()
+        return self.data_dict_list
         
     #
     def generate_i2e_resource_files(self, dynamic_data_manager):

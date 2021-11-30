@@ -25,24 +25,26 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/stage/stage_filter_query.i2qy, id: link1}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/stage/stage_filter_query.i2qy, id: link2}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link1.alternative1.col0
+  - title: Extract
+    id: link2.alternative1.col0
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col1
+    linkItemId: link2
+  - id: link2.alternative1.col1
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col2
+    linkItemId: link2
+  - id: link2.alternative1.col2
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col3
+    linkItemId: link2
+  - title: Neighborhood.
+    id: link2.alternative1.col3
     itemOptions: {}
-    linkItemId: link1
+    linkItemId: link2
   useOutputEditor: true
 creator: haglers

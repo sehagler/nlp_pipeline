@@ -16,8 +16,8 @@ from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, static_data, csv_file, diagnosis_reader):
-        Postprocessor_base.__init__(self, static_data, csv_file)
+    def __init__(self, static_data, csv_file, data_dict, diagnosis_reader):
+        Postprocessor_base.__init__(self, static_data, csv_file, data_dict)
         self.diagnosis_reader = diagnosis_reader
         self._extract_data_values()
         

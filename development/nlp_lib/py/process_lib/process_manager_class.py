@@ -50,8 +50,8 @@ class Process_manager(object):
         self.packaging_manager = Packaging_manager(static_data_manager,
                                                    performance_json_manager,
                                                    project_json_manager)
-        self.postprocessing_manager = Postprocessing_manager(static_data_manager,
-                                                             self.metadata_manager)
+        self.postprocessing_manager = \
+            Postprocessing_manager(static_data_manager, self.metadata_manager)
         
     #
     def _project_imports(self, static_data_manager):
@@ -112,7 +112,15 @@ class Process_manager(object):
     def postprocessor(self, cleanup_flg=True):
         if cleanup_flg:
             self.static_data['directory_manager'].cleanup_directory('postprocessing_data_out')
-        self.postprocessing_manager.set_data_dirs()
+        directory_manager = self.static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+        self.linguamatics_i2e_manager.generate_csv_files()
+        for filename in os.listdir(data_dir):
+            filename_base, extension = os.path.splitext(filename)
+            if extension in [ '.csv' ]:
+                data_dict = \
+                    self.linguamatics_i2e_manager.generate_data_dict(filename)
+                self.postprocessing_manager.select_postprocessor(filename, data_dict)
         self.postprocessing_manager.import_reports()
         self.postprocessing_manager.create_json_files()
         

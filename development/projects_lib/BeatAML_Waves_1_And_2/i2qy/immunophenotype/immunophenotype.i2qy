@@ -5,6 +5,7 @@ query:
   - alternative:
       findMatches: longestOnly
       id: alternative1
+      label: Extract
       of:
       - phrase:
           maxSentenceGap: -1

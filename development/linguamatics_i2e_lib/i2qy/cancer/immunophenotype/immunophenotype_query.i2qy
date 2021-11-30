@@ -4,6 +4,7 @@ query:
   document:
   - phrase:
       id: phrase1
+      label: Extract
       maxSentenceGap: -1
       maxWordGap: -1
       multiSentence: true

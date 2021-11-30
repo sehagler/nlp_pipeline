@@ -5,6 +5,7 @@ query:
   - phrase:
       findMatches: longestOnly
       id: phrase1
+      label: Extract
       of:
       - extramedullary
       - alternative:

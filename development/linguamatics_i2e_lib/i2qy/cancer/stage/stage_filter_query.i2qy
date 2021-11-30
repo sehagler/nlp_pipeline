@@ -21,13 +21,17 @@ query:
           - stage
 output:
   columns:
-  - id: alternative1.col0
+  - title: Extract
+    id: alternative1.col0
     itemOptions: {}
-  - id: alternative1.col1
+  - title: Cancer Stage
+    id: alternative1.col1
     itemOptions: {}
-  - id: alternative1.col2
+  - title: Cancer Type
+    id: alternative1.col2
     itemOptions: {}
-  - id: alternative1.col3
+  - title: Neighborhood.
+    id: alternative1.col3
     itemOptions: {}
   useOutputEditor: true
 creator: haglers

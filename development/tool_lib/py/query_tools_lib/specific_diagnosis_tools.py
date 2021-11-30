@@ -16,8 +16,8 @@ from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, static_data, data_file, diagnosis_reader):
-        Postprocessor_base.__init__(self, static_data, data_file,
+    def __init__(self, static_data, data_file, data_dict, diagnosis_reader):
+        Postprocessor_base.__init__(self, static_data, data_file, data_dict,
                                     query_name='SPECIFIC_DIAGNOSIS')
         self.diagnosis_reader = diagnosis_reader
         for i in range(len(self.data_dict_list)):

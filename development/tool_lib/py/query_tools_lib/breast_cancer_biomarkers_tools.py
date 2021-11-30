@@ -43,8 +43,8 @@ class Named_entity_recognition(Preprocessor_base):
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, static_data, data_file):
-        Postprocessor_base.__init__(self, static_data, data_file)
+    def __init__(self, static_data, data_file, data_dict):
+        Postprocessor_base.__init__(self, static_data, data_file, data_dict)
         self._extract_data_values()
         
     #
