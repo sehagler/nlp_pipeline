@@ -306,6 +306,11 @@ class Performance_data_manager(object):
                 #data_values.append(tuple(data_item))
                 data_values.extend(data_item)
         if len(data_values) > 0:
+            
+            ###
+            data_values = [x for x in data_values if x]
+            ###
+            
             data_values = list(set(data_values))
             data_values.sort()
             data_values_tuple = tuple(data_values)
@@ -350,6 +355,65 @@ class Performance_data_manager(object):
             if len(data_value) == 0:
                 data_value = None
         return data_value
+    
+    #
+    def _get_nlp_data(self, data_in, queries):
+        data_out = {}
+        for query in self.queries:
+            key = query[0]
+            sections = query[1]
+            query_name = query[2]
+            data_key = query[3]
+            mode_flg = query[4]
+            strip_flg = query[5]
+            data_out[key] = \
+                self._get_data_value(data_in, sections,
+                                     query_name + '_' + self.nlp_value_key,
+                                     data_key, mode_flg=mode_flg)
+            if strip_flg and data_out[key] is not None:
+                data_out[key] = data_out[key][0]
+        del_keys = []
+        for key in data_out:
+            if data_out[key] is None:
+                del_keys.append(key)
+        for key in del_keys:
+            del data_out[key]  
+        if not data_out:
+            data_out = None
+        return data_out
+    
+    #
+    def _get_nlp_values(self, nlp_data, data_json, identifier_list):
+        nlp_values = data_json
+        for identifier in identifier_list:
+            if identifier not in nlp_values.keys():
+                nlp_values[identifier] = None
+        return nlp_values
+    
+    #
+    def _get_performance(self, csn, nlp_values, nlp_datum_key, 
+                         validation_data, validation_datum_key):
+        data_out = nlp_values[csn]
+        if data_out is not None:
+            if nlp_datum_key in data_out.keys():
+                nlp_value = data_out[nlp_datum_key]
+            else:
+                nlp_value = None
+        else:
+            nlp_value = None
+        nlp_value = self._nlp_to_tuple(nlp_value)
+        column_labels = validation_data[0]
+        for i in range(1,len(validation_data)):
+            item = validation_data[i]
+            validation_idx = \
+                [j for j in range(len(column_labels)) if column_labels[j] == validation_datum_key][0]
+            if item[2] == csn:
+                validation_value = \
+                    self._process_validation_item(item[validation_idx])
+        validation_value = self._validation_to_tuple(validation_value)
+        performance, flg = \
+            self._compare_data_values(nlp_value, validation_value)
+        return performance
     
     #
     def _get_validation_csn_list(self, validation_data):
@@ -441,17 +505,11 @@ class Performance_data_manager(object):
         return metadata_keys, metadata_dict_dict
     
     #
-    def _read_nlp_value_data(self, nlp_data, validation_data):
-        validation_csn_list = \
-            self._get_validation_csn_list(validation_data)
-        nlp_values = {}
-        for csn in validation_csn_list:
-            data_out = None
-            for item in nlp_data:
-                if nlp_data[item][self.metadata_key]['SOURCE_SYSTEM_DOCUMENT_ID'] == csn:
-                    data_out = self._get_nlp_data(nlp_data[item][self.nlp_data_key])
-            nlp_values[csn] = data_out
-        return nlp_values
+    def _read_nlp_value(self, nlp_data, data_json, key, identifier):
+        data_out = self._get_nlp_data(nlp_data[key][self.nlp_data_key],
+                                      self.queries)
+        data_json[identifier] = data_out
+        return data_json
     
     #
     def _unique(self, lst):
@@ -508,9 +566,17 @@ class Performance_data_manager(object):
                 
     #
     def calculate_performance(self):
-        validation_data = self._read_validation_data()
-        nlp_values = self._read_nlp_value_data(self.nlp_data, validation_data)
+        data_json = {}
+        for key in self.nlp_data.keys():
+            identifier = \
+                self.nlp_data[key][self.metadata_key][self.identifier_key]
+            if identifier in self.identifier_list:
+                data_json = self._read_nlp_value(self.nlp_data, data_json,
+                                                 key, identifier)
+        nlp_values = self._get_nlp_values(self.nlp_data, data_json, 
+                                          self.identifier_list)
         self.performance_statistics_dict = {}
+        validation_data = self._read_validation_data()
         self._process_performance(nlp_values, validation_data)
         return self.performance_statistics_dict
         

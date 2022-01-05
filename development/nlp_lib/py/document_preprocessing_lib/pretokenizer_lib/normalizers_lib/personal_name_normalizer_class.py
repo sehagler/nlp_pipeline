@@ -6,7 +6,7 @@ Created on Fri Jul 23 12:56:51 2021
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #

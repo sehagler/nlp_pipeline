@@ -9,7 +9,7 @@ Created on Wed Jun 16 12:58:14 2021
 import re
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #

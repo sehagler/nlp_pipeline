@@ -15,14 +15,14 @@ query:
             of:
             - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link1}
             - link:
-                path: ../breast_cancer_biomarkers_names.i2qy
+                path: ../../../tools/breast_cancer_biomarkers_names.i2qy
                 quantifier: {minimum: 0, maximum: 0}
             - word: {text: ':', showInDefaultOutput: false}
         - link: {path: ../breast_cancer_biomarkers_status.i2qy, id: link2}
         - ':'
         - link: {path: ../breast_cancer_biomarkers_score.i2qy, id: link12}
       - link:
-          path: ../breast_cancer_biomarkers_names.i2qy
+          path: ../../../tools/breast_cancer_biomarkers_names.i2qy
           quantifier: {minimum: 0, maximum: 0}
       - phrase:
           quantifier: {minimum: 0, maximum: 1}

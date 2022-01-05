@@ -9,7 +9,7 @@ Created on Tue May 12 17:04:28 2020
 import re
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class\
+from nlp_lib.py.base_lib.preprocessor_base_class\
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import amend, clinician, clinician_reviewed, history, patient, review_item, s

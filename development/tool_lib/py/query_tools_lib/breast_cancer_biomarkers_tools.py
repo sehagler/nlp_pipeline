@@ -6,12 +6,13 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
+import os
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import article, be, s
@@ -20,7 +21,7 @@ from tool_lib.py.processing_tools_lib.text_processing_tools \
 class Named_entity_recognition(Preprocessor_base):
     
     #
-    def process_biomarkers(self):
+    def run_preprocessor(self):
         self._general_command('(?i)estrogen and progesterone( receptor' + s() + ')?',
                               {None : 'ER and PR'})
         self._general_command('(?i)progesterone and estrogen( receptor' + s() + ')?',
@@ -41,50 +42,55 @@ class Named_entity_recognition(Preprocessor_base):
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file, data_dict):
-        Postprocessor_base.__init__(self, static_data, data_file, data_dict)
-        self._extract_data_values()
-        
+
     #
     def _extract_data_value(self, text_list):
-        manual_review_str = 'MANUAL_REVIEW'
+        biomarker_name_list = [ 'ER', 'HER2', 'Ki67', 'PR' ]
+        blocks_text_list = text_list[1]
+        text_list = text_list[0]
         if len(text_list) > 0:
             biomarker_name_text_list = text_list[1]
             biomarker_status_text_list = text_list[2]
             biomarker_score_text_list = text_list[3]
             biomarker_percentage_text_list = text_list[4]
-            context_text_list = text_list[5]
+            neighborhood_text_list = text_list[5]
+            biomarker_name_offset_list = text_list[6]
         else:
             biomarker_name_text_list = []
             biomarker_status_text_list = []
             biomarker_score_text_list = []
             biomarker_percentage_text_list = []
-            context_text_list = []
-        contexts = []
-        for i in range(len(context_text_list)):
-            contexts.append(context_text_list[i])
-        unique_contexts = list(set(contexts))
+            neighborhood_text_list = []
+            biomarker_name_offset_list = []
+        if len(blocks_text_list) > 0:
+            blocks_biomarker_block_text_list = blocks_text_list[1]
+            blocks_biomarker_name_text_list = blocks_text_list[2]
+            blocks_neighborhood_text_list = blocks_text_list[3]
+            blocks_biomarker_name_offset_list = blocks_text_list[4]
+        else:
+            blocks_biomarker_block_text_list = []
+            blocks_biomarker_name_text_list = []
+            blocks_neighborhood_text_list = []
+            blocks_biomarker_name_offset_list = []
+        neighborhoods = []
+        for i in range(len(neighborhood_text_list)):
+            neighborhoods.append(neighborhood_text_list[i])
+        unique_neighborhoods = list(set(neighborhoods))
+        biomarker_dict_list = []
         er_value_list = []
         her2_value_list = []
         ki67_value_list = []
         pr_value_list = []
-        for context in unique_contexts:
-            er_status_text_list = []
-            er_score_text_list = []
-            er_percentage_text_list = []
-            her2_status_text_list = []
-            her2_score_text_list = []
-            her2_percentage_text_list = []
-            ki67_status_text_list = []
-            ki67_score_text_list = []
-            ki67_percentage_text_list = []
-            pr_status_text_list = []
-            pr_score_text_list = []
-            pr_percentage_text_list = []
-            for i in range(len(context_text_list)):
-                if context_text_list[i] == context:
+        for neighborhood in unique_neighborhoods:
+            biomarker_dict = {}
+            for biomarker_name in biomarker_name_list:
+                biomarker_dict[biomarker_name] = {}
+                biomarker_dict[biomarker_name]['STATUS'] = []
+                biomarker_dict[biomarker_name]['SCORE'] = []
+                biomarker_dict[biomarker_name]['PERCENTAGE'] = []
+                biomarker_dict[biomarker_name]['BLOCK'] = []
+            for i in range(len(neighborhood_text_list)):
+                if neighborhood_text_list[i] == neighborhood:
                     biomarker_name = biomarker_name_text_list[i]
                     biomarker_status = \
                         self._process_status(biomarker_name,
@@ -93,106 +99,76 @@ class Postprocessor(Postprocessor_base):
                         self._process_score(biomarker_score_text_list[i])
                     biomarker_percentage = \
                         self._process_percentage(biomarker_percentage_text_list[i])
-                    if biomarker_name == 'ER':
-                        if len(biomarker_status) > 0:
-                            er_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score) > 0:
-                            er_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage) > 0:
-                            er_percentage_text_list.append(biomarker_percentage.lower())
-                    elif biomarker_name == 'HER2':
-                        if len(biomarker_status) > 0:
-                            her2_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score) > 0:
-                            her2_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage) > 0:
-                            her2_percentage_text_list.append(biomarker_percentage.lower())
-                    elif biomarker_name == 'Ki67':
-                        if len(biomarker_status) > 0:
-                            ki67_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score) > 0:
-                            ki67_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage) > 0:
-                            ki67_percentage_text_list.append(biomarker_percentage.lower())
-                    elif biomarker_name == 'PR':
-                        if len(biomarker_status) > 0:
-                            pr_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score) > 0:
-                            pr_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage) > 0:
-                            pr_percentage_text_list.append(biomarker_percentage.lower())
-                er_status_text_list = list(set(er_status_text_list))
-                er_score_text_list = list(set(er_score_text_list))
-                er_percentage_text_list = list(set(er_percentage_text_list))
-                er_value_list.append((er_status_text_list, er_score_text_list,
-                                      er_percentage_text_list, context))
-                her2_status_text_list = list(set(her2_status_text_list))
-                her2_score_text_list = list(set(her2_score_text_list))
-                her2_percentage_text_list = list(set(her2_percentage_text_list))
-                if len(her2_status_text_list) > 1:
-                    her2_status_text_list_tmp = [ x for x in her2_status_text_list \
+                    biomarker_offset = biomarker_name_offset_list[i][1]
+                    biomarker_block = ''
+                    for j in range(len(blocks_biomarker_name_offset_list)):
+                        blocks_biomarker_offset = \
+                            blocks_biomarker_name_offset_list[j][2]
+                        if biomarker_offset == blocks_biomarker_offset:
+                            biomarker_block = blocks_biomarker_block_text_list[j]
+                    if len(biomarker_status) > 0:
+                        biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                    if len(biomarker_score) > 0:
+                        biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
+                    if len(biomarker_percentage) > 0:
+                        biomarker_dict[biomarker_name]['PERCENTAGE'].append(biomarker_percentage.lower())
+                    if len(biomarker_block) > 0:
+                        biomarker_dict[biomarker_name]['BLOCK'].append(biomarker_block.upper())
+                for biomarker_name in biomarker_name_list:
+                    biomarker_dict[biomarker_name]['STATUS'] = \
+                        list(set(biomarker_dict[biomarker_name]['STATUS']))
+                    biomarker_dict[biomarker_name]['SCORE'] = \
+                        list(set(biomarker_dict[biomarker_name]['SCORE']))
+                    biomarker_dict[biomarker_name]['PERCENTAGE'] = \
+                        list(set(biomarker_dict[biomarker_name]['PERCENTAGE']))
+                    biomarker_dict[biomarker_name]['BLOCK'] = \
+                        list(set(biomarker_dict[biomarker_name]['BLOCK']))
+                    biomarker_dict[biomarker_name]['NEIGHBORHOOD'] = \
+                        neighborhood
+                if len(biomarker_dict['HER2']['STATUS']) > 1:
+                    her2_status_text_list_tmp = [ x for x in \
+                                                  biomarker_dict['HER2']['STATUS'] \
                                                   if x != 'equivocal' ]
                     if len(her2_status_text_list_tmp) > 0:
-                        her2_status_text_list = her2_status_text_list_tmp
-                her2_value_list.append((her2_status_text_list, 
-                                        her2_score_text_list,
-                                        her2_percentage_text_list, context))
-                ki67_status_text_list = list(set(ki67_status_text_list))
-                ki67_score_text_list = list(set(ki67_score_text_list))
-                ki67_percentage_text_list = list(set(ki67_percentage_text_list))
-                ki67_value_list.append((ki67_status_text_list,
-                                        ki67_score_text_list,
-                                        ki67_percentage_text_list, context))
-                pr_status_text_list = list(set(pr_status_text_list))
-                pr_score_text_list = list(set(pr_score_text_list))
-                pr_percentage_text_list = list(set(pr_percentage_text_list))
-                pr_value_list.append((pr_status_text_list, pr_score_text_list,
-                                      pr_percentage_text_list, context))
+                        biomarker_dict['HER2']['STATUS'] = \
+                            her2_status_text_list_tmp
+                biomarker_dict_list.append(biomarker_dict)
         value_dict_list = []
-        for value in er_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
+        for biomarker_dict in biomarker_dict_list:
+            for biomarker_name in biomarker_name_list:
                 value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['ER_STATUS'] = value[0]
-                if len(value[1]) > 0: value_dict['ER_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['ER_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
-        for value in her2_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
-                value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['HER2_STATUS'] = value[0]
-                if len(value[1]) > 0: value_dict['HER2_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['HER2_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
-        for value in ki67_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
-                value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['KI67_STATUS'] = value[0]
-                #if len(value[1]) > 0: value_dict['KI67_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['KI67_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
-        for value in pr_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
-                value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['PR_STATUS'] = value[0]
-                if len(value[1]) > 0: value_dict['PR_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['PR_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
+                if len(biomarker_dict[biomarker_name]['BLOCK']) > 0 or \
+                   len(biomarker_dict[biomarker_name]['PERCENTAGE']) > 0 or \
+                   len(biomarker_dict[biomarker_name]['SCORE']) > 0 or \
+                   len(biomarker_dict[biomarker_name]['STATUS']) > 0:
+                    if len(biomarker_dict[biomarker_name]['BLOCK']) > 1 or \
+                       len(biomarker_dict[biomarker_name]['PERCENTAGE']) > 1 or \
+                       len(biomarker_dict[biomarker_name]['SCORE']) > 1 or \
+                       len(biomarker_dict[biomarker_name]['STATUS']) > 1:
+                           biomarker_dict[biomarker_name]['BLOCK'] = \
+                               self.manual_review
+                           biomarker_dict[biomarker_name]['PERCENTAGE'] = \
+                               self.manual_review
+                           biomarker_dict[biomarker_name]['SCORE'] = \
+                               self.manual_review
+                           biomarker_dict[biomarker_name]['STATUS'] = \
+                               self.manual_review
+                    if len(biomarker_dict[biomarker_name]['STATUS']) > 0:
+                        value_dict[ biomarker_name + '_STATUS'] = \
+                            biomarker_dict[biomarker_name]['STATUS']
+                    if biomarker_name != 'Ki67' and \
+                       len(biomarker_dict[biomarker_name]['SCORE']) > 0:
+                        value_dict[ biomarker_name + '_SCORE'] = \
+                            biomarker_dict[biomarker_name]['SCORE']
+                    if len(biomarker_dict[biomarker_name]['PERCENTAGE']) > 0:
+                        value_dict[ biomarker_name + '_PERCENTAGE'] = \
+                            biomarker_dict[biomarker_name]['PERCENTAGE']
+                    if len(biomarker_dict[biomarker_name]['BLOCK']) > 0:
+                        value_dict[ biomarker_name + '_BLOCK'] = \
+                            biomarker_dict[biomarker_name]['BLOCK']
+                    value_dict[ biomarker_name + '_NEIGHBORHOOD'] = \
+                            biomarker_dict[biomarker_name]['NEIGHBORHOOD']
+                    value_dict_list.append(value_dict)
         return value_dict_list
     
     #
@@ -322,12 +298,9 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i); see ISH results below', {None : ''})
         
     #
-    def process_text(self, text):
-        self.push_text(text)
+    def run_preprocessor(self):
         self._process_CK56()
         self._process_ER()
         self._process_HER2()
         self._process_PR()
         self._remove_extraneous_text()
-        text = self.pull_text()
-        return text

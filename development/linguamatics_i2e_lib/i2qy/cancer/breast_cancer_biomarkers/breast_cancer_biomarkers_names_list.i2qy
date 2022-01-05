@@ -15,7 +15,7 @@ query:
                 macroPt: determiner
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
-        - link: {path: breast_cancer_biomarkers_names.i2qy}
+        - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
         - alternative:
             quantifier: {minimum: 1, maximum: none}
             view: {layout: list}
@@ -76,7 +76,7 @@ query:
                 macroPt: determiner
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
-        - link: {path: breast_cancer_biomarkers_names.i2qy, showInDefaultOutput: false}
+        - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:

@@ -6,24 +6,11 @@ Created on Thu Jun 17 11:46:26 2021
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
-from tool_lib.py.query_tools_lib.blasts_tools \
-    import Named_entity_recognition \
-        as Named_entity_recognition_blasts
-from tool_lib.py.query_tools_lib.breast_cancer_biomarkers_tools \
-    import Named_entity_recognition \
-        as Named_entity_recognition_breast_cancer_biomarkers
-from tool_lib.py.query_tools_lib.cancer_tools \
-    import Named_entity_recognition as Named_entity_recognition_cancer
-from tool_lib.py.query_tools_lib.histological_grade_tools \
-    import Named_entity_recognition \
-        as Named_entity_recognition_histological_grade
-from tool_lib.py.query_tools_lib.karyotype_tools \
-    import Named_entity_recognition as Named_entity_recognition_karyotype
-from tool_lib.py.query_tools_lib.smoking_tools \
-    import Named_entity_recognition as Named_entity_recognition_smoking
+from tool_lib.py.registry_lib.named_entity_recognition_registry_class \
+    import Named_entity_recognition_registry
 
 #
 class Named_entity_recognition(Preprocessor_base): 
@@ -31,18 +18,9 @@ class Named_entity_recognition(Preprocessor_base):
     #
     def __init__(self, static_data):
         Preprocessor_base.__init__(self, static_data)
-        self.named_entity_recognition_blasts = \
-            Named_entity_recognition_blasts(self.static_data)
-        self.named_entity_recognition_breast_cancer_biomarkers = \
-            Named_entity_recognition_breast_cancer_biomarkers(self.static_data)        
-        self.named_entity_recognition_cancer = \
-            Named_entity_recognition_cancer(self.static_data)
-        self.named_entity_recognition_histological_grade = \
-            Named_entity_recognition_histological_grade(self.static_data)
-        self.named_entity_recognition_karyotype = \
-            Named_entity_recognition_karyotype(self.static_data)
-        self.named_entity_recognition_smoking = \
-            Named_entity_recognition_smoking(self.static_data)
+        self.named_entity_recognition_registry = \
+            Named_entity_recognition_registry(self.static_data)
+        self.named_entity_recognition_registry.create_preprocessors()
             
     #
     def _process_regular_initialisms(self):
@@ -82,24 +60,7 @@ class Named_entity_recognition(Preprocessor_base):
         self.text = text
         self._normalize_whitespace()
         self._process_regular_initialisms()
-        self.named_entity_recognition_blasts.push_text(self.text)
-        self.named_entity_recognition_blasts.process_biomarkers()
-        self.text = self.named_entity_recognition_blasts.pull_text()
-        self.named_entity_recognition_breast_cancer_biomarkers.push_text(self.text)
-        self.named_entity_recognition_breast_cancer_biomarkers.process_biomarkers()
-        self.text = self.named_entity_recognition_breast_cancer_biomarkers.pull_text()
-        self.named_entity_recognition_cancer.push_text(self.text)
-        self.named_entity_recognition_cancer.process_abbreviations()
-        self.named_entity_recognition_cancer.process_initialisms()
-        self.text = self.named_entity_recognition_cancer.pull_text()
-        self.named_entity_recognition_histological_grade.push_text(self.text)
-        self.named_entity_recognition_histological_grade.process_msbr()
-        self.text = self.named_entity_recognition_histological_grade.pull_text()
-        self.named_entity_recognition_karyotype.push_text(self.text)
-        self.named_entity_recognition_karyotype.process_karyotype()
-        self.text = self.named_entity_recognition_karyotype.pull_text()
-        self.named_entity_recognition_smoking.push_text(self.text)
-        self.named_entity_recognition_smoking.process_initialisms()
-        self.text = self.named_entity_recognition_smoking.pull_text()
+        self.text = \
+            self.named_entity_recognition_registry.run_registry(self.text)
         self._normalize_whitespace()
         return self.text

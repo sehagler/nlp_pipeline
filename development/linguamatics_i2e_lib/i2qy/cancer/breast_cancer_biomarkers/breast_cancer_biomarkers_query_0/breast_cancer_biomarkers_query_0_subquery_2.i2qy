@@ -32,7 +32,7 @@ query:
           - phrase:
               quantifier: {minimum: 0, maximum: 0}
               of:
-              - link: {path: ../breast_cancer_biomarkers_names.i2qy}
+              - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
               where:
               - link:
                   path: ../breast_cancer_biomarkers_smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy

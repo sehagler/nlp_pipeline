@@ -10,19 +10,15 @@ import re
 import statistics
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file, data_dict):
-        Postprocessor_base.__init__(self, static_data, data_file, data_dict)
-        self._extract_data_values()
         
     #
     def _extract_data_value(self, text_list):
+        text_list = text_list[0]
         if len(text_list) > 0:
             smoking_products_text_list = text_list[0]
             context_text_list = text_list[1]

@@ -70,14 +70,14 @@ class Output_manager(object):
     def _get_data_dict_lists(self):
         data_dict_lists = []
         for data_dict_class in self.data_dict_classes_list:
-            data_dict_lists.append(data_dict_class.get_data_dict_list())
+            data_dict_lists.append(data_dict_class.pull_data_dict_list())
         return data_dict_lists
 
     #
     def _get_data_dict_base_keys_list(self):
         data_dict_base_keys = []
         for data_dict_class in self.data_dict_classes_list:
-            data_dict_base_keys.append(data_dict_class.get_data_dict_base_keys_list())
+            data_dict_base_keys.append(data_dict_class.pull_data_dict_base_keys_list())
         return data_dict_base_keys
 
     #
@@ -157,10 +157,13 @@ class Output_manager(object):
             merged_dict['DOCUMENT_ID'] = document_id
             merged_dict[self.nlp_data_key] = {}
             for data_dict_class in self.data_dict_classes_list:
-                data_dict_list = data_dict_class.get_data_dict_list()
+                data_dict_list = data_dict_class.pull_data_dict_list()
                 for data_dict in data_dict_list:
                     if data_dict['DOCUMENT_ID'] == document_id:
-                        data_keys_x = data_dict[self.nlp_data_key].keys()
+                        if isinstance(data_dict[self.nlp_data_key], dict):
+                            data_keys_x = list(data_dict[self.nlp_data_key].keys())
+                        else:
+                            data_keys_x = []
                         for data_key in data_keys_x:
                             if str(data_key) not in merged_dict[self.nlp_data_key].keys():
                                 merged_dict[self.nlp_data_key][str(data_key)] = {}

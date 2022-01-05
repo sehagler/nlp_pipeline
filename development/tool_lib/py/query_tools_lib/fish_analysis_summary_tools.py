@@ -9,25 +9,17 @@ Created on Fri Feb 01 13:28:54 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self,static_data, data_file, data_dict):
-        Postprocessor_base.__init__(self, static_data, data_file, data_dict,
-                                    query_name='FISH_ANALYSIS_SUMMARY')
-        for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i][self.nlp_data_key] = {}
-        self._create_data_structure('FISH ANALYSIS SUMMARY \d')
-        self._extract_data_values()
-        
+ 
     #
     def _extract_data_value(self, text_list):
+        text_list = text_list[0]
         if len(text_list) > 0:
             text_list = text_list[0]
         entry_text = text_list[0]
@@ -45,11 +37,17 @@ class Postprocessor(Postprocessor_base):
             value_dict_list.append(value_dict)
         return value_dict_list
     
+    #
+    def run_postprocessor(self):
+        Postprocessor_base.run_postprocessor(self,
+                                             query_name='FISH_ANALYSIS_SUMMARY',
+                                             section_name='FISH ANALYSIS SUMMARY \d')
+    
 #
 class Summarization(Preprocessor_base):
     
     #
-    def remove_extraneous_text(self):
+    def run_preprocessor(self):
         self._clear_command_list()
         self._general_command('(?i)[\n\s]+by FISH', {None : ''})
         self._process_command_list()

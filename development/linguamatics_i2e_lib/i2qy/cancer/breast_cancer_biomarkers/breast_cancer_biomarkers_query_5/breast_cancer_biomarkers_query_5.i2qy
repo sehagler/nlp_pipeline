@@ -265,7 +265,7 @@ query:
                     - with
                     - within
                     - without
-          - link: {path: ../breast_cancer_biomarkers_names.i2qy}
+          - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
 output:
   columns:
   - id: link6.link1.phrase1

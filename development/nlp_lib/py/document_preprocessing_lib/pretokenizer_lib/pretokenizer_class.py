@@ -6,7 +6,7 @@ Created on Fri Jun 11 16:41:11 2021
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.personal_name_normalizer_class \
     import Personal_name_normalizer

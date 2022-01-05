@@ -9,25 +9,17 @@ Created on Fri Mar 08 12:42:14 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file, data_dict):
-        Postprocessor_base.__init__(self, static_data, data_file, data_dict,
-                                    query_name='ANTIBODIES_TESTED')
-        for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i][self.nlp_data_key] = {}
-        self._create_data_structure('ANTIBODIES TESTED \d')
-        self._extract_data_values()
-                    
+
     #
     def _extract_data_value(self, text_list):
+        text_list = text_list[0]
         if len(text_list) > 0:
             text_list = text_list[0]
         value_list = text_list
@@ -51,6 +43,12 @@ class Postprocessor(Postprocessor_base):
             value_dict['ANTIBODIES_TESTED'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
+    
+    #
+    def run_postprocessor(self):
+        Postprocessor_base.run_postprocessor(self,
+                                             query_name='ANTIBODIES_TESTED',
+                                             section_name='ANTIBODIES TESTED \d')
 
 #
 class Posttokenizer(Preprocessor_base):

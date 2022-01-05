@@ -9,9 +9,9 @@ Created on Wed Jun  5 14:55:53 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -20,9 +20,6 @@ class Postprocessor(Postprocessor_base):
     #
     def __init__(self, static_data, data_file):
         Postprocessor_base.__init__(self, static_data, data_file)
-        #self._find_text_instances()
-        #self._remove_commas_from_extracted_text()
-        #self._atomize_tnm_stage()
   
     #
     def _atomize_tnm_stage(self):
@@ -73,7 +70,7 @@ class Postprocessor(Postprocessor_base):
 class Summarization(Preprocessor_base):
     
     #
-    def process_tnm_staging(self):
+    def _process_tnm_staging(self):
         self._clear_command_list()
         text_list = []
         text_list.append('(?i)(pathologic( tumor)?|TNM) stag(e|ing)')
@@ -83,18 +80,24 @@ class Summarization(Preprocessor_base):
         self._process_command_list()
         
     #
-    def remove_extraneous_text(self):
+    def _remove_extraneous_text(self):
         self._clear_command_list()
         self._general_command('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', {None : ''})
         self._general_command('(?i)(\( )?AJCC( \))?', {None : ''})
         self._process_command_list()
     
     #
-    def remove_tnm_staging(self):
+    def _remove_tnm_staging(self):
         self._general_command('(?i) \( pTNM \)', {None : ''})
         self._general_command('(?i) \( pT \)', {None : ''})
         self._general_command('(?i) \( pN \)', {None : ''})
         self._general_command('(?i) \( p?M \)', {None : ''})
+        
+    #
+    def run_preprocessor(self):
+        self._process_tnm_staging()
+        self._remove_extraneous_text()
+        self._remove_tnm_staging()
 
 #
 def m_stage_template():

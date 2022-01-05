@@ -10,7 +10,7 @@ from word2number import w2n
 import re
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.date_tools import Tokenizer as Tokenizer_date
 from tool_lib.py.processing_tools_lib.text_processing_tools import s

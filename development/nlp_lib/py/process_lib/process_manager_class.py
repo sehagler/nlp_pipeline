@@ -17,11 +17,10 @@ import time
 #
 from nlp_lib.py.dynamic_data_lib.dynamic_data_manager_class \
     import Dynamic_data_manager
+from nlp_lib.py.output_lib.output_manager_class import Output_manager
 from nlp_lib.py.packaging_lib.packaging_manager_class import Packaging_manager
 from nlp_lib.py.process_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
-from nlp_lib.py.postprocessing_lib.postprocessing_manager_class \
-    import Postprocessing_manager
 from nlp_lib.py.raw_data_lib.raw_data_manager_class import Raw_data_manager
 
 #
@@ -47,11 +46,16 @@ class Process_manager(object):
                          performance_json_manager, project_json_manager,
                          password):
         self.dynamic_data_manager = Dynamic_data_manager()
+        self.static_data = static_data_manager.get_static_data()
+        self.output_manager = Output_manager(self.static_data, 
+                                             self.metadata_manager)
+        directory_manager = self.static_data['directory_manager']
+        self.output_manager.set_data_dirs(directory_manager)
         self.packaging_manager = Packaging_manager(static_data_manager,
                                                    performance_json_manager,
                                                    project_json_manager)
-        self.postprocessing_manager = \
-            Postprocessing_manager(static_data_manager, self.metadata_manager)
+        self.postprocessor_registry = \
+            Postprocessor_registry(static_data_manager, self.metadata_manager)
         
     #
     def _project_imports(self, static_data_manager):
@@ -60,12 +64,15 @@ class Process_manager(object):
         try:
             import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                          project_name.lower() + \
-                         '_postprocessor_class import ' + project_name + \
-                         '_postprocessor as Postprocessing_manager'
+                         '_postprocessor_registry_class import ' + project_name + \
+                         '_postprocessor_registry as Postprocessor_registry'
             exec(import_cmd, globals())
-            print('Postprocessor: ' + project_name + '_postprocessor')
+            print('Postprocessor_registry: ' + project_name + '_postprocessor_registry')
         except Exception as e:
+            import_cmd = 'from tool_lib.py.registry_lib.postprocessor_registry_class import Postprocessor_registry'
+            exec(import_cmd, globals())
             print(e)
+            print('Postprocessor_registry: Postprocessor_registry')
         
     #
     def download_queries(self):
@@ -118,11 +125,22 @@ class Process_manager(object):
         for filename in os.listdir(data_dir):
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
+                self.postprocessor_registry.create_postprocessor(filename)
+        for filename in os.listdir(data_dir):
+            filename_base, extension = os.path.splitext(filename)
+            if extension in [ '.csv' ]:
                 data_dict = \
                     self.linguamatics_i2e_manager.generate_data_dict(filename)
-                self.postprocessing_manager.select_postprocessor(filename, data_dict)
-        self.postprocessing_manager.import_reports()
-        self.postprocessing_manager.create_json_files()
+                self.postprocessor_registry.push_data_dict(filename, data_dict)
+        self.postprocessor_registry.run_registry()
+        postprocessor_registry = \
+            self.postprocessor_registry.pull_postprocessor_registry()
+        for key in postprocessor_registry.keys():
+            self.output_manager.append(postprocessor_registry[key])
+        self.output_manager.merge_data_dict_lists()
+        self.output_manager.include_metadata()
+        self.output_manager.include_text()
+        self.output_manager.create_json_files()
         
     #
     def preindexer(self):

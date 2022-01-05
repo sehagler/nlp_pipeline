@@ -6,7 +6,7 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
 
 #
@@ -71,7 +71,7 @@ class Named_entity_recognition(Preprocessor_base):
         pass
         
     #
-    def process_initialisms(self):
+    def run_preprocessor(self):
         self._process_irregular_initialisms()
         self._process_regular_initialisms()
 

@@ -6,28 +6,12 @@ Created on Thu Jun 17 12:29:58 2021
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import article, be, note_label, s, specimen_label
-from tool_lib.py.query_tools_lib.blasts_tools \
-    import Summarization as Summarization_blasts
-from tool_lib.py.query_tools_lib.breast_cancer_biomarkers_tools \
-    import Summarization as Summarization_breast_cancer_biomarkers
-from tool_lib.py.query_tools_lib.ecog_tools \
-    import Summarization as Summarization_ecog
-from tool_lib.py.query_tools_lib.fish_analysis_summary_tools \
-    import Summarization as Summarization_fish_analysis_summary
-from tool_lib.py.query_tools_lib.histological_grade_tools \
-    import Summarization as Summarization_histological_grade
-from tool_lib.py.query_tools_lib.immunophenotype_tools \
-    import Summarization as Summarization_immunophenotype
-from tool_lib.py.query_tools_lib.serial_number_tools \
-    import Summarization as Summarization_serial_number
-from tool_lib.py.query_tools_lib.smoking_tools \
-    import Summarization as Summarization_smoking
-from tool_lib.py.query_tools_lib.tnm_stage_tools \
-    import Summarization as Summarization_tnm_stage
+from tool_lib.py.registry_lib.summarization_registry_class \
+    import Summarization_registry
 
 #
 class Summarization(Preprocessor_base):
@@ -35,23 +19,8 @@ class Summarization(Preprocessor_base):
     #
     def __init__(self, static_data):
         Preprocessor_base.__init__(self, static_data)
-        self.summarization_blasts = \
-            Summarization_blasts(self.static_data)
-        self.summarization_breast_cancer_biomarkers = \
-            Summarization_breast_cancer_biomarkers(self.static_data)
-        self.summarization_ecog = Summarization_ecog(self.static_data)
-        self.summarization_fish_analysis_summary = \
-            Summarization_fish_analysis_summary(self.static_data)
-        self.summarization_histological_grade = \
-            Summarization_histological_grade(self.static_data)
-        self.summarization_immunophenotype = \
-            Summarization_immunophenotype(self.static_data)
-        self.summarization_serial_number = \
-            Summarization_serial_number(self.static_data)
-        self.summarization_smoking = \
-            Summarization_smoking(self.static_data)
-        self.summarization_tnm_stage = \
-            Summarization_tnm_stage(self.static_data)
+        self.summarization_registry = Summarization_registry(self.static_data)
+        self.summarization_registry.create_preprocessors()
    
     #
     def _remove_extraneous_text(self):
@@ -111,36 +80,7 @@ class Summarization(Preprocessor_base):
     def process_document(self, text):
         self.text = text
         self._normalize_whitespace()
-        self.summarization_blasts.push_text(self.text)
-        self.summarization_blasts.remove_extraneous_text()
-        self.text = self.summarization_blasts.pull_text()
-        self.text = \
-            self.summarization_breast_cancer_biomarkers.process_text(self.text)
-        self.summarization_ecog.push_text(self.text)
-        self.summarization_ecog.process_ecog()
-        self.text = self.summarization_ecog.pull_text()
-        self.summarization_fish_analysis_summary.push_text(self.text)
-        self.summarization_fish_analysis_summary.remove_extraneous_text()
-        self.text = self.summarization_fish_analysis_summary.pull_text()
-        self.summarization_histological_grade.push_text(self.text)
-        self.summarization_histological_grade.process_mitotic_rate()
-        self.summarization_histological_grade.process_nuclear_pleomorphism()
-        self.summarization_histological_grade.process_tubule_formation()
-        self.text = self.summarization_histological_grade.pull_text()
-        self.summarization_immunophenotype.push_text(self.text)
-        self.summarization_immunophenotype.remove_extraneous_text()
-        self.text = self.summarization_immunophenotype.pull_text()
-        self.summarization_serial_number.push_text(self.text)
-        self.summarization_serial_number.remove_extraneous_text()
-        self.text = self.summarization_serial_number.pull_text()
-        self.summarization_smoking.push_text(self.text)
-        self.summarization_smoking.remove_extraneous_text()
-        self.text = self.summarization_smoking.pull_text()
-        self.summarization_tnm_stage.push_text(self.text)
-        self.summarization_tnm_stage.process_tnm_staging()
-        self.summarization_tnm_stage.remove_tnm_staging()
-        self.summarization_tnm_stage.remove_extraneous_text()
-        self.text = self.summarization_tnm_stage.pull_text()
+        self.text = self.summarization_registry.run_registry(self.text)
         self._remove_extraneous_text()
         self._normalize_whitespace()
         return self.text

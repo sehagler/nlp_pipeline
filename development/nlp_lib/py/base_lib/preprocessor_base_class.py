@@ -9,16 +9,15 @@ Created on Mon May 20 12:25:32 2019
 import re
 
 #
-from nlp_lib.py.base_class_lib.general_base_class import General_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import substitution
 
 #
-class Preprocessor_base(General_base):
+class Preprocessor_base(object):
     
     #
     def __init__(self, static_data):
-        General_base.__init__(self, static_data)
+        self.static_data = static_data
         self.command_list = []
         self.text = ''
         

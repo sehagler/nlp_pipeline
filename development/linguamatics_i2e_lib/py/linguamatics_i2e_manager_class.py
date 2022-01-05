@@ -12,6 +12,7 @@ Created on Fri Jan 04 10:50:12 2019
 """
 
 #
+import ast
 import csv
 from i2e.wsapi.common import (ClientConnectionSettings, I2EConnection,
                               I2EServer, I2EUser, RequestMaker,
@@ -79,7 +80,7 @@ class Linguamatics_i2e_manager(object):
             entry.append(item[0])
             entry.append(item[3])
             document_frame.append(entry)
-            num_elements = len(item) - 5
+            num_elements = len(item) - 4
             for i in range(num_elements):
                 entry.append(item[4+i])
         return(document_frame)
@@ -193,7 +194,6 @@ class Linguamatics_i2e_manager(object):
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
         data_file = os.path.join(data_dir, data_file)
         data_dict = {}
-        #try:
         with open(data_file,'r') as f:
             csv_reader = csv.reader(f, delimiter=',')
             line_count = 0
@@ -201,10 +201,9 @@ class Linguamatics_i2e_manager(object):
                 if line_count > 0:
                     if row[0] not in data_dict.keys():
                         data_dict[row[0]] = []
+                    row[-1] = ast.literal_eval(row[-1])
                     data_dict[row[0]].append(row[1:])
                 line_count += 1
-        #except:
-        #    pass
         self.data_csv = data_dict
         self.data_dict_list = []
         if bool(self.data_csv):

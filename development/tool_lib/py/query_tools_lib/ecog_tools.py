@@ -9,20 +9,16 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file, data_dict):
-        Postprocessor_base.__init__(self, static_data, data_file, data_dict)
-        self._extract_data_values()
         
     #
     def _extract_data_value(self, text_list):
+        text_list = text_list[0]
         if len(text_list) > 0:
             ecog_score_text_list = text_list[1]
             test_text_list = text_list[2]
@@ -105,7 +101,7 @@ class Postprocessor(Postprocessor_base):
 class Summarization(Preprocessor_base):
     
     #
-    def process_ecog(self):
+    def run_preprocessor(self):
         self._general_command('(?i)(?<!{ )ecog( :)? (performance )?(status|score|ps)', {None : 'ECOG ( ZUBROD ) '})
         self._general_command('(?i)karnofsky (performance )?(status|score|ps)', {None : 'ECOG ( KARNOFSKY ) '})
         self._general_command('(?i)lansky (play performance )?(status|score|ps)', {None : 'ECOG ( LANSKY ) '})

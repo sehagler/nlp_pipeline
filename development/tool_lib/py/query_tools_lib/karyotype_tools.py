@@ -9,32 +9,24 @@ Created on Wed Jun  5 14:28:01 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Named_entity_recognition(Preprocessor_base):
     
     #
-    def process_karyotype(self):
+    def run_preprocessor(self):
         self._general_command('(?i)inversion \(', {None : 'inv('})
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file, data_dict):
-        Postprocessor_base.__init__(self, static_data, data_file, data_dict,
-                                    query_name='KARYOTYPE')
-        for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i][self.nlp_data_key] = {}
-        self._create_data_structure('(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')
-        self._extract_data_values()
         
     #
     def _extract_data_value(self, text_list):
+        text_list = text_list[0]
         if len(text_list) > 0:
             text_list = text_list[0]
         entry_text = text_list[0]
@@ -70,6 +62,12 @@ class Postprocessor(Postprocessor_base):
             value_dict['KARYOTYPE'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
+    
+    #
+    def run_postprocessor(self):
+        Postprocessor_base.run_postprocessor(self,
+                                             query_name='KARYOTYPE',
+                                             section_name='(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')
 
 #
 class Posttokenizer(Preprocessor_base):

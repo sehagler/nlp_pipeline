@@ -2,7 +2,7 @@ version: 6.3
 creationDate: '2021-10-04 17:15:15'
 query:
   document:
-  - link: {path: block_query.i2qy, id: link6}
+  - link: {path: breast_cancer_block_query.i2qy, id: link1}
   - alternative:
       findMatches: longestOnly
       id: alternative1
@@ -16,7 +16,7 @@ query:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
           - {class: /chunk}
-          - link: {path: block_query.i2qy}
+          - link: {path: breast_cancer_block_query.i2qy}
           - {class: /chunk}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
@@ -28,7 +28,7 @@ query:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
           - {class: /chunk}
-          - link: {path: block_query.i2qy}
+          - link: {path: breast_cancer_block_query.i2qy}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
       - phrase:
@@ -38,7 +38,7 @@ query:
           of:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
-          - link: {path: block_query.i2qy}
+          - link: {path: breast_cancer_block_query.i2qy}
           - {class: /chunk}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
@@ -49,18 +49,22 @@ query:
           of:
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
-          - link: {path: block_query.i2qy}
+          - link: {path: breast_cancer_block_query.i2qy}
           - sentence:
               quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - {id: alternative1}
-  - id: link6.phrase1
+  - id: link1.phrase1
     itemOptions: {}
-    linkItemId: link6
-  - id: link6.phrase2
+    linkItemId: link1
+  - id: link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link6
-  columnLocations: [2, 1, 0]
+    linkItemId: link1.link1
+  - id: link1.link4.class1
+    itemOptions: {}
+    linkItemId: link4.link1
+  columnLocations: [1, 2, 3, 0]
   useOutputEditor: true
+parameters: {Biomarker: ''}
 creator: haglers

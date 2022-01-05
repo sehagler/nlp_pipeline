@@ -163,14 +163,20 @@ class Json_manager(object):
                         data_in = item[self.document_wrapper_key][key]
                 data = {}
                 for item in data_in:
-                    nlp_query_key_tmp = \
-                        item[self.nlp_datum_key][self.nlp_query_key]
-                    nlp_section_key_tmp = \
-                        item[self.nlp_datum_key][self.nlp_section_key]
-                    try:
+                    if self.nlp_query_key in item[self.nlp_datum_key].keys():
+                        nlp_query_key_tmp = \
+                            item[self.nlp_datum_key][self.nlp_query_key]
+                    else:
+                        nlp_query_key_tmp = ''
+                    if self.nlp_section_key in item[self.nlp_datum_key].keys():
+                        nlp_section_key_tmp = \
+                            item[self.nlp_datum_key][self.nlp_section_key]
+                    else:
+                        nlp_section_key_tmp = ''
+                    if self.nlp_specimen_key in item[self.nlp_datum_key].keys():
                         nlp_specimen_key_tmp = \
                             item[self.nlp_datum_key][self.nlp_specimen_key]
-                    except:
+                    else:
                         nlp_specimen_key_tmp = ''
                     key_0 = str((nlp_section_key_tmp, nlp_specimen_key_tmp))
                     for key_1 in item[self.nlp_datum_key].keys():
@@ -282,7 +288,8 @@ class Json_manager(object):
                 documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_data_key]
             query_list = []
             for nlp_datum in nlp_data:
-                query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
+                if self.nlp_query_key in nlp_datum[self.nlp_datum_key].keys():
+                    query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
             query_list = list(set(query_list))
             performance_statistics_dict_tmp = []
             tmp_dict = {}
