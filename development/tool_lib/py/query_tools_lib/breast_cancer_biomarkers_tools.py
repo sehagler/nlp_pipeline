@@ -63,13 +63,13 @@ class Postprocessor(Postprocessor_base):
             neighborhood_text_list = []
             biomarker_name_offset_list = []
         if len(blocks_text_list) > 0:
-            blocks_biomarker_block_text_list = blocks_text_list[1]
-            blocks_biomarker_name_text_list = blocks_text_list[2]
+            blocks_biomarker_name_text_list = blocks_text_list[1]
+            blocks_biomarker_block_text_list = blocks_text_list[2]
             blocks_neighborhood_text_list = blocks_text_list[3]
             blocks_biomarker_name_offset_list = blocks_text_list[4]
         else:
-            blocks_biomarker_block_text_list = []
             blocks_biomarker_name_text_list = []
+            blocks_biomarker_block_text_list = []
             blocks_neighborhood_text_list = []
             blocks_biomarker_name_offset_list = []
         neighborhoods = []
@@ -103,7 +103,7 @@ class Postprocessor(Postprocessor_base):
                     biomarker_block = ''
                     for j in range(len(blocks_biomarker_name_offset_list)):
                         blocks_biomarker_offset = \
-                            blocks_biomarker_name_offset_list[j][2]
+                            blocks_biomarker_name_offset_list[j][1]
                         if biomarker_offset == blocks_biomarker_offset:
                             biomarker_block = blocks_biomarker_block_text_list[j]
                     if len(biomarker_status) > 0:
