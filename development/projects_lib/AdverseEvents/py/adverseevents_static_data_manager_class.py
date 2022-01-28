@@ -28,7 +28,7 @@ class AdverseEvents_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml'] = {}
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['NLP_MODE'] = 'NONE'
             self.static_data['raw_data_files']['Schuff_Hagler_AE_NLP_HNO_Notes.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files_sequence'] = [ 'Schuff_Hagler_AE_NLP_HNO_Notes.xml' ]
         else:

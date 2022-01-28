@@ -41,6 +41,11 @@ query:
               - phrase:
                 - word: {text: '[0-9]\.[0-9]', matchType: Regexp}
               - phrase: ['no', staining]
+              - phrase:
+                - word:
+                    text: very
+                    quantifier: {minimum: 0, maximum: 1}
+                - alternative: [intermediate, intermediate-strong, moderate, moderate-strong, strong, weak, weak-moderate, weak-strong]
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
           of: [intensity, positivity, staining]

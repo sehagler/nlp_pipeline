@@ -6,7 +6,6 @@ Created on Tue Apr 21 12:56:34 2020
 """
 
 #
-import codecs
 import os
 import re
 import xml.etree.ElementTree as ET

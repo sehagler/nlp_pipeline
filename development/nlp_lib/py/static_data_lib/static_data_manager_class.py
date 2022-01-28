@@ -31,7 +31,7 @@ class Static_data_manager(object):
         self.static_data['network_manager'] = network
         self.static_data['num_processes'] = 15
         self.static_data['operation_mode'] = operation_mode
-        self.static_data['patient_identifiers'] = ['MRN']
+        self.static_data['patient_identifiers'] = [ 'MRN', 'MRN_CD' ]
         self.static_data['project_name'] = project_name
         self.static_data['project_subdir'] = project_subdir
         self.static_data['raw_data_encoding'] = 'utf-8'

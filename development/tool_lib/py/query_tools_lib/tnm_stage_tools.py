@@ -128,3 +128,12 @@ def t_stage_template():
     t_stage_tmplt_2 = t_stage_prefix + t_stage_primary_suffix + \
                       t_stage_secondary_suffix
     return t_stage_tmplt_1, t_stage_tmplt_2
+
+#
+def template():
+    t_stage_tmplt_1, t_stage_tmplt_2 = t_stage_template()
+    n_stage_tmplt = n_stage_template()
+    m_stage_tmplt = m_stage_template()
+    template = '(' + t_stage_tmplt_1 + '|' + t_stage_tmplt_2 + ')' + \
+               n_stage_tmplt +  '(' + m_stage_tmplt + ')?'
+    return template

@@ -62,7 +62,13 @@ class Pretokenizer(Preprocessor_base):
         self._general_command('(?i)-to-', {None : ' to '})
         self._general_command('(?i)in-situ', {None : 'in situ'})
         self._general_command('(?i)in-toto', {None : 'in toto'})
+        self._general_command('(?i)intermediate to strong', {None : 'intermediate-strong'})
+        self._general_command('(?i)moderate to strong', {None : 'moderate-strong'})
+        self._general_command('(?i)moderate to weak', {None : 'weak-moderate'})
         self._general_command('(?i)over-expression', {None : 'overexpression'})
+        self._general_command('(?i)strong to moderate', {None : 'moderate-strong'})
+        self._general_command('(?i)weak to moderate', {None : 'weak-moderate'})
+        self._general_command('(?i)weak to strong', {None : 'weak-strong'})
         self._general_command('____+(\n_+)*', {None : '' })
         text_list = [ 'negative', 'positive']
         for text_str in text_list:

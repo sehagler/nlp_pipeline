@@ -39,7 +39,7 @@ class Postprocessor(Postprocessor_base):
             value_dict = {}
             value_dict['CANCER_STAGE'] = value[0]
             value_dict['CANCER_TYPE'] = value[1]
-            value_dict['CONTEXT'] = value[2]
+            value_dict['SNIPPET'] = value[2]
             value_dict_list.append(value_dict)
         return value_dict_list
     

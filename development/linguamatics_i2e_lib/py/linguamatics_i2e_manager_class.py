@@ -48,10 +48,9 @@ class Linguamatics_i2e_manager(object):
         self.server = self.static_data['acc_server'][2]
         self.user = self.static_data['user']
         self.linguamatics_i2e_file_manager = \
-            Linguamatics_i2e_file_manager(self.static_data)
+            Linguamatics_i2e_file_manager(self.project_name, self.user)
         self.linguamatics_i2e_writer = \
-            Linguamatics_i2e_writer(self.static_data,
-                                    self.linguamatics_i2e_file_manager,
+            Linguamatics_i2e_writer(self.linguamatics_i2e_file_manager,
                                     server_manager)
         self.i2e_server = I2EServer(self.server)
         self.i2e_user = I2EUser(self.user, password)
@@ -130,12 +129,12 @@ class Linguamatics_i2e_manager(object):
                 self._folder_downloader(request_maker, child, parent_folder, download_folder)
                    
     #
-    def _put_keywords_file(self, linguamatics_i2e_writer):
+    def _put_keywords_file(self, keywords_file, linguamatics_i2e_writer):
         keywords_tmp_file = '/tmp/keywords_default.txt'
         if self.static_data['root_dir_flg'] in ''.join([ 'X', 'Z' ]):
-            linguamatics_i2e_writer.prepare_keywords_file_ssh(keywords_tmp_file)
+            linguamatics_i2e_writer.prepare_keywords_file_ssh(keywords_file, keywords_tmp_file)
         elif self.static_data['root_dir_flg'] in ''.join([ 'dev_server', 'prod_server' ]):
-            linguamatics_i2e_writer.prepare_keywords_file(keywords_tmp_file)
+            linguamatics_i2e_writer.prepare_keywords_file(keywords_file, keywords_tmp_file)
 
     #
     def create_resource(self, project_name, resource_type, resource_file): 
@@ -162,10 +161,11 @@ class Linguamatics_i2e_manager(object):
         
     #
     def fix_queries(self):
+        directory_manager = self.static_data['directory_manager']
         general_queries_dir = \
-            self.linguamatics_i2e_file_manager.general_queries_source_directory()
+            directory_manager.pull_directory('general_queries_dir')
         project_queries_dir = \
-            self.linguamatics_i2e_file_manager.project_queries_source_directory()
+            directory_manager.pull_directory('project_queries_dir')
         ret_val = self._fix_queries(general_queries_dir)
         ret_val = self._fix_queries(project_queries_dir)
 
@@ -211,20 +211,21 @@ class Linguamatics_i2e_manager(object):
         return self.data_dict_list
         
     #
-    def generate_i2e_resource_files(self, dynamic_data_manager):
-        self.linguamatics_i2e_writer.merge_dynamic_data_manager(dynamic_data_manager)
-        self.linguamatics_i2e_writer.generate_keywords_file()
-        self.linguamatics_i2e_writer.generate_query_bundle_file(self.project_name)
-        self.linguamatics_i2e_writer.generate_regions_file()
-        self.linguamatics_i2e_writer.generate_xml_configuation_file()
-        
-    #
-    def generate_xml_file(self, ctr, metadata, raw_text, rpt_text):
-        xml_ret_val = self.linguamatics_i2e_writer.generate_xml_file(ctr, 
-                                                                     metadata,
-                                                                     raw_text,
-                                                                     rpt_text)
-        return xml_ret_val
+    def generate_i2e_resource_files(self, max_files_per_zip):
+        directory_manager = self.static_data['directory_manager']
+        general_queries_source_dir = directory_manager.pull_directory('general_queries_dir')
+        preprocessing_data_out_dir = directory_manager.pull_directory('preprocessing_data_out')
+        processing_data_dir = directory_manager.pull_directory('processing_data_dir')
+        project_queries_source_dir = directory_manager.pull_directory('project_queries_dir')
+        self.linguamatics_i2e_writer.generate_query_bundle_file(self.project_name,
+                                                                general_queries_source_dir,
+                                                                processing_data_dir,
+                                                                project_queries_source_dir,
+                                                                max_files_per_zip)
+        self.linguamatics_i2e_writer.generate_regions_file(preprocessing_data_out_dir,
+                                                           processing_data_dir)
+        self.linguamatics_i2e_writer.generate_xml_configuation_file(preprocessing_data_out_dir,
+                                                                    processing_data_dir)
         
     #
     def get_i2e_version(self, password):
@@ -262,33 +263,46 @@ class Linguamatics_i2e_manager(object):
         print("Task status is %s" % monitor.get_status())
         
     #
-    def preindexer(self):
-        self.linguamatics_i2e_writer.generate_source_data_file(self.project_name)
-        self._put_keywords_file(self.linguamatics_i2e_writer)
-        for resource_type in self.linguamatics_i2e_file_manager.resource_files_keys():
+    def preindexer(self, keywords_file, processing_data_dir, source_data_dir,
+                   max_files_per_zip):
+        directory_manager = self.static_data['directory_manager']
+        preprocessing_data_out_dir = directory_manager.pull_directory('preprocessing_data_out')
+        self.linguamatics_i2e_writer.generate_source_data_file(self.project_name,
+                                                               preprocessing_data_out_dir,
+                                                               source_data_dir,
+                                                               max_files_per_zip)
+        self._put_keywords_file(keywords_file, self.linguamatics_i2e_writer)
+        for resource in [ 'regions', 'source_data', 'xmlconf' ]:
+            filename = os.path.join(processing_data_dir,
+                                    self.linguamatics_i2e_file_manager.filename(resource))
+            if resource == 'regions':
+                resource_type = 'region_list'
+            elif resource == 'source_data':
+                resource_type = 'source_data'
+            elif resource == 'xmlconf':
+                resource_type = 'xml_and_html_config_file'
             try:
                 self.delete_resource(self.linguamatics_i2e_file_manager.i2e_resource(resource_type))
             except Exception as e:
                 print(e)
             if resource_type == 'source_data':
-                data_dir = self.linguamatics_i2e_file_manager.source_data_directory()
-                for source_data_file in sorted(os.listdir(data_dir)):
+                for source_data_file in sorted(os.listdir(source_data_dir)):
                     try:
                         self.create_resource(self.project_name, resource_type,
-                                             os.path.join(data_dir, source_data_file))
+                                             os.path.join(source_data_dir, source_data_file))
                     except Exception as e:
                         print(e)
             else:
                 try:
-                    self.create_resource(None, resource_type,
-                                         self.linguamatics_i2e_file_manager.resource_file(resource_type))
+                    self.create_resource(None, resource_type, filename)
                 except Exception as e:
                     print(e)
-        for bundle_type in self.linguamatics_i2e_file_manager.bundles_keys():
-            try:
-                self.upload_bundle(self.linguamatics_i2e_file_manager.bundle(bundle_type))
-            except Exception as e:
-                print(e)
+        try:
+            bundle = os.path.join(processing_data_dir,
+                                  self.linguamatics_i2e_file_manager.query_bundle_filename())
+            self.upload_bundle(bundle)
+        except Exception as e:
+            print(e)
             
     #
     def set_index_configuration(self, project_name):

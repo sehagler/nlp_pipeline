@@ -43,7 +43,7 @@ class Postprocessor(Postprocessor_base):
             value_dict['ECOG_SCORE'] = value[0]
             value_dict['NORMALIZED_ECOG_SCORE'] = value[1]
             value_dict['ECOG_TEST'] = value[2]
-            value_dict['CONTEXT'] = value[3]
+            value_dict['SNIPPET'] = value[3]
             value_dict_list.append(value_dict)
         return value_dict_list
                     

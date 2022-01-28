@@ -5,7 +5,7 @@ query:
   - phrase:
     - alternative:
         id: alternative1
-        of: [CK5/6, ER, HER2, Ki67, PR]
+        of: [CK5/6, ER, GATA3, HER2, Ki67, PR]
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:

@@ -21,7 +21,9 @@ urllib3.disable_warnings()
 class Output_manager(object):
 
     #
-    def __init__(self, static_data, metadata_manager):
+    def __init__(self, static_data_manager, metadata_manager):
+        self.static_data_manager = static_data_manager
+        static_data = self.static_data_manager.get_static_data()
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
             json_structure_manager.pull_key('document_wrapper_key')
@@ -65,6 +67,7 @@ class Output_manager(object):
         self.metadata_manager = metadata_manager
         self.merged_data_dict_list = []
         self.data_dict_classes_list = []
+        self._set_data_dirs()
 
     #
     def _get_data_dict_lists(self):
@@ -99,6 +102,14 @@ class Output_manager(object):
         z = x.copy()
         z.update(y)
         return z
+    
+    #
+    def _set_data_dirs(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        self.preprocessing_data_out = \
+            directory_manager.pull_directory('preprocessing_data_out')
+        self.data_out = directory_manager.pull_directory('postprocessing_data_out')
     
     #
     def append(self, data_dict):
@@ -172,9 +183,3 @@ class Output_manager(object):
                                                       data_dict[self.nlp_data_key][data_key])
             merged_data_dict_list.append(merged_dict)
         self.merged_data_dict_list = merged_data_dict_list
-        
-    #
-    def set_data_dirs(self, directory_manager):
-        self.preprocessing_data_out = \
-            directory_manager.pull_directory('preprocessing_data_out')
-        self.data_out = directory_manager.pull_directory('postprocessing_data_out')

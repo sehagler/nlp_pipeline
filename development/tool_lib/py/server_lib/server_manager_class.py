@@ -16,7 +16,8 @@ import time
 class Server_manager(object):
     
     #
-    def __init__(self, static_data, password):
+    def __init__(self, static_data_manager, password):
+        static_data = static_data_manager.get_static_data()
         self.server = static_data['acc_server'][1]
         self.user = static_data['user']
         self.password = password

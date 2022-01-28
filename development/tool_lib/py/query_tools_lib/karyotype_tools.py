@@ -44,8 +44,9 @@ class Postprocessor(Postprocessor_base):
                 entry_text = entry_text[2:]
         except:
             pass
-        match_str = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
-        match = re.search(match_str, entry_text)
+        #template = template()
+        template = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
+        match = re.search(template, entry_text)
         if match is not None:
             karyotype = match.group(0)
             try:
@@ -86,7 +87,7 @@ class Posttokenizer(Preprocessor_base):
                               {' , ' : ','})
         self._general_command('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', {' / ' : '/'})
         self._general_command('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', {' ' : ''})
-    
+        
 #
 def atomize_karyotype(full_karyotype):
     karyotype_atoms = {}
@@ -115,3 +116,7 @@ def atomize_karyotype(full_karyotype):
                 else:
                     karyotype_atoms[karyotype_1_atoms[i+2]] += '/' + count
     return karyotype_atoms
+
+#
+def template():
+    return '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'

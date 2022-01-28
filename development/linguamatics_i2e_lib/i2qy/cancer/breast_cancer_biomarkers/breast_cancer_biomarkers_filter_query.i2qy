@@ -9,26 +9,20 @@ query:
       - link: {path: breast_cancer_biomarkers_query.i2qy}
       - alternative:
           includeInQuery: false
-          of: [ER, HER2, PR, TNBC]
+          of: [AR, BCL2, ER, GATA3, HER2, KI67, PDL1, PR, TNBC]
 output:
   columns:
-  - title: Extract
-    id: alternative1.col0
+  - id: alternative1.col0
     itemOptions: {}
-  - title: Biomarker Name
-    id: alternative1.col1
+  - id: alternative1.col1
     itemOptions: {}
-  - title: Biomarker Status
-    id: alternative1.col2
+  - id: alternative1.col2
     itemOptions: {}
-  - title: Biomarker Score
-    id: alternative1.col3
+  - id: alternative1.col3
     itemOptions: {}
-  - title: Biomarker Percentage
-    id: alternative1.col4
+  - id: alternative1.col4
     itemOptions: {}
-  - title: .Neighborhood
-    id: alternative1.col5
+  - id: alternative1.col5
     itemOptions: {}
   useOutputEditor: true
 parameters: {Biomarker: ''}

@@ -155,6 +155,7 @@ class Tokenizer(Preprocessor_base):
         self._general_command('(?i)((only )?about|approx(( \.)|imate(ly)?)?|roughly)(?= \d)', {None : '~'})
         self._general_command('(?i)(greater|more) th(a|e)n(?= [0-9])', {None : '>'})
         self._general_command('(?i)less th(a|e)n(?= \d)', {None : '<'})
+        self._general_command('(?i)up to( ~)?(?= \d)', {None : '<'})
         self._general_command('(?i)according to', {None : 'per'})
         self._general_command('(?i)for example', {None : 'e.g.'})
         self._general_command('(?i)w / ', {'(?i)w /' : 'with'})

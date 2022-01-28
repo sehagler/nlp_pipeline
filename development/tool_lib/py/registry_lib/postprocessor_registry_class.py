@@ -44,6 +44,9 @@ class Postprocessor_registry(Postprocessor_registry_base):
         elif filename in [ 'breast_cancer_biomarkers_er.csv' ]:
             self._register_postprocessor('postprocessor_breast_cancer_biomarkers_er',
                                          Postprocessor_breast_cancer_biomarkers(self.static_data))
+        elif filename in [ 'breast_cancer_biomarkers_gata3.csv' ]:
+            self._register_postprocessor('postprocessor_breast_cancer_biomarkers_gata3',
+                                         Postprocessor_breast_cancer_biomarkers(self.static_data))
         elif filename in [ 'breast_cancer_biomarkers_her2.csv' ]:
             self._register_postprocessor('postprocessor_breast_cancer_biomarkers_her2',
                                          Postprocessor_breast_cancer_biomarkers(self.static_data))
@@ -96,6 +99,8 @@ class Postprocessor_registry(Postprocessor_registry_base):
             self._push_data_dict('postprocessor_bone_marrow_blast', data_dict, filename=filename)
         elif filename in [ 'breast_cancer_biomarkers_blocks_er.csv' ]:
             self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', data_dict, idx=1)
+        elif filename in [ 'breast_cancer_biomarkers_blocks_gata3.csv' ]:
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3', data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_blocks_her2.csv' ]:
             self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2', data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_blocks_ki67.csv' ]:
@@ -104,6 +109,8 @@ class Postprocessor_registry(Postprocessor_registry_base):
             self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr', data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_er.csv' ]:
             self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', data_dict, filename=filename)
+        elif filename in [ 'breast_cancer_biomarkers_gata3.csv' ]:
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3', data_dict, filename=filename)
         elif filename in [ 'breast_cancer_biomarkers_her2.csv' ]:
             self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2', data_dict, filename=filename)
         elif filename in [ 'breast_cancer_biomarkers_ki67.csv' ]:

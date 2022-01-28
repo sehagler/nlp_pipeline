@@ -22,30 +22,43 @@ class Named_entity_recognition(Preprocessor_base):
     
     #
     def run_preprocessor(self):
+        
+        #
         self._general_command('(?i)estrogen and progesterone( receptor' + s() + ')?',
                               {None : 'ER and PR'})
         self._general_command('(?i)progesterone and estrogen( receptor' + s() + ')?',
                               {None : 'PR and ER'})
+        self._general_command('(?i)androgen receptor', {None : 'AR'})
+        self._general_command('(?i)BCL-2', {None : 'BCL2'})
         self._general_command('(?i)estrogen receptor', {None : 'ER'})
+        self._general_command('(?i)GATA-3', {None : 'GATA3'})
+        self._general_command('(?i)HER(-| / )?2(( | / )?(c-)?neu)?( \( cerb2 \))?', {None : 'HER2'})
+        self._general_command('(?i)HER2- / (c-)?neu( \( cerb2 \))?', {None : 'HER2'})
+        self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
+        self._general_command('(?i)Ki-67', {None : 'KI67'})
+        self._general_command('(?i)PD-L1', {None : 'PDL1'})
+        self._general_command('(?i)progesterone receptor', {None : 'PR'})
+        
+        #
+        self._general_command('(?i)AR \( AR \)', {None : 'AR'})
         self._general_command('(?i)ER \( ER \)', {None : 'ER'})
         self._general_command('(?i)ER \( ER , clone [A-Z0-9]+ \)', {'ER , clone' : ''})
         self._general_command('(?i)ER results , clone [A-Z0-9]+', {'results , clone' : ''})
-        self._general_command('(?i)HER(-| / )?2(( | / )?(c-)?neu)?( \( cerb2 \))?', {None : 'HER2'})
-        self._general_command('(?i)HER2- / (c-)?neu( \( cerb2 \))?', {None : 'HER2'})
         self._general_command('(?i)C-ERB B2 \( HER2 \)', {None: 'HER2'})
-        self._general_command('(?i)Ki-67( \(mm-1\))?', {None : 'KI67'})
-        self._general_command('(?i)progesterone receptor', {None : 'PR'})
+        self._general_command('(?i)proliferati(on|ve) (index|rate) \( KI67 \)', {None : 'KI67'})
+        self._general_command('(?i)KI67( proliferati(on|ve))? (index|rate)', {None : 'KI67'})
+        self._general_command('(?i)KI67( \(mm-1\))?', {None : 'KI67'})
+        self._general_command('(?i)KI67 \( KI67 \)', {None : 'KI67'})
         self._general_command('(?i)PR \( PR \)', {None : 'PR'})
         self._general_command('(?i)PR \( PR , clone [A-Z0-9]+ \)', {'PR , clone' : ''})
         self._general_command('(?i)PR results , clone [A-Z0-9]+', {'results , clone' : ''})
-        self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
 
 #
 class Postprocessor(Postprocessor_base):
 
     #
     def _extract_data_value(self, text_list):
-        biomarker_name_list = [ 'ER', 'HER2', 'Ki67', 'PR' ]
+        biomarker_name_list = [ 'ER', 'GATA3', 'HER2', 'KI67', 'PR' ]
         blocks_text_list = text_list[1]
         text_list = text_list[0]
         if len(text_list) > 0:
@@ -53,35 +66,35 @@ class Postprocessor(Postprocessor_base):
             biomarker_status_text_list = text_list[2]
             biomarker_score_text_list = text_list[3]
             biomarker_percentage_text_list = text_list[4]
-            neighborhood_text_list = text_list[5]
+            snippet_text_list = text_list[5]
             biomarker_name_offset_list = text_list[6]
         else:
             biomarker_name_text_list = []
             biomarker_status_text_list = []
             biomarker_score_text_list = []
             biomarker_percentage_text_list = []
-            neighborhood_text_list = []
+            snippet_text_list = []
             biomarker_name_offset_list = []
         if len(blocks_text_list) > 0:
             blocks_biomarker_name_text_list = blocks_text_list[1]
             blocks_biomarker_block_text_list = blocks_text_list[2]
-            blocks_neighborhood_text_list = blocks_text_list[3]
+            blocks_snippet_text_list = blocks_text_list[3]
             blocks_biomarker_name_offset_list = blocks_text_list[4]
         else:
             blocks_biomarker_name_text_list = []
             blocks_biomarker_block_text_list = []
-            blocks_neighborhood_text_list = []
+            blocks_snippet_text_list = []
             blocks_biomarker_name_offset_list = []
-        neighborhoods = []
-        for i in range(len(neighborhood_text_list)):
-            neighborhoods.append(neighborhood_text_list[i])
-        unique_neighborhoods = list(set(neighborhoods))
+        snippets = []
+        for i in range(len(snippet_text_list)):
+            snippets.append(snippet_text_list[i])
+        unique_snippets = list(set(snippets))
         biomarker_dict_list = []
         er_value_list = []
         her2_value_list = []
         ki67_value_list = []
         pr_value_list = []
-        for neighborhood in unique_neighborhoods:
+        for snippet in unique_snippets:
             biomarker_dict = {}
             for biomarker_name in biomarker_name_list:
                 biomarker_dict[biomarker_name] = {}
@@ -89,8 +102,8 @@ class Postprocessor(Postprocessor_base):
                 biomarker_dict[biomarker_name]['SCORE'] = []
                 biomarker_dict[biomarker_name]['PERCENTAGE'] = []
                 biomarker_dict[biomarker_name]['BLOCK'] = []
-            for i in range(len(neighborhood_text_list)):
-                if neighborhood_text_list[i] == neighborhood:
+            for i in range(len(snippet_text_list)):
+                if snippet_text_list[i] == snippet:
                     biomarker_name = biomarker_name_text_list[i]
                     biomarker_status = \
                         self._process_status(biomarker_name,
@@ -123,15 +136,8 @@ class Postprocessor(Postprocessor_base):
                         list(set(biomarker_dict[biomarker_name]['PERCENTAGE']))
                     biomarker_dict[biomarker_name]['BLOCK'] = \
                         list(set(biomarker_dict[biomarker_name]['BLOCK']))
-                    biomarker_dict[biomarker_name]['NEIGHBORHOOD'] = \
-                        neighborhood
-                if len(biomarker_dict['HER2']['STATUS']) > 1:
-                    her2_status_text_list_tmp = [ x for x in \
-                                                  biomarker_dict['HER2']['STATUS'] \
-                                                  if x != 'equivocal' ]
-                    if len(her2_status_text_list_tmp) > 0:
-                        biomarker_dict['HER2']['STATUS'] = \
-                            her2_status_text_list_tmp
+                    biomarker_dict[biomarker_name]['SNIPPET'] = \
+                        snippet
                 biomarker_dict_list.append(biomarker_dict)
         value_dict_list = []
         for biomarker_dict in biomarker_dict_list:
@@ -166,8 +172,8 @@ class Postprocessor(Postprocessor_base):
                     if len(biomarker_dict[biomarker_name]['BLOCK']) > 0:
                         value_dict[ biomarker_name + '_BLOCK'] = \
                             biomarker_dict[biomarker_name]['BLOCK']
-                    value_dict[ biomarker_name + '_NEIGHBORHOOD'] = \
-                            biomarker_dict[biomarker_name]['NEIGHBORHOOD']
+                    value_dict[ biomarker_name + '_snippet'] = \
+                            biomarker_dict[biomarker_name]['SNIPPET']
                     value_dict_list.append(value_dict)
         return value_dict_list
     
@@ -194,7 +200,7 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _process_status(self, biomarker_name, status):
-        if biomarker_name in [ 'ER', 'HER2', 'PR' ]:
+        if biomarker_name in [ 'ER', 'GATA3', 'HER2', 'PR' ]:
             if status.lower() in [ 'borderline' ]:
                 status = 'equivocal'
             elif status.lower() in [ 'negativity', 'no', 'non-amplified', 
@@ -213,12 +219,6 @@ class Summarization(Preprocessor_base):
     #
     def _receptor_predicate(self):
         return('(ampification|antigen|clone|(over)?expression|immunoreactivity|protein|receptor|status)')
-        
-    #
-    def _process_CK56(self):
-        self._clear_command_list()
-        self._general_command('(?i)CK5 / 6', {None : 'CK5/6'})
-        self._process_command_list()
     
     #
     def _process_ER(self):
@@ -242,7 +242,9 @@ class Summarization(Preprocessor_base):
     #
     def _process_HER2(self):
         self._general_command('(?i)HER2( :)?( )?-', {None : 'HER2 negative'})
+        self._general_command('(?i)HER2neg', {None : 'HER2 negative'})
         self._general_command('(?i)HER2( :)?( )?\+', {None : 'HER2 positive'})
+        self._general_command('(?i)HER2pos', {None : 'HER2 negative'})
         for _ in range(7):
             search_str = '(?i)HER2 ([a-z]* for )?' + \
                          self._receptor_predicate() + s()
@@ -299,7 +301,6 @@ class Summarization(Preprocessor_base):
         
     #
     def run_preprocessor(self):
-        self._process_CK56()
         self._process_ER()
         self._process_HER2()
         self._process_PR()

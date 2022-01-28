@@ -69,7 +69,7 @@ class Raw_data_manager(object):
             if self.data[i]['FILENAME'][0] == data_file:
                 data = self.data[i]
         nlp_mode = data['NLP_MODE'][0]
-        if nlp_mode == 'RESULT_ID':
+        if nlp_mode in [ 'RESULT_ID', 'SOURCE_SYSTEM_RESULT_ID' ]:
             document_value_key = None
         idxs = [i for i, x in enumerate(data[nlp_mode]) if x == document_value]
         if len(idxs) > 0:
@@ -361,11 +361,16 @@ class Raw_data_manager(object):
         for i in range(len(self.data)):
             filename = self.data[i]['FILENAME'][0]
             document_value_dict[filename] = {}
-            label1 = self.data[i]['NLP_MODE'][0]
-            if label1 == 'CASE_NUMBER':
+            nlp_mode = self.data[i]['NLP_MODE'][0]
+            if nlp_mode == 'CASE_NUMBER':
                 label0 = 'MRN'
-            elif label1 == 'RESULT_ID':
+                label1 = 'CASE_NUMBER'
+            elif nlp_mode == 'RESULT_ID':
                 label0 = 'RESULT_ID'
+                label1 = 'RESULT_ID'
+            elif nlp_mode == 'SOURCE_SYSTEM_RESULT_ID':
+                label0 = 'SOURCE_SYSTEM_RESULT_ID'
+                label1 = 'SOURCE_SYSTEM_RESULT_ID'
             data_label0 = self.data[i][label0]
             data_label1 = self.data[i][label1]
             items = sorted(set(data_label0))
