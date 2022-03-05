@@ -1,0 +1,34 @@
+version: 6.3
+creationDate: '2021-10-04 17:17:13'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      maxSentenceGap: -1
+      maxWordGap: -1
+      multiSentence: true
+      wordGapRestricted: false
+      of:
+      - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link1}
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
+          where:
+          - link:
+              path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy
+              quantifier: {minimum: 0, maximum: 0}
+              showInDefaultOutput: false
+      - word: {text: variable, id: word1}
+output:
+  columns:
+  - {id: phrase1}
+  - {id: word1}
+  - id: link1.class1
+    itemOptions: {}
+    linkItemId: link1
+  columnLocations: [0, 2, 1]
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
+creator: haglers

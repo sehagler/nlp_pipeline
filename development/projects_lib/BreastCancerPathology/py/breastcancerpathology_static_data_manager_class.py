@@ -7,12 +7,13 @@ Created on Fri Jan 10 09:57:35 2020
 
 #
 import os
-import pickle
 import xlrd
 
 #
 from nlp_lib.py.static_data_lib.static_data_manager_class \
     import Static_data_manager
+from tool_lib.py.processing_tools_lib.file_processing_tools \
+    import read_xlsx_file
 
 #
 class BreastCancerPathology_static_data_manager(Static_data_manager):
@@ -23,10 +24,22 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         Static_data_manager.__init__(self, operation_mode, project_name, 
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
+        
+    #
+    def _trim_lists(self, document_list, patient_list):
+        self.static_data['document_list'] = \
+            list(set(self.static_data['document_list']).intersection(document_list))
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']).intersection(patient_list))
     
     #
     def get_static_data(self):
-        self.static_data['document_identifiers'] = [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
+        self.static_data['document_identifiers'] = \
+            [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
+        self.static_data['ohsu_nlp_template_files'] = \
+            [ 'breast_cancer_tnm_stage.csv' ]
+        self.static_data['validation_file'] = \
+            'breastcancerpathology_testing.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}
@@ -44,44 +57,31 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
                                                             'DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML' ]
             
             #
-            if True:
-                if self.static_data['root_dir_flg'] == 'X':
-                    base_dir = 'Z:'
-                elif self.static_data['root_dir_flg'] == 'Z':
-                    base_dir = 'Z:'
-                elif self.static_data['root_dir_flg'] == 'dev_server':
-                    base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
-                elif self.static_data['root_dir_flg'] == 'prod_server':
-                    base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
-                source_dir = base_dir + '/NLP/NLP_Source_Data/BreastCancerPathology'
-                training_data_dir = source_dir + '/test/pkl'
-                training_docs_file = \
-                    os.path.join(training_data_dir, 'training_docs.pkl')
-                training_groups_file = \
-                    os.path.join(training_data_dir, 'training_groups.pkl')
-                try:
-                    self.static_data['document_list'] = []
-                    idx_list = [0]
-                    with open(training_docs_file, 'rb') as f:
-                        document_list = pickle.load(f)
-                    for idx in idx_list:
-                        self.static_data['document_list'].extend(document_list[idx])
-                    self.static_data['document_list'] = \
-                        list(set(self.static_data['document_list']))
-                except:
-                    pass
-                try:
-                    self.static_data['patient_list'] = []
-                    idx_list = [0]
-                    with open(training_groups_file, 'rb') as f:
-                        patient_lists = pickle.load(f)
-                    patient_list = []
-                    for idx in idx_list:
-                        patient_list.extend(patient_lists[idx])
-                    self.static_data['patient_list'].extend(patient_list)
-                    self.static_data['patient_list'] = \
-                        list(set(self.static_data['patient_list']))
-                except:
-                    pass        
+            if self.static_data['root_dir_flg'] == 'X':
+                base_dir = 'Z:'
+            elif self.static_data['root_dir_flg'] == 'Z':
+                base_dir = 'Z:'
+            elif self.static_data['root_dir_flg'] == 'dev_server':
+                base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
+            elif self.static_data['root_dir_flg'] == 'prod_server':
+                base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
+            source_dir = base_dir + '/NLP/NLP_Source_Data/BreastCancerPathology'
+            training_data_dir = source_dir + '/test/pkl'
+            docs_files = []
+            docs_files.append(os.path.join(training_data_dir, 'training_docs.pkl'))
+            groups_files = []
+            groups_files.append(os.path.join(training_data_dir, 'training_groups.pkl'))
+                
+            self._include_lists(docs_files, groups_files, [1])
+            
+            raw_data_dir = \
+                self.static_data['directory_manager'].pull_directory('raw_data_dir')
+            raw_data_file = os.path.join(raw_data_dir, 'breastcancerpathology_testing.xlsx')
+            book = read_xlsx_file(raw_data_file)
+            sheet = book.sheet_by_index(0)
+            patient_list = list(set(sheet.col_values(1)[1:]))
+            document_list = list(set(sheet.col_values(2)[1:]))
+
+            self._trim_lists(document_list, patient_list)
 
         return self.static_data

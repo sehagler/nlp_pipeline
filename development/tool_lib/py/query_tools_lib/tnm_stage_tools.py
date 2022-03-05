@@ -17,6 +17,7 @@ from nlp_lib.py.base_lib.preprocessor_base_class \
 #
 class Postprocessor(Postprocessor_base):
 
+    '''    
     #
     def __init__(self, static_data, data_file):
         Postprocessor_base.__init__(self, static_data, data_file)
@@ -56,7 +57,20 @@ class Postprocessor(Postprocessor_base):
                                 else:
                                     self.data_dict_list[i]['DATA'][key][self.data_key_map[str(k)]] =\
                                         stage[k]
+    '''
                                         
+    #
+    def _extract_data_value(self, text_list):
+        tnm_stage_text_list = []
+        snippet_text_list = []
+        for item in text_list[0]:
+            tnm_stage_text_list.append(item[0])
+            snippet_text_list.append(item[1])
+            print(tnm_stage_text_list)
+        value_dict_list = []
+        return value_dict_list
+                                        
+    '''
     #
     def _remove_commas_from_extracted_text(self):
         for i in range(len(self.data_dict_list)):
@@ -65,6 +79,7 @@ class Postprocessor(Postprocessor_base):
                     for j in range(len(self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']])):
                         self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']][j] = \
                             self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']][j].replace(',', '')
+    '''
 
 #
 class Summarization(Preprocessor_base):
@@ -136,4 +151,5 @@ def template():
     m_stage_tmplt = m_stage_template()
     template = '(' + t_stage_tmplt_1 + '|' + t_stage_tmplt_2 + ')' + \
                n_stage_tmplt +  '(' + m_stage_tmplt + ')?'
-    return template
+    template_sections_list = None
+    return template, template_sections_list

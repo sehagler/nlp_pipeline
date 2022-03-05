@@ -17,14 +17,13 @@ class Postprocessor(Postprocessor_base):
 
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            text_list = text_list[0]
-        antigens = text_list
+        antigens_list = []
+        for item in text_list[0]:
+            antigens_list.append(item[0])
         #antigens = self._prune_surface_antigens(antigens)
         value_list = []
-        for antigen_str in antigens:
-            value_list.extend([correct_antibodies(antigen_str)])
+        for antigens in antigens_list:
+            value_list.extend([correct_antibodies(antigens)])
         value_dict_list = []
         for value in value_list:
             value_dict = {}

@@ -97,6 +97,7 @@ class Nlp_processor(object):
         static_data = self.static_data_manager.get_static_data()
         static_data['directory_manager'].cleanup_directory('postprocessing_data_out')
         self.process_manager.linguamatics_i2e_generate_csv_files()
+        self.process_manager.ohsu_nlp_templates_run_post_i2e_linguamatics()
         self.process_manager.postprocessor()
         self.process_manager.preperformance()
         if project_subdir == 'test':

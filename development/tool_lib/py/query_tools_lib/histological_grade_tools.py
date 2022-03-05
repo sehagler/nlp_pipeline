@@ -13,6 +13,7 @@ class Named_entity_recognition(Preprocessor_base):
         
     #
     def run_preprocessor(self):
+        self._normalize_whitespace()
         text_list = []
         text_list.append('(?i)modified Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(mSBR\))?')
         text_list.append('(?i)modified Bloom(-| )(and(-| ))?Richardson( \(mBR\))?')

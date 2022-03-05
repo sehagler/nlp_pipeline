@@ -12,8 +12,6 @@ import os
 #
 from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_xlsx_file
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
 #
@@ -33,95 +31,95 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
                          ('ER_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
                          ('ER_SCORE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
                          ('ER_STATUS', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
+                         ('ER_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_VARIABILITY', 'single_value', True),
                          ('GATA3_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_BLOCK', 'single_value', True),
                          ('GATA3_STATUS', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
+                         ('GATA3_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_VARIABILITY', 'single_value', True),
                          ('HER2_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_BLOCK', 'single_value', True),
                          #('HER2_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
                          ('HER2_SCORE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True), 
                          ('HER2_STATUS', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True), 
+                         ('HER2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_VARIABILITY', 'single_value', True),
                          ('KI67_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_BLOCK', 'single_value', True),
                          ('KI67_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_PERCENTAGE', 'single_value', True),
                          #('KI67_STATUS', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_STATUS', 'single_value', True),
+                         ('KI67_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_VARIABILITY', 'single_value', True),
                          ('PR_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_BLOCK', 'single_value', True), 
                          ('PR_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
                          ('PR_SCORE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True), 
-                         ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True) ]
-        self.validation_filename = 'breastcancerpathology_testing.xlsx'
+                         ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
+                         ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ]
     
     #
-    def _get_validation_csn_list(self, validation_data):
-        if 'document_list' in self.static_data.keys():
-            csn_list = self.static_data['document_list']
-        else:
-            csn_list = None
-        validation_csn_list =  []
-        for item in validation_data:
-            if csn_list is None or item[2] in csn_list:
-                validation_csn_list.append(item[2])
-        validation_csn_list = list(set(validation_csn_list))
-        return validation_csn_list
+    def _generate_nlp_performance(self, nlp_performance_dict, csn, nlp_values,
+                                  nlp_datum_key, validation_data, validation_datum_key):
+        performance = self._get_performance(csn, nlp_values, nlp_datum_key,
+                                            validation_data, validation_datum_key)
+        nlp_performance_dict[validation_datum_key].append(performance)
+        return nlp_performance_dict
             
     #
     def _process_performance(self, nlp_values, validation_data):
-        for key0 in nlp_values.keys():
-            if nlp_values[key0] is not None:
-                for key1 in nlp_values[key0].keys():
-                    value = nlp_values[key0][key1]
-                    if len(value) > 1:
-                        value = list(set(value))
-                        if len(value) > 1:
-                            if 'equivocal' in value:
-                                value.remove('equivocal')
-                            value = tuple(value)
-                            if len(value) > 1:
-                                value = 'MANUAL_REVIEW',
-                            nlp_values[key0][key1] = value
+        validation_data = self._trim_validation_data(validation_data)
         validation_csn_list = \
             self._get_validation_csn_list(validation_data)
-        nlp_performance_dict = {}
+        nlp_performance_wo_nlp_manual_review_dict = {}
+        nlp_performance_nlp_manual_review_dict = {}
+        wo_validation_manual_review_dict = {}
+        wo_nlp_manual_review_dict = {}
         for i in range(len(self.queries)):
             validation_datum_key = self.queries[i][0]
-            nlp_performance_dict[validation_datum_key] = []
+            nlp_performance_wo_nlp_manual_review_dict[validation_datum_key] = []
+            nlp_performance_nlp_manual_review_dict[validation_datum_key] = []
+            wo_validation_manual_review_dict[validation_datum_key] = 0
+            wo_nlp_manual_review_dict[validation_datum_key] = 0
+        validation_datum_keys = []
+        for query in self.queries:
+            validation_datum_keys.append(query[0])
+        nlp_values = \
+            self._identify_manual_review(nlp_values, validation_datum_keys)
         for csn in validation_csn_list:
             print(csn)
             for i in range(len(self.queries)):
                 nlp_datum_key = self.queries[i][3]
                 validation_datum_key = self.queries[i][0]
-                performance = self._get_performance(csn, nlp_values,
-                                                    nlp_datum_key,
-                                                    validation_data,
-                                                    validation_datum_key)
-                nlp_performance_dict[validation_datum_key].append(performance)
-        N = len(validation_csn_list)
-        for key in nlp_performance_dict.keys():
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_performance_dict[key])
-            self.performance_statistics_dict[key] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                column_labels = validation_data[0]
+                if nlp_values[csn] is not None:
+                    if nlp_datum_key in nlp_values[csn].keys():
+                        nlp_value = nlp_values[csn][nlp_datum_key]
+                    else:
+                        nlp_value = None
+                else:
+                    nlp_value = None
+                if not ( nlp_value is not None and self.manual_review in nlp_value ):
+                    nlp_performance_wo_nlp_manual_review_dict = \
+                        self._generate_nlp_performance(nlp_performance_wo_nlp_manual_review_dict,
+                                                       csn, nlp_values, nlp_datum_key,
+                                                       validation_data, validation_datum_key)
+                else:
+                    nlp_performance_nlp_manual_review_dict = \
+                        self._generate_nlp_performance(nlp_performance_nlp_manual_review_dict,
+                                                       csn, nlp_values, nlp_datum_key,
+                                                       validation_data, validation_datum_key)
+                    wo_nlp_manual_review_dict[validation_datum_key] += 1
+        N_total = len(validation_csn_list)
+        self._generate_performance_statistics(nlp_performance_wo_nlp_manual_review_dict,
+                                              nlp_performance_nlp_manual_review_dict,
+                                              N_total, wo_nlp_manual_review_dict)
         
     #
-    def _read_validation_data(self):
-        validation_filename = 'breastcancerpathology_testing.xlsx'
-        directory_manager = self.static_data['directory_manager']
+    def _trim_validation_data(self, validation_data_in):
         if 'patient_list' in self.static_data.keys():
             patient_list = self.static_data['patient_list']
+            for i in range(len(patient_list)):
+                patient_list[i] = int(patient_list[i])
         else:
             patient_list = None
-        project_name = self.static_data['project_name']
-        data_dir = directory_manager.pull_directory('raw_data_dir')
-        book = read_xlsx_file(os.path.join(data_dir, validation_filename))
-        sheet = book.sheet_by_index(0)
-        ncols = sheet.ncols
-        nrows = sheet.nrows
-        validation_data = []
-        for row_idx in range(nrows):
-            validation_data_tmp = []
-            for col_idx in range(ncols):
-                cell_value = sheet.cell_value(row_idx, col_idx)
-                try:
-                    cell_value = str(int(cell_value))
-                except:
-                    pass
-                validation_data_tmp.append(cell_value)
-            validation_data.append(validation_data_tmp)
-        return validation_data
+        validation_data_out =  []
+        validation_data_out.append(validation_data_in[0])
+        validation_data_in = validation_data_in[1:]
+        for item in validation_data_in:
+            print(item[1])
+            if patient_list is None or int(item[1]) in patient_list:
+                validation_data_out.append(item)
+        return validation_data_out

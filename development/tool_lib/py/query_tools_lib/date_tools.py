@@ -20,23 +20,23 @@ class Postprocessor(Postprocessor_base):
   
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            text_list = text_list[0]
+        date_text_list = []
+        for item in text_list[0]:
+            date_text_list.append(item[0])
         value_list = []
-        for text in text_list:
-            text = normalize_month(text)
-            text = re.sub('[A-Za-z]+-?[0-9]+ - [0-9]{4}', '', text)
-            text = re.sub('[,\-\.]', '/', text)
-            text = re.sub('(?<=[0-9]) of (?=[0-9])', ' / ', text)
+        for date_text in date_text_list:
+            date_text = normalize_month(date_text)
+            date_text = re.sub('[A-Za-z]+-?[0-9]+ - [0-9]{4}', '', date_text)
+            date_text = re.sub('[,\-\.]', '/', date_text)
+            date_text = re.sub('(?<=[0-9]) of (?=[0-9])', ' / ', date_text)
             match_str0 = '('
             match_str0 += '(?<= )[0-9]{1,2} (/ [0-9]{1,2} )?/ [0-9]{2}([0-9]{2})?(?=( |$))'
             match_str0 += ')'
-            match0 = re.search(match_str0, text)
+            match0 = re.search(match_str0, date_text)
             match_str1 = '('
             match_str1 += '(?i)(?<= )(early )?[0-9]{4}(?=( |$))'
             match_str1 += ')'
-            match1 = re.search(match_str1, text)
+            match1 = re.search(match_str1, date_text)
             if match0 is not None:
                 value_tmp = match0.group(0)
                 value_tmp = re.sub(' \- ', '-', value_tmp)

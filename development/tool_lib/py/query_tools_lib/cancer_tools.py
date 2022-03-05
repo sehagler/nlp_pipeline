@@ -72,6 +72,7 @@ class Named_entity_recognition(Preprocessor_base):
         
     #
     def run_preprocessor(self):
+        self._normalize_whitespace()
         self._process_irregular_initialisms()
         self._process_regular_initialisms()
 

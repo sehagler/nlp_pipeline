@@ -18,15 +18,13 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            ecog_score_text_list = text_list[1]
-            test_text_list = text_list[2]
-            context_text_list = text_list[3]
-        else:
-            ecog_score_text_list = []
-            test_text_list = []
-            context_text_list = []
+        ecog_score_text_list = []
+        test_text_list = []
+        context_text_list = []
+        for item in text_list[0]:
+            ecog_score_text_list.append(item[1])
+            test_text_list.append(item[2])
+            context_text_list.append(item[3])
         value_list = []
         normalized_ecog_score_text_list = \
             self._process_ecog_score_text_list(ecog_score_text_list, test_text_list)

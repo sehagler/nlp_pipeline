@@ -6,6 +6,9 @@ Created on Thu Dec 19 12:35:50 2019
 """
 
 #
+import pickle
+
+#
 from nlp_lib.py.static_data_lib.manager_lib.directory_manager_class \
     import Directory_manager
 from tool_lib.py.structure_tools_lib.json_structure_tools \
@@ -30,8 +33,9 @@ class Static_data_manager(object):
         self.static_data['multiprocessing'] = True
         self.static_data['network_manager'] = network
         self.static_data['num_processes'] = 15
+        self.static_data['ohsu_nlp_template_files'] = []
         self.static_data['operation_mode'] = operation_mode
-        self.static_data['patient_identifiers'] = [ 'MRN', 'MRN_CD' ]
+        self.static_data['patient_identifiers'] = [ 'MRN', 'MRN_CD', 'OHSU_MRN' ]
         self.static_data['project_name'] = project_name
         self.static_data['project_subdir'] = project_subdir
         self.static_data['raw_data_encoding'] = 'utf-8'
@@ -47,6 +51,24 @@ class Static_data_manager(object):
             Directory_manager(self.static_data, root_dir_flg)
         self.static_data['json_structure_manager'] = \
             Json_structure_tools()
+            
+    #
+    def _include_lists(self, docs_files, groups_files, groups_idx_list):
+        self.static_data['document_list'] = []
+        for docs_file in docs_files:
+            with open(docs_file, 'rb') as f:
+                document_list = pickle.load(f)
+            self.static_data['document_list'].extend(document_list[0])
+        self.static_data['document_list'] = \
+            list(set(self.static_data['document_list']))
+        self.static_data['patient_list'] = []
+        for groups_file in groups_files:
+            with open(groups_file, 'rb') as f:
+                patient_list = pickle.load(f)
+            for idx in groups_idx_list:
+                self.static_data['patient_list'].extend(patient_list[idx])
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']))
         
     #
     def get_static_data(self):

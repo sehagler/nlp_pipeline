@@ -17,13 +17,11 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            smoking_status_text_list = text_list[0]
-            context_text_list = text_list[1]
-        else:
-            smoking_status_text_list = []
-            context_text_list = []
+        smoking_status_text_list = []
+        context_text_list = []
+        for item in text_list[0]:
+            smoking_status_text_list.append(item[0])
+            context_text_list.append(item[1])
         normalized_smoking_status_text_list = \
             self._process_smoking_status_text_list(smoking_status_text_list)
         value_list = []

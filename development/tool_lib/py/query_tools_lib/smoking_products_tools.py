@@ -18,13 +18,11 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            smoking_products_text_list = text_list[0]
-            context_text_list = text_list[1]
-        else:
-            smoking_products_text_list = []
-            context_text_list = []
+        smoking_products_text_list = []
+        context_text_list = []
+        for item in text_list[0]:
+            smoking_products_text_list.append(item[0])
+            context_text_list.append(item[1])
         normalized_smoking_products_text_list = \
             self._process_smoking_products_text_list(smoking_products_text_list)
         value_list = []
@@ -69,12 +67,9 @@ class Postprocessor(Postprocessor_base):
             if re.search('(?i)(packs?|PPY)', text):
                 value_sublist.append('cigarettes')
             value_sublist = list(set(value_sublist))
-            if len(value_sublist) > 0:
-                value_str = ''
-                for value in value_sublist:
-                    value_str += value + ', '
-                value_str = value_str[:-2]
-                value_list.append(value_str)
-            else:
-                value_list.append('MANUAL_REVIEW')
+            value_str = ''
+            for value in value_sublist:
+                value_str += value + ', '
+            value_str = value_str[:-2]
+            value_list.append(value_str)
         return value_list

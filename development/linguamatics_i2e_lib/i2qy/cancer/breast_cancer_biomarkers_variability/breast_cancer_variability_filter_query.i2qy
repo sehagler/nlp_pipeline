@@ -1,0 +1,23 @@
+version: 6.3
+creationDate: '2021-10-04 17:03:42'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      showMultipleColumns: true
+      of:
+      - link: {path: breast_cancer_variability_neighborhood.i2qy}
+      - word: {text: variable, includeInQuery: false}
+output:
+  columns:
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  - id: alternative1.col2
+    itemOptions: {}
+  - id: alternative1.col3
+    itemOptions: {}
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+creator: haglers

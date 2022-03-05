@@ -14,17 +14,17 @@ query:
           quantifier: {minimum: 0, maximum: 0}
           of:
           - link: {path: ../../tools/block_query.i2qy}
-          - link: {path: breast_cancer_biomarkers_blocks_smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy}
-      - link: {path: breast_cancer_biomarkers_blocks_smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link5}
+          - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy}
+      - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link4}
 output:
   columns:
   - {id: phrase1}
   - id: link1.phrase1
     itemOptions: {}
     linkItemId: link1
-  - id: link5.class1
+  - id: link4.class1
     itemOptions: {}
-    linkItemId: link5
+    linkItemId: link4
   columnLocations: [0, 2, 1]
   useOutputEditor: true
 parameters: {Biomarker: ''}

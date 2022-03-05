@@ -19,6 +19,7 @@ class Named_entity_recognition(Preprocessor_base):
     
     #
     def run_preprocessor(self):
+        self._normalize_whitespace()
         self._general_command('(?i)inversion \(', {None : 'inv('})
 
 #
@@ -26,49 +27,18 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            text_list = text_list[0]
-        entry_text = text_list[0]
-        if entry_text[-1] == ',':
-            entry_text = entry_text[:-1]
-        entry_text = re.sub('(?i)karyotype results : ', '', entry_text)
-        entry_text = re.sub('\]' , '] ', entry_text)
-        entry_text = re.sub(' +', ' ', entry_text)
-        entry_text = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_text)
-        entry_text = re.sub('[ \n]', '', entry_text)
-        entry_text = re.sub('&lt;', '<', entry_text)
-        entry_text = re.sub('&gt;', '>', entry_text)
-        try:
-            if entry_text[:2] == '//':
-                entry_text = entry_text[2:]
-        except:
-            pass
-        #template = template()
-        template = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
-        match = re.search(template, entry_text)
-        if match is not None:
-            karyotype = match.group(0)
-            try:
-                atomized_karyotype = atomize_karyotype(karyotype)
-            except:
-                atomized_karyotype = ''
-            value_list = []
-            value_list.append(entry_text)
-        else:
-            value_list = []
+        karyotype = []
+        snippet = []
+        for item in text_list[0]:
+            karyotype.append(item[0])
+            snippet.append(item[1])
         value_dict_list = []
-        for value in value_list:
+        for i in range(len(karyotype)):
             value_dict = {}
-            value_dict['KARYOTYPE'] = value
+            value_dict['KARYOTYPE'] = karyotype[i]
+            value_dict['SNIPPET'] = snippet[i]
             value_dict_list.append(value_dict)
         return value_dict_list
-    
-    #
-    def run_postprocessor(self):
-        Postprocessor_base.run_postprocessor(self,
-                                             query_name='KARYOTYPE',
-                                             section_name='(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')
 
 #
 class Posttokenizer(Preprocessor_base):
@@ -119,4 +89,6 @@ def atomize_karyotype(full_karyotype):
 
 #
 def template():
-    return '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
+    template = '([0-9]{1,2} \~ )?[0-9]{1,2},[XY]+.*\[[0-9]+\]'
+    template_sections_list = [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ]
+    return template, template_sections_list

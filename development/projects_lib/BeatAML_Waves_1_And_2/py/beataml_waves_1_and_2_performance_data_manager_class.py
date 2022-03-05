@@ -6,15 +6,14 @@ Created on Mon Mar 04 12:29:38 2019
 """
 
 #
+import os
 import re
-from time import sleep
 
 #
 from nlp_lib.py.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_class import Specimens
-from projects_lib.BeatAML_Waves_1_And_2.py.gold_standard_jsons_class \
-    import Gold_standard_jsons
+from tool_lib.py.processing_tools_lib.text_processing_tools import substitution
 from tool_lib.py.query_tools_lib.antigens_tools import extract_antigens
 from tool_lib.py.query_tools_lib.date_tools import compare_dates
 
@@ -31,8 +30,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         self.static_data = static_data
         self.identifier_key = 'MRN'
         self.identifier_list = self.static_data['patient_list']
-        self.queries = [ ('Antibodies.Tested', [ 'ANTIBODIES TESTED' ], 'ANTIBODIES_TESTED', 'ANTIBODIES_TESTED', 'multiple_values', True),
-                         ('dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
+        self.queries = [ ('Antibodies.Tested', [ 'ANTIBODIES TESTED' ], 'ANTIGENS', 'ANTIBODIES_TESTED', 'multiple_values', True),
+                         ('dxAtSpecimenAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
                          ('dx.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE', 'DATE', 'multiple_values', True),
                          ('Extramedullary.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE', 'EXTRAMEDULLARY_DISEASE', 'multiple_values', True),
                          ('FAB/Blast.Morphology', [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION', 'FAB_CLASSIFICATION', 'multiple_values', True),
@@ -42,8 +41,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                          ('%.Blasts.in.PB', [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
                          ('Relapse.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE', 'DATE', 'multiple_values', True),
                          ('Residual.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE', 'DIAGNOSIS', 'multiple_values', True),
-                         ('specificDx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-                         ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ] 
+                         ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
+                         ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
         
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
@@ -80,7 +79,122 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         # to be moved to appropriate location
         self.manual_review = \
             json_structure_manager.pull_key('manual_review')
-        #  
+        #
+        
+    #
+    def _cleanup_antigens(self, text):
+        text = re.sub(',$', '', text)
+        text = re.sub('\.', '', text)
+        text = re.sub(':', ' : ', text)
+        text = re.sub(',', ' , ', text)
+        text = re.sub('\(', ' ( ', text)
+        text = re.sub('\)', ' ) ', text)
+        text = re.sub('\.', ' . ', text)
+        text = re.sub(';', ' ; ', text)
+        text = re.sub('/', ' / ', text)
+        text = re.sub('HLA ?DR', 'HLA-DR', text)
+        text = re.sub('(?i)dim(-| (/ )?)partial', 'dim/partial', text)
+        text = re.sub('(?i)dim (/ )?variable', 'dim/variable', text)
+        text = re.sub('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', ' CD', text)
+        text = re.sub('(?i)partial (/ )?dim', 'dim/partial', text)
+        text = re.sub('(?i)myeloperoxidase( \(MPO\))?', 'MPO', text)
+        text = substitution('([a-z]?CD[0-9]+|MPO|T[Dd]T) : ([a-z]?CD[0-9]+|MPO|T[Dd]T)',
+                            {' : ' : ':'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) / ([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)',
+                            {' / ' : '/'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-negative',
+                            {'-negative' : ' negative'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-positive',
+                            {'-positive' : ' positive'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-',
+                            {'-' : ' negative '}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)\+',
+                            {'\+' : ' positive'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) \+',
+                            {'\+' : ' positive'}, text)
+        text = re.sub('(?<=HLA) (negative|positive)(?=DR)', '-', text)
+        text = re.sub(' +', ' ', text)
+        text = re.sub(' \n', '\n', text)
+        text = re.sub(' $', '', text)
+        return text
+        
+    #
+    def _generate_nlp_performance(self, nlp_performance_dict, labId, nlp_values,
+                                  nlp_datum_key, validation_data, validation_datum_key):
+        if validation_datum_key == '%.Blasts.in.BM' or\
+           validation_datum_key == '%.Blasts.in.PB':
+            performance = self._get_blast_performance(labId, nlp_values,
+                                                      nlp_datum_key, 
+                                                      validation_data,
+                                                      validation_datum_key)
+        elif validation_datum_key == 'Antibodies.Tested':
+            performance = self._get_antibodies_tested_performance(labId,
+                                                                  nlp_values,
+                                                                  nlp_datum_key, 
+                                                                  validation_data,
+                                                                  validation_datum_key)
+        elif validation_datum_key == 'Extramedullary.dx':
+            performance = self._get_extramedullary_disease_performance(labId,
+                                                                       nlp_values,
+                                                                       nlp_datum_key, 
+                                                                       validation_data,
+                                                                       validation_datum_key)
+        elif validation_datum_key == 'FAB/Blast.Morphology':
+            performance = self._get_fab_classification_performance(labId,
+                                                                   nlp_values,
+                                                                   nlp_datum_key, 
+                                                                   validation_data,
+                                                                   validation_datum_key)
+        elif validation_datum_key == 'FISH.Analysis.Summary':
+            performance = self._get_fish_analysis_summary_performance(labId,
+                                                                      nlp_values,
+                                                                      nlp_datum_key, 
+                                                                      validation_data,
+                                                                      validation_datum_key)
+        elif validation_datum_key == 'Karyotype':
+            performance = self._get_karyotype_performance(labId, nlp_values,
+                                                          nlp_datum_key, 
+                                                          validation_data,
+                                                          validation_datum_key)
+            
+        elif validation_datum_key == 'Relapse.Date':
+            performance = self._get_relapse_date_performance(labId,
+                                                             nlp_values,
+                                                             nlp_datum_key, 
+                                                             validation_data,
+                                                             validation_datum_key)
+        elif validation_datum_key == 'Residual.dx':
+            performance = self._get_residual_disease_performance(labId,
+                                                                 nlp_values,
+                                                                 nlp_datum_key, 
+                                                                 validation_data,
+                                                                 validation_datum_key)
+        elif validation_datum_key == 'Surface.Antigens.(Immunohistochemical.Stains)':
+            performance = self._get_surface_antigens_performance(labId,
+                                                                 nlp_values,
+                                                                 nlp_datum_key, 
+                                                                 validation_data,
+                                                                 validation_datum_key)
+        elif validation_datum_key == 'dxAtSpecimenAcquisition':
+            performance = self._get_diagnosis_performance(labId,
+                                                          nlp_values,
+                                                          nlp_datum_key, 
+                                                          validation_data,
+                                                          validation_datum_key)
+        elif validation_datum_key == 'dx.Date':
+            performance = self._get_diagnosis_date_performance(labId,
+                                                               nlp_values,
+                                                               nlp_datum_key, 
+                                                               validation_data,
+                                                               validation_datum_key)
+        elif validation_datum_key == 'specificDxAtAcquisition':
+            performance = self._get_specific_diagnosis_performance(labId,
+                                                                   nlp_values,
+                                                                   nlp_datum_key, 
+                                                                   validation_data,
+                                                                   validation_datum_key)
+        nlp_performance_dict[validation_datum_key].append(performance)
+        return nlp_performance_dict
             
     #
     def _get_nlp_values(self, nlp_data, data_json, identifier_list):
@@ -114,14 +228,18 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             nlp_value = tuple(data_out)
         else:
             nlp_value = None
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
+            validation_value = self._cleanup_antigens(validation_value)
             validation_value = re.sub('(?i)n/a', '', validation_value)
             validation_value = re.sub('(?i)not (available|run)', '', validation_value)
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         if validation_value is not None:
             validation_value = re.sub('dim', 'dim ', validation_value)
             validation_value = re.sub('\+', ' +', validation_value)
@@ -158,12 +276,15 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         else:
             nlp_value = None
         nlp_value = self._nlp_to_tuple(nlp_value)
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None 
         if validation_value is not None:
             validation_value = validation_value.replace('~', '')
             validation_value = validation_value.replace('>', '')
@@ -182,12 +303,11 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if labId in nlp_values.keys():
             keys0 = list(nlp_values[labId])
             if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-                data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+                data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
             else:
                 data_out = None
         if data_out is not None:
-            data_out = \
-                re.sub('SYNDROME(?!S)', 'SYNDROMES', data_out)
+            data_out = re.sub('SYNDROME(?!S)', 'SYNDROMES', data_out)
             data_out_tmp = data_out
             data_out = []
             data_out.append(data_out_tmp)
@@ -195,14 +315,19 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             nlp_value = tuple(data_out)
         else:
             nlp_value = None
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
+            validation_value = re.sub('LEUKAEMIA', 'LEUKEMIA', validation_value)
+            validation_value = re.sub('leukaemia', 'leukemia', validation_value)
             validation_value = \
                 re.sub('SYNDROME(?!S)', 'SYNDROMES', validation_value)
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         if validation_value is not None:
             validation_value_tmp = validation_value
             validation_value = []
@@ -230,16 +355,19 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             data_out = []
             data_out.append(data_out_tmp)
         nlp_value = self._nlp_to_tuple(data_out)
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             validation_value = \
                 re.sub('(?<=/)20(?=[0-9][0-9])', '', validation_value)
             validation_value = \
                 re.sub('(?<=/)0(?=[0-9]/)', '', validation_value)
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         validation_value = \
             self._validation_to_tuple(validation_value)
         performance, flg = \
@@ -262,12 +390,15 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             data_out = []
             data_out.append(data_out_tmp)
         nlp_value = self._nlp_to_tuple(data_out)
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
         performance, flg = \
             self._compare_data_values(nlp_value, validation_value)
@@ -280,7 +411,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if labId in nlp_values.keys():
             keys0 = list(nlp_values[labId])
             if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-                data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+                data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
             else:
                 data_out = None
         if data_out is not None:
@@ -289,12 +420,15 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             data_out = []
             data_out.append(data_out_tmp)
         nlp_value = self._nlp_to_tuple(data_out)
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
         performance, flg = \
             self._compare_data_values(nlp_value, validation_value)
@@ -322,12 +456,15 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             nlp_value = tuple(data_out)
         else:
             nlp_value = None
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         if validation_value is not None:
             validation_value_tmp = validation_value
             validation_value_tmp = \
@@ -362,8 +499,13 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             nlp_value = tuple(data_out)
         else:
             nlp_value = None
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             validation_value = validation_value.replace('//', '/')
             if validation_value == '':
                 validation_value = None
@@ -373,8 +515,6 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 validation_value = None
             if validation_value == 'None':
                 validation_value = None
-        else:
-            validation_value = None
         if validation_value is not None:
             validation_value_tmp = validation_value
             validation_value_tmp = \
@@ -404,14 +544,17 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             data_out = []
             data_out.append(data_out_tmp)
         nlp_value = self._nlp_to_tuple(data_out)
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             validation_value = \
                 re.sub('(?<=/)20(?=[0-9][0-9])', '', validation_value)
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
         performance, flg = \
             self._compare_data_values(nlp_value, validation_value)
@@ -434,14 +577,17 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             data_out = []
             data_out.append(data_out_tmp)
         nlp_value = self._nlp_to_tuple(data_out)
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
             validation_value = re.sub('(?i)acute myeloid leukemia', 'AML', validation_value)
             validation_value = validation_value.lower()
             if validation_value == '':
                 validation_value = None
-        else:
-            validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
         performance, flg = \
             self._compare_data_values(nlp_value, validation_value)
@@ -453,7 +599,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if labId in nlp_values.keys():
             keys0 = list(nlp_values[labId])
             if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-                data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+                data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
             else:
                 data_out = None
         else:
@@ -473,8 +619,15 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             nlp_value = tuple(data_out)
         else:
             nlp_value = None
-        if validation_datum_key in validation_data[labId].keys():
-            validation_value = validation_data[labId][validation_datum_key]
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
+            validation_value = re.sub('LEUKAEMIA', 'LEUKEMIA', validation_value)
+            validation_value = re.sub('leukaemia', 'leukemia', validation_value)
             validation_value = re.sub('(?i)acute myeloid leukemia', 'AML', validation_value)
             validation_value = re.sub('(?i)acute myelomonocytic leukemia', 'AMML', validation_value)
             validation_value = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', validation_value)
@@ -484,8 +637,6 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 validation_value = None
             elif validation_value[-1] == ',':
                 validation_value = validation_value[:-1]
-        else:
-            validation_value = None
         if validation_value is not None:
             validation_value_tmp = validation_value
             validation_value = []
@@ -494,7 +645,6 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_specific_diagnosis_value = tuple(validation_value)
         else:
             validation_specific_diagnosis_value = None
-            
         performance, flg = \
             self._compare_data_values(nlp_value, validation_value)
         return performance
@@ -508,6 +658,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
                 if data_out == '':
                     data_out = None
+                print(nlp_values[labId][keys0[0]][nlp_datum_key])
             else:
                 data_out = None
         else:
@@ -525,43 +676,45 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if data_out is not None and \
            data_out is not self.manual_review:
             nlp_value = tuple(data_out)
-        #elif data_out is None:
         else:
             nlp_value = None
-        if labId in validation_data.keys():
-            if validation_datum_key in validation_data[labId].keys():
-                validation_value = validation_data[labId][validation_datum_key]
-                validation_value = re.sub('(?i)n/a', '', validation_value)
-                validation_value = re.sub('(?i)not (available|run)', '', validation_value)
-                if validation_value == '':
-                    validation_value = None
-            else:
+        labid_idx = validation_data[0].index('labId')
+        validation_datum_idx = validation_data[0].index(validation_datum_key)
+        validation_value = None
+        for item in validation_data:
+            if item[labid_idx] == labId:
+                validation_value = item[validation_datum_idx]
+        if validation_value is not None:
+            validation_value = self._cleanup_antigens(validation_value)
+            validation_value = re.sub('(?i)n/a', '', validation_value)
+            validation_value = re.sub('(?i)not (available|run)', '', validation_value)
+            if validation_value == '':
                 validation_value = None
-            if validation_value is not None:
-                validation_value = re.sub('dim', 'dim ', validation_value)
-                validation_value = re.sub('\+', ' +', validation_value)
-                validation_value = re.sub('(?i)(-)?positive', ' +', validation_value)
-                validation_value = extract_antigens(validation_value)
-                validation_value = list(set(validation_value))
-            if validation_value is not None:
-                validation_value = \
-                    tuple(validation_value)
-            else:
-                validation_value = None
-        else:
-            validation_value = None
+        if validation_value is not None:
+            validation_value = re.sub('dim', 'dim ', validation_value)
+            validation_value = re.sub('\+', ' +', validation_value)
+            validation_value = re.sub('(?i)(-)?positive', ' +', validation_value)
+            validation_value = extract_antigens(validation_value)
+            validation_value = list(set(validation_value))
+        if validation_value is not None:
+            validation_value = \
+                tuple(validation_value)
         performance, flg = \
             self._compare_data_values(nlp_value, validation_value)
         return performance
     
     #
-    def _process_performance(self, nlp_values_in, validation_data_in):
-        #validation_csn_list = \
-        #    self._get_validation_csn_list(validation_data)
-        nlp_performance_dict = {}
+    def _process_performance(self, nlp_values_in, validation_data):
+        nlp_performance_wo_nlp_manual_review_dict = {}
+        nlp_performance_nlp_manual_review_dict = {}
+        wo_validation_manual_review_dict = {}
+        wo_nlp_manual_review_dict = {}
         for i in range(len(self.queries)):
             validation_datum_key = self.queries[i][0]
-            nlp_performance_dict[validation_datum_key] = []
+            nlp_performance_wo_nlp_manual_review_dict[validation_datum_key] = []
+            nlp_performance_nlp_manual_review_dict[validation_datum_key] = []
+            wo_validation_manual_review_dict[validation_datum_key] = 0
+            wo_nlp_manual_review_dict[validation_datum_key] = 0
         patientIds = nlp_values_in.keys()
         patientIds = list(set(patientIds))
         for patientId in patientIds:
@@ -569,10 +722,6 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 nlp_values = nlp_values_in[patientId]
             else:
                 nlp_values = {}
-            if patientId in validation_data_in:
-                validation_data = validation_data_in[patientId]
-            else:
-                validation_data = {}
             labIds = []
             labIds.extend(nlp_values.keys())
             for labId in labIds:
@@ -580,82 +729,28 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 for i in range(len(self.queries)):
                     nlp_datum_key = self.queries[i][0]
                     validation_datum_key = self.queries[i][0]
-                    if validation_datum_key == '%.Blasts.in.BM' or\
-                       validation_datum_key == '%.Blasts.in.PB':
-                        performance = self._get_blast_performance(labId, nlp_values,
-                                                                  nlp_datum_key, 
-                                                                  validation_data,
-                                                                  validation_datum_key)
-                    elif validation_datum_key == 'Antibodies.Tested':
-                        performance = self._get_antibodies_tested_performance(labId,
-                                                                              nlp_values,
-                                                                              nlp_datum_key, 
-                                                                              validation_data,
-                                                                              validation_datum_key)
-                    elif validation_datum_key == 'Extramedullary.dx':
-                        performance = self._get_extramedullary_disease_performance(labId,
-                                                                                   nlp_values,
-                                                                                   nlp_datum_key, 
-                                                                                   validation_data,
-                                                                                   validation_datum_key)
-                    elif validation_datum_key == 'FAB/Blast.Morphology':
-                        performance = self._get_fab_classification_performance(labId,
-                                                                               nlp_values,
-                                                                               nlp_datum_key, 
-                                                                               validation_data,
-                                                                               validation_datum_key)
-                    elif validation_datum_key == 'FISH.Analysis.Summary':
-                        performance = self._get_fish_analysis_summary_performance(labId,
-                                                                                  nlp_values,
-                                                                                  nlp_datum_key, 
-                                                                                  validation_data,
-                                                                                  validation_datum_key)
-                    elif validation_datum_key == 'Karyotype':
-                        performance = self._get_karyotype_performance(labId, nlp_values,
-                                                                      nlp_datum_key, 
-                                                                      validation_data,
-                                                                      validation_datum_key)
-                        
-                    elif validation_datum_key == 'Relapse.Date':
-                        performance = self._get_relapse_date_performance(labId,
-                                                                         nlp_values,
-                                                                         nlp_datum_key, 
-                                                                         validation_data,
-                                                                         validation_datum_key)
-                    elif validation_datum_key == 'Residual.dx':
-                        performance = self._get_residual_disease_performance(labId,
-                                                                             nlp_values,
-                                                                             nlp_datum_key, 
-                                                                             validation_data,
-                                                                             validation_datum_key)
-                    elif validation_datum_key == 'Surface.Antigens.(Immunohistochemical.Stains)':
-                        performance = self._get_surface_antigens_performance(labId,
-                                                                             nlp_values,
-                                                                             nlp_datum_key, 
-                                                                             validation_data,
-                                                                             validation_datum_key)
-                    elif validation_datum_key == 'dx':
-                        performance = self._get_diagnosis_performance(labId,
-                                                                      nlp_values,
-                                                                      nlp_datum_key, 
-                                                                      validation_data,
-                                                                      validation_datum_key)
-                    elif validation_datum_key == 'dx.Date':
-                        performance = self._get_diagnosis_date_performance(labId,
-                                                                           nlp_values,
-                                                                           nlp_datum_key, 
-                                                                           validation_data,
-                                                                           validation_datum_key)
-                    elif validation_datum_key == 'specificDx':
-                        performance = self._get_specific_diagnosis_performance(labId,
-                                                                               nlp_values,
-                                                                               nlp_datum_key, 
-                                                                               validation_data,
-                                                                               validation_datum_key)
-                    nlp_performance_dict[validation_datum_key].append(performance)
+                    column_labels = validation_data[0]
+                    if nlp_values[labId] is not None:
+                        if nlp_datum_key in nlp_values[labId].keys():
+                            nlp_value = nlp_values[labId][nlp_datum_key]
+                        else:
+                            nlp_value = None
+                    else:
+                        nlp_value = None
+                    if not ( nlp_value is not None and self.manual_review in nlp_value ):
+                        nlp_performance_wo_nlp_manual_review_dict = \
+                            self._generate_nlp_performance(nlp_performance_wo_nlp_manual_review_dict,
+                                                           labId, nlp_values, nlp_datum_key,
+                                                           validation_data, validation_datum_key)
+                    else:
+                        nlp_performance_nlp_manual_review_dict = \
+                            self._generate_nlp_performance(nlp_performance_nlp_manual_review_dict,
+                                                           csn, nlp_values, nlp_datum_key,
+                                                           validation_data, validation_datum_key)
+                        wo_nlp_manual_review_dict[validation_datum_key] += 1
         patientIds = nlp_values_in.keys()
         patientIds = list(set(patientIds))
-        N = 0
+        N_total = 0
         for patientId in patientIds:
             if patientId in nlp_values_in:
                 nlp_patient = nlp_values_in[patientId]
@@ -664,12 +759,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             labIds = []
             labIds.extend(nlp_patient.keys())
             for labId in labIds:
-                N += 1
-        for key in nlp_performance_dict.keys():
-            FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_performance_dict[key])
-            self.performance_statistics_dict[key] = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                N_total += 1
+        self._generate_performance_statistics(nlp_performance_wo_nlp_manual_review_dict,
+                                              nlp_performance_nlp_manual_review_dict,
+                                              N_total, wo_nlp_manual_review_dict)
             
     #
     def _read_nlp_value(self, nlp_data, data_json, key, identifier):
@@ -705,11 +798,3 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if doc_name not in data_json[identifier][specimen_date][proc_nm].keys():
                 data_json[identifier][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
         return data_json
-    
-    #
-    def _read_validation_data(self):
-        mrn_list = self.static_data['patient_list']
-        gold_standard_object = Gold_standard_jsons(self.directory_manager, mrn_list)
-        gold_standard_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'gold_standard.json')
-        validation_data = gold_standard_object.get_data_json()
-        return validation_data

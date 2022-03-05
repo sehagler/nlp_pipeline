@@ -20,6 +20,7 @@ class Named_entity_recognition(Preprocessor_base):
     
     #
     def run_preprocessor(self):
+        self._normalize_whitespace()
         self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
 
 #
@@ -27,22 +28,21 @@ class Postprocessor(Postprocessor_base):
 
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            text_list = text_list[0]
+        blast_values = []
+        for item in text_list[0]:
+            blast_values.append(item[0])
         value_flg = False
         value_list = []
-        for text in text_list:
-            text = re.sub('%', '', text)
-            if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text) is not None:
-                match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text)
+        for blast_value in blast_values:
+            blast_value = re.sub('%', '', blast_value)
+            if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value) is not None:
+                match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value)
                 value_list.append(match.group(0))
-                if re.search('(?i)(blast|cell|involve|WBC)', text):
+                if re.search('(?i)(blast|cell|involve|WBC)', blast_value):
                     value_flg = True
-            elif re.search('(?i)(occasional|no definitive|rare)', text) is not None:
-            #elif re.search('(?i)(no definitive)', text) is not None:
+            elif re.search('(?i)(occasional|no definitive|rare)', blast_value) is not None:
                 value_list.append('0')
-                if re.search('(?i)(blast|cell|involve|WBC)', text):
+                if re.search('(?i)(blast|cell|involve|WBC)', blast_value):
                     value_flg = True
             else:
                 pass

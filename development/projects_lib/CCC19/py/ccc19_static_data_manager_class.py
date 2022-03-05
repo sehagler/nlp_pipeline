@@ -25,11 +25,19 @@ class CCC19_static_data_manager(Static_data_manager):
         Static_data_manager.__init__(self, operation_mode, project_name, 
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
+            
+    #
+    def _trim_lists(self, document_list, patient_list):
+        self.static_data['document_list'] = \
+            list(set(self.static_data['document_list']).intersection(document_list))
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']).intersection(patient_list))
     
     #
     def get_static_data(self):
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
+        self.static_data['validation_file'] = 'ccc19_testing.xlsx'
         if self.project_subdir == 'production':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML'] = {}
@@ -93,81 +101,60 @@ class CCC19_static_data_manager(Static_data_manager):
                                                              'Nagle_CCC19_NLP_hno_note_v_first_general_set.xml' ]
 
             #
-            if False:
-                if self.static_data['root_dir_flg'] == 'X':
-                    base_dir = 'Z:'
-                elif self.static_data['root_dir_flg'] == 'Z':
-                    base_dir = 'Z:'
-                elif self.static_data['root_dir_flg'] == 'dev_server':
-                    base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
-                elif self.static_data['root_dir_flg'] == 'prod_server':
-                    base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
-                source_dir = base_dir + '/NLP/NLP_Source_Data/CCC19'
-                training_data_dir = source_dir + '/test/pkl'
-                covid_positive_docs_file = \
-                    os.path.join(training_data_dir, 'training_docs_covid_positive.pkl')
-                covid_positive_groups_file = \
-                    os.path.join(training_data_dir, 'training_groups_covid_positive.pkl')
-                first_general_docs_file = \
-                    os.path.join(training_data_dir, 'training_docs_first_general_set.pkl')
-                second_general_docs_file = \
-                    os.path.join(training_data_dir, 'training_docs_second_general_set.pkl')
-                second_general_groups_file = \
-                    os.path.join(training_data_dir, 'training_groups_second_general_set.pkl')
-                evaluation_docs_file = \
-                    os.path.join(training_data_dir, 'training_docs_evaluation.pkl')
-                try:
-                    self.static_data['document_list'] = []
-                    idx_list = [0, 1, 2]
-                    with open(evaluation_docs_file, 'rb') as f:
-                        document_list = pickle.load(f)
-                    for idx in idx_list:
-                        self.static_data['document_list'].extend(document_list[idx])
-                    with open(covid_positive_docs_file, 'rb') as f:
-                        document_list = pickle.load(f)
-                    self.static_data['document_list'].extend(document_list[0])
-                    with open(first_general_docs_file, 'rb') as f:
-                        document_list = pickle.load(f)
-                    self.static_data['document_list'].extend(document_list[0])
-                    with open(second_general_docs_file, 'rb') as f:
-                        document_list = pickle.load(f)
-                    self.static_data['document_list'].extend(document_list[0])
-                    self.static_data['document_list'] = \
-                        list(set(self.static_data['document_list']))
-                except:
-                    pass
-                try:
-                    self.static_data['patient_list'] = []
-                    #idx_list = [0, 1, 2]
-                    idx_list = [3]
-                    with open(covid_positive_groups_file, 'rb') as f:
-                        patient_lists = pickle.load(f)
-                    patient_list = []
-                    for idx in idx_list:
-                        patient_list.extend(patient_lists[idx])
-                    self.static_data['patient_list'].extend(patient_list)
-                    with open(second_general_groups_file, 'rb') as f:
-                        patient_lists = pickle.load(f)
-                    patient_list = []
-                    for idx in idx_list:
-                        patient_list.extend(patient_lists[idx])
-                    self.static_data['patient_list'].extend(patient_list)
-                    self.static_data['patient_list'] = \
-                        list(set(self.static_data['patient_list']))
-                except:
-                    pass
+            if self.static_data['root_dir_flg'] == 'X':
+                base_dir = 'Z:'
+            elif self.static_data['root_dir_flg'] == 'Z':
+                base_dir = 'Z:'
+            elif self.static_data['root_dir_flg'] == 'dev_server':
+                base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
+            elif self.static_data['root_dir_flg'] == 'prod_server':
+                base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
+            source_dir = base_dir + '/NLP/NLP_Source_Data/CCC19'
+            training_data_dir = source_dir + '/test/pkl'
+            docs_files = []
+            docs_files.append(os.path.join(training_data_dir,
+                              'training_docs_covid_positive.pkl'))
+            docs_files.append(os.path.join(training_data_dir,
+                              'training_docs_first_general_set.pkl'))
+            docs_files.append(os.path.join(training_data_dir,
+                              'training_docs_second_general_set.pkl'))
+            groups_files = []
+            groups_files.append(os.path.join(training_data_dir,
+                                'training_groups_covid_positive.pkl'))
+            #groups_files.append(os.path.join(training_data_dir,
+            #                    'training_groups_first_general_set.pkl'))
+            groups_files.append(os.path.join(training_data_dir,
+                                'training_groups_second_general_set.pkl'))
+                
+            self._include_lists(docs_files, groups_files, [1, 2, 3])
             
-            #
-            if True:
-                raw_data_dir = \
-                    self.static_data['directory_manager'].pull_directory('raw_data_dir')
-                raw_data_file = os.path.join(raw_data_dir, 'ccc19_testing.xlsx')
-                book = read_xlsx_file(raw_data_file)
-                sheet = book.sheet_by_index(0)
-                patient_list = sheet.col_values(1)
-                document_list = sheet.col_values(2)
-                self.static_data['patient_list'] = list(set(patient_list[1:]))
-                self.static_data['document_list'] = list(set(document_list[1:]))
+            evaluation_docs_file = \
+                os.path.join(training_data_dir, 'training_docs_evaluation.pkl')
+            idx_list = [0, 1, 2]
+            with open(evaluation_docs_file, 'rb') as f:
+                document_list = pickle.load(f)
+            for idx in idx_list:
+                self.static_data['document_list'].extend(document_list[idx])
+            self.static_data['document_list'] = \
+                list(set(self.static_data['document_list']))
+            trainng_groups_first_general_set_file = \
+                os.path.join(training_data_dir, 'training_groups_first_general_set.pkl')
+            with open(trainng_groups_first_general_set_file, 'rb') as f:
+                patient_list = pickle.load(f)
+            for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
+                self.static_data['patient_list'].extend(patient_list[idx])
+            self.static_data['patient_list'] = \
+                list(set(self.static_data['patient_list']))
+            
+            raw_data_dir = \
+                self.static_data['directory_manager'].pull_directory('raw_data_dir')
+            raw_data_file = os.path.join(raw_data_dir, 'ccc19_testing.xlsx')
+            book = read_xlsx_file(raw_data_file)
+            sheet = book.sheet_by_index(0)
+            patient_list = list(set(sheet.col_values(1)[1:]))
+            document_list = list(set(sheet.col_values(2)[1:]))
+            
+            self._trim_lists(document_list, patient_list)
                 
         else:
             print('Bad project_subdir value')

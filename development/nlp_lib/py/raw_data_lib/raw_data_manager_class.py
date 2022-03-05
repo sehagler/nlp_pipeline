@@ -281,7 +281,7 @@ class Raw_data_manager(object):
         document_data = {}
         document_found = False
         for i in range(len(self.data)):
-            if self.data[i]['FILENAME'][0] == data_file:
+            if len(self.data[i]['FILENAME']) > 0 and self.data[i]['FILENAME'][0] == data_file:
                 data = self.data[i]
                 keys = list(data.keys())
                 if document_number in data[keys[0]]:
@@ -350,7 +350,7 @@ class Raw_data_manager(object):
         document_numbers = []
         doc_num = 0
         for data in self.data:
-            if data['FILENAME'][0] == data_file:
+            if len(data['FILENAME']) > 0 and data['FILENAME'][0] == data_file:
                 keys = list(data.keys())
                 document_numbers.extend(data[keys[0]])
         return document_numbers

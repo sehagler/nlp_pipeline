@@ -99,64 +99,29 @@ class Postprocessor_base(object):
         return data_dict_list
     
     #
-    def _create_data_structure(self, match_str, data_dict_list):
-        for i in range(len(data_dict_list)):
-            data_dict_list[i][self.nlp_data_key] = {}
-        for i in range(len(data_dict_list)):
-            for entry in data_dict_list[i]['DOCUMENT_FRAME']:
-                if re.match(match_str, entry[0][0]):
-                    key = (entry[0][0], '')
-                    entry_text = entry[2]
-                    if key not in data_dict_list[i][self.nlp_data_key]:
-                        data_dict_list[i][self.nlp_data_key][key] = {}
-                        data_dict_list[i][self.nlp_data_key][key][self.query_name] = {}
-                        data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key] = {}
-                    if self.nlp_element_key + str(0) not in data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key].keys():
-                        data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)] = []
-                    data_dict_list[i][self.nlp_data_key][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(0)].append(entry_text)
-        return data_dict_list
-    
-    #
     def _extract_data_value(self, text_list):
         print('self._extract_data_value function not defined')
     
     #
     def _extract_data_values(self, data_dict_list):
         for i in range(len(data_dict_list)):
-            num_components = len(data_dict_list[i][self.nlp_data_key])
-            element_keys_dict = {}
-            text_list_dict = {}
-            for idx in range(num_components):
-                element_keys_dict[idx] = {}
-                text_list_dict[idx] = {}
-                if len(data_dict_list[i][self.nlp_data_key][idx]) > 0:
-                    for key in data_dict_list[i][self.nlp_data_key][idx].keys():
-                        keys = \
-                            data_dict_list[i][self.nlp_data_key][idx][key][self.query_name][self.nlp_tool_output_key].keys()
-                        element_keys = [k for k in keys if self.nlp_element_key in k]
-                        element_keys = list(set(element_keys))
-                        element_keys_dict[idx][key] = element_keys
-                    for key in element_keys_dict[idx].keys():
-                        element_keys = element_keys_dict[idx][key]
-                        if len(element_keys) > 0:
-                            text_list = []
-                            for j in range(len(element_keys)):
-                                text_list.append(data_dict_list[i][self.nlp_data_key][idx][key][self.query_name][self.nlp_tool_output_key][self.nlp_element_key + str(j)])
-                            text_list_dict[idx][key] = text_list
+            document_frames = data_dict_list[i]['DOCUMENT_FRAME']
             keys = []
-            for idx in range(num_components):
-                keys.extend(list(text_list_dict[idx].keys()))
-            keys = sorted(list(set(keys)))
+            for j in range(len(document_frames)):
+                for item in document_frames[j]:
+                    keys.append(item[0])
+            keys = list(set(keys))
             for key in keys:
-                text_list = {}
-                for idx in range(num_components):
-                    if key in text_list_dict[idx].keys():
-                        text_list[idx] = text_list_dict[idx][key]
-                    else:
-                        text_list[idx] = []
-                value_list = self._extract_data_value(text_list)
+                value_list = []
+                for j in range(len(document_frames)):
+                    value_list_tmp = []
+                    for item in document_frames[j]:
+                        if item[0] == key:
+                            value_list_tmp.append(item[2:])
+                    value_list.append(value_list_tmp)
+                extracted_data = self._extract_data_value(value_list)
                 data_dict_list =\
-                    self._append_data(i, key, data_dict_list, value_list)
+                    self._append_data(i, key, data_dict_list, extracted_data)
         for i in range(len(data_dict_list)):
             try:
                 data_dict_list[i][self.nlp_data_key] = \
@@ -228,9 +193,6 @@ class Postprocessor_base(object):
         for idx in range(num_components):
             self.data_dict_list[idx] = \
                 self._build_json_structure(self.data_dict_list[idx])
-            if section_name is not None:
-                self.data_dict_list[idx] = \
-                    self._create_data_structure(section_name, self.data_dict_list[idx])
         data_dict_list_tmp = self.data_dict_list
         self.data_dict_list = {}
         for idx in range(num_components):

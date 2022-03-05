@@ -17,15 +17,13 @@ class Postprocessor(Postprocessor_base):
         
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            cancer_stage_text_list = text_list[1]
-            cancer_type_text_list = text_list[2]
-            context_text_list = text_list[3]
-        else:
-            cancer_stage_text_list = []
-            cancer_type_text_list = []
-            context_text_list = []
+        cancer_stage_text_list = []
+        cancer_type_text_list = []
+        context_text_list = []
+        for item in text_list[0]:
+            cancer_stage_text_list.append(item[1])
+            cancer_type_text_list.append(item[2])
+            context_text_list.append(item[3])
         cancer_stage_text_list = \
             self._process_cancer_stage_text_list(cancer_stage_text_list)
         value_list = []

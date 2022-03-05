@@ -20,7 +20,7 @@ import shutil
 from nlp_lib.py.file_lib.json_manager_class import Json_manager
 from nlp_lib.py.logger_lib.logger_class import Logger
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import write_file, xml_diff
+    import read_xlsx_file, write_file, xml_diff
 
 #
 class Performance_data_manager(object):
@@ -123,61 +123,16 @@ class Performance_data_manager(object):
         else:
             if y is not None:
                 if self.manual_review in y:
-                    result = 'manual review true positive'
+                    result = 'true positive'
                 else:
-                    result = 'manual review false positive + false negative'
+                    result = 'false positive + false negative'
             else:
-                result = 'manual review false positive'
-        if False:
-            result = result.replace('manual review ', '')
+                result = 'false positive'
         if 'true positive' not in result and 'true negative' not in result:
             print(x)
             print(y)
             print('')
         return result, display_data_flg
-    
-    '''
-    #
-    def _compare_strings(self, x, y):
-        display_data_flg = False
-        try:
-            if self.manual_review in x:
-                x = self.manual_review
-        except:
-            pass
-        if x != self.manual_review:
-            if y is not None:
-                if x is not None:
-                    if str(x) in str(y):
-                        result = 'true positive'
-                    else:
-                        display_data_flg = True
-                        result = 'false positive + false negative'
-                elif x is None:
-                    display_data_flg = True
-                    result = 'false negative'
-            else:
-                if x is not None:
-                    display_data_flg = True
-                    result = 'false positive'
-                else:
-                    result = 'true negative'
-        else:
-            if y is not None:
-                if self.manual_review in y:
-                    result = 'manual review true positive'
-                else:
-                    result = 'manual review false positive + false negative'
-            else:
-                result = 'manual review false positive'
-        if False:
-            result = result.replace('manual review ', '')
-        if 'true positive' not in result and 'true negative' not in result:
-            print(x)
-            print(y)
-            print('')
-        return result, display_data_flg
-    '''
         
     #
     def _compare_values(self, x, y):
@@ -207,13 +162,11 @@ class Performance_data_manager(object):
         else:
             if y is not None:
                 if self.manual_review in y:
-                    result = 'manual review true positive'
+                    result = 'true positive'
                 else:
-                    result = 'manual review false positive + false negative'
+                    result = 'false positive + false negative'
             else:
-                result = 'manual review false positive'
-        if False:
-            result = result.replace('manual review ', '')
+                result = 'false positive'
         if 'true positive' not in result and 'true negative' not in result:
             print(x)
             print(y)
@@ -248,13 +201,11 @@ class Performance_data_manager(object):
         else:
             if y is not None:
                 if self.manual_review in y:
-                    result = 'manual review true positive'
+                    result = 'true positive'
                 else:
-                    result = 'manual review false positive + false negative'
+                    result = 'false positive + false negative'
             else:
-                result = 'manual review false positive'
-        if False:
-            result = result.replace('manual review ', '')
+                result = 'false positive'
         if 'true positive' not in result and 'true negative' not in result:
             print(x)
             print(y)
@@ -267,13 +218,40 @@ class Performance_data_manager(object):
         return z
     
     #
-    def _display_performance_statistics(self, performance_statistics_dict):
-        for key in performance_statistics_dict.keys():
+    def _display_performance_statistics(self):
+        for key in self.performance_statistics_wo_nlp_manual_review_dict.keys():
             print(key)
-            print(' accuracy:\t' + performance_statistics_dict[key]['ACCURACY'])
-            print(' precision:\t' + performance_statistics_dict[key]['PRECISION'])
-            print(' recall:\t' + performance_statistics_dict[key]['RECALL'])
-            print(' F1:\t\t' + performance_statistics_dict[key]['F1'])
+            print(' N:\t' + \
+                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['N'] + \
+                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['N'])
+            print(' accuracy:' + \
+                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['ACCURACY'] + \
+                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['ACCURACY'])
+            print(' precision:' + \
+                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['PRECISION'] + \
+                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['PRECISION'])
+            print(' recall:' + \
+                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['RECALL'] + \
+                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['RECALL'])
+            print(' F1:\t' + \
+                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['F1'] + \
+                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['F1'])
+    
+    #
+    def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
+                                         nlp_performance_nlp_manual_review_dict,
+                                         N_total, wo_nlp_manual_review_dict):
+        for key in nlp_performance_wo_nlp_manual_review_dict.keys():
+            N_manual_review = wo_nlp_manual_review_dict[key]
+            N = N_total - N_manual_review
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_performance_wo_nlp_manual_review_dict[key])
+            self.performance_statistics_wo_nlp_manual_review_dict[key] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+            FN, FP, FP_plus_FN, TN, TP = \
+                self._performance_values(nlp_performance_nlp_manual_review_dict[key])
+            self.performance_statistics_nlp_manual_review_dict[key] = \
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N_manual_review)
     
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
@@ -323,8 +301,11 @@ class Performance_data_manager(object):
         else:
             if len(data_values) > 0:
                 if mode_flg == 'multiple_values':
-                    data_tmp = data_values[0][0].split(', ')
-                    data_tmp = tuple(data_tmp)
+                    if len(data_values[0]) > 0:
+                        data_tmp = data_values[0][0].split(', ')
+                        data_tmp = tuple(data_tmp)
+                    else:
+                        data_tmp = ''
                 elif mode_flg == 'single_value':
                     data_tmp = data_values
                 if isinstance(data_tmp, list):
@@ -403,10 +384,11 @@ class Performance_data_manager(object):
             nlp_value = None
         nlp_value = self._nlp_to_tuple(nlp_value)
         column_labels = validation_data[0]
-        for i in range(1,len(validation_data)):
+        for i in range(1, len(validation_data)):
             item = validation_data[i]
             validation_idx = \
-                [j for j in range(len(column_labels)) if column_labels[j] == validation_datum_key][0]
+                [j for j in range(len(column_labels)) \
+                 if column_labels[j] == validation_datum_key][0]
             if item[2] == csn:
                 validation_value = \
                     self._process_validation_item(item[validation_idx])
@@ -427,6 +409,15 @@ class Performance_data_manager(object):
                 validation_csn_list.append(item[2])
         validation_csn_list = list(set(validation_csn_list))
         return validation_csn_list
+    
+    #
+    def _identify_manual_review(self, nlp_values, validation_datum_keys):
+        for validation_datum_key in validation_datum_keys:
+            for key in nlp_values.keys():
+                if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
+                    if len(nlp_values[key][validation_datum_key]) > 1:
+                        nlp_values[key][validation_datum_key] = 'MANUAL_REVIEW',
+        return nlp_values
     
     #
     def _intersection(self, x, y):
@@ -459,27 +450,43 @@ class Performance_data_manager(object):
         if N > 0:
             A = (TP + TN) / N
         else:
-            A = -1
+            A = 'NA'
         if TP + FP + FP_plus_FN > 0:
             P = TP / (TP + FP + FP_plus_FN)
         else:
-            P = -1
-        if TP + FN > 0:
+            P = 'NA'
+        if TP + FN + FP_plus_FN > 0:
             R = TP / (TP + FN + FP_plus_FN)
         else:
-            R = -1
-        if P != -1 and R != -1:
+            R = 'NA'
+        if P != 'NA' and R != 'NA':
             if P * R > 0:
                 F1 = 2 / (1/P + 1/R)
             else:
-                F1 = -1
+                F1 = 'NA'
         else:
-            F1 = -1
+            F1 = 'NA'
         performance_statistics = {}
-        performance_statistics['ACCURACY'] = str(round(A, 3))
-        performance_statistics['F1'] = str(round(F1, 3))
-        performance_statistics['PRECISION'] = str(round(P, 3))
-        performance_statistics['RECALL'] = str(round(R, 3))
+        if isinstance(A, str):
+            performance_statistics['ACCURACY'] = A
+        else:
+            performance_statistics['ACCURACY'] = str(round(A, 3))
+        if isinstance(F1, str):
+            performance_statistics['F1'] = F1
+        else:
+            performance_statistics['F1'] = str(round(F1, 3))
+        if isinstance(N, str):
+            performance_statistics['N'] = N
+        else:
+            performance_statistics['N'] = str(N)
+        if isinstance(P, str):
+            performance_statistics['PRECISION'] = P
+        else:
+            performance_statistics['PRECISION'] = str(round(P, 3))
+        if isinstance(R, str):
+            performance_statistics['RECALL'] = R
+        else:
+            performance_statistics['RECALL'] = str(round(R, 3))
         return performance_statistics
     
     #
@@ -575,30 +582,52 @@ class Performance_data_manager(object):
                                                  key, identifier)
         nlp_values = self._get_nlp_values(self.nlp_data, data_json, 
                                           self.identifier_list)
-        self.performance_statistics_dict = {}
+        self.performance_statistics_wo_nlp_manual_review_dict = {}
+        self.performance_statistics_nlp_manual_review_dict = {}
         validation_data = self._read_validation_data()
         self._process_performance(nlp_values, validation_data)
-        return self.performance_statistics_dict
-        
+    
     #
     def display_performance_data(self):
-        self.display_performance(self.performance_statistics_dict)
+        self.display_performance()
         
     #
-    def display_performance(self, performance_statistics_dict):
-        self._display_performance_statistics(performance_statistics_dict)
+    def display_performance(self):
+        self._display_performance_statistics()
         
     #
     def get_performance_data(self):
         self.read_nlp_data()
-        self.performance_statistics_dict = \
-            self.calculate_performance()
+        self.calculate_performance()
             
     #
     def read_nlp_data(self):
         self.nlp_data = \
             self.project_json_manager.read_nlp_data_from_package_json_file()
+                
+    #
+    def _read_validation_data(self):
+        validation_filename = self.static_data['validation_file']
+        directory_manager = self.static_data['directory_manager']
+        project_name = self.static_data['project_name']
+        data_dir = directory_manager.pull_directory('raw_data_dir')
+        book = read_xlsx_file(os.path.join(data_dir, validation_filename))
+        sheet = book.sheet_by_index(0)
+        ncols = sheet.ncols
+        nrows = sheet.nrows
+        validation_data = []
+        for row_idx in range(nrows):
+            validation_data_tmp = []
+            for col_idx in range(ncols):
+                cell_value = sheet.cell_value(row_idx, col_idx)
+                try:
+                    cell_value = str(int(cell_value))
+                except:
+                    pass
+                validation_data_tmp.append(cell_value)
+            validation_data.append(validation_data_tmp)
+        return validation_data
          
     #
     def write_performance_data(self):
-        self.performance_json_manager.write_file(self.performance_statistics_dict)
+        self.performance_json_manager.write_file(self.performance_statistics_overall_dict)

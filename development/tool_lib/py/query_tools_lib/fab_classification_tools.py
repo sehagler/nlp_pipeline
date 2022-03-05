@@ -17,11 +17,11 @@ class Postprocessor(Postprocessor_base):
       
     #
     def _extract_data_value(self, text_list):
-        text_list = text_list[0]
-        if len(text_list) > 0:
-            text_list = text_list[0]
+        fab_text_list = []
+        for item in text_list[0]:
+            fab_text_list.append(item[0])
         value_list = []
-        for text in text_list:
+        for text in fab_text_list:
             text = re.sub(' (?=[0-9])', ' M', text)
             text = re.sub('(AML|FAB)[\- ]', '', text)
             text = re.sub('[\(\)]', '', text)

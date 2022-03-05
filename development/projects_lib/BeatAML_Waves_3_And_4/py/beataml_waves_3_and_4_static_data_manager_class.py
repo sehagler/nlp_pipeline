@@ -27,7 +27,11 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
     #
     def get_static_data(self):
         self.static_data['document_identifiers'] = [ 'CSN' ]
+        self.static_data['ohsu_nlp_template_files'] = \
+            [ 'antigens.csv', 'fish_analysis_summary.csv', 'karyotype.csv' ]
         self.static_data['remove_date'] = False
+        self.static_data['validation_file'] = \
+            'wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}

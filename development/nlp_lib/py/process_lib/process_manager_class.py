@@ -31,7 +31,8 @@ from ohsu_nlp_template_lib.py.ohsu_nlp_template_manager_class \
     import Ohsu_nlp_template_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
-from tool_lib.py.registry_lib.template_registry_class import Template_registry
+from tool_lib.py.registry_lib.ohsu_nlp_template_registry_class \
+    import Ohsu_nlp_template_registry
 
 #
 class Process_manager(object):
@@ -88,7 +89,8 @@ class Process_manager(object):
         
     #
     def _create_registries(self):
-        self.template_registry = Template_registry(self.static_data_manager)
+        self.ohsu_nlp_template_registry = \
+            Ohsu_nlp_template_registry(self.static_data_manager)
         
     #
     def _project_imports(self):
@@ -222,18 +224,43 @@ class Process_manager(object):
     def ohsu_nlp_templates_run(self):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('preprocessing_data_out')
         keywords_file = self.dynamic_data_manager.keywords_file()
-        template = self.template_registry.tnm_template()
-        self.ohsu_nlp_template_manager.clear_template_output()
-        self.ohsu_nlp_template_manager.run_template(data_dir, keywords_file,
-                                                    template)
-        data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        filename = 'breast_cancer_tnm_stage.csv'
-        header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id',
-                   'TNM Stage', 'Snippet', 'Coords' ]
-        self.ohsu_nlp_template_manager.write_template_output(data_dir, 
-                                                             filename, header)
+        filenames = static_data['ohsu_nlp_template_files']
+        for filename in filenames:
+            template, template_sections_list = \
+                self.ohsu_nlp_template_registry.get_template(filename)
+            self.ohsu_nlp_template_manager.clear_template_output()
+            data_dir = directory_manager.pull_directory('preprocessing_data_out')
+            self.ohsu_nlp_template_manager.run_template_preprocessing_data_out(data_dir,
+                                                                               keywords_file,
+                                                                               template,
+                                                                               template_sections_list)
+            data_dir = directory_manager.pull_directory('postprocessing_data_in')
+            header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id',
+                       'Query Result', 'Snippet', 'Coords' ]
+            self.ohsu_nlp_template_manager.write_template_output(data_dir, 
+                                                                 filename, 
+                                                                 header)
+        
+    #
+    def ohsu_nlp_templates_run_post_i2e_linguamatics(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        filenames = static_data['ohsu_nlp_template_files']
+        for filename in filenames:
+            template, template_sections_list = \
+                self.ohsu_nlp_template_registry.get_template(filename)
+            self.ohsu_nlp_template_manager.clear_template_output()
+            data_dir = directory_manager.pull_directory('postprocessing_data_in')
+            self.ohsu_nlp_template_manager.run_template_postprocessing_data_in(data_dir,
+                                                                               template,
+                                                                               template_sections_list)
+            data_dir = directory_manager.pull_directory('postprocessing_data_in')
+            header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id',
+                       'Query Result', 'Snippet', 'Coords' ]
+            self.ohsu_nlp_template_manager.write_template_output(data_dir, 
+                                                                 filename, 
+                                                                 header)
         
     #
     def postperformance(self):

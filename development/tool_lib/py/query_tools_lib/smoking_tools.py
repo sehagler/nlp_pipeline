@@ -14,8 +14,7 @@ class Named_entity_recognition(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        
-        #
+        self._normalize_whitespace()
         self._normalize_regular_initialism('packs?( (/|per))? days?', 'PPD')
         self._normalize_regular_initialism(' ppd', ' PPD')
         self._normalize_regular_initialism('packs?( (/|per))? wks?', 'PPW')

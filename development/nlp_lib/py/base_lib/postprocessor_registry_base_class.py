@@ -13,6 +13,11 @@ class Postprocessor_registry_base(object):
         self.static_data = static_data_manager.get_static_data()
         self.data_dict_classes_list = []
         self.postprocessor_registry = {}
+        self._import_postprocessors(static_data_manager)
+        
+    #
+    def _import_postprocessors(self, static_data_manager):
+        print('_import_postprocessors() not defined')
         
     #
     def _push_data_dict(self, postprocessor_name, data_dict, idx=0, filename=None):
