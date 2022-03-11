@@ -19,8 +19,6 @@ class AdverseEvents_static_data_manager(Static_data_manager):
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
     
-    #
-    def get_static_data(self):
         self.static_data['document_identifiers'] = [ 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.static_data['patient_identifiers'] = [ 'MRN_CD', 'OHSU_MRN', 'SRC_SYSTM_PAT_ID' ]
         if self.project_subdir == 'test':
@@ -33,4 +31,3 @@ class AdverseEvents_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files_sequence'] = [ 'Schuff_Hagler_AE_NLP_HNO_Notes.xml' ]
         else:
             print('Bad project_subdir value')   
-        return self.static_data

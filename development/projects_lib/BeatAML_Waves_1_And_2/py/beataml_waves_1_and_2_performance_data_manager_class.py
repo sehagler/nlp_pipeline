@@ -21,28 +21,26 @@ from tool_lib.py.query_tools_lib.date_tools import compare_dates
 class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager, performance_json_manager,
-                 project_json_manager):
+    def __init__(self, static_data_manager, json_manager_registry):
         Performance_data_manager.__init__(self, static_data_manager,
-                                          performance_json_manager,
-                                          project_json_manager)
-        static_data = static_data_manager.get_static_data()
-        self.static_data = static_data
-        self.identifier_key = 'MRN'
-        self.identifier_list = self.static_data['patient_list']
-        self.queries = [ ('Antibodies.Tested', [ 'ANTIBODIES TESTED' ], 'ANTIGENS', 'ANTIBODIES_TESTED', 'multiple_values', True),
-                         ('dxAtSpecimenAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-                         ('dx.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE', 'DATE', 'multiple_values', True),
-                         ('Extramedullary.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE', 'EXTRAMEDULLARY_DISEASE', 'multiple_values', True),
-                         ('FAB/Blast.Morphology', [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION', 'FAB_CLASSIFICATION', 'multiple_values', True),
-                         ('FISH.Analysis.Summary', [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY', 'FISH_ANALYSIS_SUMMARY', 'multiple_values', True),
-                         ('Karyotype', [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE', 'KARYOTYPE', 'multiple_values', True),
-                         ('%.Blasts.in.BM', [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
-                         ('%.Blasts.in.PB', [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
-                         ('Relapse.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE', 'DATE', 'multiple_values', True),
-                         ('Residual.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE', 'DIAGNOSIS', 'multiple_values', True),
-                         ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-                         ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
+                                          json_manager_registry)
+        static_data = self.static_data_manager.get_static_data()
+        if static_data['project_subdir'] == 'test':
+            self.identifier_key = 'MRN'
+            self.identifier_list = static_data['patient_list']
+            self.queries = [ ('Antibodies.Tested', [ 'ANTIBODIES TESTED' ], 'ANTIGENS', 'ANTIBODIES_TESTED', 'multiple_values', True),
+                             ('dxAtSpecimenAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
+                             ('dx.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE', 'DATE', 'multiple_values', True),
+                             ('Extramedullary.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE', 'EXTRAMEDULLARY_DISEASE', 'multiple_values', True),
+                             ('FAB/Blast.Morphology', [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION', 'FAB_CLASSIFICATION', 'multiple_values', True),
+                             ('FISH.Analysis.Summary', [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY', 'FISH_ANALYSIS_SUMMARY', 'multiple_values', True),
+                             ('Karyotype', [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE', 'KARYOTYPE', 'multiple_values', True),
+                             ('%.Blasts.in.BM', [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
+                             ('%.Blasts.in.PB', [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
+                             ('Relapse.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE', 'DATE', 'multiple_values', True),
+                             ('Residual.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE', 'DIAGNOSIS', 'multiple_values', True),
+                             ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
+                             ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
         
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
@@ -198,8 +196,9 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             
     #
     def _get_nlp_values(self, nlp_data, data_json, identifier_list):
+        static_data = self.static_data_manager.get_static_data()
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
-        validation_object = Specimens(self.static_data, metadata_dict_dict, data_json)
+        validation_object = Specimens(static_data, metadata_dict_dict, data_json)
         validation_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
         nlp_values = validation_object.get_data_json()
         return nlp_values

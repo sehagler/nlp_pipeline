@@ -25,16 +25,7 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
         Static_data_manager.__init__(self, operation_mode, project_name, 
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
-
-    #
-    def _trim_lists(self, document_list, patient_list):
-        self.static_data['document_list'] = \
-            list(set(self.static_data['document_list']).intersection(document_list))
-        self.static_data['patient_list'] = \
-            list(set(self.static_data['patient_list']).intersection(patient_list))
-    
-    #
-    def get_static_data(self):
+        
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
@@ -124,5 +115,9 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
         else:
             print('Bad project_subdir value')
 
-    	#
-        return self.static_data
+    #
+    def _trim_lists(self, document_list, patient_list):
+        self.static_data['document_list'] = \
+            list(set(self.static_data['document_list']).intersection(document_list))
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']).intersection(patient_list))

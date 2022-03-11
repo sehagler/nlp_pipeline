@@ -11,8 +11,9 @@ import os
 import urllib3
 
 #
+from nlp_lib.py.file_lib.json_manager_class import Json_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_xml_file, write_file
+    import read_xml_file
 
 #
 urllib3.disable_warnings()
@@ -21,8 +22,10 @@ urllib3.disable_warnings()
 class Output_manager(object):
 
     #
-    def __init__(self, static_data_manager, metadata_manager):
+    def __init__(self, static_data_manager, metadata_manager,
+                 json_manager_registry):
         self.static_data_manager = static_data_manager
+        self.json_manager_registry = json_manager_registry
         static_data = self.static_data_manager.get_static_data()
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
@@ -124,14 +127,21 @@ class Output_manager(object):
 
     #
     def create_json_files(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        processing_base_dir = \
+            directory_manager.pull_directory('processing_base_dir')
         for data_dict in self.merged_data_dict_list:
             if self.nlp_data_key in data_dict.keys():
                 if bool(data_dict[self.nlp_data_key]):
                     outdir = self.data_out
                     filename = data_dict['DOCUMENT_ID'] + '.json'
                     data_dict.pop('DOCUMENT_ID', None)
-                    write_file(os.path.join(outdir, filename), data_dict,
-                                    False, False)
+                    file = os.path.join(outdir, filename)
+                    filename = file.replace(processing_base_dir + '/', '')
+                    self.json_manager_registry[filename] = \
+                        Json_manager(self.static_data_manager, file)
+                    self.json_manager_registry[filename].write_file(data_dict)
     
     #
     def get_data(self):

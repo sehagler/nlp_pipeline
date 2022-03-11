@@ -111,22 +111,22 @@ class Postprocessor(Postprocessor_base):
                len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 0:
                 if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 0:
-                    value_dict[ biomarker_name + '_BLOCK'] = \
+                    value_dict[biomarker_name + '_BLOCK'] = \
                         consolidated_biomarker_dict[biomarker_name]['BLOCK']
                 if len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 0:
-                    value_dict[ biomarker_name + '_PERCENTAGE'] = \
+                    value_dict[biomarker_name + '_PERCENTAGE'] = \
                         consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']
                 if biomarker_name != 'KI67' and \
                    len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0:
-                    value_dict[ biomarker_name + '_SCORE'] = \
+                    value_dict[biomarker_name + '_SCORE'] = \
                         consolidated_biomarker_dict[biomarker_name]['SCORE']
                 if len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0:
-                    value_dict[ biomarker_name + '_STATUS'] = \
+                    value_dict[biomarker_name + '_STATUS'] = \
                         consolidated_biomarker_dict[biomarker_name]['STATUS']
                 if len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 0:
-                    value_dict[ biomarker_name + '_VARIABILITY'] = \
+                    value_dict[biomarker_name + '_VARIABILITY'] = \
                         consolidated_biomarker_dict[biomarker_name]['VARIABILITY']
-                value_dict[ biomarker_name + '_snippet'] = \
+                value_dict['SNIPPET'] = \
                         consolidated_biomarker_dict[biomarker_name]['SNIPPET']
                 value_dict_list.append(value_dict)
         return value_dict_list

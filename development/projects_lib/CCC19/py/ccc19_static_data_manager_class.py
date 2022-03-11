@@ -25,20 +25,17 @@ class CCC19_static_data_manager(Static_data_manager):
         Static_data_manager.__init__(self, operation_mode, project_name, 
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
-            
-    #
-    def _trim_lists(self, document_list, patient_list):
-        self.static_data['document_list'] = \
-            list(set(self.static_data['document_list']).intersection(document_list))
-        self.static_data['patient_list'] = \
-            list(set(self.static_data['patient_list']).intersection(patient_list))
-    
-    #
-    def get_static_data(self):
+        
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
+        self.static_data['performance_data_files'].append('BreastCancerPathology/test/BreastCancerPathology.performance.json')
+        self.static_data['test_postprocessing_data_in_files'] = \
+            [ 'cancer_stage.csv', 'ecog_status.csv', 'smoking_history.csv',
+              'smoking_products.csv', 'smoking_status.csv' ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
         if self.project_subdir == 'production':
+            
+            '''
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML'] = {}
             self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
@@ -76,6 +73,31 @@ class CCC19_static_data_manager(Static_data_manager):
                                                             'CCC19_NLP_HNO_NOTE_20210723_121254.XML',
                                                             'CCC19_NLP_HNO_NOTE_20210723_121719.XML',
                                                             'CCC19_NLP_PATH_RESULTS_20210723_115905.XML' ]
+            '''
+            
+            self.static_data['raw_data_files'] = {}
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DOCUMENT_FRACTION'] = 0.1
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_MODE'] = 'NONE'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_MODE'] = 'NONE'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_MODE'] = 'NONE'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files_sequence'] = [ 'Nagle_CCC19_NLP_hno_note_v_covid_positive.xml',
+                                                             'Nagle_CCC19_NLP_hno_note_v_second_general_set.xml',
+                                                             'Nagle_CCC19_NLP_hno_note_v_first_general_set.xml' ]
+            
         elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
@@ -158,6 +180,10 @@ class CCC19_static_data_manager(Static_data_manager):
                 
         else:
             print('Bad project_subdir value')
-
-    	#
-        return self.static_data
+            
+    #
+    def _trim_lists(self, document_list, patient_list):
+        self.static_data['document_list'] = \
+            list(set(self.static_data['document_list']).intersection(document_list))
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']).intersection(patient_list))

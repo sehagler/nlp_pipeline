@@ -51,17 +51,14 @@ class Process_manager(object):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
         project_name = static_data['project_name']
-        save_dir = \
-            directory_manager.pull_directory('processing_data_dir')
-        save_dir_tmp = re.sub('/production$', '/test', save_dir)
-        filename = \
-            os.path.join(save_dir_tmp, project_name + '.performance.json')
-        performance_json_manager = \
-            Json_manager(self.static_data_manager, filename)
-        data_dir = directory_manager.pull_directory('processing_data_dir')
-        filename = os.path.join(data_dir, project_name + '.json')
-        project_json_manager = \
-            Json_manager(self.static_data_manager, filename)
+        processing_base_dir = \
+            directory_manager.pull_directory('processing_base_dir')
+        json_manager_registry = {}
+        for key in [ 'performance_data_files', 'project_data_files' ]:
+            for filename in static_data[key]:
+                file = os.path.join(processing_base_dir, filename)
+                json_manager_registry[filename] = \
+                    Json_manager(self.static_data_manager, file)
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_manager)
         self.linguamatics_i2e_manager = \
@@ -70,13 +67,11 @@ class Process_manager(object):
         self.metadata_manager = Metadata_manager(self.static_data_manager)
         self.ohsu_nlp_template_manager = Ohsu_nlp_template_manager()
         self.packaging_manager = \
-            Packaging_manager(self.static_data_manager,
-                              performance_json_manager, project_json_manager)
+            Packaging_manager(self.static_data_manager, json_manager_registry)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_manager,
-                                         performance_json_manager,
-                                         project_json_manager)
+                                         json_manager_registry)
             print('Performance_data_manager: ' + project_name + '_performance_data_manager')
         except Exception as e:
             print(e)
@@ -85,7 +80,8 @@ class Process_manager(object):
             Postprocessor_registry(self.static_data_manager,
                                    self.metadata_manager)
         self.output_manager = Output_manager(self.static_data_manager, 
-                                             self.metadata_manager)
+                                             self.metadata_manager,
+                                             json_manager_registry)
         
     #
     def _create_registries(self):
@@ -275,11 +271,16 @@ class Process_manager(object):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        for filename in os.listdir(data_dir):
+        filelist = os.listdir(data_dir)
+        if static_data['project_subdir'] == 'test' and \
+           'test_postprocessing_data_in_files' in static_data.keys():
+            filelist = \
+                list(set(filelist).intersection(static_data['test_postprocessing_data_in_files']))
+        for filename in filelist:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 self.postprocessor_registry.create_postprocessor(filename)
-        for filename in os.listdir(data_dir):
+        for filename in filelist:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 data_dict = \

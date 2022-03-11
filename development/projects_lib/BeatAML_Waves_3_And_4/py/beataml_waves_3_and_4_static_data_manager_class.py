@@ -23,9 +23,7 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
         self.user = user
-    
-    #
-    def get_static_data(self):
+        
         self.static_data['document_identifiers'] = [ 'CSN' ]
         self.static_data['ohsu_nlp_template_files'] = \
             [ 'antigens.csv', 'fish_analysis_summary.csv', 'karyotype.csv' ]
@@ -65,6 +63,3 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
         sheet = book.sheet_by_index(0)
         patients = sheet.col_values(1)
         self.static_data['patient_list'] = patients[1:]
-        
-        #
-        return self.static_data

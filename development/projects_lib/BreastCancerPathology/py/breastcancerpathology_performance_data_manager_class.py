@@ -18,37 +18,36 @@ from tool_lib.py.query_tools_lib.date_tools import compare_dates
 class BreastCancerPathology_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager, performance_json_manager,
-                 project_json_manager):
+    def __init__(self, static_data_manager, json_manager_registry):
         Performance_data_manager.__init__(self,  static_data_manager,
-                                          performance_json_manager,
-                                          project_json_manager)
-        self.static_data = static_data_manager.get_static_data()
-        self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
-        validation_data = self._read_validation_data()
-        self.identifier_list = self._get_validation_csn_list(validation_data)
-        self.queries = [ ('ER_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_BLOCK', 'single_value', True), 
-                         ('ER_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
-                         ('ER_SCORE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
-                         ('ER_STATUS', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
-                         ('ER_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_VARIABILITY', 'single_value', True),
-                         ('GATA3_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_BLOCK', 'single_value', True),
-                         ('GATA3_STATUS', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
-                         ('GATA3_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_VARIABILITY', 'single_value', True),
-                         ('HER2_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_BLOCK', 'single_value', True),
-                         #('HER2_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
-                         ('HER2_SCORE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True), 
-                         ('HER2_STATUS', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True), 
-                         ('HER2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_VARIABILITY', 'single_value', True),
-                         ('KI67_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_BLOCK', 'single_value', True),
-                         ('KI67_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_PERCENTAGE', 'single_value', True),
-                         #('KI67_STATUS', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_STATUS', 'single_value', True),
-                         ('KI67_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_VARIABILITY', 'single_value', True),
-                         ('PR_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_BLOCK', 'single_value', True), 
-                         ('PR_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
-                         ('PR_SCORE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True), 
-                         ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
-                         ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ]
+                                          json_manager_registry)
+        static_data = self.static_data_manager.get_static_data()
+        if static_data['project_subdir'] == 'test':
+            self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
+            validation_data = self._read_validation_data()
+            self.identifier_list = self._get_validation_csn_list(validation_data)
+            self.queries = [ ('ER_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_BLOCK', 'single_value', True), 
+                             ('ER_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
+                             ('ER_SCORE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
+                             ('ER_STATUS', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
+                             ('ER_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_VARIABILITY', 'single_value', True),
+                             ('GATA3_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_BLOCK', 'single_value', True),
+                             ('GATA3_STATUS', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
+                             ('GATA3_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_VARIABILITY', 'single_value', True),
+                             ('HER2_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_BLOCK', 'single_value', True),
+                             #('HER2_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
+                             ('HER2_SCORE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True), 
+                             ('HER2_STATUS', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True), 
+                             ('HER2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_VARIABILITY', 'single_value', True),
+                             ('KI67_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_BLOCK', 'single_value', True),
+                             ('KI67_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_PERCENTAGE', 'single_value', True),
+                             #('KI67_STATUS', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_STATUS', 'single_value', True),
+                             ('KI67_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_VARIABILITY', 'single_value', True),
+                             ('PR_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_BLOCK', 'single_value', True), 
+                             ('PR_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
+                             ('PR_SCORE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True), 
+                             ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
+                             ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ]
     
     #
     def _generate_nlp_performance(self, nlp_performance_dict, csn, nlp_values,
@@ -109,8 +108,9 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
         
     #
     def _trim_validation_data(self, validation_data_in):
-        if 'patient_list' in self.static_data.keys():
-            patient_list = self.static_data['patient_list']
+        static_data = self.static_data_manager.get_static_data()
+        if 'patient_list' in static_data.keys():
+            patient_list = static_data['patient_list']
             for i in range(len(patient_list)):
                 patient_list[i] = int(patient_list[i])
         else:

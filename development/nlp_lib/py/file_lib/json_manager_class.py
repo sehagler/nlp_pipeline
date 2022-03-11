@@ -91,7 +91,7 @@ class Json_manager(object):
                 if section_i_num is not None:
                     for item_i in nlp_output_i:
                         keys_i = list(item_i.keys())
-                        keys_i.remove('CONTEXT')
+                        keys_i.remove('SNIPPET')
                         for j in range(len(nlp_data)-i-1):
                             section_j = \
                                 nlp_data[i+j+1][self.nlp_datum_key][self.nlp_section_key]
@@ -107,7 +107,7 @@ class Json_manager(object):
                                ( section_i_num <= section_j_num ):
                                 for item_j in nlp_output_j:
                                     keys_j = list(item_j.keys())
-                                    keys_j.remove('CONTEXT')
+                                    keys_j.remove('SNIPPET')
                                     if Counter(keys_i) == Counter(keys_j):
                                         delete_key = True
                                         for key in keys_i:

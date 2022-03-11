@@ -25,15 +25,6 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
                                      project_subdir, user, root_dir_flg)
         self.project_subdir = project_subdir
         
-    #
-    def _trim_lists(self, document_list, patient_list):
-        self.static_data['document_list'] = \
-            list(set(self.static_data['document_list']).intersection(document_list))
-        self.static_data['patient_list'] = \
-            list(set(self.static_data['patient_list']).intersection(patient_list))
-    
-    #
-    def get_static_data(self):
         self.static_data['document_identifiers'] = \
             [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
         self.static_data['ohsu_nlp_template_files'] = \
@@ -83,5 +74,10 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
             document_list = list(set(sheet.col_values(2)[1:]))
 
             self._trim_lists(document_list, patient_list)
-
-        return self.static_data
+        
+    #
+    def _trim_lists(self, document_list, patient_list):
+        self.static_data['document_list'] = \
+            list(set(self.static_data['document_list']).intersection(document_list))
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']).intersection(patient_list))

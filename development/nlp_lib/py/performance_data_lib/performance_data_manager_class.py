@@ -26,19 +26,16 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class Performance_data_manager(object):
     
     #
-    def __init__(self, static_data_manager, performance_json_manager,
-                 project_json_manager):
-        self.performance_json_manager = performance_json_manager
-        self.project_json_manager = project_json_manager
-        static_data = static_data_manager.get_static_data()
+    def __init__(self, static_data_manager, json_manager_registry):
+        self.static_data_manager = static_data_manager
+        self.json_manager_registry = json_manager_registry
+        
+        static_data = self.static_data_manager.get_static_data()
         self.directory_manager = static_data['directory_manager']
         self.save_dir = \
             self.directory_manager.pull_directory('processing_data_dir')
-        
         self.log_dir = self.directory_manager.pull_directory('log_dir')
         self.logger = Logger(self.log_dir)
-        self.static_data = static_data
-        self.static_data_manager = static_data_manager
        
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
@@ -219,40 +216,42 @@ class Performance_data_manager(object):
     
     #
     def _display_performance_statistics(self):
-        for key in self.performance_statistics_wo_nlp_manual_review_dict.keys():
+        for key in self.performance_statistics_overall_dict.keys():
             print(key)
-            print(' N:\t' + \
-                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['N'] + \
-                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['N'])
-            print(' accuracy:' + \
-                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['ACCURACY'] + \
-                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['ACCURACY'])
-            print(' precision:' + \
-                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['PRECISION'] + \
-                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['PRECISION'])
-            print(' recall:' + \
-                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['RECALL'] + \
-                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['RECALL'])
-            print(' F1:\t' + \
-                  '\t' + self.performance_statistics_wo_nlp_manual_review_dict[key]['F1'] + \
-                  '\t' + self.performance_statistics_nlp_manual_review_dict[key]['F1'])
+            print(' N:\t\t' + self.performance_statistics_overall_dict[key]['N']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
+                  self.performance_statistics_overall_dict[key]['N']['NLP_MANUAL_REVIEW'])
+            print(' accuracy:\t' + self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
+                  self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_MANUAL_REVIEW'])
+            print(' precision:\t' + self.performance_statistics_overall_dict[key]['PRECISION']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
+                  self.performance_statistics_overall_dict[key]['PRECISION']['NLP_MANUAL_REVIEW'])
+            print(' recall:\t' + self.performance_statistics_overall_dict[key]['RECALL']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
+                  self.performance_statistics_overall_dict[key]['RECALL']['NLP_MANUAL_REVIEW'])
+            print(' F1:\t\t' + self.performance_statistics_overall_dict[key]['F1']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
+                  self.performance_statistics_overall_dict[key]['F1']['NLP_MANUAL_REVIEW'])
     
     #
     def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
                                          nlp_performance_nlp_manual_review_dict,
                                          N_total, wo_nlp_manual_review_dict):
-        for key in nlp_performance_wo_nlp_manual_review_dict.keys():
-            N_manual_review = wo_nlp_manual_review_dict[key]
+        for key0 in nlp_performance_wo_nlp_manual_review_dict.keys():
+            N_manual_review = wo_nlp_manual_review_dict[key0]
             N = N_total - N_manual_review
             FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_performance_wo_nlp_manual_review_dict[key])
-            self.performance_statistics_wo_nlp_manual_review_dict[key] = \
+                self._performance_values(nlp_performance_wo_nlp_manual_review_dict[key0])
+            performance_statistics_wo_nlp_manual_review_dict = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
             FN, FP, FP_plus_FN, TN, TP = \
-                self._performance_values(nlp_performance_nlp_manual_review_dict[key])
-            self.performance_statistics_nlp_manual_review_dict[key] = \
+                self._performance_values(nlp_performance_nlp_manual_review_dict[key0])
+            performance_statistics_nlp_manual_review_dict = \
                 self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N_manual_review)
-    
+            self.performance_statistics_overall_dict[key0] = {}
+            for key1 in performance_statistics_wo_nlp_manual_review_dict.keys():
+                self.performance_statistics_overall_dict[key0][key1] = {}
+                self.performance_statistics_overall_dict[key0][key1]['NLP_WITHOUT_MANUAL_REVIEW'] = \
+                    performance_statistics_wo_nlp_manual_review_dict[key1]
+                self.performance_statistics_overall_dict[key0][key1]['NLP_MANUAL_REVIEW'] = \
+                    performance_statistics_nlp_manual_review_dict[key1]
+                
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
                         mode_flg='multiple_values'):
@@ -399,8 +398,9 @@ class Performance_data_manager(object):
     
     #
     def _get_validation_csn_list(self, validation_data):
-        if 'document_list' in self.static_data.keys():
-            csn_list = self.static_data['document_list']
+        static_data = self.static_data_manager.get_static_data()
+        if 'document_list' in static_data.keys():
+            csn_list = static_data['document_list']
         else:
             csn_list = None
         validation_csn_list =  []
@@ -582,8 +582,7 @@ class Performance_data_manager(object):
                                                  key, identifier)
         nlp_values = self._get_nlp_values(self.nlp_data, data_json, 
                                           self.identifier_list)
-        self.performance_statistics_wo_nlp_manual_review_dict = {}
-        self.performance_statistics_nlp_manual_review_dict = {}
+        self.performance_statistics_overall_dict = {}
         validation_data = self._read_validation_data()
         self._process_performance(nlp_values, validation_data)
     
@@ -602,14 +601,19 @@ class Performance_data_manager(object):
             
     #
     def read_nlp_data(self):
+        static_data = self.static_data_manager.get_static_data()
+        filename = static_data['project_name'] + '/' + \
+                   static_data['project_subdir'] + '/' + \
+                   static_data['project_name'] + '.json'
         self.nlp_data = \
-            self.project_json_manager.read_nlp_data_from_package_json_file()
+            self.json_manager_registry[filename].read_nlp_data_from_package_json_file()
                 
     #
     def _read_validation_data(self):
-        validation_filename = self.static_data['validation_file']
-        directory_manager = self.static_data['directory_manager']
-        project_name = self.static_data['project_name']
+        static_data = self.static_data_manager.get_static_data()
+        validation_filename = static_data['validation_file']
+        directory_manager = static_data['directory_manager']
+        project_name = static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         book = read_xlsx_file(os.path.join(data_dir, validation_filename))
         sheet = book.sheet_by_index(0)
@@ -630,4 +634,7 @@ class Performance_data_manager(object):
          
     #
     def write_performance_data(self):
-        self.performance_json_manager.write_file(self.performance_statistics_overall_dict)
+        static_data = self.static_data_manager.get_static_data()
+        filename = static_data['project_name'] + '/test/' + \
+                   static_data['project_name'] + '.performance.json'
+        self.json_manager_registry[filename].write_file(self.performance_statistics_overall_dict)
