@@ -9,65 +9,34 @@ Created on Wed Jun  5 14:28:01 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Named_entity_recognition(Preprocessor_base):
     
     #
-    def process_karyotype(self):
+    def run_preprocessor(self):
+        self._normalize_whitespace()
         self._general_command('(?i)inversion \(', {None : 'inv('})
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file):
-        Postprocessor_base.__init__(self, static_data, data_file,
-                                    query_name='KARYOTYPE')
-        for i in range(len(self.data_dict_list)):
-            self.data_dict_list[i][self.nlp_data_key] = {}
-        self._create_data_structure('(KARYOTYPE \d|IMPRESSIONS AND RECOMMENDATIONS \d)')
-        self._extract_data_values()
         
     #
     def _extract_data_value(self, text_list):
-        if len(text_list) > 0:
-            text_list = text_list[0]
-        entry_text = text_list[0]
-        if entry_text[-1] == ',':
-            entry_text = entry_text[:-1]
-        entry_text = re.sub('(?i)karyotype results : ', '', entry_text)
-        entry_text = re.sub('\]' , '] ', entry_text)
-        entry_text = re.sub(' +', ' ', entry_text)
-        entry_text = re.sub('(?<=\]) ?[0-9A-Za-z(].*', '', entry_text)
-        entry_text = re.sub('[ \n]', '', entry_text)
-        entry_text = re.sub('&lt;', '<', entry_text)
-        entry_text = re.sub('&gt;', '>', entry_text)
-        try:
-            if entry_text[:2] == '//':
-                entry_text = entry_text[2:]
-        except:
-            pass
-        match_str = '([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]'
-        match = re.search(match_str, entry_text)
-        if match is not None:
-            karyotype = match.group(0)
-            try:
-                atomized_karyotype = atomize_karyotype(karyotype)
-            except:
-                atomized_karyotype = ''
-            value_list = []
-            value_list.append(entry_text)
-        else:
-            value_list = []
+        karyotype = []
+        snippet = []
+        for item in text_list[0]:
+            karyotype.append(item[0])
+            snippet.append(item[1])
         value_dict_list = []
-        for value in value_list:
+        for i in range(len(karyotype)):
             value_dict = {}
-            value_dict['KARYOTYPE'] = value
+            value_dict['KARYOTYPE'] = karyotype[i]
+            value_dict['SNIPPET'] = snippet[i]
             value_dict_list.append(value_dict)
         return value_dict_list
 
@@ -88,7 +57,7 @@ class Posttokenizer(Preprocessor_base):
                               {' , ' : ','})
         self._general_command('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', {' / ' : '/'})
         self._general_command('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', {' ' : ''})
-    
+        
 #
 def atomize_karyotype(full_karyotype):
     karyotype_atoms = {}
@@ -117,3 +86,9 @@ def atomize_karyotype(full_karyotype):
                 else:
                     karyotype_atoms[karyotype_1_atoms[i+2]] += '/' + count
     return karyotype_atoms
+
+#
+def template():
+    template = '([0-9]{1,2} \~ )?[0-9]{1,2},[XY]+.*\[[0-9]+\]'
+    template_sections_list = [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ]
+    return template, template_sections_list

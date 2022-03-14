@@ -27,8 +27,7 @@ query:
             - alternative:
                 quantifier: {minimum: 0, maximum: 0}
                 of:
-                - link:
-                    path: [../../biomarkers/biomarker_query.i2qy, 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software/development/nlp_lib/i2qy/cancer/biomarkersbiomarker_query.i2qy']
+                - link: {path: ../../biomarkers/biomarker_query.i2qy}
                 - margin
         - alternative:
             id: alternative1

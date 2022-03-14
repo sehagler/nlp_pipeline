@@ -58,14 +58,16 @@ class Directory_manager(object):
                                        project_dir + '/' + project_subdir
             if self.create_dir_flg:
                 create_directory(nlp_data_processing_root_dir)
-            tmp_dir = os.path.join(nlp_data_processing_root_dir, server)
+            self.directory_dict['processing_base_dir'] = \
+                os.path.join(nlp_data_processing_root_dir, server)
             if self.create_dir_flg:
-                create_directory(tmp_dir)
-            processing_tmp_dir = os.path.join(tmp_dir, project_dir)
+                create_directory(self.directory_dict['processing_base_dir'])
+            self.directory_dict['processing_project_dir'] = \
+                os.path.join(self.directory_dict['processing_base_dir'], project_dir)
             if self.create_dir_flg:
-                create_directory(processing_tmp_dir)
+                create_directory(self.directory_dict['processing_project_dir'])
             self.directory_dict['processing_data_dir'] = \
-                os.path.join(processing_tmp_dir, project_subdir)
+                os.path.join(self.directory_dict['processing_project_dir'], project_subdir)
             if self.create_dir_flg:
                 create_directory(self.directory_dict['processing_data_dir'])
             self.directory_dict['general_queries_dir'] = \

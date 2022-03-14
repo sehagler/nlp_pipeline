@@ -8,12 +8,15 @@ query:
       showInDefaultOutput: false
       showMultipleColumns: true
       of:
+      - link: {path: breast_cancer_biomarkers_query_13/breast_cancer_biomarkers_query_13_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_11/breast_cancer_biomarkers_query_11_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_8/breast_cancer_biomarkers_query_8_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_0/breast_cancer_biomarkers_query_0_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_1/breast_cancer_biomarkers_query_1_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_2/breast_cancer_biomarkers_query_2_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_3/breast_cancer_biomarkers_query_3_context.i2qy}
+      - link: {path: breast_cancer_biomarkers_query_12/breast_cancer_biomarkers_query_12_context.i2qy}
+      - link: {path: breast_cancer_biomarkers_query_14/breast_cancer_biomarkers_query_14_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_4/breast_cancer_biomarkers_query_4_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_5/breast_cancer_biomarkers_query_5_context.i2qy}
       - link: {path: breast_cancer_biomarkers_query_6/breast_cancer_biomarkers_query_6_context.i2qy}

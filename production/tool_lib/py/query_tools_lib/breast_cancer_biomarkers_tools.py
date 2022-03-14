@@ -6,12 +6,13 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
+import os
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import article, be, s
@@ -20,135 +21,256 @@ from tool_lib.py.processing_tools_lib.text_processing_tools \
 class Named_entity_recognition(Preprocessor_base):
     
     #
-    def process_biomarkers(self):
+    def run_preprocessor(self):
+        
+        #
+        self._normalize_whitespace()
+        
+        #
         self._general_command('(?i)estrogen and progesterone( receptor' + s() + ')?',
                               {None : 'ER and PR'})
         self._general_command('(?i)progesterone and estrogen( receptor' + s() + ')?',
                               {None : 'PR and ER'})
-        self._general_command('(?i)estrogen receptor( \( ER( , clone [A-Z0-9]+)? \))?', {None : 'ER'})
+        self._general_command('(?i)androgen receptor', {None : 'AR'})
+        self._general_command('(?i)BCL-2', {None : 'BCL2'})
+        self._general_command('(?i)estrogen receptor', {None : 'ER'})
+        self._general_command('(?i)GATA3', {None : 'GATA3'})
+        self._general_command('(?i)GATA-3', {None : 'GATA3'})
         self._general_command('(?i)HER(-| / )?2(( | / )?(c-)?neu)?( \( cerb2 \))?', {None : 'HER2'})
-        self._general_command('(?i)progesterone receptor( \( PR( , clone [A-Z0-9]+)? \))?', {None : 'PR'})
+        self._general_command('(?i)HER2- / (c-)?neu( \( cerb2 \))?', {None : 'HER2'})
         self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
+        self._general_command('(?i)Ki-67', {None : 'KI67'})
+        self._general_command('(?i)PD-L1', {None : 'PDL1'})
+        self._general_command('(?i)progesterone receptor', {None : 'PR'})
+        
+        #
+        self._general_command('(?i)AR \( AR \)', {None : 'AR'})
+        self._general_command('(?i)ER \( ER \)', {None : 'ER'})
+        self._general_command('(?i)ER \( ER , clone [A-Z0-9]+ \)', {'ER , clone' : ''})
+        self._general_command('(?i)ER results , clone [A-Z0-9]+', {'results , clone' : ''})
+        self._general_command('(?i)C-ERB B2 \( HER2 \)', {None: 'HER2'})
+        self._general_command('(?i)proliferati(on|ve) (index|rate) \( KI67 \)', {None : 'KI67'})
+        self._general_command('(?i)KI67( proliferati(on|ve))? (index|rate)', {None : 'KI67'})
+        self._general_command('(?i)KI67( \(mm-1\))?', {None : 'KI67'})
+        self._general_command('(?i)KI67 \( KI67 \)', {None : 'KI67'})
+        self._general_command('(?i)PR \( PR \)', {None : 'PR'})
+        self._general_command('(?i)PR \( PR , clone [A-Z0-9]+ \)', {'PR , clone' : ''})
+        self._general_command('(?i)PR results , clone [A-Z0-9]+', {'results , clone' : ''})
 
 #
 class Postprocessor(Postprocessor_base):
     
     #
-    def __init__(self, static_data, data_file):
-        Postprocessor_base.__init__(self, static_data, data_file)
-        self._extract_data_values()
-        
+    def _create_consolidated_dict(self, biomarker_dict_list):
+        consolidated_biomarker_dict = {}
+        consolidated_biomarker_name_list = []
+        for biomarker_dict in biomarker_dict_list:
+            consolidated_biomarker_name_list.extend(list(biomarker_dict.keys()))
+        consolidated_biomarker_name_list = \
+            list(set(consolidated_biomarker_name_list))
+        for biomarker_name in consolidated_biomarker_name_list:
+            consolidated_biomarker_dict[biomarker_name] = {}
+            consolidated_biomarker_dict[biomarker_name]['BLOCK'] = []
+            consolidated_biomarker_dict[biomarker_name]['PERCENTAGE'] = []
+            consolidated_biomarker_dict[biomarker_name]['SCORE'] = []
+            consolidated_biomarker_dict[biomarker_name]['STATUS'] = []
+            consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = []
+            consolidated_biomarker_dict[biomarker_name]['SNIPPET'] = []
+        for biomarker_dict in biomarker_dict_list:
+            for biomarker_name in biomarker_dict.keys():
+                for key in biomarker_dict[biomarker_name].keys():
+                    consolidated_biomarker_dict[biomarker_name][key].extend(biomarker_dict[biomarker_name][key])
+        for biomarker_name in consolidated_biomarker_dict.keys():
+            if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 1 or \
+               len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 1 or \
+               len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 1 or \
+               len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 1 or \
+               len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 1:
+                   consolidated_biomarker_dict[biomarker_name]['BLOCK'] = \
+                       self.manual_review
+                   consolidated_biomarker_dict[biomarker_name]['PERCENTAGE'] = \
+                       self.manual_review
+                   consolidated_biomarker_dict[biomarker_name]['SCORE'] = \
+                       self.manual_review
+                   consolidated_biomarker_dict[biomarker_name]['STATUS'] = \
+                       self.manual_review
+                   consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = \
+                       self.manual_review
+                   consolidated_biomarker_dict[biomarker_name]['SNIPPET'] = \
+                       self.manual_review
+        return consolidated_biomarker_dict
+    
+    #
+    def _create_value_dict_list(self, consolidated_biomarker_dict):
+        value_dict_list = []
+        for biomarker_name in consolidated_biomarker_dict.keys():
+            value_dict = {}
+            if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 0 or \
+               len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 0 or \
+               len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0 or \
+               len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0 or \
+               len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 0:
+                if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 0:
+                    value_dict[biomarker_name + '_BLOCK'] = \
+                        consolidated_biomarker_dict[biomarker_name]['BLOCK']
+                if len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 0:
+                    value_dict[biomarker_name + '_PERCENTAGE'] = \
+                        consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']
+                if biomarker_name != 'KI67' and \
+                   len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0:
+                    value_dict[biomarker_name + '_SCORE'] = \
+                        consolidated_biomarker_dict[biomarker_name]['SCORE']
+                if len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0:
+                    value_dict[biomarker_name + '_STATUS'] = \
+                        consolidated_biomarker_dict[biomarker_name]['STATUS']
+                if len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 0:
+                    value_dict[biomarker_name + '_VARIABILITY'] = \
+                        consolidated_biomarker_dict[biomarker_name]['VARIABILITY']
+                value_dict['SNIPPET'] = \
+                        consolidated_biomarker_dict[biomarker_name]['SNIPPET']
+                value_dict_list.append(value_dict)
+        return value_dict_list
+    
     #
     def _extract_data_value(self, text_list):
-        manual_review_str = 'MANUAL_REVIEW'
-        if len(text_list) > 0:
-            biomarker_name_text_list = text_list[1]
-            biomarker_status_text_list = text_list[2]
-            biomarker_score_text_list = text_list[3]
-            biomarker_percentage_text_list = text_list[4]
-            context_text_list = text_list[5]
-        else:
-            biomarker_name_text_list = []
-            biomarker_status_text_list = []
-            biomarker_score_text_list = []
-            biomarker_percentage_text_list = []
-            context_text_list = []
-        contexts = []
-        for i in range(len(context_text_list)):
-            contexts.append(context_text_list[i])
-        unique_contexts = list(set(contexts))
+        biomarker_name_list = [ 'ER', 'GATA3', 'HER2', 'KI67', 'PR' ]
+        biomarker_name_text_list = []
+        biomarker_status_text_list = []
+        biomarker_score_text_list = []
+        biomarker_percentage_text_list = []
+        snippet_text_list = []
+        biomarker_name_offset_list = []
+        for item in text_list[0]:
+            biomarker_name_text_list.append(item[1].upper())
+            biomarker_status_text_list.append(item[2])
+            biomarker_score_text_list.append(item[3])
+            biomarker_percentage_text_list.append(item[4])
+            snippet_text_list.append(item[5])
+            biomarker_name_offset_list.append(item[6])
+        blocks_biomarker_name_text_list = []
+        blocks_biomarker_block_text_list = []
+        blocks_snippet_text_list = []
+        blocks_biomarker_name_offset_list = []
+        for item in text_list[1]:
+            blocks_biomarker_name_text_list.append(item[1].upper())
+            blocks_biomarker_block_text_list.append(item[2])
+            blocks_snippet_text_list.append(item[3])
+            blocks_biomarker_name_offset_list.append(item[4])
+        variability_biomarker_name_text_list = []
+        variability_biomarker_variability_text_list = []
+        variability_snippet_text_list = []
+        variability_biomarker_name_offset_list = []
+        for item in text_list[2]:
+            variability_biomarker_name_text_list.append(item[1].upper())
+            variability_biomarker_variability_text_list.append(item[2])
+            variability_snippet_text_list.append(item[3])
+            variability_biomarker_name_offset_list.append(item[4])
+        snippets = []
+        for i in range(len(snippet_text_list)):
+            snippets.append(snippet_text_list[i])
+        for i in range(len(variability_snippet_text_list)):
+            snippets.append(variability_snippet_text_list[i])
+        unique_snippets = list(set(snippets))
+        biomarker_dict_list = []
         er_value_list = []
         her2_value_list = []
+        ki67_value_list = []
         pr_value_list = []
-        for context in unique_contexts:
-            er_status_text_list = []
-            er_score_text_list = []
-            er_percentage_text_list = []
-            her2_status_text_list = []
-            her2_score_text_list = []
-            her2_percentage_text_list = []
-            pr_status_text_list = []
-            pr_score_text_list = []
-            pr_percentage_text_list = []
-            for i in range(len(context_text_list)):
-                if context_text_list[i] == context:
+        for snippet in unique_snippets:
+            biomarker_dict = {}
+            for biomarker_name in biomarker_name_list:
+                biomarker_dict[biomarker_name] = {}
+                biomarker_dict[biomarker_name]['STATUS'] = []
+                biomarker_dict[biomarker_name]['SCORE'] = []
+                biomarker_dict[biomarker_name]['PERCENTAGE'] = []
+                biomarker_dict[biomarker_name]['BLOCK'] = []
+                biomarker_dict[biomarker_name]['VARIABILITY'] = []
+            snippet_found_flg = False
+            for i in range(len(snippet_text_list)):
+                if snippet_text_list[i] == snippet:
+                    snippet_found_flg = True
                     biomarker_name = biomarker_name_text_list[i]
                     biomarker_status = \
-                        self._process_status(biomarker_status_text_list[i])
+                        self._process_status(biomarker_name,
+                                             biomarker_status_text_list[i])
                     biomarker_score = \
                         self._process_score(biomarker_score_text_list[i])
                     biomarker_percentage = \
                         self._process_percentage(biomarker_percentage_text_list[i])
-                    if biomarker_name == 'ER':
-                        if len(biomarker_status.lower()) > 0:
-                            er_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
-                            er_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
-                            er_percentage_text_list.append(biomarker_percentage.lower())
-                    elif biomarker_name == 'HER2':
-                        if len(biomarker_status.lower()) > 0:
-                            her2_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
-                            her2_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
-                            her2_percentage_text_list.append(biomarker_percentage.lower())
-                    elif biomarker_name == 'PR':
-                        if len(biomarker_status.lower()) > 0:
-                            pr_status_text_list.append(biomarker_status.lower())
-                        if len(biomarker_score.lower()) > 0:
-                            pr_score_text_list.append(biomarker_score.lower())
-                        if len(biomarker_percentage.lower()) > 0:
-                            pr_percentage_text_list.append(biomarker_percentage.lower())
-            er_status_text_list = list(set(er_status_text_list))
-            er_score_text_list = list(set(er_score_text_list))
-            er_percentage_text_list = list(set(er_percentage_text_list))
-            er_value_list.append((er_status_text_list, er_score_text_list, er_percentage_text_list, context))
-            her2_status_text_list = list(set(her2_status_text_list))
-            her2_score_text_list = list(set(her2_score_text_list))
-            her2_percentage_text_list = list(set(her2_percentage_text_list))
-            if len(her2_status_text_list) > 1:
-                her2_status_text_list = [ x for x in her2_status_text_list \
-                                          if x != 'equivocal' ]
-            her2_value_list.append((her2_status_text_list, her2_score_text_list, her2_percentage_text_list, context))
-            pr_status_text_list = list(set(pr_status_text_list))
-            pr_score_text_list = list(set(pr_score_text_list))
-            pr_percentage_text_list = list(set(pr_percentage_text_list))
-            pr_value_list.append((pr_status_text_list, pr_score_text_list, pr_percentage_text_list, context))
-        value_dict_list = []
-        for value in er_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
-                value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['ER_STATUS'] = value[0]
-                if len(value[1]) > 0: value_dict['ER_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['ER_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
-        for value in her2_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
-                value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['HER2_STATUS'] = value[0]
-                if len(value[1]) > 0: value_dict['HER2_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['HER2_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
-        for value in pr_value_list:
-            if len(value[0]) > 0 or len(value[1]) > 0 or len(value[2]) > 0:
-                value_dict = {}
-                if len(value[0]) > 1 or len(value[1]) > 1 or len(value[2]) > 1:
-                    value = (manual_review_str, manual_review_str,
-                             manual_review_str, value[3])
-                if len(value[0]) > 0: value_dict['PR_STATUS'] = value[0]
-                if len(value[1]) > 0: value_dict['PR_SCORE'] = value[1]
-                if len(value[2]) > 0: value_dict['PR_PERCENTAGE'] = value[2]
-                value_dict['CONTEXT'] = value[3]
-                value_dict_list.append(value_dict)
+                    biomarker_offset = biomarker_name_offset_list[i][1]
+                    biomarker_block = ''
+                    biomarker_variability = ''
+                    for j in range(len(variability_biomarker_name_offset_list)):
+                        variability_biomarker_offset = \
+                            variability_biomarker_name_offset_list[j][1]
+                        if biomarker_offset == variability_biomarker_offset:
+                            biomarker_variability = \
+                                variability_biomarker_variability_text_list[j]
+                    for j in range(len(blocks_biomarker_name_offset_list)):
+                        blocks_biomarker_offset = \
+                            blocks_biomarker_name_offset_list[j][1]
+                        if biomarker_offset == blocks_biomarker_offset:
+                            biomarker_block = blocks_biomarker_block_text_list[j]
+                    if len(biomarker_block) > 0:
+                        biomarker_dict[biomarker_name]['BLOCK'].append(biomarker_block.upper())
+                    if len(biomarker_percentage) > 0:
+                        biomarker_dict[biomarker_name]['PERCENTAGE'].append(biomarker_percentage.lower())
+                    if len(biomarker_score) > 0:
+                        biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
+                    if len(biomarker_status) > 0:
+                        biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                    if len(biomarker_variability) > 0:
+                        biomarker_dict[biomarker_name]['VARIABILITY'].append(biomarker_variability.lower())
+                for biomarker_name in biomarker_name_list:
+                    biomarker_dict[biomarker_name]['STATUS'] = \
+                        list(set(biomarker_dict[biomarker_name]['STATUS']))
+                    biomarker_dict[biomarker_name]['SCORE'] = \
+                        list(set(biomarker_dict[biomarker_name]['SCORE']))
+                    biomarker_dict[biomarker_name]['PERCENTAGE'] = \
+                        list(set(biomarker_dict[biomarker_name]['PERCENTAGE']))
+                    biomarker_dict[biomarker_name]['BLOCK'] = \
+                        list(set(biomarker_dict[biomarker_name]['BLOCK']))
+                    biomarker_dict[biomarker_name]['VARIABILITY'] = \
+                        list(set(biomarker_dict[biomarker_name]['VARIABILITY']))
+                    biomarker_dict[biomarker_name]['SNIPPET'] = snippet
+            if False: #snippet_found_flg == False:
+                for i in range(len(variability_snippet_text_list)):
+                    if variability_snippet_text_list[i] == snippet:
+                        biomarker_name = variability_biomarker_name_text_list[i]
+                        biomarker_status = ''
+                        biomarker_score = ''
+                        biomarker_percentage = ''
+                        biomarker_block = ''
+                        biomarker_variability = \
+                            variability_biomarker_variability_text_list[i]
+                        if len(biomarker_block) > 0:
+                            biomarker_dict[biomarker_name]['BLOCK'].append(biomarker_block.upper())
+                        if len(biomarker_percentage) > 0:
+                            biomarker_dict[biomarker_name]['PERCENTAGE'].append(biomarker_percentage.lower())
+                        if len(biomarker_score) > 0:
+                            biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
+                        if len(biomarker_status) > 0:
+                            biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                        if len(biomarker_variability) > 0:
+                            biomarker_dict[biomarker_name]['VARIABILITY'].append(biomarker_variability.lower())
+                for biomarker_name in biomarker_name_list:
+                    biomarker_dict[biomarker_name]['STATUS'] = \
+                        list(set(biomarker_dict[biomarker_name]['STATUS']))
+                    biomarker_dict[biomarker_name]['SCORE'] = \
+                        list(set(biomarker_dict[biomarker_name]['SCORE']))
+                    biomarker_dict[biomarker_name]['PERCENTAGE'] = \
+                        list(set(biomarker_dict[biomarker_name]['PERCENTAGE']))
+                    biomarker_dict[biomarker_name]['BLOCK'] = \
+                        list(set(biomarker_dict[biomarker_name]['BLOCK']))
+                    biomarker_dict[biomarker_name]['VARIABILITY'] = \
+                        list(set(biomarker_dict[biomarker_name]['VARIABILITY']))
+                    biomarker_dict[biomarker_name]['SNIPPET'] = snippet
+            if bool(biomarker_dict):
+                biomarker_dict_list.append(biomarker_dict)
+        consolidated_biomarker_dict = \
+            self._create_consolidated_dict(biomarker_dict_list)
+        value_dict_list = \
+            self._create_value_dict_list(consolidated_biomarker_dict)
         return value_dict_list
     
     #
@@ -173,17 +295,18 @@ class Postprocessor(Postprocessor_base):
         return score
         
     #
-    def _process_status(self, status):
-        if status.lower() in [ 'borderline' ]:
-            status = 'equivocal'
-        elif status.lower() in [ 'absent', 'negativity', 'no', 'non-amplified', 
-                                 'nonreactive', 'not amplified', 'unamplified',
-                                 'unfavorable', 'without immunoreactivity']:
-            status = 'negative'
-        elif status.lower() in [ 'amplified', 'favorable', 'immunoreactive',
-                                 'immunoreactivity', 'positivity', 'present',
-                                 'reactive', 'strong' ]:
-            status = 'positive'
+    def _process_status(self, biomarker_name, status):
+        if biomarker_name in [ 'ER', 'GATA3', 'HER2', 'PR' ]:
+            if status.lower() in [ 'borderline' ]:
+                status = 'equivocal'
+            elif status.lower() in [ 'negativity', 'no', 'non-amplified', 
+                                     'nonreactive', 'not amplified', 'unamplified',
+                                     'unfavorable', 'without immunoreactivity']:
+                status = 'negative'
+            elif status.lower() in [ 'amplified', 'favorable', 'immunoreactive',
+                                     'immunoreactivity', 'positivity', 'present',
+                                     'reactive', 'strong', 'variable' ]:
+                status = 'positive'
         return status
 
 #
@@ -192,12 +315,11 @@ class Summarization(Preprocessor_base):
     #
     def _receptor_predicate(self):
         return('(ampification|antigen|clone|(over)?expression|immunoreactivity|protein|receptor|status)')
-        
+    
     #
     def _process_ER(self):
         self._general_command('(?i)\nERs', {None : '\nER'})
         self._general_command('(?i)\sERs', {None : ' ER'})
-        self._general_command('(?i)ER SP1', {None : 'ER'})
         self._general_command('[\n\s]+ER-', {None : ' ER '})
         search_str = 'ER ' + self._receptor_predicate() + s()
         for _ in range(3):
@@ -215,10 +337,10 @@ class Summarization(Preprocessor_base):
         
     #
     def _process_HER2(self):
-        self._general_command('(?i) \( PATHWAYTMHER2 kit , 4B5 \)', {None : ''})
-        self._general_command('(?i) \( Hereceptest \)', {None : ''})
         self._general_command('(?i)HER2( :)?( )?-', {None : 'HER2 negative'})
+        self._general_command('(?i)HER2neg', {None : 'HER2 negative'})
         self._general_command('(?i)HER2( :)?( )?\+', {None : 'HER2 positive'})
+        self._general_command('(?i)HER2pos', {None : 'HER2 negative'})
         for _ in range(7):
             search_str = '(?i)HER2 ([a-z]* for )?' + \
                          self._receptor_predicate() + s()
@@ -230,16 +352,9 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)HER2 ' + self._receptor_predicate(), {None : 'HER2'})
         
     #
-    def _process_Ki67(self):
-        self._clear_command_list()
-        self._general_command('(?i)ki-67( \(mm-1\))?', {None : 'Ki67'})
-        self._process_command_list()
-        
-    #
     def _process_PR(self):
         self._general_command('(?i)\nPRs', {None : '\nPR'})
         self._general_command('(?i)\sPRs', {None : ' PR'})
-        self._general_command('(?i)PR IE2', {None : 'PR'})
         self._general_command('[\n\s]+PR-', {None : ' PR '})
         search_str = 'PR ' + self._receptor_predicate() + s()
         for _ in range(3):
@@ -257,10 +372,12 @@ class Summarization(Preprocessor_base):
         
     #
     def _remove_extraneous_text(self):
+        self._general_command('(?i) \( Hereceptest \)', {None : ''})
         self._general_command('(?i)by IHC', {None : ''})
         self._general_command('(?i)' + article() + ' positive ER or PR result requires.*moderate to strong nuclear staining( \.)?', {None : ''})
         self._general_command('(?i)(, )?Pathway TM', {None : ''})
-        self._general_command('(?i)\( PATHWAYTMHER2 kit \)', {None : ''})
+        self._general_command('(?i) \( PATHWAYTMHER2 kit , 4B5 \)', {None : ''})
+        self._general_command('(?i)\( PATHWAY(TMHER2| \( TM \) HER2) Kit( , clone [0-9A-Z]+)? \)', {None : ''})
         self._general_command('(?i)\* ' + article() + ' asterisk indicates that ' + article() + ' IHC.*computer assisted quantitative image analysis( \.)?', {None : ''})
         self._general_command('(?i)\( analyte specific reagents.*clinical lab testing( \.)? \)( \.)?', {None : ''})
         self._general_command('(?i)\( analyte specific reagents.*FDA( \.)? \)( \.)?', {None : ''})
@@ -276,14 +393,11 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)HER2 (expression )?' + be() + ' expressed by ' + article() + ' ACIS score(.*\n)*.*confirm HER2 DNA amplification( \.)?', {None : ''})
         self._general_command('(?i)' + article() + ' HER2 analysis is done(.*\n)*.*tissue sent for confirmation by FISH analysis( \.)?', {None : ''})
         self._general_command('(?i)' + article() + ' ER , PR and HER2 IHC stains are performed(.*\n)*.*Inadequate specimens[\- ]are not reported \.', {None : ''})
+        self._general_command('(?i); see ISH results below', {None : ''})
         
     #
-    def process_text(self, text):
-        self.push_text(text)
+    def run_preprocessor(self):
         self._process_ER()
         self._process_HER2()
-        self._process_Ki67()
         self._process_PR()
         self._remove_extraneous_text()
-        text = self.pull_text()
-        return text

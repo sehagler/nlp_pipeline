@@ -11,13 +11,13 @@ query:
       - alternative:
           quantifier: {minimum: 0, maximum: 0}
           of:
-          - link: {path: ../breast_cancer_biomarkers_score.i2qy, showInDefaultOutput: false}
+          - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
           - )
       - link: {path: ../breast_cancer_biomarkers_percentage.i2qy, id: link4}
       - alternative:
           quantifier: {minimum: 0, maximum: 0}
           of:
-          - link: {path: ../breast_cancer_biomarkers_score.i2qy, showInDefaultOutput: false}
+          - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
           - (
       - )
 output:

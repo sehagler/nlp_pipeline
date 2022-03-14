@@ -6,13 +6,14 @@ Created on Wed Apr  1 11:45:17 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Named_entity_recognition(Preprocessor_base):
         
     #
-    def process_msbr(self):
+    def run_preprocessor(self):
+        self._normalize_whitespace()
         text_list = []
         text_list.append('(?i)modified Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(mSBR\))?')
         text_list.append('(?i)modified Bloom(-| )(and(-| ))?Richardson( \(mBR\))?')
@@ -37,7 +38,7 @@ class Posttokenizer(Preprocessor_base):
 class Summarization(Preprocessor_base):
     
     #
-    def process_mitotic_rate(self):
+    def _process_mitotic_rate(self):
         self._general_command('(?i)(points )?for mito(s(e|i)s|tic)( (activity|count|figure(s)?|index|rate))',
                               {None : 'for mitoses'})
         match_str0 = '(?i)mito(s(e|i)s|tic)( (activity|count|figure(s)?|index|rate))? \( \d \)'
@@ -57,7 +58,7 @@ class Summarization(Preprocessor_base):
         self._general_command(' a mitoses', {None : ' mitoses'})
         
     #
-    def process_nuclear_pleomorphism(self):
+    def _process_nuclear_pleomorphism(self):
         self._general_command('(?i)pleomorphism', {None : 'nuclear pleomorphism'} )
         self._general_command('(?i)nuclear nuclear', {None : 'nuclear'})
         self._general_command('(?i)(points )?for nuclear (atypia|grade|pleomorphism|score)',
@@ -80,7 +81,7 @@ class Summarization(Preprocessor_base):
         self._general_command(' a nuclei', {None : ' nuclei'})
         
     #
-    def process_tubule_formation(self):
+    def _process_tubule_formation(self):
         match_str = '(?i)(points )?for (glandular )?(\(acinar\)-)?tub(al|ular|ule(s)?)' + \
                     '( (differentiation|formation))?'
         self._general_command(match_str, {None : 'for tubules'})
@@ -106,3 +107,9 @@ class Summarization(Preprocessor_base):
                     '( (differentiation|formation))'
         self._general_command(match_str, {None : 'tubules'})
         self._general_command(' a tubules', {None : ' tubules'})
+        
+    #
+    def run_preprocessor(self):
+        self._process_mitotic_rate()
+        self._process_nuclear_pleomorphism()
+        self._process_tubule_formation()

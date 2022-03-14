@@ -4,6 +4,7 @@ query:
   document:
   - phrase:
       id: phrase1
+      label: Extract
       of:
       - alternative:
           quantifier: {minimum: 0, maximum: 0}

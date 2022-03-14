@@ -1,0 +1,42 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - breast_cancer_biomarkers/breast_cancer_biomarkers_specimens_wrapper.i2qy
+    - Subtraction: [breast_cancer_biomarkers/breast_cancer_biomarkers_sections_wrapper.i2qy, breast_cancer_biomarkers/breast_cancer_biomarkers_specimen_description_wrapper.i2qy]
+output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link2.alternative1.col0
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col1
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col2
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col3
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col4
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col5
+    itemOptions: {}
+    linkItemId: link2
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+parameters: {Biomarker: Ki67}
+runAsSmartQuery: true
+creator: haglers
+useInSmartQuery: true

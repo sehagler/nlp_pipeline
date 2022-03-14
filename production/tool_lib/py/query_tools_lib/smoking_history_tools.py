@@ -10,25 +10,19 @@ from decimal import Decimal
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file):
-        Postprocessor_base.__init__(self, static_data, data_file)
-        self._extract_data_values()
         
     #
     def _extract_data_value(self, text_list):
-        if len(text_list) > 0:
-            smoking_history_text_list = text_list[0]
-            context_text_list = text_list[1]
-        else:
-            smoking_history_text_list = []
-            context_text_list = []
+        smoking_history_text_list = []
+        context_text_list = []
+        for item in text_list[0]:
+            smoking_history_text_list.append(item[0])
+            context_text_list.append(item[1])
         normalized_smoking_history_text_list = \
             self._process_smoking_history_text_list(smoking_history_text_list)
         value_list = []
@@ -42,7 +36,7 @@ class Postprocessor(Postprocessor_base):
             value_dict = {}
             value_dict['SMOKING_HISTORY'] = value[0]
             value_dict['NORMALIZED_SMOKING_HISTORY'] = value[1]
-            value_dict['CONTEXT'] = value[2]
+            value_dict['SNIPPET'] = value[2]
             value_dict_list.append(value_dict)
         return value_dict_list
     

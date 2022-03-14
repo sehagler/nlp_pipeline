@@ -63,10 +63,8 @@ class Json_manager(object):
             json_structure_manager.pull_key('nlp_value_key')
             
         # to be moved to appropriate location
-        self.multiple_specimens = \
-            json_structure_manager.pull_key('multiple_specimens')
-        self.multiple_values = \
-            json_structure_manager.pull_key('multiple_values')
+        self.manual_review = \
+            json_structure_manager.pull_key('manual_review')
         #
         
         self.project_name = self.static_data['project_name']
@@ -93,7 +91,7 @@ class Json_manager(object):
                 if section_i_num is not None:
                     for item_i in nlp_output_i:
                         keys_i = list(item_i.keys())
-                        keys_i.remove('CONTEXT')
+                        keys_i.remove('SNIPPET')
                         for j in range(len(nlp_data)-i-1):
                             section_j = \
                                 nlp_data[i+j+1][self.nlp_datum_key][self.nlp_section_key]
@@ -109,7 +107,7 @@ class Json_manager(object):
                                ( section_i_num <= section_j_num ):
                                 for item_j in nlp_output_j:
                                     keys_j = list(item_j.keys())
-                                    keys_j.remove('CONTEXT')
+                                    keys_j.remove('SNIPPET')
                                     if Counter(keys_i) == Counter(keys_j):
                                         delete_key = True
                                         for key in keys_i:
@@ -148,12 +146,11 @@ class Json_manager(object):
         nlp_data_tmp = nlp_data_tmp[self.documents_wrapper_key]
         nlp_data = {}
         for item in nlp_data_tmp:
-            for patient_identifier in patient_identifiers:
-                try:
-                    patient = \
-                        item[self.document_wrapper_key][self.metadata_key][patient_identifier]
-                except:
-                    pass
+            for key in item[self.document_wrapper_key][self.metadata_key].keys():
+                for patient_identifier in patient_identifiers:
+                    if patient_identifier in key:
+                        patient = \
+                            item[self.document_wrapper_key][self.metadata_key][key]
             document_idx = \
                 item[self.document_wrapper_key][self.nlp_metadata_key]['NLP_DOCUMENT_IDX']
             if patient_list is None or patient in patient_list:
@@ -166,14 +163,20 @@ class Json_manager(object):
                         data_in = item[self.document_wrapper_key][key]
                 data = {}
                 for item in data_in:
-                    nlp_query_key_tmp = \
-                        item[self.nlp_datum_key][self.nlp_query_key]
-                    nlp_section_key_tmp = \
-                        item[self.nlp_datum_key][self.nlp_section_key]
-                    try:
+                    if self.nlp_query_key in item[self.nlp_datum_key].keys():
+                        nlp_query_key_tmp = \
+                            item[self.nlp_datum_key][self.nlp_query_key]
+                    else:
+                        nlp_query_key_tmp = ''
+                    if self.nlp_section_key in item[self.nlp_datum_key].keys():
+                        nlp_section_key_tmp = \
+                            item[self.nlp_datum_key][self.nlp_section_key]
+                    else:
+                        nlp_section_key_tmp = ''
+                    if self.nlp_specimen_key in item[self.nlp_datum_key].keys():
                         nlp_specimen_key_tmp = \
                             item[self.nlp_datum_key][self.nlp_specimen_key]
-                    except:
+                    else:
                         nlp_specimen_key_tmp = ''
                     key_0 = str((nlp_section_key_tmp, nlp_specimen_key_tmp))
                     for key_1 in item[self.nlp_datum_key].keys():
@@ -285,7 +288,8 @@ class Json_manager(object):
                 documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_data_key]
             query_list = []
             for nlp_datum in nlp_data:
-                query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
+                if self.nlp_query_key in nlp_datum[self.nlp_datum_key].keys():
+                    query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
             query_list = list(set(query_list))
             performance_statistics_dict_tmp = []
             tmp_dict = {}

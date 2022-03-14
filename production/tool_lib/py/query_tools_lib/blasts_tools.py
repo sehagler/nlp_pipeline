@@ -10,36 +10,39 @@ import re
 import statistics
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
+    
+#
+class Named_entity_recognition(Preprocessor_base):
+    
+    #
+    def run_preprocessor(self):
+        self._normalize_whitespace()
+        self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file):
-        Postprocessor_base.__init__(self, static_data, data_file)
-        self._extract_data_values()
-        
+
     #
     def _extract_data_value(self, text_list):
-        if len(text_list) > 0:
-            text_list = text_list[0]
+        blast_values = []
+        for item in text_list[0]:
+            blast_values.append(item[0])
         value_flg = False
         value_list = []
-        for text in text_list:
-            text = re.sub('%', '', text)
-            if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text) is not None:
-                match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', text)
+        for blast_value in blast_values:
+            blast_value = re.sub('%', '', blast_value)
+            if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value) is not None:
+                match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value)
                 value_list.append(match.group(0))
-                if re.search('(?i)(blast|cell|involve|WBC)', text):
+                if re.search('(?i)(blast|cell|involve|WBC)', blast_value):
                     value_flg = True
-            elif re.search('(?i)(occasional|no definitive|rare)', text) is not None:
-            #elif re.search('(?i)(no definitive)', text) is not None:
+            elif re.search('(?i)(occasional|no definitive|rare)', blast_value) is not None:
                 value_list.append('0')
-                if re.search('(?i)(blast|cell|involve|WBC)', text):
+                if re.search('(?i)(blast|cell|involve|WBC)', blast_value):
                     value_flg = True
             else:
                 pass
@@ -176,17 +179,10 @@ class Postprocessor(Postprocessor_base):
         return value_dict_list
     
 #
-class Named_entity_recognition(Preprocessor_base):
-    
-    #
-    def process_biomarkers(self):
-        self._general_command('(?i)immunohistochemi(cal|stry)', {None : 'IHC'})
-    
-#
 class Summarization(Preprocessor_base):
     
     #
-    def remove_extraneous_text(self):
+    def run_preprocessor(self):
         self._clear_command_list()
         self._general_command('(?i)[\n\s]+by IHC', {None : ''})
         self._general_command('(?i)[\n\s]+by immunostain', {None : ''})
@@ -266,6 +262,6 @@ def get_blast_value(blast_value_list):
     if len(blast_value) == 1:
         return blast_value[0]
     elif len(blast_value) > 1:
-        return 'MULTIPLE VALUES'
+        return 'MANUAL_REVIEW'
     else:
         return None

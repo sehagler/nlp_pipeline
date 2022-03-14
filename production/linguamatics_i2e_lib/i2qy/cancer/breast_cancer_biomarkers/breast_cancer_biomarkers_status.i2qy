@@ -7,18 +7,20 @@ query:
       showInDefaultOutput: false
       of:
       - alternative:
-          quantifier: {minimum: 0, maximum: 1}
+          quantifier: {minimum: 0, maximum: none}
           view: {layout: list}
-          of: [strongly, weakly]
+          of: [diffusely, focal, focally, minimally, strongly, very, weakly]
       - alternative:
           id: alternative1
           of:
-          - absent
           - amplified
+          - borderline
           - equivocal
           - favorable
+          - high
           - immunoreactive
           - immunoreactivity
+          - low
           - negative
           - negativity
           - 'no'
@@ -35,6 +37,7 @@ query:
           - strong
           - unamplified
           - unfavorable
+          - variable
           - weak
           - phrase: [without, immunoreactivity]
       - alternative:
@@ -43,7 +46,7 @@ query:
           - phrase:
             - for
             - alternative: [amplification, overexpression]
-          - staining
+          - word: {text: stain, morphoVariants: true}
       - phrase:
           quantifier: {minimum: 0, maximum: 1}
           of: [in, invasive, carcinoma]

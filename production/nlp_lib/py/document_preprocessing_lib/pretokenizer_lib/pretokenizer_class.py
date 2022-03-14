@@ -6,10 +6,8 @@ Created on Fri Jun 11 16:41:11 2021
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
-from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.label_normalizer_class \
-    import Label_normalizer
 from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.personal_name_normalizer_class \
     import Personal_name_normalizer
 from nlp_lib.py.document_preprocessing_lib.pretokenizer_lib.normalizers_lib.section_header_normalizer_class \
@@ -28,8 +26,6 @@ class Pretokenizer(Preprocessor_base):
     def __init__(self, static_data):
         Preprocessor_base.__init__(self, static_data)    
         self.body_header = 'SUMMARY'
-        self.formatting = static_data['formatting']
-        self.label_normalizer = Label_normalizer(self.static_data)
         self.personal_name_normalizer = \
             Personal_name_normalizer(self.static_data)
         self.section_header_normalizer = \
@@ -44,11 +40,10 @@ class Pretokenizer(Preprocessor_base):
         self.dynamic_data_manager.append_keywords_text(self.body_header)
         self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         self.section_header_normalizer.push_text(self.text)
-        self.section_header_normalizer.amendment_section_header(self.formatting)
-        self.section_header_normalizer.biomarkers_tests_section_header(self.formatting)
         self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
         self.section_header_normalizer.history_section_header(self.formatting)
         self.section_header_normalizer.normalize_section_header(self.formatting)
+        self.section_header_normalizer.amendment_section_header(self.formatting)
         self.section_header_normalizer.clear_section_header_tags()
         self.section_header_normalizer.fix_section_headers()
         self.text = self.section_header_normalizer.pull_text()
@@ -67,61 +62,26 @@ class Pretokenizer(Preprocessor_base):
         self._general_command('(?i)-to-', {None : ' to '})
         self._general_command('(?i)in-situ', {None : 'in situ'})
         self._general_command('(?i)in-toto', {None : 'in toto'})
+        self._general_command('(?i)intermediate to strong', {None : 'intermediate-strong'})
+        self._general_command('(?i)moderate to strong', {None : 'moderate-strong'})
+        self._general_command('(?i)moderate to weak', {None : 'weak-moderate'})
         self._general_command('(?i)over-expression', {None : 'overexpression'})
+        self._general_command('(?i)strong to moderate', {None : 'moderate-strong'})
+        self._general_command('(?i)weak to moderate', {None : 'weak-moderate'})
+        self._general_command('(?i)weak to strong', {None : 'weak-strong'})
         self._general_command('____+(\n_+)*', {None : '' })
+        text_list = [ 'negative', 'positive']
+        for text_str in text_list:
+            regex_str = '(?i)(?<=' + text_str + ')\('
+            self._general_command(regex_str, {None : ' ('})
     
     #
     def _remove_extraneous_text(self):
         self._general_command('(?i)\(HCC\)', {None : ''})
-        
-
-    '''    
-    #
-    def _normalize_punctuation(self):
-        Report_preprocessor_base_class._normalize_punctuation(self)
-        #self._clear_command_list()
-        #self._general_command('(?i)fine needle', {None : 'fine-needle'})
-        #self._general_command('(?i)over-expression', {None : 'overexpression'})
-        #self._process_command_list()
     
-    #
-    def _normalize_terminology(self):
-        #Report_preprocessor_base_class._normalize_terminology(self)
-        #pretokenizer = Pretokenizer(self.static_data)
-        #pretokenizer.push_text(self.text)
-        #pretokenizer.process_initialisms()
-        #self.text = pretokenizer.pull_text()
-        self._clear_command_list()
-        self._general_command('(?i)margin\(s\)', {None : 'margins'})
-        self._general_command('(?i)from (the )?nipple', {None : 'fn'})
-        self._general_command('(?i)histologic grade', {None : 'grade'})
-        self._process_command_list()
-
-    #
-    def _process_punctuation(self):
-        self._clear_command_list()
-        self._general_command('(?i)(\n)[A-Z]:[ \t]', {':' : '.'})
-        self._general_command('(\s)?\(\n', {None : '\n'})
-        self._general_command('(?i)-grade', {None : ' grade'})
-        self._general_command('(?i)-to-', {None : ' to '})
-        self._general_command('____+(\n_+)*', {None : '' })
-        self._general_command('(?i)fine needle', {None : 'fine-needle'})
-        self._general_command('(?i)in-situ', {None : 'in situ'})
-        self._general_command('(?i)in-toto', {None : 'in toto'})
-        self._general_command('(?i)over-expression', {None : 'overexpression'})
-        self._process_command_list()
-    '''
-        
     #
     def _text_setup(self):
         self._normalize_whitespace()
-        '''
-        self.text_preparation.push_text(self.text)
-        self.text_preparation.normalize_punctuation()
-        self.text_preparation.format_section_headers()
-        self.text_preparation.remove_extraneous_text()
-        self.text = self.text_preparation.pull_text()
-        '''
         self._format_section_headers()
         self._normalize_punctuation()
         self._remove_extraneous_text()
@@ -138,7 +98,7 @@ class Pretokenizer(Preprocessor_base):
         self._text_setup()
         self._normalize_whitespace()
         self._clear_command_list()
-        self._general_command('(?i)(\n)[A-Z]:[ \t]', {':' : '.'})
+        self._general_command('(?i)(\n)[A-Z]\.[ \t]', {'\.' : ':'})
         self._general_command('(\s)?\(\n', {None : '\n'})
         self._general_command('(?i)-grade', {None : ' grade'})
         self._general_command('(?i)-to-', {None : ' to '})
@@ -158,9 +118,10 @@ class Pretokenizer(Preprocessor_base):
         self.specimen_normalizer.push_text(self.text)
         self.specimen_normalizer.process_specimens()
         self.text = self.specimen_normalizer.pull_text()
-        self.label_normalizer.push_text(self.text)
-        self.label_normalizer.process_labels()
-        self.text = self.label_normalizer.pull_text()
         self._extract_section_headers()
         self._normalize_whitespace()
         return self.dynamic_data_manager, self.text
+    
+    #
+    def set_formatting(self, formatting):
+        self.formatting = formatting

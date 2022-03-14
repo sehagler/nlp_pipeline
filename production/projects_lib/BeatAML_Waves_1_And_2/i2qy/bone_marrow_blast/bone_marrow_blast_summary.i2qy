@@ -31,7 +31,8 @@ query:
       - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/bone_marrow_blast_%25/bone_marrow_blast_%25_query.i2qy, id: link2}
 output:
   columns:
-  - id: link2.phrase1
+  - title: Extract
+    id: link2.phrase1
     itemOptions: {}
     linkItemId: link2
   useOutputEditor: true

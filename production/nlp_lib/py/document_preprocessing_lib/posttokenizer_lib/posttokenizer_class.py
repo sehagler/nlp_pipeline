@@ -11,7 +11,7 @@ import inflect
 import re
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.antigens_tools \
     import Posttokenizer as Posttokenizer_antigens

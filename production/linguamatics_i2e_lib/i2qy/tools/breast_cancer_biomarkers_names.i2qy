@@ -1,0 +1,35 @@
+version: 6.3
+creationDate: '2018-05-23 10:07:00'
+query:
+  document:
+  - phrase:
+    - alternative:
+        id: alternative1
+        of: [CK5/6, ER, GATA3, HER2, Ki67, PR]
+    - phrase:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - word:
+            text: (
+            quantifier: {minimum: 0, maximum: 1}
+        - alternative:
+            of:
+            - word: {text: '[0-9]{2}', matchType: Regexp}
+            - word: {text: '[A-Z].*[0-9]/*', matchType: Regexp}
+            - word: {text: '[0-9].*[A-Z].*', matchType: Regexp}
+            where:
+            - word:
+                text: HER2
+                quantifier: {minimum: 0, maximum: 0}
+        - word:
+            text: )
+            quantifier: {minimum: 0, maximum: 1}
+    - word:
+        text: stain
+        morphoVariants: true
+        quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

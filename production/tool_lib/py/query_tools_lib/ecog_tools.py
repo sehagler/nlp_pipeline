@@ -9,28 +9,22 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
-    
-    #
-    def __init__(self, static_data, data_file):
-        Postprocessor_base.__init__(self, static_data, data_file)
-        self._extract_data_values()
         
     #
     def _extract_data_value(self, text_list):
-        if len(text_list) > 0:
-            ecog_score_text_list = text_list[1]
-            test_text_list = text_list[2]
-            context_text_list = text_list[3]
-        else:
-            ecog_score_text_list = []
-            test_text_list = []
-            context_text_list = []
+        ecog_score_text_list = []
+        test_text_list = []
+        context_text_list = []
+        for item in text_list[0]:
+            ecog_score_text_list.append(item[1])
+            test_text_list.append(item[2])
+            context_text_list.append(item[3])
         value_list = []
         normalized_ecog_score_text_list = \
             self._process_ecog_score_text_list(ecog_score_text_list, test_text_list)
@@ -47,7 +41,7 @@ class Postprocessor(Postprocessor_base):
             value_dict['ECOG_SCORE'] = value[0]
             value_dict['NORMALIZED_ECOG_SCORE'] = value[1]
             value_dict['ECOG_TEST'] = value[2]
-            value_dict['CONTEXT'] = value[3]
+            value_dict['SNIPPET'] = value[3]
             value_dict_list.append(value_dict)
         return value_dict_list
                     
@@ -105,7 +99,7 @@ class Postprocessor(Postprocessor_base):
 class Summarization(Preprocessor_base):
     
     #
-    def process_ecog(self):
+    def run_preprocessor(self):
         self._general_command('(?i)(?<!{ )ecog( :)? (performance )?(status|score|ps)', {None : 'ECOG ( ZUBROD ) '})
         self._general_command('(?i)karnofsky (performance )?(status|score|ps)', {None : 'ECOG ( KARNOFSKY ) '})
         self._general_command('(?i)lansky (play performance )?(status|score|ps)', {None : 'ECOG ( LANSKY ) '})

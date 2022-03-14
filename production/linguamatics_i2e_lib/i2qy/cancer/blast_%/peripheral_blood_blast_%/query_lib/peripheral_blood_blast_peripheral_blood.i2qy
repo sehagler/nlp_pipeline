@@ -4,6 +4,7 @@ query:
   document:
   - phrase:
       id: phrase1
+      label: Extract
       of:
       - link: {path: ../../../../tools/percentage_query.i2qy}
       - of

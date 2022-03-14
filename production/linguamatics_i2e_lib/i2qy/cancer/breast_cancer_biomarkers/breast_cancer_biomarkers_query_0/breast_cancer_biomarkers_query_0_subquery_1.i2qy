@@ -15,7 +15,7 @@ query:
       - alternative:
           quantifier: {minimum: 0, maximum: 0}
           of: [(, )]
-      - link: {path: ../breast_cancer_biomarkers_score.i2qy, id: link1}
+      - link: {path: ../breast_cancer_biomarkers_score_list.i2qy, id: link2}
       - word:
           text: (
           quantifier: {minimum: 0, maximum: 0}
@@ -25,9 +25,9 @@ output:
   - id: link4.link1.phrase1
     itemOptions: {}
     linkItemId: link1.link4
-  - id: link1.phrase1
+  - id: link2.link1.phrase1
     itemOptions: {}
-    linkItemId: link1
+    linkItemId: link1.link2
   columnLocations: [1, 0]
   useOutputEditor: true
 creator: haglers

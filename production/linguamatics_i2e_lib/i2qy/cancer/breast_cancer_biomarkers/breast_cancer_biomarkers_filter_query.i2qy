@@ -9,7 +9,7 @@ query:
       - link: {path: breast_cancer_biomarkers_query.i2qy}
       - alternative:
           includeInQuery: false
-          of: [ER, HER2, PR, TNBC]
+          of: [AR, BCL2, ER, GATA3, HER2, KI67, PDL1, PR, TNBC]
 output:
   columns:
   - id: alternative1.col0

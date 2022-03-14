@@ -64,9 +64,9 @@ output:
   - id: link1.alternative2.col0
     itemOptions: {}
     linkItemId: link1
-  - id: link1.link1.phrase1
+  - id: link1.link9.link1.phrase1
     itemOptions: {}
-    linkItemId: link1.link1
+    linkItemId: link1.link9.link1
   - id: link1.alternative2.col1
     itemOptions: {}
     linkItemId: link1

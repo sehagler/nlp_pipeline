@@ -13,9 +13,11 @@ query:
           of: [smoking, tobacco]
 output:
   columns:
-  - id: alternative1.col0
+  - title: Extract
+    id: alternative1.col0
     itemOptions: {}
-  - id: alternative1.col1
+  - title: Neighborhood
+    id: alternative1.col1
     itemOptions: {}
   useOutputEditor: true
 creator: haglers

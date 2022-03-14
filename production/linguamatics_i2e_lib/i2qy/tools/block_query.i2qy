@@ -1,0 +1,10 @@
+version: 6.3
+creationDate: '2021-10-04 17:17:13'
+query:
+  document:
+  - word: {text: '[A-Z][0-9]+( ?- ?[A-Z]?[0-9]+)?', id: word1, matchType: Regexp}
+output:
+  columns:
+  - {id: word1}
+  useOutputEditor: true
+creator: haglers

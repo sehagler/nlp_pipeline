@@ -6,16 +6,18 @@ Created on Fri Nov  6 12:13:55 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class import Preprocessor_base
+from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import block_label, case_number, part_label, slice_label, slide_label, s, test_label
 
 #
 class Summarization(Preprocessor_base):
     
+    '''
     #
     def _remove_block(self):
         self._general_command('(?i)(\n\s*)?\( block' + s() + ' (#( )?)?' + block_label() + '(-' + block_label() + ')? \)', {None : ''})
+    '''
     
     #
     def _remove_case_number(self):
@@ -51,8 +53,7 @@ class Summarization(Preprocessor_base):
         self._general_command('(?i)\( test # ' + test_label() + ' \)', {None : ''})
         
     #
-    def remove_extraneous_text(self):
-        self._remove_block()
+    def run_preprocessor(self):
         self._remove_case_number()
         self._remove_part()
         self._remove_slice()

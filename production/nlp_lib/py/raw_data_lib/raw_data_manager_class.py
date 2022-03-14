@@ -22,48 +22,54 @@ from tool_lib.py.processing_tools_lib.variable_processing_tools \
 class Raw_data_manager(object):
     
     #
-    def __init__(self, static_data, server_manager, password):
+    def __init__(self, static_data, server_manager, multiprocessing_flg, 
+                 password):
         self.static_data = static_data
+        self.multiprocessing_flg = multiprocessing_flg
         self.xml_reader = Xml_reader(static_data, server_manager, password)
         self.xlsx_reader = Xlsx_reader(static_data, server_manager, password)
         self._read_raw_data_from_source_files()
         
     #
-    def _finish_document_data(self, document_data, document_ctr):
-        try:
-            multiprocessing_flg = \
-                self.static_data['multiprocessing']
-        except:
-            multiprocessing_flg = False
-        if multiprocessing_flg:
+    def _finish_document_data(self, data_file, document_data, document_ctr):
+        if self.multiprocessing_flg:
             document_idx = int(document_data['NLP_DOCUMENT_IDX'][0])
         else:
             document_idx = document_ctr
             document_data['NLP_DOCUMENT_IDX'] = []
             document_data['NLP_DOCUMENT_IDX'].append(document_idx)
-        if 'header_values' in self.static_data.keys():
-            if len(self.static_data['header_values']) > 1:
-                raw_text = ''
-                for header_value in self.static_data['header_values']:
-                    header_value = re.sub(':', '', header_value)
-                    for i in range(len(document_data[self.static_data['header_key']])):
-                        data_value = \
-                            re.sub(':', '', document_data[self.static_data['header_key']][i])
-                        if header_value.lower() == data_value.lower():
-                            raw_text += '\n' + header_value + '\n'
-                            raw_text += '\n' + document_data['RAW_TEXT'][i] + '\n'
-                for key in document_data.keys():
-                    document_data[key] = list(set(document_data[key]))
-                document_data['RAW_TEXT'] = raw_text
+        filename, extension = os.path.splitext(data_file)
+        if extension.lower() in [ '.xls', '.xlsx' ]:
+            header_key = 'REPORT_HEADER'
+            header_value_list = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
+                                  'Karyotype', 'Clinical History',
+                                  'Immunologic Analysis', 'Laboratory Data',
+                                  'Microscopic Description',
+                                  'Cytogenetic Analysis Summary',
+                                  'Impressions and Recommendations' ]
+            raw_text = ''
+            for header_value in header_value_list:
+                header_value = re.sub(':', '', header_value)
+                for i in range(len(document_data[header_key])):
+                    data_value = \
+                        re.sub(':', '', document_data[header_key][i])
+                    if header_value.lower() == data_value.lower():
+                        raw_text += '\n' + header_value + '\n'
+                        raw_text += '\n' + document_data['RAW_TEXT'][i] + '\n'
+            for key in document_data.keys():
+                document_data[key] = list(set(document_data[key]))
+            document_data['RAW_TEXT'] = raw_text
         return document_data, document_idx
                 
     #
     def _get_data_by_document_value(self, data_file, document_value,
                                     document_value_key=None):
         document_data = {}
-        data = self.data[data_file]
+        for i in range(len(self.data)):
+            if self.data[i]['FILENAME'][0] == data_file:
+                data = self.data[i]
         nlp_mode = data['NLP_MODE'][0]
-        if nlp_mode == 'RESULT_ID':
+        if nlp_mode in [ 'RESULT_ID', 'SOURCE_SYSTEM_RESULT_ID' ]:
             document_value_key = None
         idxs = [i for i, x in enumerate(data[nlp_mode]) if x == document_value]
         if len(idxs) > 0:
@@ -77,13 +83,9 @@ class Raw_data_manager(object):
     #
     def _partition_data_by_thread(self, data):
         num_processes = self.static_data['num_processes']
-        try:
-            multiprocessing_flg = self.static_data['multiprocessing']
-        except:
-            multiprocessing_flg = False
         partitioned_data = {}
         partitioned_data = {}
-        if multiprocessing_flg:
+        if self.multiprocessing_flg:
             for i in range(num_processes):
                 partitioned_data[i] = []
             for i in range(len(data)):
@@ -258,38 +260,36 @@ class Raw_data_manager(object):
         data = []
         data_datetimes = []
         for i in range(len(raw_data_files)):
-            filename, file_extension = os.path.splitext(raw_data_files[i])
-            if file_extension.lower() in [ '.xls', '.xlsx' ]:
+            filename, extension = os.path.splitext(raw_data_files[i])
+            if extension.lower() in [ '.xls', '.xlsx' ]:
                 data_tmp = self.xlsx_reader.read_files(raw_data_files_dict, 
                                                        raw_data_files[i])
                 data.append(data_tmp)
-            elif file_extension.lower() in [ '.xml' ]:
+            elif extension.lower() in [ '.xml' ]:
                 data_tmp = self.xml_reader.read_files(raw_data_files_dict, 
                                                       raw_data_files[i])
                 data.append(data_tmp)
             else:
-                print('invalid file extension: ' + file_extension)
+                print('invalid file extension: ' + extension)
         self.partitioned_data = \
             self._partition_data_by_thread(data)
     
     #
-    def get_data_by_document_number(self, document_number, document_ctr,
-                                    i2e_version, num_processes, process_idx, 
-                                    password):
+    def get_data_by_document_number(self, data_file, document_number,
+                                    document_ctr, i2e_version, num_processes,
+                                    process_idx, password):
         document_data = {}
         document_found = False
         for i in range(len(self.data)):
-            if not bool(document_data):
+            if len(self.data[i]['FILENAME']) > 0 and self.data[i]['FILENAME'][0] == data_file:
                 data = self.data[i]
                 keys = list(data.keys())
-                num_documents = len(data[keys[0]])
-                if document_number+1 > num_documents:
-                    document_number -= num_documents
-                else:
+                if document_number in data[keys[0]]:
+                    doc_idx = data[keys[0]].index(document_number)
                     for key in keys:
-                        document_data[key] = [ data[key][document_number] ]
+                        document_data[key] = [ data[key][doc_idx] ]
         document_data, document_idx = \
-            self._finish_document_data(document_data, document_ctr)
+            self._finish_document_data(data_file, document_data, document_ctr)
             
         #
         source_metadata_list, nlp_metadata_list, text_list, \
@@ -321,7 +321,7 @@ class Raw_data_manager(object):
             self._get_data_by_document_value(data_file, document_value, 
                                              document_value_key)
         document_data, document_idx = \
-            self._finish_document_data(document_data, document_ctr)
+            self._finish_document_data(data_file, document_data, document_ctr)
         
         #
         source_metadata_list, nlp_metadata_list, text_list, \
@@ -346,24 +346,31 @@ class Raw_data_manager(object):
                nlp_metadata_list, text_list, xml_metadata_list, source_system
       
     #
-    def get_document_numbers(self):
+    def get_document_numbers(self, data_file):
+        document_numbers = []
         doc_num = 0
         for data in self.data:
-            keys = list(data.keys())
-            doc_num += len(data[keys[0]])
-        document_numbers = sorted(list(range(doc_num)))
+            if len(data['FILENAME']) > 0 and data['FILENAME'][0] == data_file:
+                keys = list(data.keys())
+                document_numbers.extend(data[keys[0]])
         return document_numbers
     
     #
-    def get_document_values(self):
+    def get_document_values(self, data_file):
         document_value_dict = {}
         for i in range(len(self.data)):
-            document_value_dict[i] = {}
-            label1 = self.data[i]['NLP_MODE'][0]
-            if label1 == 'CASE_NUMBER':
+            filename = self.data[i]['FILENAME'][0]
+            document_value_dict[filename] = {}
+            nlp_mode = self.data[i]['NLP_MODE'][0]
+            if nlp_mode == 'CASE_NUMBER':
                 label0 = 'MRN'
-            elif label1 == 'RESULT_ID':
+                label1 = 'CASE_NUMBER'
+            elif nlp_mode == 'RESULT_ID':
                 label0 = 'RESULT_ID'
+                label1 = 'RESULT_ID'
+            elif nlp_mode == 'SOURCE_SYSTEM_RESULT_ID':
+                label0 = 'SOURCE_SYSTEM_RESULT_ID'
+                label1 = 'SOURCE_SYSTEM_RESULT_ID'
             data_label0 = self.data[i][label0]
             data_label1 = self.data[i][label1]
             items = sorted(set(data_label0))
@@ -371,9 +378,16 @@ class Raw_data_manager(object):
                 document_value_list = []
                 idxs = [j for j, x in enumerate(data_label0) if x == item ]
                 document_value_list.append([data_label1[j] for j in idxs])
-                document_value_dict[i][item] = \
+                document_value_dict[filename][item] = \
                     sorted(list(set(document_value_list[0])))
-        return document_value_dict
+        document_value_keys = sorted(document_value_dict[data_file].keys())
+        document_values = []
+        for i in range(len(document_value_keys)):
+            document_value_key = document_value_keys[i]
+            document_values_tmp = sorted(document_value_dict[data_file][document_value_key])
+            for j in range(len(document_values_tmp)):
+                document_values.append([document_value_key, document_values_tmp[j]])
+        return document_values
     
     #
     def print_num_of_docs_in_preprocessing_set(self):

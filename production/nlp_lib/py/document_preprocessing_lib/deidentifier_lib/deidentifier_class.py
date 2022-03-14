@@ -6,7 +6,7 @@ Created on Mon Mar 16 13:28:29 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
 	import Preprocessor_base
 
 #
@@ -43,7 +43,7 @@ class Deidentifier(Preprocessor_base):
     #
     def remove_phi(self):
         self._remove_age()
-        if self.static_data['flags']['remove_date']:
+        if self.static_data['remove_date']:
             self._remove_date()
         self._remove_gender()
         self._remove_mrn()

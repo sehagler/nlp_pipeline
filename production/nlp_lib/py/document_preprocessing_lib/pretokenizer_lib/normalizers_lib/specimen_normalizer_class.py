@@ -6,7 +6,7 @@ Created on Wed Nov  4 15:49:43 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import class_label, part_label, specimen_label, s
@@ -44,6 +44,7 @@ class Specimen_normalizer(Preprocessor_base):
     #
     def process_specimens(self):
         #self._indicate_nonspecimens('do')
-        self._general_command('(?i)[ \t][a-z]:[ \t]', {':' : '.'})
+        self._general_command('(?i)[ \t][a-z]\.[ \t]', {'\.' : ':'})
         self._general_command('(?i)[ \t][a-z]\.[ \t]', {'(?i)[ \t](?=[a-z])' : '\n\n'})
+        self._general_command('(?i)(\n[A-Z]\: +)(?=[A-Za-z])', {'\n' : '\nSPECIMEN '})
         #self._indicate_nonspecimens('undo')

@@ -10,7 +10,7 @@ from word2number import w2n
 import re
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.date_tools import Tokenizer as Tokenizer_date
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
@@ -45,6 +45,11 @@ class Tokenizer(Preprocessor_base):
         self._normalize_regular_initialism('(>i)methotrexate', 'MTX')
         self._normalize_regular_initialism('(?i)myeloperoxidase', 'MPO')
         self._normalize_regular_initialism('(?i)sudan black B', 'SBB')
+        
+    #
+    def _process_hash(self):
+        self._general_command('#', {None : ' # '})
+        self._general_command('(?i)blocks? +#', {'#' : ''})
         
     #
     def _process_measurements(self):
@@ -111,14 +116,9 @@ class Tokenizer(Preprocessor_base):
         
     #
     def _process_punctuation(self):
-        self._general_command('at least(?= \d)', {None : '>'})
-        self._general_command('estimated(?= \d)', {None : '~'})
-        self._general_command('(?i)((only )?about|approx(( \.)|imate(ly)?)?|roughly)(?= \d)', {None : '~'})
-        self._general_command('(?i)(greater|more) th(a|e)n(?= [0-9])', {None : '>'})
-        self._general_command('(?i)less th(a|e)n(?= \d)', {None : '<'})
         self._general_command('\*', {None : ''})
         self._general_command('(?i)(?<=\d) %', {None : '%'})
-        self._general_command('(?<!(:|\d))\d+-\d+%', {'-' : '%-'})
+        self._general_command('(?<!(:|\d))\d+ ?- ?\d+%', {' ?- ?' : '%-'})
         self._general_command('(?<!(:|\d))\d+ to \d+%', {' to ' : '%-'})
         self._general_command('(?<!(:|\d))\d+-\d+:00', {'-' : ' : 00-'})
         self._general_command('\)\(', {None : ') ('})
@@ -138,7 +138,6 @@ class Tokenizer(Preprocessor_base):
         self._general_command('=', {None : ' = '})
         self._general_command('\/', {None : ' / '})
         self._general_command('>', {None : ' > '})
-        self._general_command('#', {None : ' # '})
         self._general_command('<', {None : ' < '})
         self._general_command('~', {None : ' ~ '})
         self._general_command('\(', {None : '( '})
@@ -151,22 +150,34 @@ class Tokenizer(Preprocessor_base):
         
     #
     def _process_simplifications(self):
+        self._general_command('at least(?= \d)', {None : '>'})
+        self._general_command('estimated(?= \d)', {None : '~'})
+        self._general_command('(?i)((only )?about|approx(( \.)|imate(ly)?)?|roughly)(?= \d)', {None : '~'})
+        self._general_command('(?i)(greater|more) th(a|e)n(?= [0-9])', {None : '>'})
+        self._general_command('(?i)less th(a|e)n(?= \d)', {None : '<'})
+        self._general_command('(?i)up to( ~)?(?= \d)', {None : '<'})
         self._general_command('(?i)according to', {None : 'per'})
         self._general_command('(?i)for example', {None : 'e.g.'})
         self._general_command('(?i)w / ', {'(?i)w /' : 'with'})
+        
+    #
+    def _process_underscore(self):
+        self._general_command('_[A-Z][0-9]+_', {'_' : ''})
     
     #
     def process_document(self, text):
         self.text = text
         self._normalize_whitespace()
+        self._process_simplifications()
         self._process_punctuation()
+        self._process_hash()
+        self._process_underscore()
         self._process_initialisms()
         self._process_abbreviations()
         self._process_chemical_abbreviations()
         self._process_measurements()
         self._process_medical_abbreviations()
         self._process_numbers()
-        self._process_simplifications()
         self.tokenizer_date.push_text(self.text)
         self.tokenizer_date.process_month()
         self.text = self.tokenizer_date.pull_text()

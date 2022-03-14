@@ -6,16 +6,15 @@ Created on Mon Nov  9 15:04:20 2020
 """
 
 #
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Named_entity_recognition(Preprocessor_base):
     
     #
-    def process_initialisms(self):
-        
-        #
+    def run_preprocessor(self):
+        self._normalize_whitespace()
         self._normalize_regular_initialism('packs?( (/|per))? days?', 'PPD')
         self._normalize_regular_initialism(' ppd', ' PPD')
         self._normalize_regular_initialism('packs?( (/|per))? wks?', 'PPW')
@@ -27,7 +26,7 @@ class Named_entity_recognition(Preprocessor_base):
 class Summarization(Preprocessor_base):
     
     #
-    def remove_extraneous_text(self):
+    def run_preprocessor(self):
         self._clear_command_list()
         self._general_command('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', {None : ''})
         self._process_command_list()

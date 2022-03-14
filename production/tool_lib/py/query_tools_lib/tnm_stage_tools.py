@@ -9,20 +9,18 @@ Created on Wed Jun  5 14:55:53 2019
 import re
 
 #
-from nlp_lib.py.postprocessing_lib.base_class_lib.postprocessor_base_class \
+from nlp_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.document_preprocessing_lib.base_class_lib.preprocessor_base_class \
+from nlp_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
 
+    '''    
     #
     def __init__(self, static_data, data_file):
         Postprocessor_base.__init__(self, static_data, data_file)
-        #self._find_text_instances()
-        #self._remove_commas_from_extracted_text()
-        #self._atomize_tnm_stage()
   
     #
     def _atomize_tnm_stage(self):
@@ -59,7 +57,20 @@ class Postprocessor(Postprocessor_base):
                                 else:
                                     self.data_dict_list[i]['DATA'][key][self.data_key_map[str(k)]] =\
                                         stage[k]
+    '''
                                         
+    #
+    def _extract_data_value(self, text_list):
+        tnm_stage_text_list = []
+        snippet_text_list = []
+        for item in text_list[0]:
+            tnm_stage_text_list.append(item[0])
+            snippet_text_list.append(item[1])
+            print(tnm_stage_text_list)
+        value_dict_list = []
+        return value_dict_list
+                                        
+    '''
     #
     def _remove_commas_from_extracted_text(self):
         for i in range(len(self.data_dict_list)):
@@ -68,12 +79,13 @@ class Postprocessor(Postprocessor_base):
                     for j in range(len(self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']])):
                         self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']][j] = \
                             self.data_dict_list[i]['DATA'][key][self.data_key_map['EXTRACTED_TEXT']][j].replace(',', '')
+    '''
 
 #
 class Summarization(Preprocessor_base):
     
     #
-    def process_tnm_staging(self):
+    def _process_tnm_staging(self):
         self._clear_command_list()
         text_list = []
         text_list.append('(?i)(pathologic( tumor)?|TNM) stag(e|ing)')
@@ -83,18 +95,24 @@ class Summarization(Preprocessor_base):
         self._process_command_list()
         
     #
-    def remove_extraneous_text(self):
+    def _remove_extraneous_text(self):
         self._clear_command_list()
         self._general_command('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', {None : ''})
         self._general_command('(?i)(\( )?AJCC( \))?', {None : ''})
         self._process_command_list()
     
     #
-    def remove_tnm_staging(self):
+    def _remove_tnm_staging(self):
         self._general_command('(?i) \( pTNM \)', {None : ''})
         self._general_command('(?i) \( pT \)', {None : ''})
         self._general_command('(?i) \( pN \)', {None : ''})
         self._general_command('(?i) \( p?M \)', {None : ''})
+        
+    #
+    def run_preprocessor(self):
+        self._process_tnm_staging()
+        self._remove_extraneous_text()
+        self._remove_tnm_staging()
 
 #
 def m_stage_template():
@@ -125,3 +143,13 @@ def t_stage_template():
     t_stage_tmplt_2 = t_stage_prefix + t_stage_primary_suffix + \
                       t_stage_secondary_suffix
     return t_stage_tmplt_1, t_stage_tmplt_2
+
+#
+def template():
+    t_stage_tmplt_1, t_stage_tmplt_2 = t_stage_template()
+    n_stage_tmplt = n_stage_template()
+    m_stage_tmplt = m_stage_template()
+    template = '(' + t_stage_tmplt_1 + '|' + t_stage_tmplt_2 + ')' + \
+               n_stage_tmplt +  '(' + m_stage_tmplt + ')?'
+    template_sections_list = None
+    return template, template_sections_list
