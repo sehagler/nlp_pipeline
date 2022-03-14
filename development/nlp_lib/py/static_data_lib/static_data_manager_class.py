@@ -38,13 +38,14 @@ class Static_data_manager(object):
         self.static_data['ohsu_nlp_template_files'] = []
         self.static_data['operation_mode'] = operation_mode
         self.static_data['patient_identifiers'] = [ 'MRN', 'MRN_CD', 'OHSU_MRN' ]
-        self.static_data['performance_data_files'] = \
-            [ self.static_data['project_name']  + '/test/' + \
-              self.static_data['project_name'] + '.performance.json' ]
-        self.static_data['project_data_files'] = \
-            [ self.static_data['project_name']  + '/' + \
-              self.static_data['project_subdir'] + '/' + \
-              self.static_data['project_name'] + '.json' ]
+        if self.static_data['project_name'] is not None:
+            self.static_data['performance_data_files'] = \
+                [ self.static_data['project_name']  + '/test/' + \
+                  self.static_data['project_name'] + '.performance.json' ]
+            self.static_data['project_data_files'] = \
+                [ self.static_data['project_name']  + '/' + \
+                  self.static_data['project_subdir'] + '/' + \
+                  self.static_data['project_name'] + '.json' ]
         self.static_data['raw_data_encoding'] = 'utf-8'
         self.static_data['raw_data_files_case_number'] = None
         self.static_data['remove_date'] = True
