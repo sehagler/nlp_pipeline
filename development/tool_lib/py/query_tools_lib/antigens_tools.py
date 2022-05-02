@@ -9,38 +9,29 @@ Created on Fri Mar 08 12:42:14 2019
 import re
 
 #
-from nlp_lib.py.base_lib.postprocessor_base_class \
+from lambda_lib.lambda_manager_class import Lambda_manager
+from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.base_lib.preprocessor_base_class \
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
 
     #
-    def _extract_data_value(self, text_list):
-        value = []
-        for item in text_list[0]:
-            value.append(item[0])
-        '''
-        entry_text_tmp = re.sub('/', ' ', entry_text[0])
-        antibodies = list(set(entry_text_tmp.split()))
-        nonantibodies = []
-        for element in antibodies:
-            if not is_antibody(element):
-                nonantibodies.append(element)
-        nonantibodies = list(set(nonantibodies))
-        for nonantibody in nonantibodies:
-            antibodies.remove(nonantibody)
-        antibodies.sort()
-        if antibodies != []:
-            self._append_data(i, key, antibodies)
-        '''
-        value_dict_list = []
-        value_dict = {}
-        value_dict['ANTIBODIES_TESTED'] = value
-        value_dict_list.append(value_dict)
-        return value_dict_list
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            value = []
+            for item in text_list[0]:
+                value.append(item[0])
+            value_dict_list = []
+            value_dict = {}
+            value_dict['ANTIBODIES_TESTED'] = value
+            value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
 
 #
 class Posttokenizer(Preprocessor_base):
@@ -48,21 +39,35 @@ class Posttokenizer(Preprocessor_base):
     #
     def process_antigens(self):
         antigens = antigens_list()
-        self._general_command('HLA ?DR', {None : 'HLA-DR'})
-        self._general_command('(?i)dim(-| (/ )?)partial', {None : 'dim/partial'})
-        self._general_command('(?i)dim (/ )?variable', {None : 'dim/variable'})
-        self._general_command('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', {None : ' CD'})
-        self._general_command('(?i)partial (/ )?dim', {None : 'dim/partial'})
-        self._general_command('(?<=CD) (?=[0-9])', {None : ''})
-        self._general_command(antigens + '\(', {'\(' : ' ('})
-        self._general_command(antigens + ' : ' + antigens, {' : ' : ':'})
-        self._general_command(antigens + ' / ' + antigens, {' / ' : '/'})
-        self._general_command(antigens + '-negative', {'-negative' : ' negative'})
-        self._general_command(antigens + '-positive', {'-positive' : ' positive'})
-        self._general_command(antigens + '-', {'-' : ' negative '})
-        self._general_command(antigens + ' *\+', {'\+' : ' positive '})
-        self._general_command(antigens + ' *\( \+ \)', {'\( \+ \)' : ' positive'})
-        self._general_command('(?<=HLA) (negative|positive)(?=DR)', {None : '-'})
+        self.text = self.lambda_manager.lambda_conversion('HLA ?DR', self.text, 'HLA-DR')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)dim(-| (/ )?)partial', self.text, 'dim/partial')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)dim (/ )?variable', self.text, 'dim/variable')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', self.text, ' CD')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)partial (/ )?dim', self.text, 'dim/partial')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=CD) (?=[0-9])', self.text, '')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + '\(', '\(', self.text, ' (')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + ' : ' + antigens, ' : ', self.text, ':')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + ' / ' + antigens, ' / ', self.text, '/')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + '-negative', '-negative', self.text, ' negative')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + '-positive', '-positive', self.text, ' positive')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + '-', '-', self.text, ' negative ')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + ' *\+', '\+', self.text, ' positive ')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', self.text, ' positive')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', self.text, '-')
 
 #
 def antigens_list():
@@ -70,8 +75,8 @@ def antigens_list():
 
 #
 def correct_antibodies(text):
-    #text = re.sub('(?i)(\+|\-positive)', '', text)
-    text = re.sub('HLA *- *DR', 'HLA-DR', text)
+    lambda_manager = Lambda_manager()
+    text = lambda_manager.lambda_conversion('HLA *- *DR', text, 'HLA-DR')
     return text
 
 #
@@ -120,5 +125,11 @@ def is_antibody_value(text):
 def template():
     antigens = '[a-z]?(CD[0-9]+|HLA-DR|MPO|T[Dd]T|Kappa|Lambda)[a-z]?'
     template = '(' + antigens + ' ?){2,}'
-    template_sections_list = [ 'ANTIBODIES TESTED' ]
-    return template, template_sections_list
+    template_list = []
+    template_list.append(template)
+    sections_list = [ 'ANTIBODIES TESTED' ]
+    template_dict = {}
+    template_dict['primary_template_list'] = template_list
+    template_dict['sections_list'] = sections_list
+    template_dict['template_headers'] = [ 'Antigens' ]
+    return template_dict

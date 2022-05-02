@@ -16,7 +16,7 @@ from tool_lib.py.analysis_tools_lib.text_analysis_tools \
     import prune_surface_antigens
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
-from tool_lib.py.query_tools_lib.blasts_tools import get_blast_value
+from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base import get_blast_value
 
 #
 class Specimens(Specimens_jsons):

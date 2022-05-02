@@ -13,6 +13,9 @@ from stat import S_ISDIR, S_ISREG
 import time
 
 #
+from lambda_lib.lambda_manager_class import Lambda_manager
+
+#
 class Server_manager(object):
     
     #
@@ -21,6 +24,7 @@ class Server_manager(object):
         self.server = static_data['acc_server'][1]
         self.user = static_data['user']
         self.password = password
+        self.lambda_manager = Lambda_manager
         
     #
     def _recursive_delete_directory(self, sftp, target_dir_in):
@@ -28,11 +32,13 @@ class Server_manager(object):
             mode = entry.st_mode
             if S_ISDIR(mode):
                 target_dir = os.path.join(target_dir_in, entry.filename)
-                target_dir = re.sub('\\\\', '/', target_dir)
+                target_dir = \
+                    self.lambda_manager.lambda_conversion('\\\\', target_dir, '/')
                 self._recursive_delete_directory(sftp, target_dir)
             elif S_ISREG(mode):
                 target_file = os.path.join(target_dir_in, entry.filename)
-                target_file = re.sub('\\\\', '/', target_file)
+                target_file = \
+                    self.lambda_manager.lambda_conversion('\\\\', target_file, '/')
                 sftp.remove(target_file)
         sftp.rmdir(target_dir_in)
         
@@ -76,17 +82,22 @@ class Server_manager(object):
         for root, dirs, files in os.walk(source_dir):
             for name in dirs:
                 dir_path = os.path.join(root, name)
-                dir_path = re.sub(source_dir, target_dir, dir_path)
-                dir_path = re.sub('\\\\', '/', dir_path)
+                dir_path = \
+                    self.lambda_manager.lambda_conversion(source_dir, dir_path, target_dir)
+                dir_path = \
+                    self.lambda_manager.lambda_conversion('\\\\', dir_path, '/')
                 try:
                     sftp.listdir(dir_path)
                 except:
                     sftp.mkdir(dir_path)
             for name in files:
                 source_file = os.path.join(root, name)
-                target_file = re.sub(source_dir, target_dir, source_file)
-                source_file = re.sub('\\\\', '/', source_file)
-                target_file = re.sub('\\\\', '/', target_file)
+                target_file = \
+                    self.lambda_manager.lambda_conversion(source_dir, source_file, target_dir)
+                source_file = \
+                    self.lambda_manager.lambda_conversion('\\\\', source_file, '/')
+                target_file = \
+                    self.lambda_manager.lambda_conversion('\\\\', target_file, '/')
                 sftp.put(source_file, target_file)
         sftp.close()
     

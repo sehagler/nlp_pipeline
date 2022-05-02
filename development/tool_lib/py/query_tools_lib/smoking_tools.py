@@ -6,7 +6,7 @@ Created on Mon Nov  9 15:04:20 2020
 """
 
 #
-from nlp_lib.py.base_lib.preprocessor_base_class \
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -28,5 +28,6 @@ class Summarization(Preprocessor_base):
     #
     def run_preprocessor(self):
         self._clear_command_list()
-        self._general_command('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', self.text, '')
         self._process_command_list()

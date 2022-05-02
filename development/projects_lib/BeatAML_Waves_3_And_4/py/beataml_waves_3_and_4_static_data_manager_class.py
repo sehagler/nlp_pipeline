@@ -10,7 +10,7 @@ import os
 import xlrd
 
 #
-from nlp_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
     import Static_data_manager
 
 #
@@ -25,8 +25,6 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
         self.user = user
         
         self.static_data['document_identifiers'] = [ 'CSN' ]
-        self.static_data['ohsu_nlp_template_files'] = \
-            [ 'antigens.csv', 'fish_analysis_summary.csv', 'karyotype.csv' ]
         self.static_data['remove_date'] = False
         self.static_data['validation_file'] = \
             'wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'

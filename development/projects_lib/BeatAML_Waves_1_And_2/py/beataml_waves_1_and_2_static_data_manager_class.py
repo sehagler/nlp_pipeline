@@ -10,7 +10,7 @@ import os
 import pickle
 
 #
-from nlp_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
     import Static_data_manager
 
 #
@@ -25,8 +25,6 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
         self.user = user
         
         self.static_data['document_identifiers'] = [ 'CSN' ]
-        self.static_data['ohsu_nlp_template_files'] = \
-            [ 'antigens.csv', 'fish_analysis_summary.csv', 'karyotype.csv' ]
         self.static_data['remove_date'] = False
         self.static_data['validation_file'] = \
             'Sup Table 5 Clinical summary.xlsx'

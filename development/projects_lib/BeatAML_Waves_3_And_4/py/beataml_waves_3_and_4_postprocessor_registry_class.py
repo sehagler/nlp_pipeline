@@ -12,10 +12,6 @@ import os
 #
 from projects_lib.BeatAML_Waves_3_And_4.py.diagnosis_reader_class \
     import Diagnosis_reader
-from tool_lib.py.query_tools_lib.date_tools \
-    import Postprocessor as Postprocessor_date
-from tool_lib.py.query_tools_lib.diagnosis_tools \
-    import Postprocessor as Postprocessor_diagnosis
 from tool_lib.py.query_tools_lib.specific_diagnosis_tools \
     import Postprocessor as Postprocessor_specific_diagnosis
 from tool_lib.py.registry_lib.postprocessor_registry_class \
@@ -27,9 +23,6 @@ class BeatAML_Waves_3_And_4_postprocessor_registry(Postprocessor_registry):
     #
     def create_postprocessor(self, filename):
         Postprocessor_registry.create_postprocessor(self, filename)
-        if filename in [ 'diagnosis.csv' ]:
-            self._register_postprocessor('postprocessor_diagnosis',
-                                         Postprocessor_diagnosis(self.static_data))
         if filename in [ 'sections.csv' ]:
             self._register_postprocessor('postprocessor_specific_diagnosis',
                                          Postprocessor_specific_diagnosis(self.static_data))
@@ -41,7 +34,6 @@ class BeatAML_Waves_3_And_4_postprocessor_registry(Postprocessor_registry):
             Diagnosis_reader(os.path.join(directory_manager.pull_directory('raw_data_dir'),'diagnoses.xlsx'))
         Postprocessor_registry.push_data_dict(self, filename, data_dict)
         if filename in [ 'diagnosis.csv' ]:
-            self._push_data_dict('postprocessor_diagnosis', data_dict, filename=filename)
             self.postprocessor_registry['postprocessor_diagnosis'].push_diagnosis_reader(diagnosis_reader)
         if filename in [ 'sections.csv' ]:
             data_dict_copy = deepcopy(data_dict)

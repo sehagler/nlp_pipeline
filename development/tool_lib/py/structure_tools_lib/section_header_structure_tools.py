@@ -9,6 +9,7 @@ Created on Mon Apr 26 10:49:48 2021
 import re
 
 #
+from lambda_lib.lambda_manager_class import Lambda_manager
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import amend, article, be, datetime, diagnosis, medication, review_item, s
 
@@ -17,6 +18,7 @@ class Section_header_structure_tools(object):
     
     #
     def __init__(self):
+        self.lambda_manager = Lambda_manager()
         self._section_header_amendment_dict()
         self._section_header_dict()
         
@@ -73,11 +75,13 @@ class Section_header_structure_tools(object):
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
                             text_in_upper = text_in[i].upper()
-                            text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
+                            text_in_upper = \
+                                self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
                             text.append('(?<!<<<)' + text_in_upper)
                     else:
                         text_in_upper = text_in.upper()
-                        text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
+                        text_in_upper = \
+                            self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
                         text.append('(?<!<<<)' + text_in_upper)
                 text_list.append(text)
         else:
@@ -92,11 +96,13 @@ class Section_header_structure_tools(object):
                 if isinstance(text_in, list):
                     for i in range(len(text_in)):
                         text_in_upper = text_in[i].upper()
-                        text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
+                        text_in_upper = \
+                            self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
                         text.append('(?<!<<<)' + text_in_upper)
                 else:
                     text_in_upper = text_in.upper()
-                    text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
+                    text_in_upper = \
+                        self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
                     text.append('(?<!<<<)' + text_in_upper)
             text_list.append(text)
         return text_list

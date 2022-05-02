@@ -6,13 +6,13 @@ Created on Tue Nov 13 08:12:07 2018
 """
 
 #
-from nlp_lib.py.base_lib.preprocessor_base_class \
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
-from nlp_lib.py.base_lib.preprocessor_registry_base_class \
+from nlp_pipeline_lib.py.base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
-from tool_lib.py.query_tools_lib.blasts_tools \
+from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \
     import Named_entity_recognition as Named_entity_recognition_blasts
-from tool_lib.py.query_tools_lib.breast_cancer_biomarkers_tools \
+from tool_lib.py.query_tools_lib.base_lib.breast_cancer_biomarkers_tools_base \
     import Named_entity_recognition \
         as Named_entity_recognition_breast_cancer_biomarkers
 from tool_lib.py.query_tools_lib.cancer_tools \
@@ -42,8 +42,10 @@ class Named_entity_recognition_base(Preprocessor_base):
         self._normalize_regular_initialism('past medical hx', 'PMH')
         self._normalize_regular_initialism('PMHx', 'PMH')
         self._normalize_regular_initialism('PMH / o', 'PMH')
-        self._general_command('(?i)red blood cell', {None : 'RBC'})
-        self._general_command('(?i)white blood cell', {None : 'WBC'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)red blood cell', self.text, 'RBC')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)white blood cell', self.text, 'WBC')
         
         #
         self._normalize_regular_initialism('food and drug administration', 'FDA')
@@ -55,9 +57,12 @@ class Named_entity_recognition_base(Preprocessor_base):
         self._normalize_regular_initialism('flat epithelial atypia', 'FEA')
         self._normalize_regular_initialism('pathologic complete response', 'pCR')
         self._normalize_regular_initialism('residual ca(ncer)? burden', 'RCB')
-        self._general_command('(?i)FAB (?=[0-9])', {None : 'FAB M'})
-        self._general_command('(?i)HLA-Dr', {None : 'HLA-DR'})
-        self._general_command('(?i)blasts ?(\+|and|plus) ?promonocytes', {None : 'blasts/promonocytes'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)FAB (?=[0-9])', self.text, 'FAB M')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)HLA-Dr', self.text, 'HLA-DR')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)blasts ?(\+|and|plus) ?promonocytes', self.text, 'blasts/promonocytes')
         self._normalize_regular_initialism('(?i)minimal residual disease', 'MRD')
         self._normalize_regular_initialism('(?i)myelodysplastic syndrome', 'MDS')  
     

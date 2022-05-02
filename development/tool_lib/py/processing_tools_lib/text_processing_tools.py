@@ -6,9 +6,6 @@ Created on Fri Apr  3 10:38:34 2020
 """
 
 #
-import re
-
-#
 def _valid_xml_char_ordinal(c):
     codepoint = ord(c)
     return (
@@ -140,28 +137,6 @@ def slide_label():
 #
 def specimen_label():
     return('[A-Z0-9]{1}')
-
-#
-def substitution(match_pattern, repl_dict, text_in):
-    text_out = text_in
-    match = 0
-    match_str = match_pattern
-    m_str = re.compile(match_str)
-    stop_flg = False
-    ctr = 0
-    while not stop_flg:
-        ctr += 1
-        stop_flg = True
-        for match in m_str.finditer(text_out):
-            if match is not None:
-                stop_flg = False
-                search_str = match.group(0)
-                for key in repl_dict.keys():
-                    replace_str = re.sub(key, repl_dict[key], search_str)
-                    text_out = text_out.replace(search_str, replace_str)
-        if ctr == 100:
-            stop_flg = True
-    return text_out
 
 #
 def test_label():

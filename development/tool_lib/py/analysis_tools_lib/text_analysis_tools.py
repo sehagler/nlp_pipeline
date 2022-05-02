@@ -6,65 +6,6 @@ Created on Mon Apr  6 15:33:03 2020
 """
 
 #
-import re
-
-#
-#from tool_lib.py.query_tools_lib.antigens_tools import extract_antigens
-
-'''
-#
-def compare_texts(text0, text1, strip_commas_flg=False):
-    text0 = re.sub('dim', 'dim ', text0)
-    text0 = re.sub('\+', ' +', text0)
-    text0 = re.sub('(?i)(-)?positive', ' +', text0)
-    text1 = re.sub('dim', 'dim ', text1)
-    text1 = re.sub('\+', ' +', text1)
-    text1 = re.sub('(?i)(-)?positive', ' +', text1)
-    text0_antigens = extract_antigens(text0)
-    text1_antigens = extract_antigens(text1)
-    diff0 = len(list(set(text0_antigens) - set(text1_antigens)))
-    diff1 = len(list(set(text1_antigens) - set(text0_antigens)))
-    if strip_commas_flg:
-        text0 = re.sub(',', '', text0)
-        text0 = re.sub('  +', ' ', text0)
-        text1 = re.sub(',', '', text1)
-        text1 = re.sub('  +', ' ', text1)
-    text0 = text0.lower()
-    text1 = text1.lower()
-    s1 = text0.split(' ')
-    s2 = text1.split(' ')
-    distance = levenshtein_distance(s1, s2)
-    excess_ctr = 0
-    go_flg = True
-    while go_flg:
-        if len(s2) > 1:
-            s2_tmp = s2[1:]
-            distance_tmp = levenshtein_distance(s1, s2_tmp)
-            if distance_tmp > distance:
-                go_flg = False
-            else:
-                s2 = s2_tmp
-                excess_ctr += 1
-                distance = distance_tmp
-        else:
-            go_flg = False
-    go_flg = True
-    while go_flg:
-        if len(s2) > 1:
-            s2_tmp = s2[:-1]
-            distance_tmp = levenshtein_distance(s1, s2_tmp)
-            if distance_tmp > distance:
-                go_flg = False
-            else:
-                s2 = s2_tmp
-                excess_ctr += 1
-                distance = distance_tmp
-        else:
-            go_flg = False
-    return [ diff0, diff1, distance, excess_ctr ]
-'''
-
-#
 def levenshtein_distance(s1, s2):
     if len(s1) > len(s2):
         s1, s2 = s2, s1

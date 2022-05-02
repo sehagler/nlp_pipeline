@@ -6,7 +6,7 @@ Created on Fri Nov  6 12:13:55 2020
 """
 
 #
-from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import block_label, case_number, part_label, slice_label, slide_label, s, test_label
 
@@ -16,41 +16,53 @@ class Summarization(Preprocessor_base):
     '''
     #
     def _remove_block(self):
-        self._general_command('(?i)(\n\s*)?\( block' + s() + ' (#( )?)?' + block_label() + '(-' + block_label() + ')? \)', {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?\( block' + s() + ' (#( )?)?' + block_label() + '(-' + block_label() + ')? \)', self.text, '')
     '''
     
     #
     def _remove_case_number(self):
-        self._general_command('(?i)(\n\s*)?case number:[\n\s]+' + case_number(), {None : ''})
-        self._general_command('(?i)(\n\s*)?\( see case ' + case_number() + ' \)', {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?case number:[\n\s]+' + case_number(), self.text, '')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?\( see case ' + case_number() + ' \)', self.text, '')
         
     #
     def _remove_part(self):
-        self._general_command('(?i)\s*\( part' + s() + '-' + part_label() + '((-to-|-)' + part_label() + ' )? \)', {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)\s*\( part' + s() + '-' + part_label() + '((-to-|-)' + part_label() + ' )? \)', self.text, '')
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see (also )?' + \
             'part' + s() + '( )?' + part_label() + '( to ' + part_label() + ')?'
         
     #
     def _remove_slice(self):
-        self._general_command('(?i)(\n\s*)?\( spans slices ' + slice_label() + '-' + slice_label() + ' \)', {None : ''})
-        self._general_command('(?i)slice (#( )?)?' + slice_label() + '((,)? )?(with clip((,)? )?)?', {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?\( spans slices ' + slice_label() + '-' + slice_label() + ' \)', self.text, '')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)slice (#( )?)?' + slice_label() + '((,)? )?(with clip((,)? )?)?', self.text, '')
         
     #
     def _remove_slide(self):
-        self._general_command('(?i)\( slide' + s() + ' [^n\)\]]+ \)', {None : ''})
-        self._general_command('(?i)(\n\s*)?\( (for example )?slide' + s() +  \
-                              '[\n\s]+' + slide_label() + '(((,)? ' + slide_label() + ')+)?' + \
-                              '(( and |-)' + slide_label() + ')? \)', {None : ''})
-        self._general_command('(?i)(\n\s*)?\( (for example )?slide' + s() + \
-                              '[\n\s]+' + slide_label() + \
-                              '(((,)? ' + slide_label() + ')+)?' + \
-                              '(( and |-)' + slide_label() + ')? \)', {None : ''})
-        self._general_command('(?i)(\n\s*)?\( \d+ slide' + s() + ' \)', {None : ''})
-        self._general_command('(?i)(, )?slide ' + slide_label(), {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)\( slide' + s() + ' [^n\)\]]+ \)', self.text, '')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?\( (for example )?slide' + s() +  \
+                                                  '[\n\s]+' + slide_label() + '(((,)? ' + slide_label() + ')+)?' + \
+                                                  '(( and |-)' + slide_label() + ')? \)', self.text, '')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?\( (for example )?slide' + s() + \
+                                                  '[\n\s]+' + slide_label() + \
+                                                  '(((,)? ' + slide_label() + ')+)?' + \
+                                                  '(( and |-)' + slide_label() + ')? \)', self.text, '')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(\n\s*)?\( \d+ slide' + s() + ' \)', self.text, '')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(, )?slide ' + slide_label(), self.text, '')
         
     #
     def _remove_test(self):
-        self._general_command('(?i)\( test # ' + test_label() + ' \)', {None : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)\( test # ' + test_label() + ' \)', self.text, '')
         
     #
     def run_preprocessor(self):
