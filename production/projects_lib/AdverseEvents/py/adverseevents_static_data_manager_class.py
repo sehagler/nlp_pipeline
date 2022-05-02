@@ -6,7 +6,7 @@ Created on Fri Jan 10 09:57:35 2020
 """
 
 #
-from nlp_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
     import Static_data_manager
 
 #

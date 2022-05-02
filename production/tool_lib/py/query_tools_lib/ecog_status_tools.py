@@ -1,0 +1,122 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun  5 13:49:19 2019
+
+@author: haglers
+"""
+
+#
+import re
+
+#
+from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+    import Postprocessor_base
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
+
+#
+class Postprocessor(Postprocessor_base):
+        
+    #
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            ecog_score_text_list = []
+            test_text_list = []
+            context_text_list = []
+            for item in text_list[0]:
+                ecog_score_text_list.append(item[1])
+                test_text_list.append(item[2])
+                context_text_list.append(item[3])
+            value_list = []
+            normalized_ecog_score_text_list = \
+                self._process_ecog_score_text_list(ecog_score_text_list, test_text_list)
+            value_list = []
+            for i in range(len(ecog_score_text_list)):
+                value_list.append((ecog_score_text_list[i],
+                                   normalized_ecog_score_text_list[i],
+                                   test_text_list[i],
+                                   context_text_list[i]))
+            value_list = list(set(value_list))
+            value_dict_list = []
+            for value in value_list:
+                value_dict = {}
+                value_dict['ECOG_SCORE'] = value[0]
+                value_dict['NORMALIZED_ECOG_SCORE'] = value[1]
+                value_dict['ECOG_TEST'] = value[2]
+                value_dict['SNIPPET'] = value[3]
+                value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
+                    
+    # map karnofsky and lansky value to zubrod values per
+    # https://oncologypro.esmo.org/oncology-in-practice/practice-tools/performance-scales
+    def _map_to_zubrod(self, value_in):
+        if int(value_in) in range(96, 101):
+            value_out = '0'
+        elif int(value_in) in range(76, 96):
+            value_out = '1'
+        elif int(value_in) in range(56, 76):
+            value_out = '2'
+        elif int(value_in) in range(36, 56):
+            value_out = '3'
+        elif int(value_in) in range(6, 36):
+            value_out = '4'
+        elif int(value_in) in range(0, 6):
+            value_out = '5'
+        else:
+            value_out = value_in
+        return value_out
+    
+    #
+    def _process_ecog_score_text_list(self, score_list, test_list):
+        pattern = re.compile('[0-9]{1,3}%?(( ?\- ?| / )[0-9]{1,6}%?)?')
+        processed_score_list = []
+        for i in range(len(score_list)):
+            score_raw = score_list[i]
+            test = test_list[i]
+            if re.search(pattern, score_raw) is not None:
+                for m in re.finditer(pattern, score_raw):
+                    score_processed = m.group(0)
+                    score_processed = \
+                        self.lambda_manager.lambda_conversion('%', score_processed, '')
+                    score_processed = \
+                        self.lambda_manager.lambda_conversion('(\-|/)', score_processed, ',')
+                    score_processed = \
+                        self.lambda_manager.lambda_conversion(',', score_processed, ' , ')
+                    score_processed = \
+                        self.lambda_manager.lambda_conversion(' +', score_processed, ' ')
+                    if re.search(',', score_processed) is not None:
+                        scores_processed = score_processed.split(' , ')
+                        for k in range(len(scores_processed)):
+                            scores_processed[k] = int(scores_processed[k])
+                        if test.lower() in [ 'karnofsky', 'lansky' ]:
+                            for k in range(len(scores_processed)):
+                                scores_processed[k] = \
+                                    self._map_to_zubrod(scores_processed[k])
+                        scores_processed = [ int(x) for x in scores_processed ]
+                        score_processed = str(tuple(sorted(scores_processed)))
+                    else:
+                        if test.lower() in [ 'karnofsky', 'lansky' ]:
+                            score_processed = self._map_to_zubrod(score_processed)
+            processed_score_list.append(score_processed)
+        return processed_score_list
+        
+    
+#
+class Summarization(Preprocessor_base):
+    
+    #
+    def run_preprocessor(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<!{ )ecog( :)? (performance )?(status|score|ps)',
+                                                  self.text, 'ECOG ( ZUBROD ) ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)karnofsky (performance )?(status|score|ps)',
+                                                  self.text, 'ECOG ( KARNOFSKY ) ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)lansky (play performance )?(status|score|ps)',
+                                                  self.text, 'ECOG ( LANSKY ) ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<!{ )ecog (?!\()',
+                                                  self.text, 'ECOG ( ZUBROD ) ')

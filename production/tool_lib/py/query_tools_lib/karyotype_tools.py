@@ -9,9 +9,9 @@ Created on Wed Jun  5 14:28:01 2019
 import re
 
 #
-from nlp_lib.py.base_lib.postprocessor_base_class \
+from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_lib.py.base_lib.preprocessor_base_class \
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -20,43 +20,58 @@ class Named_entity_recognition(Preprocessor_base):
     #
     def run_preprocessor(self):
         self._normalize_whitespace()
-        self._general_command('(?i)inversion \(', {None : 'inv('})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)inversion \(', self.text, 'inv(')
 
 #
 class Postprocessor(Postprocessor_base):
         
     #
-    def _extract_data_value(self, text_list):
-        karyotype = []
-        snippet = []
-        for item in text_list[0]:
-            karyotype.append(item[0])
-            snippet.append(item[1])
-        value_dict_list = []
-        for i in range(len(karyotype)):
-            value_dict = {}
-            value_dict['KARYOTYPE'] = karyotype[i]
-            value_dict['SNIPPET'] = snippet[i]
-            value_dict_list.append(value_dict)
-        return value_dict_list
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            karyotype = []
+            snippet = []
+            for item in text_list[0]:
+                karyotype.append(item[0])
+                snippet.append(item[1])
+            value_dict_list = []
+            for i in range(len(karyotype)):
+                value_dict = {}
+                value_dict['KARYOTYPE'] = karyotype[i]
+                value_dict['SNIPPET'] = snippet[i]
+                value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
 
 #
 class Posttokenizer(Preprocessor_base):
         
     #
     def process_karyotype(self):
-        self._general_command('\) \(', {None : ')('})
-        self._general_command('\) \[', {None : ')['})
-        self._general_command('\] \(', {None : ']('})
-        self._general_command('\( [pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ ?\)', {'\( ' : '('})
-        self._general_command('\( ?[pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ \)',  {' \)' : ')'})
-        self._general_command('(?<=[XY]) \[', {None : '['})
-        self._general_command('(?<=[0-9]) , (?=[XY])', {None : ','})
-        self._general_command('\([pq]?[0-9\.]+ ; [pq]?[0-9\.]+\)', {' ; ' : ';'})
-        self._general_command('[0-9]{1,2},[XY]+(\S*(\(\S+\)|\-[0-9]+))? , (\+|\-)?((add|inv)\(|mar|[0-9])', 
-                              {' , ' : ','})
-        self._general_command('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', {' / ' : '/'})
-        self._general_command('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', {' ' : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('\) \(', self.text, ')(')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\) \[', self.text, ')[')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\] \(', self.text, '](')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( [pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ ?\)', '\( ', self.text, '(')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( ?[pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ \)', ' \)', self.text, ')')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[XY]) \[', self.text, '[')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]) , (?=[XY])', self.text, ',')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\([pq]?[0-9\.]+ ; [pq]?[0-9\.]+\)', ' ; ', self.text, ';')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[0-9]{1,2},[XY]+(\S*(\(\S+\)|\-[0-9]+))? , (\+|\-)?((add|inv)\(|mar|[0-9])', ' , ', self.text, ',')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', ' / ', self.text, '/')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', ' ', self.text, '')
         
 #
 def atomize_karyotype(full_karyotype):
@@ -90,5 +105,11 @@ def atomize_karyotype(full_karyotype):
 #
 def template():
     template = '([0-9]{1,2} \~ )?[0-9]{1,2},[XY]+.*\[[0-9]+\]'
-    template_sections_list = [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ]
-    return template, template_sections_list
+    template_list = []
+    template_list.append(template)
+    sections_list = [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ]
+    template_dict = {}
+    template_dict['primary_template_list'] = template_list
+    template_dict['sections_list'] = sections_list
+    template_dict['template_headers'] = [ 'Karyotype' ]
+    return template_dict

@@ -6,7 +6,7 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from nlp_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
 
 #
@@ -16,16 +16,17 @@ class Named_entity_recognition(Preprocessor_base):
     def _process_irregular_initialisms(self):
         
         # breast cancer
-        self._general_command('(?i)in situ and invasive duct(al)? (cancer|carcinoma)',
-                              {None : 'DCIS and IDC'})
-        self._general_command('(?i)usual and atypical duct(al)? hyperplasia( \( UDH, ADH \))?', 
-                              {None : 'UDH and ADH'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)in situ and invasive duct(al)? (cancer|carcinoma)', self.text, 'DCIS and IDC')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)usual and atypical duct(al)? hyperplasia( \( UDH, ADH \))?', self.text, 'UDH and ADH')
         
     #
     def _process_regular_initialisms(self):
         
         # carcinoma
-        self._general_command('(?i)sqcc', {None : 'SCC'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)sqcc', self.text, 'SCC')
         carcinoma_list = [ [ 'duct(al)? (cancer|carcinoma)', 'DC' ],
                            [ 'lobular (cancer|carcinoma)', 'LC' ],
                            [ 'renal cell (cancer|carcinoma)', 'RCC' ],
@@ -81,22 +82,29 @@ class Posttokenizer(Preprocessor_base):
         
     #
     def process_general(self):
-        self._general_command('MDS / MPN', {None : 'MDS/MPN'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
         
 #
 class Text_preparation(Preprocessor_base):
     
     #
     def cleanup_text(self):
-        self._general_command('(?i)Scarff ', {None : 'Scarf '})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)Scarff ', self.text, 'Scarf ')
         
     #
     def normalize_text(self):
-        self._general_command('(?i)leukaemia', {None : 'leukemia'})
-        self._general_command('(?<=[Tt])umour', {None : 'umor'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)leukaemia', self.text, 'leukemia')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Tt])umour', self.text, 'umor')
     
     #
     def setup_text(self):
-        self._general_command('(?i)Scharff(-| )', {'(?i)Scharff': 'Scarff'})
-        self._general_command('(?i)Scharf(-| )', {'(?i)Scharf': 'Scarff'})
-        self._general_command('(?i)Scarf(-| )', {'(?i)Scarf': 'Scarff'})
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?i)Scharff(-| )', '(?i)Scharff', self.text, 'Scarff')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?i)Scharf(-| )', '(?i)Scharf', self.text, 'Scarff')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?i)Scarf(-| )', '(?i)Scarf', self.text, 'Scarff')

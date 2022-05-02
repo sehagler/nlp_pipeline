@@ -11,7 +11,7 @@ import pickle
 import xlrd
 
 #
-from nlp_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
     import Static_data_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file

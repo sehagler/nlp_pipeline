@@ -194,6 +194,12 @@ def read_package_json_file(static_data):
 '''
 
 #
+def read_txt_file(filename):
+    with open(filename,'r') as f:
+        data = f.read()
+    return data
+
+#
 def read_xlsx_file(filename):
     return _read_file(1, filename)
 

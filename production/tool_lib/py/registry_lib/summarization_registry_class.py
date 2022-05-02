@@ -6,14 +6,14 @@ Created on Tue Nov 13 08:12:07 2018
 """
 
 #
-from nlp_lib.py.base_lib.preprocessor_registry_base_class \
+from nlp_pipeline_lib.py.base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
-from tool_lib.py.query_tools_lib.blasts_tools \
+from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \
     import Summarization as Summarization_blasts
-from tool_lib.py.query_tools_lib.breast_cancer_biomarkers_tools \
+from tool_lib.py.query_tools_lib.base_lib.breast_cancer_biomarkers_tools_base \
     import Summarization as Summarization_breast_cancer_biomarkers
-from tool_lib.py.query_tools_lib.ecog_tools \
-    import Summarization as Summarization_ecog_score
+from tool_lib.py.query_tools_lib.ecog_status_tools \
+    import Summarization as Summarization_ecog_status
 from tool_lib.py.query_tools_lib.fish_analysis_summary_tools \
     import Summarization as Summarization_fish_analysis_summary
 from tool_lib.py.query_tools_lib.histological_grade_tools \
@@ -24,7 +24,7 @@ from tool_lib.py.query_tools_lib.serial_number_tools \
     import Summarization as Summarization_serial_number
 from tool_lib.py.query_tools_lib.smoking_tools \
     import Summarization as Summarization_smoking
-from tool_lib.py.query_tools_lib.tnm_stage_tools \
+from tool_lib.py.query_tools_lib.tnm_staging_tools \
     import Summarization as Summarization_tnm_stage
 #
 class Summarization_registry(Preprocessor_registry_base):
@@ -35,8 +35,8 @@ class Summarization_registry(Preprocessor_registry_base):
                                     Summarization_blasts(self.static_data))
         self._register_preprocessor('summarization_breast_cancer_biomarkers',
                                     Summarization_breast_cancer_biomarkers(self.static_data))
-        self._register_preprocessor('summarization_ecog_score',
-                                    Summarization_ecog_score(self.static_data))
+        self._register_preprocessor('summarization_ecog_status',
+                                    Summarization_ecog_status(self.static_data))
         self._register_preprocessor('summarization_fish_anlysis_summary',
                                     Summarization_fish_analysis_summary(self.static_data))
         self._register_preprocessor('summarization_histological_grade',

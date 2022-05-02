@@ -9,37 +9,41 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_lib.py.base_lib.postprocessor_base_class \
+from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
         
     #
-    def _extract_data_value(self, text_list):
-        cancer_stage_text_list = []
-        cancer_type_text_list = []
-        context_text_list = []
-        for item in text_list[0]:
-            cancer_stage_text_list.append(item[1])
-            cancer_type_text_list.append(item[2])
-            context_text_list.append(item[3])
-        cancer_stage_text_list = \
-            self._process_cancer_stage_text_list(cancer_stage_text_list)
-        value_list = []
-        for i in range(len(cancer_stage_text_list)):
-            value_list.append((cancer_stage_text_list[i],
-                               cancer_type_text_list[i],
-                               context_text_list[i]))
-        value_list = list(set(value_list))
-        value_dict_list = []
-        for value in value_list:
-            value_dict = {}
-            value_dict['CANCER_STAGE'] = value[0]
-            value_dict['CANCER_TYPE'] = value[1]
-            value_dict['SNIPPET'] = value[2]
-            value_dict_list.append(value_dict)
-        return value_dict_list
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            cancer_stage_text_list = []
+            cancer_type_text_list = []
+            context_text_list = []
+            for item in text_list[0]:
+                cancer_stage_text_list.append(item[1])
+                cancer_type_text_list.append(item[2])
+                context_text_list.append(item[3])
+            cancer_stage_text_list = \
+                self._process_cancer_stage_text_list(cancer_stage_text_list)
+            value_list = []
+            for i in range(len(cancer_stage_text_list)):
+                value_list.append((cancer_stage_text_list[i],
+                                   cancer_type_text_list[i],
+                                   context_text_list[i]))
+            value_list = list(set(value_list))
+            value_dict_list = []
+            for value in value_list:
+                value_dict = {}
+                value_dict['CANCER_STAGE'] = value[0]
+                value_dict['CANCER_TYPE'] = value[1]
+                value_dict['SNIPPET'] = value[2]
+                value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
     
     #
     def _process_cancer_stage_text_list(self, cancer_stage_text_list):
@@ -65,20 +69,20 @@ class Postprocessor(Postprocessor_base):
                 for m in re.finditer(pattern0, cancer_stage_text_raw):
                     cancer_stage_text_processed = m.group(0)
                     cancer_stage_text_processed = \
-                        re.sub('(?i)stage( is now)?', '', cancer_stage_text_processed)
+                        self.lambda_manager.lambda_conversion('(?i)stage( is now)?', cancer_stage_text_processed, '')
                     cancer_stage_text_processed = \
-                        re.sub(' ', '', cancer_stage_text_processed)
+                        self.lambda_manager.lambda_conversion(' ', cancer_stage_text_processed, '')
                     cancer_stage_text_processed = \
-                        re.sub('[A-Da-d][0-9]?', '', cancer_stage_text_processed)
+                        self.lambda_manager.lambda_conversion('[A-Da-d][0-9]?', cancer_stage_text_processed, '')
             elif re.search(pattern1, cancer_stage_text_raw) is not None:
                 for m in re.finditer(pattern1, cancer_stage_text_raw):
                     cancer_stage_text_processed = m.group(0)
                     cancer_stage_text_processed = \
-                        re.sub('(?i)stage( is now)?', '', cancer_stage_text_processed)
+                        self.lambda_manager.lambda_conversion('(?i)stage( is now)?', cancer_stage_text_processed, '')
                     cancer_stage_text_processed = \
-                        re.sub(' ', '', cancer_stage_text_processed)
+                        self.lambda_manager.lambda_conversion(' ', cancer_stage_text_processed, '')
                     cancer_stage_text_processed = \
-                        re.sub('[A-Da-d][0-9]?', '', cancer_stage_text_processed)
+                        self.lambda_manager.lambda_conversion('[A-Da-d][0-9]?', cancer_stage_text_processed, '')
                     cancer_stage_text_processed = \
                         switch_dict[cancer_stage_text_processed]
             elif stage_0_flg:

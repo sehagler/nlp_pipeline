@@ -19,19 +19,22 @@ z_root_base = 'Z:/NLP'
 
 #
 project_names = [ 'AdverseEvents', 'BeatAML_Waves_1_And_2',
-                  'BeatAML_Waves_3_And_4', 'BreastCancerPathology', 'CCC19' ]
+                  'BeatAML_Waves_3_And_4', 'BreastCancerPathology', 'CCC19',
+                  'OhsuNlpTemplate' ]
 project_subdirs = [ 'production', 'test' ]
 servers = [ 'development', 'production' ]
 
 #
 pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
-                       'linguamatics_i2e_postqueries', 'ohsu_nlp_templates' ]
+                       'linguamatics_i2e_postqueries',
+                       'ohsu_nlp_templates_run_templates',
+                       'ohsu_nlp_templates_train_templates' ]
 
 #
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[2]
+project_name = project_names[3]
 project_subdir = project_subdirs[1]
 server = servers[0]
 
@@ -39,7 +42,7 @@ server = servers[0]
 pipeline_mode_flg = pipeline_mode_flgs[2]
 
 #
-mode_flg = mode_flgs[1]
+mode_flg = mode_flgs[0]
 
 #
 user = getpass.getuser()
@@ -63,10 +66,11 @@ if mode_flg == 'update':
         software_base = root_base + '/NLP_Software/'
         software_path = software_base + 'development'
         sys.path.insert(0, software_path)
-        from nlp_lib.py.nlp_processor_lib.nlp_processor import Nlp_processor
-        nlp_process = Nlp_processor()
-        nlp_process.software_manager(password, root_dir)
-        nlp_process.move_software()
+        from nlp_pipeline_lib.py.pipeline_lib.pipeline \
+            import Pipeline
+        pipeline = Pipeline()
+        pipeline.software_manager(user, password, root_dir)
+        pipeline.move_software()
         sys.path.remove(software_path)
     
 #
@@ -85,16 +89,19 @@ elif mode_flg == 'run':
     software_base = root_base + '/NLP_Software/'
     software_path = software_base + server
     sys.path.insert(0, software_path)
-    from nlp_lib.py.nlp_processor_lib.nlp_processor import Nlp_processor
-    nlp_process = Nlp_processor()
-    nlp_process.process_manager(server, root_dir, project_subdir,
-                                project_name, user, password)
+    from nlp_pipeline_lib.py.pipeline_lib.pipeline \
+        import Pipeline
+    pipeline = Pipeline()
+    pipeline.process_manager(server, root_dir, project_subdir, project_name,
+                             user, password)
     if pipeline_mode_flg == 'training_sets':
-        nlp_process.generate_training_data_sets(password)
+        pipeline.generate_training_data_sets(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_prequeries':
-        nlp_process.linguamatics_i2e_prequeries(password)
+        pipeline.linguamatics_i2e_prequeries(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_postqueries':
-        nlp_process.linguamatics_i2e_postqueries(project_subdir)
-    elif pipeline_mode_flg == 'ohsu_nlp_templates':
-        nlp_process.ohsu_nlp_templates(password, project_subdir)
+        pipeline.linguamatics_i2e_postqueries(project_subdir)
+    elif pipeline_mode_flg == 'ohsu_nlp_templates_run_templates':
+        pipeline.ohsu_nlp_templates_run_templates(password, project_subdir)
+    elif pipeline_mode_flg == 'ohsu_nlp_templates_train_templates':
+        pipeline.ohsu_nlp_templates_train_templates(password, project_subdir)
     sys.path.remove(software_path)
