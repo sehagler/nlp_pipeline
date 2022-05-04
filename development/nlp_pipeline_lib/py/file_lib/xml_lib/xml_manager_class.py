@@ -6,6 +6,7 @@ Created on Tue Mar 22 14:57:36 2022
 """
 
 #
+import codecs
 import os
 import re
 import xml.etree.ElementTree as ET
@@ -26,15 +27,17 @@ class Xml_manager(Reader_base):
         
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
+        filename = os.path.basename(raw_data_file)
+        print('Reading: ' + filename)
+        raw_data_encoding = \
+            self.static_data['raw_data_files'][filename]['ENCODING']
         filename, file_extension = os.path.splitext(raw_data_file)
         tmp_file = filename + '.tmp'
         dt_labels = self.static_data['datetime_keys']
         text_identifiers = self.static_data['text_identifiers']
-        with open(raw_data_file, 'rb') as f:
-            xml_txt = f.read().decode(self.static_data['raw_data_encoding'], 'ignore')
-        xml_txt = re.sub('&#8226;', '*', xml_txt)
-        xml_txt = re.sub('&#[0-9]+;', '', xml_txt)
-        with open(tmp_file, 'w') as f:
+        with open(raw_data_file, encoding=raw_data_encoding, errors='ignore') as f:
+            xml_txt = f.read()
+        with codecs.open(tmp_file, 'w', self.static_data['tmp_data_encoding']) as f:
             f.write(xml_txt)
         keys = []
         parser = ET.iterparse(tmp_file)

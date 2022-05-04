@@ -65,6 +65,7 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML'] = {}
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DATETIME_FORMAT'] = '%m/%d/%Y'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DOCUMENT_FRACTION'] = 1.0
+            self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
