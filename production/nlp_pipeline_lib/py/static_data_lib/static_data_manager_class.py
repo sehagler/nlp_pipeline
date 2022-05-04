@@ -45,11 +45,11 @@ class Static_data_manager(object):
                 [ self.static_data['project_name']  + '/' + \
                   self.static_data['project_subdir'] + '/' + \
                   self.static_data['project_name'] + '.json' ]
-        self.static_data['raw_data_encoding'] = 'utf-8'
         self.static_data['raw_data_files_case_number'] = None
         self.static_data['remove_date'] = True
         self.static_data['root_dir_flg'] = root_dir_flg
         self.static_data['text_identifiers'] = [ 'REPORT', 'TEXT' ]
+        self.static_data['tmp_data_encoding'] = 'utf-8'
         self.static_data['user'] = user
         self.static_data['x_server'] = 'M01DFSNS02.OHSUM01.OHSU.EDU'
         self.static_data['xml_metadata_keys'] = []

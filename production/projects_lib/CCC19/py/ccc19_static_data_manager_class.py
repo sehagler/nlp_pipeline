@@ -34,86 +34,68 @@ class CCC19_static_data_manager(Static_data_manager):
               'smoking_products.csv', 'smoking_status.csv' ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
         if self.project_subdir == 'production':
-            
-            '''
             self.static_data['raw_data_files'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120041.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120510.XML'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120510.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120510.XML']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120510.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120510.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120901.XML'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120901.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120901.XML']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120901.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_120901.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121254.XML'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121254.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121254.XML']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121254.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121254.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121719.XML'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121719.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121719.XML']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121719.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['CCC19_NLP_HNO_NOTE_20210723_121719.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['CCC19_NLP_PATH_RESULTS_20210723_115905.XML'] = {}
-            self.static_data['raw_data_files']['CCC19_NLP_PATH_RESULTS_20210723_115905.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['CCC19_NLP_PATH_RESULTS_20210723_115905.XML']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['CCC19_NLP_PATH_RESULTS_20210723_115905.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['CCC19_NLP_PATH_RESULTS_20210723_115905.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files_sequence'] = [ 'CCC19_NLP_HNO_NOTE_20210723_120041.XML',
-                                                            'CCC19_NLP_HNO_NOTE_20210723_120510.XML',
-                                                            'CCC19_NLP_HNO_NOTE_20210723_120901.XML',
-                                                            'CCC19_NLP_HNO_NOTE_20210723_121254.XML',
-                                                            'CCC19_NLP_HNO_NOTE_20210723_121719.XML',
-                                                            'CCC19_NLP_PATH_RESULTS_20210723_115905.XML' ]
-            '''
-            
-            self.static_data['raw_data_files'] = {}
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DOCUMENT_FRACTION'] = 0.1
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_MODE'] = 'NONE'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_MODE'] = 'NONE'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['FORMATTING'] = 'unformatted'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_MODE'] = 'NONE'
-            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
-            self.static_data['raw_data_files_sequence'] = [ 'Nagle_CCC19_NLP_hno_note_v_covid_positive.xml',
-                                                             'Nagle_CCC19_NLP_hno_note_v_second_general_set.xml',
-                                                             'Nagle_CCC19_NLP_hno_note_v_first_general_set.xml' ]
-            
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['ENCODING'] = 'utf-8'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['FORMATTING'] = 'unformatted'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML',
+                                                            'NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML' ]
         elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DOCUMENT_FRACTION'] = 0.1
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['NLP_MODE'] = 'NONE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['NLP_MODE'] = 'NONE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'BeakerAP'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['NLP_MODE'] = 'NONE'
