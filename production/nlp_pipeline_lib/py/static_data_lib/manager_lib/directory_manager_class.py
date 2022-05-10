@@ -96,6 +96,10 @@ class Directory_manager(object):
                 os.path.join(self.directory_dict['processing_data_dir'], 'source_data')
             if self.create_dir_flg:
                 create_directory(self.directory_dict['source_data'])
+            self.directory_dict['template_outlines_dir'] = \
+                os.path.join(self.directory_dict['processing_data_dir'], 'template_outlines')
+            if self.create_dir_flg:
+                create_directory(self.directory_dict['template_outlines_dir'])
             self._linguamatics_i2e_directories(nlp_software_root_dir, server,
                                                project_dir)
             self._melax_clamp_directories()

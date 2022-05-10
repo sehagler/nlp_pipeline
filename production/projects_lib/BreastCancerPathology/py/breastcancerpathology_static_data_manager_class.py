@@ -27,8 +27,6 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         
         self.static_data['document_identifiers'] = \
             [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
-        self.static_data['ohsu_nlp_template_files'] = \
-            [ 'breast_cancer_tnm_stage.csv' ]
         self.static_data['queries_list'] = \
             [ ('TNM_STAGING', None, 'TNM_STAGING', 'TNM_STAGING', 'single_value', True), 
               ('ER_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_BLOCK', 'single_value', True), 
@@ -55,7 +53,17 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
               ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ]
         self.static_data['validation_file'] = \
             'breastcancerpathology_testing.xlsx'
-        if self.project_subdir == 'test':
+        if self.project_subdir == 'production':
+            self.static_data['raw_data_files'] = {}
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML'] = {}
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['DOCUMENT_FRACTION'] = 1.0
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['ENCODING'] = 'utf-8'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['FORMATTING'] = 'formatted'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
+            #self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML' ]
+        elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
@@ -68,7 +76,7 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
-            self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['SOURCE_SYSTEM'] = 'BeakerAP'
+            self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files_sequence'] = [ 'BreastCancerPathology.xls',
                                                             'DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML' ]
             

@@ -99,6 +99,11 @@ class Process_manager(object):
                 file = os.path.join(raw_data_dir, key)
                 self.xml_manager_registry[file] = \
                     Xml_manager(static_data, server_manager, file, password)
+        if 'extracts_file' in static_data.keys():
+            filename = static_data['extracts_file']
+            file = os.path.join(raw_data_dir, filename)
+            self.xls_manager_registry[file] = \
+                Xls_manager(static_data, server_manager, file, password)
         if static_data['project_subdir'] == 'test':           
             validation_filename = static_data['validation_file']
             file = os.path.join(raw_data_dir, validation_filename)
@@ -354,6 +359,7 @@ class Process_manager(object):
         static_data = self.static_data_manager.get_static_data()
         project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
         ohsu_nlp_template_manager = \
             self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
         template_dir = \
@@ -370,11 +376,10 @@ class Process_manager(object):
             template_manager = Template_manager(self.static_data_manager)
             ohsu_nlp_template_manager.clear_template_output()
             ohsu_nlp_template_manager.run_template(template_manager, 
-                                                   self.template_data_dir,
                                                    self.template_text_dict)
             filename = re.sub('_template_manager_class', '', filename)
             ohsu_nlp_template_manager.write_template_output(template_manager,
-                                                            self.template_data_dir,
+                                                            data_dir,
                                                             filename + '.csv')
             
     #
@@ -422,19 +427,29 @@ class Process_manager(object):
         for file in files:
             filename, extension = os.path.splitext(file)
             import_cmd = 'from projects_lib.' + project_name + \
-                         '.templates.ohsu_nlp_templates.' + \
+                         '.nlp_templates.' + \
                          filename + ' import ' + filename[0].upper() + \
                          filename[1:-6] + ' as Template_manager'
             exec(import_cmd, globals())
             print('OHSU NLP Template: ' + filename)
             template_manager = Template_manager(self.static_data_manager)
+            extracts_file = static_data['extracts_file']
+            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                                         extracts_file)
+            xls_manager = \
+                self.xls_manager_registry[extracts_file]
+            xls_manager.read_training_data()
             ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.train_template(template_manager, 
+            ohsu_nlp_template_manager.train_template(template_manager,
+                                                     self.metadata_manager,
+                                                     xls_manager,
                                                      self.template_data_dir,
                                                      self.template_text_dict)
-            ohsu_nlp_template_manager.write_template_output(template_manager,
-                                                            self.template_data_dir,
-                                                            filename + '.csv')
+            template_outlines_dir = \
+                directory_manager.pull_directory('template_outlines_dir')
+            filename = filename[:-13] + 'outline'
+            ohsu_nlp_template_manager.write_template_outline(template_outlines_dir,
+                                                             filename + '.txt')
         
     #
     def postperformance(self):

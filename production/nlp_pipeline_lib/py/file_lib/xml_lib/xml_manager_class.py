@@ -23,7 +23,7 @@ class Xml_manager(Reader_base):
     def __init__(self, static_data_manager, filename):
         self.filename = filename
         self.static_data = static_data_manager.get_static_data()
-    '''
+    '''          
         
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
@@ -41,7 +41,7 @@ class Xml_manager(Reader_base):
             f.write(xml_txt)
         keys = []
         parser = ET.iterparse(tmp_file)
-        for event, elem in parser:
+        for (event, elem) in parser:
             if elem.tag not in [ 'DATA_RECORD', 'RESULTS', 'ROW', 'ROWSET' ] and event == 'end':
                 if elem.tag == 'COLUMN':
                     keys.append(elem.attrib['NAME'])
@@ -75,8 +75,12 @@ class Xml_manager(Reader_base):
                     data[key].append(None)
                 data['FILENAME'].append(os.path.basename(raw_data_file))
                 data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
-                data['SOURCE_SYSTEM'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['SOURCE_SYSTEM'])
+                if 'SOURCE_SYSTEM' in raw_data_files_dict[os.path.basename(raw_data_file)].keys():
+                    print(raw_data_files_dict[os.path.basename(raw_data_file)].keys())
+                    data['SOURCE_SYSTEM'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['SOURCE_SYSTEM'])
                 keys_appended = []
+        if len(data['SOURCE_SYSTEM']) == 0:
+            data['SOURCE_SYSTEM'] = data["SOURCE_SYSTEM_NAME"]
         #for text_identifier in text_identifiers:
         #    if text_identifier in data.keys():
         keys = list(data.keys())

@@ -26,7 +26,6 @@ class OhsuNlpTemplate_performance_data_manager(Performance_data_manager):
         static_data = self.static_data_manager.get_static_data()
         if static_data['project_subdir'] == 'test':
             self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
-
             validation_filename = static_data['validation_file']
             directory_manager = static_data['directory_manager']
             project_name = static_data['project_name']
@@ -34,12 +33,7 @@ class OhsuNlpTemplate_performance_data_manager(Performance_data_manager):
             filename = os.path.join(data_dir, validation_filename)
             self.xls_manager_registry[filename].read_validation_data()
             self.identifier_list = self.xls_manager_registry[filename].get_validation_csn_list()
-            
-            self.queries = [ ('CANCER_STAGE', None, 'CANCER_STAGE', 'CANCER_STAGE', 'single_value', True),
-                             ('NORMALIZED_ECOG_SCORE', None, 'ECOG_STATUS', 'NORMALIZED_ECOG_SCORE', 'single_value', True),
-                             ('NORMALIZED_SMOKING_HISTORY', None, 'SMOKING_HISTORY', 'NORMALIZED_SMOKING_HISTORY', 'single_value', True),
-                             ('NORMALIZED_SMOKING_PRODUCTS', None, 'SMOKING_PRODUCTS', 'NORMALIZED_SMOKING_PRODUCTS', 'multiple_values', False),
-                             ('NORMALIZED_SMOKING_STATUS', None, 'SMOKING_STATUS', 'NORMALIZED_SMOKING_STATUS', 'single_value', True) ]
+            self.queries = static_data['queries_list']
                 
     #
     def _generate_nlp_performance(self, nlp_performance_dict, csn, nlp_values,
