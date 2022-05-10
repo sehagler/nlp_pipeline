@@ -174,11 +174,6 @@ class Pipeline(object):
             '''
             self.process_manager.ohsu_nlp_templates_setup()
             self.process_manager.ohsu_nlp_templates_train_templates()
-            self.process_manager.postprocessor()
-            self.process_manager.preperformance()
-            if project_subdir == 'test':
-                self.process_manager.calculate_performance()
-            self.process_manager.postperformance()
         
     #
     def process_manager(self, server, root_dir, project_subdir, project_name,

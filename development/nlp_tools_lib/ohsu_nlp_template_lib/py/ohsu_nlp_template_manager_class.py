@@ -6,204 +6,29 @@ Created on Wed Jan 12 09:40:02 2022
 """
 
 #
+import copy
 import csv
-import datetime
-import itertools
 import os
-import re
 import xml.etree.ElementTree as ET
 
 #
+from nlp_tools_lib.ohsu_nlp_template_lib.py.worker_lib.training_worker_class \
+    import Training_worker
+from nlp_tools_lib.ohsu_nlp_template_lib.py.worker_lib.worker_base_class \
+    import Worker_base
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file, write_file
 
 #
-class Ohsu_nlp_template_manager(object):
+class Ohsu_nlp_template_manager(Worker_base):
     
     #
     def __init__(self, static_data_manager, xls_manager_registry,
                  evaluation_manager):
+        Worker_base.__init__(self)
         self.static_data_manager = static_data_manager
         self.xls_manager_registry = xls_manager_registry
         self.evaluation_manager = evaluation_manager
-    
-    #
-    def _apply_template(self, primary_template_list, secondary_template_list,
-                        template_sections_list, text_dict):
-        for document_id in text_dict.keys():
-            template_output_list = []
-            for key in text_dict[document_id].keys():
-                offset_base = text_dict[document_id][key]['OFFSET_BASE']
-                section = text_dict[document_id][key]['TEXT']
-                now = datetime.datetime.now()
-                timestamp = now.strftime("%m/%d/%Y %H:%M:%S")
-                if primary_template_list is not None:
-                    create_output_flg = True
-                    if template_sections_list is not None:
-                        create_output_flg = False
-                        for section_name in template_sections_list:
-                            if section_name in key[0]:
-                                create_output_flg = True
-                else:
-                    create_output_flg = False
-                if create_output_flg:
-                    for primary_template in primary_template_list:
-                        primary_template = re.compile(primary_template)
-                        primary_matches = primary_template.finditer(section)
-                        if bool(primary_matches):
-                            for primary_match in primary_matches:
-                                primary_query_output = primary_match.group(0)
-                                start = primary_match.start() + offset_base
-                                end = primary_match.end() + offset_base - 1
-                                offset = [ (start, end) ]
-                                snippet = section
-                                if primary_query_output is not None:
-                                    secondary_query_outputs = {}
-                                    for i in range(len(secondary_template_list)):
-                                        secondary_query_outputs[i] = []
-                                        for j in range(len(secondary_template_list[i])):
-                                            secondary_template = \
-                                                secondary_template_list[i][j]
-                                            secondary_template = \
-                                                re.compile(secondary_template)
-                                            secondary_matches = \
-                                                secondary_template.finditer(primary_query_output)
-                                            if bool(secondary_matches):
-                                                for secondary_match in secondary_matches:
-                                                    secondary_query_outputs[i].append(secondary_match.group(0))
-                                    for i in range(len(secondary_query_outputs)):
-                                        if len(secondary_query_outputs[i]) == 0:
-                                            secondary_query_outputs[i].append('')
-                                    secondary_values_list_tmp = []
-                                    for i in range(len(secondary_query_outputs)):
-                                        secondary_values_list_tmp.append(secondary_query_outputs[i])
-                                    secondary_values_list = \
-                                        list(itertools.product(*secondary_values_list_tmp))
-                                    for secondary_values in secondary_values_list:
-                                        template_output = \
-                                            [ document_id, timestamp, key[0], key[1],
-                                              primary_query_output ]
-                                        for i in range(len(secondary_values)):
-                                            template_output.append(secondary_values[i])
-                                        template_output.append(snippet)
-                                        template_output.append(offset)
-                                        template_output_list.append(template_output)
-                                        
-                                else:
-                                    template_output = \
-                                        [ document_id, timestamp, key[0], key[1],
-                                          primary_query_output, snippet, offset ]
-                                    template_output_list.append(template_output)
-                else:
-                    if template_sections_list is not None:
-                        create_output_flg = False
-                        for section_name in template_sections_list:
-                            if section_name in key[0]:
-                                create_output_flg = True
-                    if create_output_flg:
-                        query_output = section
-                        snippet = section
-                        offset = []
-                        template_output = \
-                            [ document_id, timestamp, key[0], key[1],
-                              query_output, snippet, offset ]
-                        template_output_list.append(template_output)
-            template_output_list = \
-                self._unique_elements(template_output_list)
-            template_output_list = \
-                self._unique_linguamatics_specimens(template_output_list)
-            template_output_list = \
-                self._maximal_elements(template_output_list)
-            for template_output in template_output_list:
-                self.template_output.append(template_output)
-                
-    #
-    def _maximal_elements(self, data_list_in):
-        data_list_tmp = data_list_in.copy()
-        data_list_out = []
-        while len(data_list_tmp) > 0:
-            item = data_list_tmp[0]
-            del data_list_tmp[0]
-            idxs = []
-            append_item_flg = True
-            for i in range(len(data_list_tmp)):
-                if len(item[-1]) > 0 and len(data_list_tmp[i][-1]) > 0:
-                    if item[-1][0][0] <= data_list_tmp[i][-1][0][0] and \
-                       item[-1][0][1] >= data_list_tmp[i][-1][0][1]:
-                        idxs.append(i)
-                    if data_list_tmp[i][-1][0][0] <= item[-1][0][0] and \
-                       data_list_tmp[i][-1][0][1] >= item[-1][0][1]:
-                        append_item_flg = False
-                        data_list_out.append(data_list_tmp[i])
-                        idxs.append(i)
-            if append_item_flg:
-                data_list_out.append(item)
-            idxs = list(set(idxs))
-            idxs.sort(reverse=True)
-            for idx in idxs:
-                del data_list_tmp[idx]
-        return data_list_out
-                        
-    #
-    def _read_validation_data(self):
-        static_data = self.static_data_manager.get_static_data()
-        validation_filename = static_data['validation_file']
-        directory_manager = static_data['directory_manager']
-        project_name = static_data['project_name']
-        data_dir = directory_manager.pull_directory('raw_data_dir')
-        filename = os.path.join(data_dir, validation_filename)
-        validation_data = \
-            self.xls_manager_registry[filename].read_validation_data()
-        return validation_data
-    
-    #
-    def _unique_elements(self, data_list_in):
-        data_list_tmp = data_list_in.copy()
-        data_list_out = []
-        while len(data_list_tmp) > 0:
-            item = data_list_tmp[0]
-            del data_list_tmp[0]
-            data_list_out.append(item)
-            idxs = []
-            for i in range(len(data_list_tmp)):
-                match_flg = True
-                for j in range(len(item)):
-                    if item[j] != data_list_tmp[i][j]:
-                        match_flg = False
-                if match_flg:
-                    idxs.append(i)
-            idxs.sort(reverse=True)
-            for idx in idxs:
-                del data_list_tmp[idx]
-        return data_list_out
-    
-    #
-    def _unique_linguamatics_specimens(self, data_list_in):
-        data_list_tmp = data_list_in.copy()
-        data_list_out = []
-        while len(data_list_tmp) > 0:
-            item = data_list_tmp[0]
-            del data_list_tmp[0]
-            idxs = []
-            append_item_flg = True
-            for i in range(len(data_list_tmp)):
-                match_flg = True
-                for j in range(len(item)):
-                    if j != 3 and j != len(item)-2 and item[j] != data_list_tmp[i][j]:
-                        match_flg = False
-                if match_flg:
-                    if item[3] == '' and data_list_tmp[i][3] != '':
-                        append_item_flg = False
-                        data_list_out.append(data_list_tmp[i])
-                        idxs.append(i)
-                    elif item[3] != '' and data_list_tmp[i][3] == '':
-                        idxs.append(i)
-            if append_item_flg:
-                data_list_out.append(item)
-            idxs.sort(reverse=True)
-            for idx in idxs:
-                del data_list_tmp[idx]
-        return data_list_out
     
     #
     def clear_template_output(self):
@@ -220,7 +45,7 @@ class Ohsu_nlp_template_manager(object):
         return ret_val
     
     #
-    def run_template(self, template_manager, data_dir, text_dict):    
+    def run_template(self, template_manager, text_dict):
         template_dict = template_manager.template()
         primary_template_list = template_dict['primary_template_list']
         if 'secondary_template_list' in template_dict.keys():
@@ -232,19 +57,22 @@ class Ohsu_nlp_template_manager(object):
                              template_sections_list, text_dict)
             
     #
-    def train_template(self, template_manager, data_dir, text_dict): 
-        validation_data = self._read_validation_data()
-        template_dict = template_manager.template()
+    def train_template(self, template_manager, metadata_manager, xls_manager,
+                       data_dir, text_dict):
+        training_worker = Training_worker(self.static_data_manager,
+                                          template_manager, metadata_manager,
+                                          self.xls_manager_registry,
+                                          xls_manager, data_dir, text_dict)
+        training_worker.train()
+        template_dict = template_manager.training_template()
         primary_template_list = template_dict['primary_template_list']
-        if 'secondary_template_list' in template_dict.keys():
-            secondary_template_list = template_dict['secondary_template_list']
-        else:
-            secondary_template_list = []
-        template_sections_list = template_dict['sections_list']
-        for template in primary_template_list:
-            self._apply_template(template, secondary_template_list,
-                                 template_sections_list, text_dict)
+        self.primary_template_list = primary_template_list
         
+    #
+    def write_template_outline(self, template_outlines_dir, filename):
+        with open(os.path.join(template_outlines_dir, filename), 'w') as f:
+            f.write(str(self.primary_template_list))
+
     #
     def write_template_output(self, template_manager, data_dir, filename):
         template_dict = template_manager.template()

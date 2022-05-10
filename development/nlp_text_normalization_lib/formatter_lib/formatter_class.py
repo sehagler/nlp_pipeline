@@ -141,7 +141,7 @@ class Formatter(Preprocessor_base):
     #
     def process_document(self, text, source_system):
         self.text = text
-        if source_system == 'BeakerAP':
+        if source_system == 'Epic Beaker':
             self._format_beakerap()
         else:
             self._format_powerpath()

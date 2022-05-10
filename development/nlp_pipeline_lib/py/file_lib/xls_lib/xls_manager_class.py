@@ -102,6 +102,15 @@ class Xls_manager(Reader_base):
     '''
     
     #
+    def column(self, column_label):
+        column_labels = self.training_data[0]
+        idx = column_labels.index(column_label)
+        column_values = []
+        for i in range(1, len(self.training_data)):
+            column_values.append(self.training_data[i][idx])
+        return column_values
+    
+    #
     def column_labels(self):
         return self.validation_data[0]
     
@@ -127,6 +136,25 @@ class Xls_manager(Reader_base):
     #
     def length(self):
         return len(self.validation_data)
+    
+    #
+    def read_training_data(self):
+        book = read_xlsx_file(self.raw_data_file)
+        sheet = book.sheet_by_index(0)
+        ncols = sheet.ncols
+        nrows = sheet.nrows
+        training_data = []
+        for row_idx in range(nrows):
+            training_data_tmp = []
+            for col_idx in range(ncols):
+                cell_value = sheet.cell_value(row_idx, col_idx)
+                try:
+                    cell_value = str(int(cell_value))
+                except:
+                    pass
+                training_data_tmp.append(cell_value)
+            training_data.append(training_data_tmp)
+        self.training_data = training_data
     
     #
     def read_validation_data(self):
