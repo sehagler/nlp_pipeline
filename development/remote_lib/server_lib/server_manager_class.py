@@ -21,7 +21,8 @@ class Server_manager(object):
     #
     def __init__(self, static_data_manager, password):
         static_data = static_data_manager.get_static_data()
-        self.server = static_data['acc_server'][1]
+        if static_data['acc_server'] is not None:
+            self.server = static_data['acc_server'][1]
         self.user = static_data['user']
         self.password = password
         self.lambda_manager = Lambda_manager

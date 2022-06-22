@@ -24,12 +24,14 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class Performance_data_manager(object):
     
     #
-    def __init__(self, static_data_manager, json_manager_registry,
-                 xls_manager_registry, evaluation_manager):
+    def __init__(self, static_data_manager, evaluation_manager,
+                 json_manager_registry, metadata_manager,
+                 xls_manager_registry):
         self.static_data_manager = static_data_manager
-        self.json_manager_registry = json_manager_registry
-        self.xls_manager_registry = xls_manager_registry
         self.evaluation_manager = evaluation_manager
+        self.json_manager_registry = json_manager_registry
+        self.metadata_manager = metadata_manager
+        self.xls_manager_registry = xls_manager_registry
         
         static_data = self.static_data_manager.get_static_data()
         self.directory_manager = static_data['directory_manager']
@@ -85,32 +87,51 @@ class Performance_data_manager(object):
     def _display_performance_statistics(self):
         for key in self.performance_statistics_overall_dict.keys():
             print(key)
-            print(' N:\t\t' + self.performance_statistics_overall_dict[key]['N']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
-                  self.performance_statistics_overall_dict[key]['N']['NLP_MANUAL_REVIEW'])
-            print(' accuracy:\t' + self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
-                  self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_MANUAL_REVIEW'])
-            print(' precision:\t' + self.performance_statistics_overall_dict[key]['PRECISION']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
-                  self.performance_statistics_overall_dict[key]['PRECISION']['NLP_MANUAL_REVIEW'])
-            print(' recall:\t' + self.performance_statistics_overall_dict[key]['RECALL']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
-                  self.performance_statistics_overall_dict[key]['RECALL']['NLP_MANUAL_REVIEW'])
-            print(' F1:\t\t' + self.performance_statistics_overall_dict[key]['F1']['NLP_WITHOUT_MANUAL_REVIEW'] + '\t' + \
-                  self.performance_statistics_overall_dict[key]['F1']['NLP_MANUAL_REVIEW'])
+            print('\t\t\tNON_MAN_REV\tMAN_REV')
+            print(' N documents:\t\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                  '\t\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_MANUAL_REVIEW'])
+            print(' N hit documents:\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                  '\t\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_MANUAL_REVIEW'])
+            print(' accuracy:\t\t ' + self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                  '\t\t ' + self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_MANUAL_REVIEW'])
+            print(' precision:\t\t ' + self.performance_statistics_overall_dict[key]['PRECISION']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                  '\t\t ' + self.performance_statistics_overall_dict[key]['PRECISION']['NLP_MANUAL_REVIEW'])
+            print(' recall:\t\t ' + self.performance_statistics_overall_dict[key]['RECALL']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                  '\t\t ' + self.performance_statistics_overall_dict[key]['RECALL']['NLP_MANUAL_REVIEW'])
+            print(' F1:\t\t\t ' + self.performance_statistics_overall_dict[key]['F1']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                  '\t\t ' + self.performance_statistics_overall_dict[key]['F1']['NLP_MANUAL_REVIEW'])
     
     #
     def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
-                                         nlp_performance_nlp_manual_review_dict,
-                                         N_total, wo_nlp_manual_review_dict):
+                                         nlp_performance_nlp_manual_review_dict, 
+                                         N_documents, N_manual_review,
+                                         N_hit_documents_wo_nlp_manual_review_dict,
+                                         N_hit_documents_nlp_manual_review_dict):
         for key0 in nlp_performance_wo_nlp_manual_review_dict.keys():
-            N_manual_review = wo_nlp_manual_review_dict[key0]
-            N = N_total - N_manual_review
+            N_validation_documents = N_documents - N_manual_review[key0]
+            if N_hit_documents_nlp_manual_review_dict is not None:
+                N_validation_hit_manual_review = \
+                    N_hit_documents_nlp_manual_review_dict[key0]
+            else:
+                N_validation_hit_manual_review = None
+            if N_hit_documents_wo_nlp_manual_review_dict is not None:
+                N_hit_documents = N_hit_documents_wo_nlp_manual_review_dict[key0]
+                N_validation_hit_documents = \
+                    N_hit_documents - N_validation_hit_manual_review
+            else:
+                N_validation_hit_documents = None
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_performance_wo_nlp_manual_review_dict[key0])
             performance_statistics_wo_nlp_manual_review_dict = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N)
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP,
+                                             N_validation_documents,
+                                             N_validation_hit_documents)
             FN, FP, FP_plus_FN, TN, TP = \
                 self._performance_values(nlp_performance_nlp_manual_review_dict[key0])
             performance_statistics_nlp_manual_review_dict = \
-                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, N_manual_review)
+                self._performance_statistics(FN, FP, FP_plus_FN, TN, TP, 
+                                             N_manual_review[key0], 
+                                             N_validation_hit_manual_review)
             self.performance_statistics_overall_dict[key0] = {}
             for key1 in performance_statistics_wo_nlp_manual_review_dict.keys():
                 self.performance_statistics_overall_dict[key0][key1] = {}
@@ -230,18 +251,15 @@ class Performance_data_manager(object):
         return data_out
     
     #
-    def _get_nlp_values(self, nlp_data, data_json, identifier_list):
+    def _get_nlp_values(self, nlp_data, data_json):
         nlp_values = data_json
-        for identifier in identifier_list:
-            if identifier not in nlp_values.keys():
-                nlp_values[identifier] = None
         return nlp_values
     
     #
     def _get_performance(self, csn, nlp_values, nlp_datum_key, 
-                         validation_datum_key):
-        data_out = nlp_values[csn]
-        if data_out is not None:
+                         validation_datum_key, display_flg):
+        if csn in nlp_values.keys():
+            data_out = nlp_values[csn]
             if nlp_datum_key in data_out.keys():
                 nlp_value = data_out[nlp_datum_key]
             else:
@@ -259,8 +277,9 @@ class Performance_data_manager(object):
                 validation_value = \
                     self._process_validation_item(row[validation_idx])
         validation_value = self._validation_to_tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -299,7 +318,10 @@ class Performance_data_manager(object):
         return FN, FP, FP_plus_FN, TN, TP
     
     #
-    def _performance_statistics(self, FN, FP, FP_plus_FN, TN, TP, N):
+    def _performance_statistics(self, FN, FP, FP_plus_FN, TN, TP,
+                                N_validation_documents,
+                                N_validation_hit_documents):
+        N = N_validation_documents
         if N > 0:
             A = (TP + TN) / N
         else:
@@ -328,10 +350,21 @@ class Performance_data_manager(object):
             performance_statistics['F1'] = F1
         else:
             performance_statistics['F1'] = str(round(F1, 3))
-        if isinstance(N, str):
-            performance_statistics['N'] = N
+        if isinstance(N_validation_documents, str):
+            performance_statistics['N_VALIDATION_DOCUMENTS'] = \
+                N_validation_documents
         else:
-            performance_statistics['N'] = str(N)
+            performance_statistics['N_VALIDATION_DOCUMENTS'] = \
+                str(N_validation_documents)
+        if N_validation_hit_documents is not None:
+            if isinstance(N_validation_hit_documents, str):
+                performance_statistics['N_VALIDATION_HIT_DOCUMENTS'] = \
+                    N_validation_hit_documents
+            else:
+                performance_statistics['N_VALIDATION_HIT_DOCUMENTS'] = \
+                    str(N_validation_hit_documents)
+        else:
+            performance_statistics['N_VALIDATION_HIT_DOCUMENTS'] = 'NA'
         if isinstance(P, str):
             performance_statistics['PRECISION'] = P
         else:
@@ -436,11 +469,9 @@ class Performance_data_manager(object):
         for key in self.nlp_data.keys():
             identifier = \
                 self.nlp_data[key][self.metadata_key][self.identifier_key]
-            if identifier in self.identifier_list:
-                data_json = self._read_nlp_value(self.nlp_data, data_json,
-                                                 key, identifier)
-        nlp_values = self._get_nlp_values(self.nlp_data, data_json, 
-                                          self.identifier_list)
+            data_json = self._read_nlp_value(self.nlp_data, data_json,
+                                             key, identifier)
+        nlp_values = self._get_nlp_values(self.nlp_data, data_json)
         self.performance_statistics_overall_dict = {}
         
         static_data = self.static_data_manager.get_static_data()

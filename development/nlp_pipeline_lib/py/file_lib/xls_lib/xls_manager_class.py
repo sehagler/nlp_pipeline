@@ -15,13 +15,6 @@ from tool_lib.py.processing_tools_lib.file_processing_tools import read_xlsx_fil
     
 #
 class Xls_manager(Reader_base):
-    
-    '''
-    #
-    def __init__(self, static_data_manager, filename):
-        self.filename = filename
-        self.static_data = static_data_manager.get_static_data()
-    '''
         
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
@@ -194,7 +187,6 @@ class Xls_manager(Reader_base):
         validation_data_out.append(validation_data_in[0])
         validation_data_in = validation_data_in[1:]
         for item in validation_data_in:
-            print(item[1])
             if patient_list is None or int(item[1]) in patient_list:
                 validation_data_out.append(item)
         self.validation_data = validation_data_out

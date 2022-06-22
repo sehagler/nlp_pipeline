@@ -18,9 +18,8 @@ from tool_lib.py.processing_tools_lib.text_processing_tools \
 class Reader_base(object):
     
     #
-    def __init__(self, static_data, server_manager, raw_data_file, password):
+    def __init__(self, static_data, raw_data_file, password):
         self.static_data = static_data
-        self.server_manager = server_manager
         self.raw_data_file = raw_data_file
         
     #

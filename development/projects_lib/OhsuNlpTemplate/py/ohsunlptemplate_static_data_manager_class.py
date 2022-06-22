@@ -20,24 +20,25 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class OhsuNlpTemplate_static_data_manager(Static_data_manager):
     
     #
-    def __init__(self, operation_mode, project_subdir, user, root_dir_flg):
+    def __init__(self, operation_mode, user, root_dir_flg, project_subdir=None):
         project_name = 'OhsuNlpTemplate'
-        Static_data_manager.__init__(self, operation_mode, project_name, 
-                                     project_subdir, user, root_dir_flg)
+        Static_data_manager.__init__(self, operation_mode, user, root_dir_flg,
+                                     project_name=project_name,
+                                     project_subdir=project_subdir)
         self.project_subdir = project_subdir
-        
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
+        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         self.static_data['queries_list'] = \
             [ ('CANCER_STAGE', None, 'CANCER_STAGE', 'CANCER_STAGE', 'single_value', True) ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
-        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         if self.project_subdir == 'production':
             pass
         elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DOCUMENT_FRACTION'] = 0.1
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['FORMATTING'] = 'unformatted'
@@ -45,6 +46,7 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['FORMATTING'] = 'unformatted'
@@ -52,6 +54,7 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
@@ -87,7 +90,8 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_second_general_set.pkl'))
                 
-            self._include_lists(docs_files, groups_files, [0])
+            #self._include_lists(docs_files, groups_files, [0])
+            self._include_lists(docs_files, groups_files, [1, 2, 3])
             
             evaluation_docs_file = \
                 os.path.join(training_data_dir, 'training_docs_evaluation.pkl')
@@ -102,7 +106,8 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
                 os.path.join(training_data_dir, 'training_groups_first_general_set.pkl')
             with open(trainng_groups_first_general_set_file, 'rb') as f:
                 patient_list = pickle.load(f)
-            for idx in [ 0 ]:
+            #for idx in [ 0 ]:
+            for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
                 self.static_data['patient_list'].extend(patient_list[idx])
             self.static_data['patient_list'] = \
                 list(set(self.static_data['patient_list']))

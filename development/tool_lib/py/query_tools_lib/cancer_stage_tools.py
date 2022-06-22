@@ -11,6 +11,10 @@ import re
 #
 from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
     import Postprocessor_base
+from tool_lib.py.processing_tools_lib.text_processing_tools \
+    import regex_from_list, s
+from tool_lib.py.query_tools_lib.cancer_tools \
+    import nonnumeric_stage, numeric_stage
 
 #
 class Postprocessor(Postprocessor_base):
@@ -46,7 +50,26 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
     #
-    def _process_cancer_stage_text_list(self, cancer_stage_text_list):
+    def _get_stage(self, context_regex, regex, map_func, text):
+        stage_val_list = []
+        for m in re.finditer(context_regex, text):
+            val_list = []
+            for n in re.finditer(regex, m.group(0)):
+                if map_func is not None:
+                    val_list.append(map_func(n.group(0)))
+                else:
+                    val_list.append(n.group(0))
+            if len(val_list) == 1:
+                stage_val_list.append(val_list[0])
+            elif len(val_list) > 1:
+                val_list = sorted(val_list)
+                val_list = [ val_list[0], val_list[-1] ]
+                stage_val_list.append('-'.join(val_list))
+        stage_val_list = list(set(stage_val_list))
+        return stage_val_list
+    
+    #
+    def _map_to_cancer_stage(self, value_in):
         switch_dict = {}
         switch_dict['0'] = '0'
         switch_dict['1'] = 'I'
@@ -54,46 +77,43 @@ class Postprocessor(Postprocessor_base):
         switch_dict['3'] = 'III'
         switch_dict['4'] = 'IV'
         switch_dict['5'] = 'V'
-        pattern0 = \
-            re.compile('(?i)stage( is now)? [IV]{1,3}([A-Da-d][0-9]?)?( (\-|/) [IV]{1,3}([A-Da-d][0-9]?)?)?( |$)')
-        pattern1 = \
-            re.compile('(?i)stage( is now)? [0-5]([A-Da-d][0-9]?)?( (\-|/) [0-5]([A-Da-d][0-9]?)?)?( |$)')
+        if value_in in switch_dict.keys():
+            value_out = switch_dict[value_in]
+        else:
+            value_out = value_in
+        return value_out
+    
+    #
+    def _process_cancer_stage_text_list(self, cancer_stage_text_list):
+        numeric_stage_context_regex = \
+            re.compile('(?i)stage (.* )?' + numeric_stage())
+        numeric_stage_regex = ('(?i)(?<=[ ^])([0-9]+|[IV]+)')
+        nonnumeric_stage_context_regex = \
+            re.compile('(?i)' + nonnumeric_stage() + ' stage')
+        nonnumeric_stage_regex = \
+            re.compile('(?i)' + nonnumeric_stage())
+        in_situ_list = [ 'DCIS', 'LCIS', 'SCCIS', 'in situ' ]
+        in_situ_regex = re.compile('(?i)' + regex_from_list(in_situ_list))
         for i in range(len(cancer_stage_text_list)):
             cancer_stage_text_raw = cancer_stage_text_list[i]
-            stage_0_flg = False
-            stage_0_text_list = [ 'DCIS', 'LCIS', 'SCCIS', 'in situ' ]
-            for item in stage_0_text_list:
-                if re.search('(?i)' + item, cancer_stage_text_raw) is not None:
-                    stage_0_flg = True
-            if re.search(pattern0, cancer_stage_text_raw) is not None:
-                for m in re.finditer(pattern0, cancer_stage_text_raw):
-                    cancer_stage_text_processed = m.group(0)
-                    cancer_stage_text_processed = \
-                        self.lambda_manager.lambda_conversion('(?i)stage( is now)?', cancer_stage_text_processed, '')
-                    cancer_stage_text_processed = \
-                        self.lambda_manager.lambda_conversion(' ', cancer_stage_text_processed, '')
-                    cancer_stage_text_processed = \
-                        self.lambda_manager.lambda_conversion('[A-Da-d][0-9]?', cancer_stage_text_processed, '')
-            elif re.search(pattern1, cancer_stage_text_raw) is not None:
-                for m in re.finditer(pattern1, cancer_stage_text_raw):
-                    cancer_stage_text_processed = m.group(0)
-                    cancer_stage_text_processed = \
-                        self.lambda_manager.lambda_conversion('(?i)stage( is now)?', cancer_stage_text_processed, '')
-                    cancer_stage_text_processed = \
-                        self.lambda_manager.lambda_conversion(' ', cancer_stage_text_processed, '')
-                    cancer_stage_text_processed = \
-                        self.lambda_manager.lambda_conversion('[A-Da-d][0-9]?', cancer_stage_text_processed, '')
-                    cancer_stage_text_processed = \
-                        switch_dict[cancer_stage_text_processed]
-            elif stage_0_flg:
-                cancer_stage_text_processed = '0'
-            elif re.search('(?i)early stage', cancer_stage_text_raw) is not None:
-                cancer_stage_text_processed = 'early'
-            elif re.search('(?i)end stage', cancer_stage_text_raw) is not None:
-                cancer_stage_text_processed = 'end'
-            elif re.search('(?i)extensive stage', cancer_stage_text_raw) is not None:
-                cancer_stage_text_processed = 'extensive'
+            cancer_stage_text_processed = []
+            stage_val_list = self._get_stage(numeric_stage_context_regex, 
+                                             numeric_stage_regex,
+                                             self._map_to_cancer_stage,
+                                             cancer_stage_text_raw)
+            for item in stage_val_list:
+                cancer_stage_text_processed.append(item)
+            stage_val_list = self._get_stage(nonnumeric_stage_context_regex, 
+                                             nonnumeric_stage_regex, None,
+                                             cancer_stage_text_raw)
+            for item in stage_val_list:
+                cancer_stage_text_processed.append(item.lower())
+            stage_val_list = self._get_stage(in_situ_regex, in_situ_regex, 
+                                             None, cancer_stage_text_raw)
+            for item in stage_val_list:
+                cancer_stage_text_processed.append('0')
+            if len(cancer_stage_text_processed) == 1:
+                cancer_stage_text_list[i] = cancer_stage_text_processed[0]
             else:
-                cancer_stage_text_processed = cancer_stage_text_raw
-            cancer_stage_text_list[i] = cancer_stage_text_processed
+                cancer_stage_text_list[i] = 'MANUAL_REVIEW'
         return cancer_stage_text_list

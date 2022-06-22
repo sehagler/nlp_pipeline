@@ -20,8 +20,7 @@ from tool_lib.py.processing_tools_lib.variable_processing_tools \
 class Raw_data_manager(object):
     
     #
-    def __init__(self, static_data_manager, server_manager,
-                 multiprocessing_flg, password):
+    def __init__(self, static_data_manager, multiprocessing_flg, password):
         self.static_data_manager = static_data_manager
         static_data = self.static_data_manager.get_static_data()
         self.multiprocessing_flg = multiprocessing_flg

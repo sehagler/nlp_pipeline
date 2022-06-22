@@ -9,7 +9,11 @@ Created on Fri Jan 18 10:14:44 2019
 from copy import deepcopy
 import csv
 import datetime
+import glob
+import json
+import plotext as plt
 import multiprocessing
+import numpy as np
 import os
 import pickle
 import re
@@ -38,7 +42,7 @@ from nlp_pipeline_lib.py.raw_data_lib.raw_data_manager_class \
     import Raw_data_manager
 from nlp_text_normalization_lib.text_normalization_manager_class \
     import Text_normalization_manager
-from nlp_tools_lib.nlp_tool_manager_registry_lib.nlp_tool_manager_registry_class \
+from nlp_pipeline_lib.py.registry_lib.nlp_tool_manager_registry_class \
     import Nlp_tool_manager_registry
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file, read_txt_file
@@ -47,12 +51,12 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class Process_manager(object):
     
     #
-    def __init__(self, static_data_manager, server_manager, password):
-        self.server_manager = server_manager
+    def __init__(self, static_data_manager, remote_manager_registry, 
+                 password):
         self.static_data_manager = static_data_manager
         self.password = password
         self._project_imports()
-        self._create_managers(server_manager, password)
+        self._create_managers(remote_manager_registry, password)
         
         # Kludge to get around memory issue in processor
         linguamatics_i2e_manager = \
@@ -73,7 +77,7 @@ class Process_manager(object):
         return keywords_regexp
     
     #
-    def _create_managers(self, server_manager, password):
+    def _create_managers(self, remote_manager_registry, password):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
         project_name = static_data['project_name']
@@ -94,38 +98,42 @@ class Process_manager(object):
             if extension.lower() in [ '.xls', '.xlsx' ]:
                 file = os.path.join(raw_data_dir, key)
                 self.xls_manager_registry[file] = \
-                    Xls_manager(static_data, server_manager, file, password)
+                    Xls_manager(static_data, file, password)
             elif extension.lower() in [ '.xml' ]:
                 file = os.path.join(raw_data_dir, key)
                 self.xml_manager_registry[file] = \
-                    Xml_manager(static_data, server_manager, file, password)
+                    Xml_manager(static_data, file, password)
         if 'extracts_file' in static_data.keys():
             filename = static_data['extracts_file']
             file = os.path.join(raw_data_dir, filename)
             self.xls_manager_registry[file] = \
-                Xls_manager(static_data, server_manager, file, password)
-        if static_data['project_subdir'] == 'test':           
+                Xls_manager(static_data, file, password)
+        if static_data['project_subdir'] == 'test' and \
+           'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
             file = os.path.join(raw_data_dir, validation_filename)
             self.xls_manager_registry[file] = \
-                Xls_manager(static_data, server_manager, file, password)
+                Xls_manager(static_data, file, password)
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_manager)
         evaluation_manager = \
             Evaluation_manager(self.static_data_manager)
         self.metadata_manager = Metadata_manager(self.static_data_manager)
         self.nlp_tool_manager_registry = \
-            Nlp_tool_manager_registry(self.static_data_manager, server_manager,
-                                      self.xls_manager_registry, evaluation_manager,
+            Nlp_tool_manager_registry(self.static_data_manager, 
+                                      remote_manager_registry,
+                                      self.xls_manager_registry,
+                                      evaluation_manager,
                                       password)
         self.packaging_manager = \
             Packaging_manager(self.static_data_manager, json_manager_registry)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_manager,
+                                         evaluation_manager,
                                          json_manager_registry,
-                                         self.xls_manager_registry,
-                                         evaluation_manager)
+                                         self.metadata_manager,
+                                         self.xls_manager_registry)
             print('Performance_data_manager: ' + project_name + '_performance_data_manager')
         except Exception as e:
             print(e)
@@ -147,7 +155,6 @@ class Process_manager(object):
                 if extension in [ '.xls', '.xlsx' ]:
                     multiprocessing_flg = False
         self.raw_data_manager = Raw_data_manager(self.static_data_manager, 
-                                                 self.server_manager,
                                                  multiprocessing_flg,
                                                  password)
         
@@ -197,23 +204,56 @@ class Process_manager(object):
         return text_dict
     
     #
+    def _documents_by_year(self):
+        static_data = self.static_data_manager.get_static_data()
+        datetime_keys = {}
+        metadata_json_file = self.metadata_manager.get_metadata_json_file()
+        metadata = read_json_file(metadata_json_file)
+        year_list = []
+        for doc_id in metadata.keys():
+            doc_id = str(int(doc_id))
+            key = metadata[doc_id]['NLP_METADATA']['FILENAME']
+            datetime_key = static_data['raw_data_files'][key]['DATETIME_KEY']
+            datetime_format = \
+                static_data['raw_data_files'][key]['DATETIME_FORMAT']
+            date_str = \
+                metadata[doc_id]['METADATA'][datetime_key]
+            if date_str is not None and len(date_str) > 0:
+                dt = datetime.datetime.strptime(date_str, datetime_format)
+                year_list.append(dt.year)
+        years = list(set(year_list))
+        years = sorted(list(range(min(years), max(years)+1)))
+        year_cts = []
+        year_lbls = []
+        for i in range(len(years)):
+            year_cts.append(year_list.count(years[i]))
+            year_lbls.append('*' + str(years[i]))
+        plt.bar(year_lbls, year_cts, orientation = 'h')
+        plt.show()
+    
+    #
     def _parse_document(self, keywords_regexp, text):
-        keyword = None
+        key = None
         offset_base = 0
         text_dict = {}
         for line in text.splitlines():
-            if keywords_regexp.search(line):
-                keyword = line
+            if keywords_regexp.search(line) and key is None:
+                key = (line, '')
+                offset_base += len(line)
+                section = ''
+            elif keywords_regexp.search(line) and key is not None:
+                text_dict[key] = {}
+                text_dict[key]['OFFSET_BASE'] = offset_base
+                text_dict[key]['TEXT'] = section
+                key = (line, '')
                 offset_base += len(line)
                 section = ''
             else:
-                if keyword is not None:
-                    key = (keyword, '')
-                    text_dict[key] = {}
-                    text_dict[key]['OFFSET_BASE'] = offset_base
-                    text_dict[key]['TEXT'] = section
                 offset_base += len(line)
                 section += line + '\n'
+        text_dict[key] = {}
+        text_dict[key]['OFFSET_BASE'] = offset_base
+        text_dict[key]['TEXT'] = section
         return text_dict
         
     #
@@ -242,11 +282,44 @@ class Process_manager(object):
             print('Postprocessor_registry: Postprocessor_registry')
             
     #
+    def _total_documents(self):
+        static_data = self.static_data_manager.get_static_data()
+        datetime_keys = {}
+        metadata_json_file = self.metadata_manager.get_metadata_json_file()
+        metadata = read_json_file(metadata_json_file)
+        num_documents = str(len(metadata.keys()))
+        print('number of documents: ' + num_documents)
+        
+    #
+    def _total_patients(self):
+        static_data = self.static_data_manager.get_static_data()
+        patient_identifiers = set(static_data['patient_identifiers'])
+        metadata_json_file = self.metadata_manager.get_metadata_json_file()
+        metadata = read_json_file(metadata_json_file)
+        patient_list = []
+        for doc_id in metadata.keys():
+            metadata_keys = set(metadata[doc_id]['METADATA'].keys())
+            keys = list(metadata_keys & patient_identifiers)
+            if len(keys) != 1:
+                keys = None
+            if keys is not None:
+                patient_list.append(metadata[doc_id]['METADATA'][keys[0]])
+        patient_list = list(set(patient_list))
+        num_patients = str(len(patient_list))
+        print('number of patients: ' + num_patients)
+            
+    #
     def calculate_performance(self):
         if self.performance_data_manager is not None:
             self.performance_data_manager.get_performance_data()
             self.performance_data_manager.display_performance_data()
             self.performance_data_manager.write_performance_data()
+            
+    #
+    def data_set_summary_info(self):
+        self._documents_by_year()
+        self._total_documents()
+        self._total_patients()
         
     #
     def download_queries(self):
@@ -263,39 +336,17 @@ class Process_manager(object):
         linguamatics_i2e_manager.logout()
         
     #
-    def get_metadata_values(self):
-        static_data = self.static_data_manager.get_static_data()
-        metadata_json_file = self.metadata_manager.get_metadata_json_file()
-        metadata = read_json_file(metadata_json_file)
-        num_documents = len(metadata.keys())
-        document_values = []
-        patient_values = []
-        date_values = []
-        for key0 in metadata.keys():
-            for key1 in metadata[key0]['METADATA'].keys():
-                '''
-                if key1 in static_data['datetime_identifiers'].keys():
-                    date_str = metadata[key0]['METADATA'][key1]
-                    date_num = \
-                        datetime2matlabdn(datetime.strptime(date_str,
-                                                            static_data['datetime_identifiers'][key1]))
-                    date_values.append(date_num)
-                '''
-                if key1 in static_data['document_identifiers']:
-                    document_values.append(metadata[key0]['METADATA'][key1])
-                if key1 in static_data['patient_identifiers']:
-                    patient_values.append(metadata[key0]['METADATA'][key1])
-        document_values = list(set(document_values))
-        patient_values = list(set(patient_values))
-        #date_values.sort()
-        patient_values.sort()
-        return document_values, patient_values, date_values
-        
-    #
     def linguamatics_i2e_fix_queries(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        general_queries_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_general_queries_dir')
+        project_queries_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_project_queries_dir')
         linguamatics_i2e_manager = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
-        linguamatics_i2e_manager.fix_queries()
+        linguamatics_i2e_manager.fix_queries(general_queries_dir)
+        linguamatics_i2e_manager.fix_queries(project_queries_dir)
         
     #
     def linguamatics_i2e_generate_csv_files(self):
@@ -304,18 +355,37 @@ class Process_manager(object):
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
         linguamatics_i2e_manager = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
-        linguamatics_i2e_manager.generate_csv_files()
+        linguamatics_i2e_manager.generate_csv_files(data_dir)
         
     #
     def linguamatics_i2e_generate_resource_files(self):
         static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
         max_files_per_zip = static_data['max_files_per_zip']
+        project_name = static_data['project_name']
+        general_queries_source_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_general_queries_dir')
+        preprocessing_data_out_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
+        processing_data_dir = \
+            directory_manager.pull_directory('processing_data_dir')
+        project_queries_source_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_project_queries_dir')
         linguamatics_i2e_manager = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
-        linguamatics_i2e_manager.generate_i2e_resource_files(max_files_per_zip)
+        linguamatics_i2e_manager.generate_query_bundle_file(project_name, general_queries_source_dir,
+                                                            processing_data_dir, 
+                                                            project_queries_source_dir, 
+                                                            max_files_per_zip)
+        linguamatics_i2e_manager.generate_regions_file(preprocessing_data_out_dir,
+                                                       processing_data_dir)
+        linguamatics_i2e_manager.generate_xml_configuation_file(preprocessing_data_out_dir,
+                                                                processing_data_dir)
     
     #
     def linguamatics_i2e_indexer(self):
+        static_data = self.static_data_manager.get_static_data()
+        project_name = static_data['project_name']
         now = datetime.datetime.now()
         index_start_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         self.metadata_manager.load_metadata()
@@ -325,7 +395,7 @@ class Process_manager(object):
         linguamatics_i2e_manager = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
         linguamatics_i2e_manager.login()
-        linguamatics_i2e_manager.make_index_runner()
+        linguamatics_i2e_manager.make_index_runner(project_name)
         linguamatics_i2e_manager.logout()
         now = datetime.datetime.now()
         index_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
@@ -344,59 +414,112 @@ class Process_manager(object):
         directory_manager = static_data['directory_manager']
         static_data['directory_manager'].cleanup_directory('source_data')
         keywords_file = self.dynamic_data_manager.keywords_file()
+        preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         processing_data_dir = directory_manager.pull_directory('processing_data_dir')
+        project_name = static_data['project_name']
         source_data_dir = directory_manager.pull_directory('source_data')
         max_files_per_zip = static_data['max_files_per_zip']
+        root_dir_flg = static_data['root_dir_flg']
         linguamatics_i2e_manager = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
         linguamatics_i2e_manager.login()
-        linguamatics_i2e_manager.preindexer(keywords_file, processing_data_dir,
-                                            source_data_dir, max_files_per_zip)
+        linguamatics_i2e_manager.preindexer(project_name, keywords_file,
+                                            preprocessing_data_out_dir,
+                                            processing_data_dir, source_data_dir,
+                                            max_files_per_zip, root_dir_flg)
         linguamatics_i2e_manager.logout()
         
     #
-    def ohsu_nlp_templates_run_templates(self):
+    def melax_clamp_run_pipeline(self):
+        melax_clamp_manager = \
+            self.nlp_tool_manager_registry.get_manager('melax_clamp_manager')
+        melax_clamp_manager.run_pipeline()
+        
+    #
+    def ohsu_nlp_templates_generate_AB_fields(self):
         static_data = self.static_data_manager.get_static_data()
         project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('postprocessing_data_in')
         ohsu_nlp_template_manager = \
             self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
-        template_dir = \
-            directory_manager.pull_directory('ohsu_nlp_project_queries_dir')
-        files = os.listdir(template_dir)
+        project_AB_fields_dir = \
+            directory_manager.pull_directory('ohsu_nlp_project_AB_fields_dir')
+        files = glob.glob(project_AB_fields_dir + '/**/*.py', recursive=True)
+        for i in range(len(files)):
+            files[i] = re.sub(project_AB_fields_dir + '/', '', files[i])
         for file in files:
-            filename, extension = os.path.splitext(file)
+            class_filename, extension = os.path.splitext(file)
+            class_filename = re.sub('/', '.', class_filename)
+            class_name, extension = os.path.splitext(os.path.basename(file))
+            class_name = class_name[0].upper() + class_name[1:-6]
             import_cmd = 'from projects_lib.' + project_name + \
-                         '.nlp_templates.' + filename + ' import ' + \
-                         filename[0].upper() + filename[1:-6] + \
-                         ' as Template_manager'
+                         '.nlp_templates.AB_fields.' + class_filename + \
+                         ' import ' + class_name + ' as Template_manager'
             exec(import_cmd, globals())
-            print('OHSU NLP Template: ' + filename)
+            print('OHSU NLP Template Manager: ' + class_name)
             template_manager = Template_manager(self.static_data_manager)
+            extracts_file = static_data['extracts_file']
+            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                                         extracts_file)
+            xls_manager = \
+                self.xls_manager_registry[extracts_file]
+            xls_manager.read_training_data()
             ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.run_template(template_manager, 
-                                                   self.template_text_dict)
-            filename = re.sub('_template_manager_class', '', filename)
-            ohsu_nlp_template_manager.write_template_output(template_manager,
-                                                            data_dir,
-                                                            filename + '.csv')
+            ohsu_nlp_template_manager.train_template(template_manager,
+                                                     self.metadata_manager,
+                                                     xls_manager,
+                                                     self.template_data_dir,
+                                                     self.template_text_dict)
+            data_AB_fields_dir = \
+                directory_manager.pull_directory('AB_fields_dir')
+            filename, extension = os.path.splitext(file)
+            filename = filename[:-23]
+            ohsu_nlp_template_manager.write_ab_fields(data_AB_fields_dir,
+                                                      filename + '.txt')
             
     #
-    def ohsu_nlp_templates_setup(self):
+    def ohsu_nlp_templates_generate_primary_template_list(self):
         static_data = self.static_data_manager.get_static_data()
+        project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
-        data_dir = \
-            directory_manager.pull_directory('ohsu_nlp_preprocessing_data_out')
-        keywords_file = self.dynamic_data_manager.keywords_file()
-        keywords = read_txt_file(keywords_file)
-        keywords_regexp = self._create_keywords_regexp(keywords)
-        text_dict = \
-            self._create_text_dict_preprocessing_data_out(data_dir,
-                                                          keywords_regexp)
-        self.template_data_dir = data_dir
-        self.template_text_dict = text_dict
-    
+        ohsu_nlp_template_manager = \
+            self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
+        project_AB_fields_dir = \
+            directory_manager.pull_directory('ohsu_nlp_project_AB_fields_dir')
+        files = glob.glob(project_AB_fields_dir + '/**/*.py', recursive=True)
+        for i in range(len(files)):
+            files[i] = re.sub(project_AB_fields_dir + '/', '', files[i])
+        for file in files:
+            class_filename, extension = os.path.splitext(file)
+            class_filename = re.sub('/', '.', class_filename)
+            class_name, extension = os.path.splitext(os.path.basename(file))
+            class_name = class_name[0].upper() + class_name[1:-6]
+            import_cmd = 'from projects_lib.' + project_name + \
+                         '.nlp_templates.AB_fields.' + class_filename + \
+                         ' import ' + class_name + ' as Template_manager'
+            exec(import_cmd, globals())
+            print('OHSU NLP Template Manager: ' + class_name)
+            template_manager = Template_manager(self.static_data_manager)
+            extracts_file = static_data['extracts_file']
+            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                                         extracts_file)
+            xls_manager = \
+                self.xls_manager_registry[extracts_file]
+            xls_manager.read_training_data()
+            ohsu_nlp_template_manager.clear_template_output()
+            ohsu_nlp_template_manager.train_template(template_manager,
+                                                     self.metadata_manager,
+                                                     xls_manager,
+                                                     self.template_data_dir,
+                                                     self.template_text_dict)
+            template_outlines_dir = \
+                directory_manager.pull_directory('template_outlines_dir')
+            file = os.path.basename(file)
+            filename, extension = os.path.splitext(file)
+            filename = filename[:-23] + '_template_outline'
+            ohsu_nlp_template_manager.write_primary_template_list(template_outlines_dir,
+                                                                  filename + '.txt')
+            
     #
     def ohsu_nlp_templates_post_i2e_linguamatics_setup(self):
         static_data = self.static_data_manager.get_static_data()
@@ -413,43 +536,73 @@ class Process_manager(object):
             text_dict = None
         self.template_data_dir = data_dir
         self.template_text_dict = text_dict
+            
+    #
+    def ohsu_nlp_templates_push_AB_fields(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        user = static_data['user']
+        AB_fields_dir = \
+            directory_manager.pull_directory('AB_fields_dir')
+        linguamatics_i2e_manager = \
+            self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
+        files = glob.glob(AB_fields_dir + '/**/*.txt', recursive=True)
+        for i in range(len(files)):
+            files[i] = re.sub(AB_fields_dir + '/', '', files[i])
+        linguamatics_i2e_manager.login()
+        for file in files:
+            i2qy_file =  user + '/' + file[:-4] + '.i2qy'
+            txt_file = AB_fields_dir + '/' + file
+            linguamatics_i2e_manager.insert_field(i2qy_file, txt_file)
+        linguamatics_i2e_manager.logout()
         
     #
-    def ohsu_nlp_templates_train_templates(self):
+    def ohsu_nlp_templates_run_simple_templates(self):
         static_data = self.static_data_manager.get_static_data()
         project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
         ohsu_nlp_template_manager = \
             self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
-        template_dir = \
-            directory_manager.pull_directory('ohsu_nlp_project_queries_dir')
-        files = os.listdir(template_dir)
+        simple_templates_dir = \
+            directory_manager.pull_directory('ohsu_nlp_project_simple_templates_dir')
+        files = glob.glob(simple_templates_dir + '/*.py')
+        for i in range(len(files)):
+            files[i] = re.sub(simple_templates_dir + '/', '', files[i])
         for file in files:
-            filename, extension = os.path.splitext(file)
+            class_filename, extension = os.path.splitext(file)
+            class_filename = re.sub('/', '.', class_filename)
+            class_name, extension = os.path.splitext(os.path.basename(file))
+            class_name = class_name[0].upper() + class_name[1:-6]
             import_cmd = 'from projects_lib.' + project_name + \
-                         '.nlp_templates.' + \
-                         filename + ' import ' + filename[0].upper() + \
-                         filename[1:-6] + ' as Template_manager'
+                         '.nlp_templates.simple_templates.' + class_filename + \
+                         ' import ' + class_name + ' as Template_manager'
             exec(import_cmd, globals())
-            print('OHSU NLP Template: ' + filename)
+            print('OHSU NLP Template Manager: ' + class_name)
             template_manager = Template_manager(self.static_data_manager)
-            extracts_file = static_data['extracts_file']
-            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
-                                         extracts_file)
-            xls_manager = \
-                self.xls_manager_registry[extracts_file]
-            xls_manager.read_training_data()
             ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.train_template(template_manager,
-                                                     self.metadata_manager,
-                                                     xls_manager,
-                                                     self.template_data_dir,
-                                                     self.template_text_dict)
-            template_outlines_dir = \
-                directory_manager.pull_directory('template_outlines_dir')
-            filename = filename[:-13] + 'outline'
-            ohsu_nlp_template_manager.write_template_outline(template_outlines_dir,
-                                                             filename + '.txt')
+            ohsu_nlp_template_manager.run_template(template_manager, 
+                                                   self.template_text_dict)
+            filename, extension = os.path.splitext(file)
+            filename = re.sub('_template_manager_class', '', filename)
+            ohsu_nlp_template_manager.write_template_output(template_manager,
+                                                            data_dir,
+                                                            filename + '.csv')
+        
+    #
+    def ohsu_nlp_templates_setup(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        data_dir = \
+            directory_manager.pull_directory('ohsu_nlp_preprocessing_data_out')
+        keywords_file = self.dynamic_data_manager.keywords_file()
+        keywords = read_txt_file(keywords_file)
+        keywords_regexp = self._create_keywords_regexp(keywords)
+        text_dict = \
+            self._create_text_dict_preprocessing_data_out(data_dir,
+                                                          keywords_regexp)
+        self.template_data_dir = data_dir
+        self.template_text_dict = text_dict
         
     #
     def postperformance(self):
@@ -479,7 +632,7 @@ class Process_manager(object):
                 linguamatics_i2e_manager = \
                     self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
                 data_dict = \
-                    linguamatics_i2e_manager.generate_data_dict(filename)
+                    linguamatics_i2e_manager.generate_data_dict(data_dir, filename)
                 self.postprocessor_registry.push_data_dict(filename, data_dict)
         self.postprocessor_registry.run_registry()
         postprocessor_registry = \
@@ -564,18 +717,28 @@ class Process_manager(object):
         for i in range(len(raw_data_files_seq)):
             raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))
+        document_identifier_list = []
         for i in range(len(raw_data_files)):
             filename, extension = os.path.splitext(raw_data_files[i])
             if extension.lower() in [ '.xls', '.xlsx' ]:
                 xls_manager = \
                     self.xls_manager_registry[raw_data_files[i]]
-                raw_data = xls_manager.read_file()
-                self.raw_data_manager.append_raw_data(raw_data)
+                raw_data_in = xls_manager.read_file()
             elif extension.lower() in [ '.xml' ]:
                 xml_manager = \
                     self.xml_manager_registry[raw_data_files[i]]
-                raw_data = xml_manager.read_file()
-                self.raw_data_manager.append_raw_data(raw_data)
+                raw_data_in = xml_manager.read_file()
             else:
                 print('invalid file extension: ' + extension)
+            raw_data = {}
+            for document_identifier_key in static_data['document_identifiers']:
+                if document_identifier_key in raw_data_in.keys():
+                    for key in raw_data_in.keys():
+                        raw_data[key] = []
+                    for i in range(len(raw_data_in[document_identifier_key])):
+                        if raw_data_in[document_identifier_key][i] not in document_identifier_list:
+                            document_identifier_list.append(raw_data_in[document_identifier_key][i])
+                            for key in raw_data_in.keys():
+                                raw_data[key].append(raw_data_in[key][i])
+            self.raw_data_manager.append_raw_data(raw_data)       
         self.raw_data_manager.partition_data()

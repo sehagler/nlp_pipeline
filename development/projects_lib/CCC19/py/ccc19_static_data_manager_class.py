@@ -20,15 +20,24 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class CCC19_static_data_manager(Static_data_manager):
     
     #
-    def __init__(self, operation_mode, project_subdir, user, root_dir_flg):
+    def __init__(self, operation_mode, user, root_dir_flg, project_subdir=None):
         project_name = 'CCC19'
-        Static_data_manager.__init__(self, operation_mode, project_name, 
-                                     project_subdir, user, root_dir_flg)
+        Static_data_manager.__init__(self, operation_mode, user, root_dir_flg,
+                                     project_name=project_name,
+                                     project_subdir=project_subdir)
         self.project_subdir = project_subdir
         
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
-        self.static_data['performance_data_files'].append('BreastCancerPathology/test/BreastCancerPathology.performance.json')
+        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
+        if 'performance_data_files' in self.static_data.keys():
+            self.static_data['performance_data_files'].append('BreastCancerPathology/test/BreastCancerPathology.performance.json')
+        self.static_data['queries_list'] = \
+            [ ('CANCER_STAGE', None, 'CANCER_STAGE', 'CANCER_STAGE', 'single_value', True),
+              ('NORMALIZED_ECOG_SCORE', None, 'ECOG_STATUS', 'NORMALIZED_ECOG_SCORE', 'single_value', True),
+              ('NORMALIZED_SMOKING_HISTORY', None, 'SMOKING_HISTORY', 'NORMALIZED_SMOKING_HISTORY', 'single_value', True),
+              ('NORMALIZED_SMOKING_PRODUCTS', None, 'SMOKING_PRODUCTS', 'NORMALIZED_SMOKING_PRODUCTS', 'multiple_values', False),
+              ('NORMALIZED_SMOKING_STATUS', None, 'SMOKING_STATUS', 'NORMALIZED_SMOKING_STATUS', 'single_value', True) ]
         self.static_data['test_postprocessing_data_in_files'] = \
             [ 'cancer_stage.csv', 'ecog_status.csv', 'smoking_history.csv',
               'smoking_products.csv', 'smoking_status.csv' ]
@@ -37,36 +46,42 @@ class CCC19_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['ENCODING'] = 'utf-16'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_145729.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['ENCODING'] = 'utf-16'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_150815.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['ENCODING'] = 'utf-16'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_142636.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['ENCODING'] = 'utf-16'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_143804.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['ENCODING'] = 'utf-16'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20220502_144728.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20220502_142359.XML']['NLP_MODE'] = 'RESULT_ID'
@@ -81,6 +96,7 @@ class CCC19_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DOCUMENT_FRACTION'] = 0.1
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['FORMATTING'] = 'unformatted'
@@ -88,6 +104,7 @@ class CCC19_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['FORMATTING'] = 'unformatted'
@@ -95,6 +112,7 @@ class CCC19_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_first_general_set.xml']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
+            self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DATETIME_KEY'] = 'NOTE_DATE'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['FORMATTING'] = 'unformatted'
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_second_general_set.xml']['DOCUMENT_FRACTION'] = 0.1
@@ -130,6 +148,7 @@ class CCC19_static_data_manager(Static_data_manager):
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_second_general_set.pkl'))
                 
+            #self._include_lists(docs_files, groups_files, [0])
             self._include_lists(docs_files, groups_files, [1, 2, 3])
             
             evaluation_docs_file = \
@@ -145,6 +164,7 @@ class CCC19_static_data_manager(Static_data_manager):
                 os.path.join(training_data_dir, 'training_groups_first_general_set.pkl')
             with open(trainng_groups_first_general_set_file, 'rb') as f:
                 patient_list = pickle.load(f)
+            #for idx in [ 0 ]:
             for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
                 self.static_data['patient_list'].extend(patient_list[idx])
             self.static_data['patient_list'] = \

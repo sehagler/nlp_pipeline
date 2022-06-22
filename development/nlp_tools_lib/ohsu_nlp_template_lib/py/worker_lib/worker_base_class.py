@@ -37,53 +37,54 @@ class Worker_base(object):
                 else:
                     create_output_flg = False
                 if create_output_flg:
+                    section = self._remove_newlines(section)
                     for primary_template in primary_template_list:
-                        primary_template = re.compile(primary_template)
-                        primary_matches = primary_template.finditer(section)
-                        if bool(primary_matches):
-                            for primary_match in primary_matches:
-                                primary_query_output = primary_match.group(0)
-                                start = primary_match.start() + offset_base
-                                end = primary_match.end() + offset_base - 1
-                                offset = [ (start, end) ]
-                                snippet = section
-                                if primary_query_output is not None:
-                                    secondary_query_outputs = {}
-                                    for i in range(len(secondary_template_list)):
-                                        secondary_query_outputs[i] = []
-                                        for j in range(len(secondary_template_list[i])):
-                                            secondary_template = \
-                                                secondary_template_list[i][j]
-                                            secondary_template = \
-                                                re.compile(secondary_template)
-                                            secondary_matches = \
-                                                secondary_template.finditer(primary_query_output)
-                                            if bool(secondary_matches):
-                                                for secondary_match in secondary_matches:
-                                                    secondary_query_outputs[i].append(secondary_match.group(0))
-                                    for i in range(len(secondary_query_outputs)):
-                                        if len(secondary_query_outputs[i]) == 0:
-                                            secondary_query_outputs[i].append('')
-                                    secondary_values_list_tmp = []
-                                    for i in range(len(secondary_query_outputs)):
-                                        secondary_values_list_tmp.append(secondary_query_outputs[i])
-                                    secondary_values_list = \
-                                        list(itertools.product(*secondary_values_list_tmp))
-                                    for secondary_values in secondary_values_list:
+                        if re.search(primary_template, section) is not None:
+                            primary_matches = re.finditer(primary_template, section)
+                            if bool(primary_matches):
+                                for primary_match in primary_matches:
+                                    primary_query_output = primary_match.group(0)
+                                    start = primary_match.start() + offset_base
+                                    end = primary_match.end() + offset_base - 1
+                                    offset = [ (start, end) ]
+                                    snippet = section
+                                    if primary_query_output is not None:
+                                        secondary_query_outputs = {}
+                                        for i in range(len(secondary_template_list)):
+                                            secondary_query_outputs[i] = []
+                                            for j in range(len(secondary_template_list[i])):
+                                                secondary_template = \
+                                                    secondary_template_list[i][j]
+                                                secondary_template = \
+                                                    re.compile(secondary_template)
+                                                secondary_matches = \
+                                                    secondary_template.finditer(primary_query_output)
+                                                if bool(secondary_matches):
+                                                    for secondary_match in secondary_matches:
+                                                        secondary_query_outputs[i].append(secondary_match.group(0))
+                                        for i in range(len(secondary_query_outputs)):
+                                            if len(secondary_query_outputs[i]) == 0:
+                                                secondary_query_outputs[i].append('')
+                                        secondary_values_list_tmp = []
+                                        for i in range(len(secondary_query_outputs)):
+                                            secondary_values_list_tmp.append(secondary_query_outputs[i])
+                                        secondary_values_list = \
+                                            list(itertools.product(*secondary_values_list_tmp))
+                                        for secondary_values in secondary_values_list:
+                                            template_output = \
+                                                [ document_id, timestamp, key[0], key[1],
+                                                  primary_query_output ]
+                                            for i in range(len(secondary_values)):
+                                                template_output.append(secondary_values[i])
+                                            template_output.append(snippet)
+                                            template_output.append(offset)
+                                            template_output_list.append(template_output)
+                                            
+                                    else:
                                         template_output = \
                                             [ document_id, timestamp, key[0], key[1],
-                                              primary_query_output ]
-                                        for i in range(len(secondary_values)):
-                                            template_output.append(secondary_values[i])
-                                        template_output.append(snippet)
-                                        template_output.append(offset)
+                                              primary_query_output, snippet, offset ]
                                         template_output_list.append(template_output)
-                                        
-                                else:
-                                    template_output = \
-                                        [ document_id, timestamp, key[0], key[1],
-                                          primary_query_output, snippet, offset ]
-                                    template_output_list.append(template_output)
                 else:
                     if template_sections_list is not None:
                         create_output_flg = False
@@ -133,6 +134,12 @@ class Worker_base(object):
             for idx in idxs:
                 del data_list_tmp[idx]
         return data_list_out
+    
+    #
+    def _remove_newlines(self, text):
+        text = re.sub('\n', ' ', text)
+        text = re.sub(' +', ' ', text)
+        return text
                 
     #
     def _unique_elements(self, data_list_in):

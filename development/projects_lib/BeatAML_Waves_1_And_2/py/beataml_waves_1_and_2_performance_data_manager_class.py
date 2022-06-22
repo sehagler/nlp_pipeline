@@ -20,66 +20,19 @@ from tool_lib.py.query_tools_lib.base_lib.date_tools_base import compare_dates
 class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager, json_manager_registry,
-                 xls_manager_registry, evaluation_manager):
+    def __init__(self, static_data_manager, evaluation_manager,
+                 json_manager_registry, metadata_manager,
+                 xls_manager_registry):
         Performance_data_manager.__init__(self, static_data_manager,
+                                          evaluation_manager,
                                           json_manager_registry,
-                                          xls_manager_registry,
-                                          evaluation_manager)
+                                          metadata_manager,
+                                          xls_manager_registry)
         static_data = self.static_data_manager.get_static_data()
         if static_data['project_subdir'] == 'test':
             self.identifier_key = 'MRN'
             self.identifier_list = static_data['patient_list']
-            self.queries = [ ('Antibodies.Tested', [ 'ANTIBODIES TESTED' ], 'ANTIGENS', 'ANTIBODIES_TESTED', 'multiple_values', True),
-                             ('dxAtSpecimenAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-                             ('dx.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE', 'DATE', 'multiple_values', True),
-                             ('Extramedullary.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE', 'EXTRAMEDULLARY_DISEASE', 'multiple_values', True),
-                             ('FAB/Blast.Morphology', [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION', 'FAB_CLASSIFICATION', 'multiple_values', True),
-                             ('FISH.Analysis.Summary', [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY', 'FISH_ANALYSIS_SUMMARY', 'multiple_values', True),
-                             ('Karyotype', [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE', 'KARYOTYPE', 'multiple_values', True),
-                             ('%.Blasts.in.BM', [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
-                             ('%.Blasts.in.PB', [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
-                             ('Relapse.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE', 'DATE', 'multiple_values', True),
-                             ('Residual.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE', 'DIAGNOSIS', 'multiple_values', True),
-                             ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-                             ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
-        
-        json_structure_manager = static_data['json_structure_manager']
-        self.document_wrapper_key = \
-            json_structure_manager.pull_key('document_wrapper_key')
-        self.documents_wrapper_key = \
-            json_structure_manager.pull_key('documents_wrapper_key')
-        self.metadata_key = \
-            json_structure_manager.pull_key('metadata_key')
-        self.nlp_data_key = \
-            json_structure_manager.pull_key('nlp_data_key')
-        self.nlp_datetime_key = \
-            json_structure_manager.pull_key('nlp_datetime_key')
-        self.nlp_datum_key = \
-            json_structure_manager.pull_key('nlp_datum_key')
-        self.nlp_metadata_key = \
-            json_structure_manager.pull_key('nlp_metadata_key')
-        self.nlp_performance_key = \
-            json_structure_manager.pull_key('nlp_performance_key')
-        self.nlp_query_key = \
-            json_structure_manager.pull_key('nlp_query_key')
-        self.nlp_section_key = \
-            json_structure_manager.pull_key('nlp_section_key')
-        self.nlp_specimen_key = \
-            json_structure_manager.pull_key('nlp_specimen_key')
-        self.nlp_source_text_key = \
-            json_structure_manager.pull_key('nlp_source_text_key')
-        self.nlp_text_element_key = \
-            json_structure_manager.pull_key('nlp_text_element_key')
-        self.nlp_text_key = \
-            json_structure_manager.pull_key('nlp_text_key')
-        self.nlp_value_key = \
-            json_structure_manager.pull_key('nlp_value_key')
-            
-        # to be moved to appropriate location
-        self.manual_review = \
-            json_structure_manager.pull_key('manual_review')
-        #
+            self.queries = static_data['queries_list']
         
     #
     def _cleanup_antigens(self, text):
@@ -185,7 +138,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         return nlp_performance_dict
             
     #
-    def _get_nlp_values(self, nlp_data, data_json, identifier_list):
+    def _get_nlp_values(self, nlp_data, data_json):
         static_data = self.static_data_manager.get_static_data()
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
         validation_object = Specimens(static_data, metadata_dict_dict, data_json)
@@ -241,8 +194,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_value = tuple(validation_value)
         else:
             validation_value = None
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -259,6 +214,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         else:
             data_out = None
         if data_out is not None:
+            print(data_out)
             data_out = data_out.replace('~', '')
             data_out = data_out.replace('>', '')
             data_out = data_out.replace('<', '')
@@ -285,9 +241,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_value = validation_value.replace('.0', '')
             validation_value = validation_value.replace('None', '0')
         validation_value = self._validation_to_tuple(validation_value)
-        performance, flg = \
+        display_flg = True
+        performance = \
             self.evaluation_manager.evaluation(nlp_value, validation_value,
-                                      value_range=5.0)
+                                               display_flg, value_range=5.0)
         return performance
     
     #
@@ -328,8 +285,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_value = []
             validation_value.append(validation_value_tmp)
             validation_value = tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -367,8 +326,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 validation_value = None
         validation_value = \
             self._validation_to_tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -399,8 +360,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if validation_value == '':
                 validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -412,7 +375,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if labId in nlp_values.keys():
             keys0 = list(nlp_values[labId])
             if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-                data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
+                data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
             else:
                 data_out = None
         if data_out is not None:
@@ -431,8 +394,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if validation_value == '':
                 validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -476,8 +441,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_value.append(validation_value_tmp)
         if validation_value is not None:
             validation_value = tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -488,7 +455,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if labId in nlp_values.keys():
             keys0 = list(nlp_values[labId])
             if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-                data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+                data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
             else:
                 data_out = None
         else:
@@ -528,8 +495,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_value.append(validation_value_tmp)
         if validation_value is not None:
             validation_value = tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -563,8 +532,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if validation_value == '':
                 validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -598,8 +569,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if validation_value == '':
                 validation_value = None
         validation_value = self._validation_to_tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -656,8 +629,10 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             validation_specific_diagnosis_value = tuple(validation_value)
         else:
             validation_specific_diagnosis_value = None
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
@@ -668,10 +643,9 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if labId in nlp_values.keys():
             keys0 = list(nlp_values[labId])
             if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-                data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+                data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
                 if data_out == '':
                     data_out = None
-                print(nlp_values[labId][keys0[0]][nlp_datum_key])
             else:
                 data_out = None
         else:
@@ -712,12 +686,16 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if validation_value is not None:
             validation_value = \
                 tuple(validation_value)
-        performance, flg = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value)
+        display_flg = True
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
         return performance
     
     #
     def _process_performance(self, nlp_values_in):
+        document_csn_list = \
+            self.metadata_manager.pull_document_identifier_list('SOURCE_SYSTEM_DOCUMENT_ID')
         nlp_performance_wo_nlp_manual_review_dict = {}
         nlp_performance_nlp_manual_review_dict = {}
         wo_validation_manual_review_dict = {}
@@ -773,9 +751,11 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             labIds.extend(nlp_patient.keys())
             for labId in labIds:
                 N_total += 1
+        N_documents = len(document_csn_list)
         self._generate_performance_statistics(nlp_performance_wo_nlp_manual_review_dict,
                                               nlp_performance_nlp_manual_review_dict,
-                                              N_total, wo_nlp_manual_review_dict)
+                                              N_documents, None,
+                                              wo_nlp_manual_review_dict)
             
     #
     def _read_nlp_value(self, nlp_data, data_json, key, identifier):

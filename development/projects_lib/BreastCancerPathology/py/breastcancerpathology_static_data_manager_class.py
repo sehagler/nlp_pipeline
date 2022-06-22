@@ -19,10 +19,11 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class BreastCancerPathology_static_data_manager(Static_data_manager):
     
     #
-    def __init__(self, operation_mode, project_subdir, user, root_dir_flg):
+    def __init__(self, operation_mode, user, root_dir_flg, project_subdir=None):
         project_name = 'BreastCancerPathology'
-        Static_data_manager.__init__(self, operation_mode, project_name, 
-                                     project_subdir, user, root_dir_flg)
+        Static_data_manager.__init__(self, operation_mode, user, root_dir_flg,
+                                     project_name=project_name,
+                                     project_subdir=project_subdir)
         self.project_subdir = project_subdir
         
         self.static_data['document_identifiers'] = \
@@ -67,11 +68,13 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['BreastCancerPathology.xls']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['DOCUMENT_FRACTION'] = 0.5
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML'] = {}
-            self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DATETIME_KEY'] = 'SPECIMEN_COLLECTED_DATE'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['DOCUMENT_FRACTION'] = 1.0
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML']['FORMATTING'] = 'formatted'

@@ -6,8 +6,10 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
-from tool_lib.py.processing_tools_lib.text_processing_tools import s
+from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+    import Preprocessor_base
+from tool_lib.py.processing_tools_lib.text_processing_tools \
+    import regex_from_list, s
 
 #
 class Named_entity_recognition(Preprocessor_base):
@@ -108,3 +110,22 @@ class Text_preparation(Preprocessor_base):
             self.lambda_manager.contextual_lambda_conversion('(?i)Scharf(-| )', '(?i)Scharf', self.text, 'Scarff')
         self.text = \
             self.lambda_manager.contextual_lambda_conversion('(?i)Scarf(-| )', '(?i)Scarf', self.text, 'Scarff')
+            
+#
+def get_initialisms():
+    initialism_list = [ 'CHH', 'CLL', 'DC', 'DH', 'DLBCL', 'GIST',
+                        '(R(\-)?)?ISS', 'ITC', 'LC', 'LH', 'MM', 'NET', 'NSCLC',
+                        'RCC', 'SCC', 'SCLC', 'SLL', 'SPC', 'TCC', 'UPS' ]
+    return '([AIU])?' + regex_from_list(initialism_list)
+    
+#
+def nonnumeric_stage():
+    stage_list = [ 'advanced', 'early', 'end', 'extensive', 'mild', 'moderate',
+                   'severe' ]
+    return regex_from_list(stage_list)
+
+#
+def numeric_stage():
+    stage_base = '[0-9IV]{1,3}([A-Za-z]([0-9])?)?'
+    numeric_stage = stage_base + '((-|/)' + stage_base + ')?'
+    return numeric_stage

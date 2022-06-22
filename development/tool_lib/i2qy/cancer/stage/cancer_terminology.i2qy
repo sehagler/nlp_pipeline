@@ -8,9 +8,6 @@ query:
       findMatches: longestOnly
       id: phrase1
       of:
-      - alternative:
-          quantifier: {minimum: 0, maximum: 1}
-          of: [serious]
       - phrase:
           findMatches: longestOnly
           of:
@@ -48,7 +45,7 @@ query:
                     - alternative:
                         macroPt: Cancer Initialism
                         macroSnid: ohsu_cancer_initialisms.cancer_initialism
-                        of: [ADH, AML, AMML, DLBCL, DC, GIST, IDC, ILC, LC, MM, NET, NSCLC, RCC, SCC, SLL, SPC, TCC, UDH]
+                        of: [ADH, AML, AMML, CHH, CLL, DC, DH, DLBCL, GIST, IDC, ILC, ITC, LC, LH, MM, NET, NSCLC, RCC, SCC, SCLC, SLL, SPC, TCC, UDH, UPS]
                 - macro:
                     snid: ohsu_cancer_types.cancer_type
                     pt: Cancer Type
@@ -96,7 +93,7 @@ query:
                               of: [adenocarcinoma, carcinoma]
                       - word: {text: metastasis, morphoVariants: true}
                       - word: {text: nodule, morphoVariants: true}
-              - R-ISS
+              - alternative: [ISS, R-ISS]
       - phrase:
           displayChildren: false
           quantifier: {minimum: 0, maximum: 1}

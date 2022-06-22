@@ -1,0 +1,53 @@
+version: 6.3
+creationDate: '2020-10-01 17:54:02'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      of:
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - phrase:
+                - clinical
+                - word:
+                    text: ':'
+                    quantifier: {minimum: 0, maximum: 1}
+              - ISS
+              - path
+          - stage
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - alternative:
+                - {class: /vg}
+                - is
+              - now
+          - word: {text: '[0-9IV]{1,3}([A-Za-z]([0-9])?)?((-|/)[0-9IV]{1,3}([A-Za-z]([0-9])?)?)?', matchType: Regexp, morphoVariants: true}
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              view: {height: 188, width: 106}
+              of: [advanced, early, end, extensive, mild, moderate, severe]
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - phrase:
+                - clinical
+                - word:
+                    text: ':'
+                    quantifier: {minimum: 0, maximum: 1}
+              - ISS
+              - path
+          - stage
+      - phrase: [in, situ]
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

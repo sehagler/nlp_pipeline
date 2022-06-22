@@ -25,9 +25,10 @@ class Postprocessor(Postprocessor_base):
             test_text_list = []
             context_text_list = []
             for item in text_list[0]:
-                ecog_score_text_list.append(item[1])
-                test_text_list.append(item[2])
-                context_text_list.append(item[3])
+                if item[1] != '[0-9]+':
+                    ecog_score_text_list.append(item[1])
+                    test_text_list.append(item[2])
+                    context_text_list.append(item[3])
             value_list = []
             normalized_ecog_score_text_list = \
                 self._process_ecog_score_text_list(ecog_score_text_list, test_text_list)
@@ -48,6 +49,25 @@ class Postprocessor(Postprocessor_base):
                 value_dict_list.append(value_dict)
             extracted_data_dict[key] = value_dict_list
         return extracted_data_dict
+    
+    #
+    def _get_status(self, context_regex, regex, map_func, text):
+        status_val_list = []
+        for m in re.finditer(context_regex, text):
+            val_list = []
+            for n in re.finditer(regex, m.group(0)):
+                if map_func is not None:
+                    val_list.append(map_func(n.group(0)))
+                else:
+                    val_list.append(n.group(0))
+            if len(val_list) == 1:
+                status_val_list.append(val_list[0])
+            elif len(val_list) > 1:
+                val_list = sorted(val_list)
+                val_list = [ val_list[0], val_list[-1] ]
+                status_val_list.append('-'.join(val_list))
+        status_val_list = list(set(status_val_list))
+        return status_val_list
                     
     # map karnofsky and lansky value to zubrod values per
     # https://oncologypro.esmo.org/oncology-in-practice/practice-tools/performance-scales
@@ -70,35 +90,26 @@ class Postprocessor(Postprocessor_base):
     
     #
     def _process_ecog_score_text_list(self, score_list, test_list):
-        pattern = re.compile('[0-9]{1,3}%?(( ?\- ?| / )[0-9]{1,6}%?)?')
+        ecog_status_context_regex = re.compile('[0-9]+%?( ?- ?[0-9]+%?)?')
+        ecog_status_regex = re.compile('[0-9]+')
         processed_score_list = []
         for i in range(len(score_list)):
             score_raw = score_list[i]
             test = test_list[i]
-            if re.search(pattern, score_raw) is not None:
-                for m in re.finditer(pattern, score_raw):
-                    score_processed = m.group(0)
-                    score_processed = \
-                        self.lambda_manager.lambda_conversion('%', score_processed, '')
-                    score_processed = \
-                        self.lambda_manager.lambda_conversion('(\-|/)', score_processed, ',')
-                    score_processed = \
-                        self.lambda_manager.lambda_conversion(',', score_processed, ' , ')
-                    score_processed = \
-                        self.lambda_manager.lambda_conversion(' +', score_processed, ' ')
-                    if re.search(',', score_processed) is not None:
-                        scores_processed = score_processed.split(' , ')
-                        for k in range(len(scores_processed)):
-                            scores_processed[k] = int(scores_processed[k])
-                        if test.lower() in [ 'karnofsky', 'lansky' ]:
-                            for k in range(len(scores_processed)):
-                                scores_processed[k] = \
-                                    self._map_to_zubrod(scores_processed[k])
-                        scores_processed = [ int(x) for x in scores_processed ]
-                        score_processed = str(tuple(sorted(scores_processed)))
-                    else:
-                        if test.lower() in [ 'karnofsky', 'lansky' ]:
-                            score_processed = self._map_to_zubrod(score_processed)
+            score_processed = score_list[i]
+            if test.lower() in [ 'karnofsky', 'lansky' ]:
+                status_val_list = self._get_status(ecog_status_context_regex, 
+                                                   ecog_status_regex,
+                                                   self._map_to_zubrod,
+                                                   score_raw)
+            else:
+                status_val_list = self._get_status(ecog_status_context_regex, 
+                                                   ecog_status_regex, None,
+                                                   score_raw)
+            if len(status_val_list) == 1:
+                score_processed = status_val_list[0]
+            else:
+                score_processed = 'MANUAL_REVIEW'
             processed_score_list.append(score_processed)
         return processed_score_list
         
