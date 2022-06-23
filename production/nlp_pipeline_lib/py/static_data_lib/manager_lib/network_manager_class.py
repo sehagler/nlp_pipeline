@@ -18,4 +18,8 @@ class Network_manager(object):
             
     #
     def pull_server(self, key):
-        return self.servers[key]
+        if key is not None:
+            server = self.servers[key]
+        else:
+            server =  None
+        return server

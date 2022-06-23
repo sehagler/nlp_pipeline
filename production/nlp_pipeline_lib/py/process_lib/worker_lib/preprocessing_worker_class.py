@@ -25,6 +25,7 @@ class Preprocessing_worker(object):
         self.text_normalization_manager = text_normalization_manager
         self.nlp_tool_manager_registry = nlp_tool_manager_registry
         static_data = self.static_data_manager.get_static_data()
+        self.directory_manager = static_data['directory_manager']
         self.preprocess_files_flg = preprocess_files_flg
         self.server = static_data['acc_server'][2]
         self.user = static_data['user']
@@ -36,6 +37,8 @@ class Preprocessing_worker(object):
                              nlp_metadata_list, xml_metadata_list,
                              text_list, source_system, formatting, 
                              document_ctr, fail_ctr, password):
+        linguamatics_outdir = \
+            self.directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         document_ctr += 1
         if document_idx >= start_idx:
             if 'RAW_TEXT' in data_tmp.keys() and \
@@ -60,7 +63,8 @@ class Preprocessing_worker(object):
                         linguamatics_i2e_manager = \
                             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
                         generate_data_file_ret_val = \
-                            linguamatics_i2e_manager.create_source_data_file(document_idx,
+                            linguamatics_i2e_manager.create_source_data_file(linguamatics_outdir,
+                                                                             document_idx,
                                                                              xml_metadata,
                                                                              processed_raw_text,
                                                                              processed_report_text)

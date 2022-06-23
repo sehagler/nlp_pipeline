@@ -73,8 +73,12 @@ class Metadata_manager(object):
                              nlp_metadata_dict):
         for id_key in self.static_data['document_identifiers']:
             if id_key in source_metadata_dict.keys():
-                source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
-                    source_metadata_dict[id_key]
+                try:
+                    source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
+                        str(int(float(source_metadata_dict[id_key])))
+                except:
+                    source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
+                        source_metadata_dict[id_key]
         self.metadata_dict_dict[metadata_dict_key] = {}
         self.metadata_dict_dict[metadata_dict_key][self.metadata_key] = \
             source_metadata_dict
@@ -106,6 +110,16 @@ class Metadata_manager(object):
             doc_idx = \
                 metadata_dict_dict_add[key][self.nlp_metadata_key]['NLP_DOCUMENT_IDX']
             self.metadata_dict_dict[doc_idx] = metadata_dict_dict_add[key]
+            
+    #
+    def pull_document_identifier_list(self, document_identifier_key):
+        self.load_metadata()
+        document_identifier_list = []
+        for key in self.metadata_dict_dict.keys():
+            document = self.metadata_dict_dict[key]
+            document_identifier_list.append(document['METADATA'][document_identifier_key])
+        document_identifier_list = sorted(list(set(document_identifier_list)))
+        return document_identifier_list
     
     #
     def read_metadata(self):

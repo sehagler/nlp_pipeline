@@ -22,8 +22,7 @@ class Evaluation_manager(object):
             json_structure_manager.pull_key('manual_review')
         
     #
-    def _compare_lists(self, x, y):
-        display_data_flg = False
+    def _compare_lists(self, x, y, display_flg):
         try:
             if self.manual_review in x:
                 x = self.manual_review
@@ -40,14 +39,11 @@ class Evaluation_manager(object):
                     if collections.Counter(x) == collections.Counter(y):
                         result = 'true positive'
                     else:
-                        display_data_flg = True
-                        result = 'false positive'
+                        result = 'false positive + false negative'
                 else:
-                    display_data_flg = True
                     result = 'false negative'
             else:
                 if x is not None:
-                    display_data_flg = True
                     result = 'false positive'
                 else:
                     result = 'true negative'
@@ -59,15 +55,15 @@ class Evaluation_manager(object):
                     result = 'false positive + false negative'
             else:
                 result = 'false positive'
-        if 'true positive' not in result and 'true negative' not in result:
+        if display_flg and 'true positive' not in result and 'true negative' not in result:
+            print(result)
             print(x)
             print(y)
             print('')
-        return result, display_data_flg
+        return result
         
     #
-    def _compare_values(self, x, y):
-        display_data_flg = False
+    def _compare_values(self, x, y, display_flg):
         try:
             if self.manual_review in x:
                 x = self.manual_review
@@ -79,14 +75,11 @@ class Evaluation_manager(object):
                     if str(x) == str(y):
                         result = 'true positive'
                     else:
-                        display_data_flg = True
                         result = 'false positive + false negative'
                 elif x is None:
-                    display_data_flg = True
                     result = 'false negative'
             else:
                 if x is not None:
-                    display_data_flg = True
                     result = 'false positive'
                 else:
                     result = 'true negative'
@@ -98,14 +91,15 @@ class Evaluation_manager(object):
                     result = 'false positive + false negative'
             else:
                 result = 'false positive'
-        if 'true positive' not in result and 'true negative' not in result:
+        if display_flg and 'true positive' not in result and 'true negative' not in result:
+            print(result)
             print(x)
             print(y)
             print('')
-        return result, display_data_flg
+        return result
     
     #
-    def _compare_values_range(self, x, y, value_range):
+    def _compare_values_range(self, x, y, display_flg, value_range):
         display_data_flg = False
         try:
             if self.manual_review in x:
@@ -118,14 +112,11 @@ class Evaluation_manager(object):
                     if abs(float(x[0]) - float(y[0])) <= value_range:
                         result = 'true positive'
                     else:
-                        display_data_flg = True
                         result = 'false positive + false negative'
                 elif x is None:
-                    display_data_flg = True
                     result = 'false negative'
             else:
                 if x is not None:
-                    display_data_flg = True
                     result = 'false positive'
                 else:
                     result = 'true negative'
@@ -137,20 +128,21 @@ class Evaluation_manager(object):
                     result = 'false positive + false negative'
             else:
                 result = 'false positive'
-        if 'true positive' not in result and 'true negative' not in result:
+        if display_flg and 'true positive' not in result and 'true negative' not in result:
+            print(result)
             print(x)
             print(y)
             print('')
-        return result, display_data_flg
+        return result
         
     #
-    def evaluation(self, x, y, value_range=None):
+    def evaluation(self, x, y, display_flg, value_range=None):
         if value_range is None:
             if (isinstance(x, list) or isinstance(x, tuple) or x is None) and \
                (isinstance(y, list) or isinstance(y, tuple) or y is None):
-                result, display_data_flg = self._compare_lists(x, y)
+                result = self._compare_lists(x, y, display_flg)
             else:
-                result, display_data_flg = self._compare_values(x, y)
+                result = self._compare_values(x, y, display_flg)
         else:
-            result, display_data_flg = self._compare_values_range(x, y, value_range)
-        return result, display_data_flg
+            result = self._compare_values_range(x, y, display_flg, value_range)
+        return result

@@ -21,6 +21,8 @@ from nlp_tools_lib.ohsu_nlp_template_lib.py.worker_lib.worker_base_class \
     import Worker_base
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
+from tool_lib.py.processing_tools_lib.text_processing_tools \
+    import regex_from_list
 
 #
 class Training_worker(Worker_base):
@@ -36,6 +38,14 @@ class Training_worker(Worker_base):
         self.xls_manager = xls_manager
         self.data_dir = data_dir
         self.text_dict = text_dict
+        self.blank_space = ' NLP_BLANK_SPACE '
+        
+    #
+    def _annotate_blank_space(self, template_list):
+        for i in range(len(template_list)):
+            template_list[i] = \
+                re.sub(' ', self.blank_space, template_list[i])
+        return template_list
                           
     #
     def _cost(self, primary_template_outline, performance):
@@ -45,6 +55,15 @@ class Training_worker(Worker_base):
         cost = performance[1] - performance[0] - N_generic_words
         cost = - N_generic_words
         return cost
+    
+    #
+    def _escape_template_list(self, template_list):
+        for i in range(len(template_list)):
+            template_list[i] = re.sub('\(', '\(', template_list[i])
+            template_list[i] = re.sub('\)', '\)', template_list[i])
+            template_list[i] = re.sub('\.', '\.', template_list[i])
+            template_list[i] = re.sub('\+', '\+', template_list[i])
+        return template_list
     
     #
     def _evaluate_performance(self):
@@ -83,32 +102,69 @@ class Training_worker(Worker_base):
         return performance
     
     #
-    def _generic_word(self):
-        return '[A-Za-z0-9]+(\-[A-Za-z0-9]+)?'
+    def _generalize_nonwords_template_outline(self, template_list):
+        for i in range(len(template_list)):
+            template_split = template_list[i].split(self.blank_space)
+            for j in range(1, len(template_split)-1):
+                word = template_split[j]
+                if re.fullmatch(self._generic_nonword(), word):
+                    template_split[j] = self._generic_nonword()
+            template_list[i] = self.blank_space.join(template_split)
+        return template_list
     
     #
-    def _maximally_generalize_template_outline(self, primary_template_outline):
+    def _generalize_grammatical_class_template_outline(self, template_list,
+                                                       grammatical_class_regex):
+        for i in range(len(template_list)):
+            template_split = template_list[i].split(self.blank_space)
+            for j in range(1, len(template_split)-1):
+                word = template_split[j]
+                if re.fullmatch(grammatical_class_regex, word):
+                    template_split[j] = grammatical_class_regex
+            template_list[i] = self.blank_space.join(template_split)
+        return template_list
+    
+    #
+    def _generalize_words_template_outline(self, template_list):
         stopwords_list = stopwords.words('english')
-        primary_template_outline = list(set(primary_template_outline))
-        for i in range(len(primary_template_outline)):
-            template_list = primary_template_outline[i].split(' ')
-            for j in range(1, len(template_list)-1):
-                word = template_list[j]
+        for i in range(len(template_list)):
+            template_split = template_list[i].split(self.blank_space)
+            for j in range(1, len(template_split)-1):
+                word = template_split[j]
                 if re.fullmatch(self._generic_word(), word) and \
                    word not in stopwords_list:
-                    template_list[j] = self._generic_word()
-            primary_template_outline[i] = ' '.join(template_list)
-        primary_template_outline = list(set(primary_template_outline))
-        primary_template_outline = \
-            sorted(primary_template_outline, key=len)
-        return primary_template_outline
-                
+                    template_split[j] = self._generic_word()
+            template_list[i] = self.blank_space.join(template_split)
+        return template_list
+    
+    #
+    def _generic_article(self):
+        article_list = [ 'an?', 'the' ]
+        return regex_from_list(article_list)
+    
+    #
+    def _generic_conjunction(self):
+        conjunction_list = [ 'and', 'or' ]
+        return regex_from_list(conjunction_list)
+    
+    #
+    def _generic_nonword(self):
+        return '[^A-Za-z0-9 ]+'
+    
+    #
+    def _generic_preposition(self):
+        preposition_list = [ 'after', 'at', 'for', 'in', 'of', 'on', 'to', 'with' ]
+        return regex_from_list(preposition_list)
+        
+    #
+    def _generic_word(self):
+        return '[A-Za-z0-9]+(\-[A-Za-z0-9]+)?'
                 
     #
     def _number_of_generic_words(self, primary_template_outline):
         N_generic_words = 0
         for i in range(len(primary_template_outline)):
-            template_list = primary_template_outline[i].split(' ')
+            template_list = primary_template_outline[i].split(self.blank_space)
             for word in template_list:
                 if word == '[A-Za-z0-9]+':
                     N_generic_words += 1
@@ -122,23 +178,24 @@ class Training_worker(Worker_base):
     def _number_of_words(self, primary_template_outline):
         N_words = 0
         for i in range(len(primary_template_outline)):
-            template_list = primary_template_outline[i].split(' ')
+            template_list = primary_template_outline[i].split(self.blank_space)
             for word in template_list:
                 if word[:4] != 'NLP_':
                     N_words += 1
         return N_words
     
+    '''
     #
     def _perturb_generic_word(self, primary_template_outline):
         stopwords_list = stopwords.words('english')
         i = random.choice(range(len(primary_template_outline)))
-        template_list = primary_template_outline[i].split(' ')
+        template_list = primary_template_outline[i].split(self.blank_space)
         j = random.choice(range(len(template_list)))
         word = template_list[j]
         if re.fullmatch(self._generic_word(), word) and \
            word not in stopwords_list:
             template_list[j] = self._generic_word()
-            primary_template_outline[i] = ' '.join(template_list)
+            primary_template_outline[i] = self.blank_space.join(template_list)
         return primary_template_outline
 
     #
@@ -146,6 +203,7 @@ class Training_worker(Worker_base):
         primary_template_outline = \
             self._perturb_generic_word(primary_template_outline)
         return primary_template_outline
+    '''
     
     #
     def _read_validation_data(self):
@@ -160,11 +218,113 @@ class Training_worker(Worker_base):
         return validation_data
     
     #
+    def _remove_newlines_template_outline(self, template_list):
+        for i in range(len(template_list)):
+            template_list[i] = \
+                self._remove_newlines(template_list[i])
+        return template_list
+    
+    #
+    def _trim_context(self, template_list):
+        #template_list_add = []
+        for i in range(len(template_list)):
+            template_split = template_list[i].split(self.blank_space)
+            delete_idxs = []
+            delete_flg = True
+            for j in range(len(template_split)):
+                if delete_flg:
+                    if 'NLP_' in template_split[j]:
+                        delete_flg = False
+                    else:
+                        delete_idxs.append(j)
+                else:
+                    if 'NLP_' in template_split[j]:
+                        delete_flg = True
+            if len(delete_idxs) > 0:
+                delete_idxs = sorted(delete_idxs, reverse=True)
+                for j in range(len(delete_idxs)):
+                    del template_split[delete_idxs[j]]
+                template_list[i] = \
+                    self.blank_space.join(template_split)
+                #template_list_add.append(self.blank_space.join(template_split))
+        #template_list.extend(template_list_add)
+        return template_list
+    
+    #
+    def _trim_template_outline(self, primary_template_outline_in):
+        primary_template_outline_in = list(set(primary_template_outline_in))
+        N_list = []
+        for i in range(len(primary_template_outline_in)):
+            template_list = primary_template_outline_in[i].split(self.blank_space)
+            N_list.append(len(template_list))
+        N_list = list(set(N_list))
+        N_list = sorted(N_list, reverse=True)
+        primary_template_outline_out = []
+        for N in N_list:
+            primary_template_outline_N = []
+            for i in range(len(primary_template_outline_in)):
+                template_list = primary_template_outline_in[i].split(self.blank_space)
+                if len(template_list) == N:
+                    primary_template_outline_N.append(primary_template_outline_in[i])
+            if N > 1:
+                delete_idxs = []
+                for i in range(len(primary_template_outline_N)):
+                    for j in range(len(primary_template_outline_N)):
+                        if i != j:
+                            X = primary_template_outline_N[i].split(self.blank_space)
+                            Y = primary_template_outline_N[j].split(self.blank_space)
+                            diffs = [(X[x], Y[x]) for x in range(len(X)) if X[x] != Y[x]]
+                            delete_flg = False
+                            continue_flg = True
+                            for diff in diffs:
+                                if diff[0] != self._generic_word():
+                                    continue_flg = False
+                            if continue_flg:
+                                delete_flg = True
+                                for diff in diffs:
+                                    if not re.fullmatch(self._generic_word(), diff[1]):
+                                        delete_flg = False
+                            if delete_flg:
+                                delete_idxs.append(j)
+                delete_idxs = list(set(delete_idxs))
+                delete_idxs = sorted(delete_idxs, reverse=True)
+                for i in range(len(delete_idxs)):
+                    del primary_template_outline_N[delete_idxs[i]]
+            for template_outline in primary_template_outline_N:
+                primary_template_outline_out.append(template_outline)
+        return primary_template_outline_out
+    
+    #
     def train(self):
-        #num_epochs = 25
-        primary_template_seed = \
+        primary_template_outline = \
             self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
+        primary_template_outline = \
+            self._annotate_blank_space(primary_template_outline)
+        primary_template_outline = \
+            self._trim_context(primary_template_outline)
+        primary_template_outline = \
+            self._escape_template_list(primary_template_outline)
+        primary_template_outline = \
+            self._generalize_words_template_outline(primary_template_outline)
+        primary_template_outline = \
+            self._generalize_nonwords_template_outline(primary_template_outline)
+        primary_template_outline = \
+            self._generalize_grammatical_class_template_outline(primary_template_outline,
+                                                                self._generic_article())
+        primary_template_outline = \
+            self._generalize_grammatical_class_template_outline(primary_template_outline,
+                                                                self._generic_conjunction())
+        primary_template_outline = \
+            self._generalize_grammatical_class_template_outline(primary_template_outline,
+                                                                self._generic_preposition())
+        primary_template_outline = \
+            self._remove_newlines_template_outline(primary_template_outline)
+        primary_template_outline = \
+            self._trim_template_outline(primary_template_outline)
+        self.template_manager.push_primary_template_outline(primary_template_outline)
+        
         '''
+        num_epochs = 25
         self.template_manager.push_primary_template_outline(primary_template_seed)
         performance = self._evaluate_performance()
         cost = self._cost(primary_template_seed, performance)
@@ -183,7 +343,3 @@ class Training_worker(Worker_base):
                     cost_best = copy.copy(cost)
         print(cost_best)
         '''
-        primary_template_outline_best = \
-           self._maximally_generalize_template_outline(primary_template_seed)
-        primary_template_outline = list(set(primary_template_outline_best))
-        self.template_manager.push_primary_template_outline(primary_template_outline)

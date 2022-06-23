@@ -16,14 +16,7 @@ from nlp_pipeline_lib.py.file_lib.base_class_lib.reader_base_class \
     import Reader_base
     
 #
-class Xml_manager(Reader_base):
-    
-    '''
-    #
-    def __init__(self, static_data_manager, filename):
-        self.filename = filename
-        self.static_data = static_data_manager.get_static_data()
-    '''          
+class Xml_manager(Reader_base):        
         
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
@@ -76,7 +69,6 @@ class Xml_manager(Reader_base):
                 data['FILENAME'].append(os.path.basename(raw_data_file))
                 data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
                 if 'SOURCE_SYSTEM' in raw_data_files_dict[os.path.basename(raw_data_file)].keys():
-                    print(raw_data_files_dict[os.path.basename(raw_data_file)].keys())
                     data['SOURCE_SYSTEM'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['SOURCE_SYSTEM'])
                 keys_appended = []
         if len(data['SOURCE_SYSTEM']) == 0:

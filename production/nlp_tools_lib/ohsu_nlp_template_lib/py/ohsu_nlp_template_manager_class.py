@@ -8,6 +8,7 @@ Created on Wed Jan 12 09:40:02 2022
 #
 import copy
 import csv
+import errno
 import os
 import xml.etree.ElementTree as ET
 
@@ -65,12 +66,36 @@ class Ohsu_nlp_template_manager(Worker_base):
                                           xls_manager, data_dir, text_dict)
         training_worker.train()
         template_dict = template_manager.training_template()
-        primary_template_list = template_dict['primary_template_list']
-        self.primary_template_list = primary_template_list
+        self.primary_template_list = template_dict['primary_template_list']
+        self.AB_field_list = template_dict['AB_field_list']
+        self.BA_field_list = template_dict['BA_field_list']
         
     #
-    def write_template_outline(self, template_outlines_dir, filename):
-        with open(os.path.join(template_outlines_dir, filename), 'w') as f:
+    def write_ab_fields(self, template_outlines_dir, filename):
+        filename = os.path.join(template_outlines_dir, filename)
+        if not os.path.exists(os.path.dirname(filename)):
+            try:
+                os.makedirs(os.path.dirname(filename))
+            except OSError as exc: # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+        directory = os.path.dirname(filename)
+        with open(os.path.join(filename[:-4] + '_AB_field.txt'), 'w') as f:
+            f.write(str(self.AB_field_list))
+        with open(os.path.join(filename[:-4] + '_BA_field.txt'), 'w') as f:
+            f.write(str(self.BA_field_list))
+        
+    #
+    def write_primary_template_list(self, template_outlines_dir, filename):
+        filename = os.path.join(template_outlines_dir, filename)
+        if not os.path.exists(os.path.dirname(filename)):
+            try:
+                os.makedirs(os.path.dirname(filename))
+            except OSError as exc: # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+        directory = os.path.dirname(filename)
+        with open(filename, 'w') as f:
             f.write(str(self.primary_template_list))
 
     #

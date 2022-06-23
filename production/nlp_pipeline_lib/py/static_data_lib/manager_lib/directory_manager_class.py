@@ -41,103 +41,134 @@ class Directory_manager(object):
             software_root_dir = dev_server_root_dir
             source_data_root_dir = dev_server_root_dir
         else:
+            processing_root_dir = None
+            software_root_dir = None
+            source_data_root_dir = None
             print('unknown root_dir_flg')
-        acc_user_dir = 'home/users/' + user
-        nlp_sandbox_root_dir = software_root_dir + '/NLP_Sandbox/' + user
-        nlp_software_root_dir = nlp_sandbox_root_dir + '/NLP_Software'
-        self.directory_dict = {}
-        self.directory_dict['acc_user_dir'] = acc_user_dir
-        self.directory_dict['sandbox_dir'] = nlp_sandbox_root_dir
-        self.directory_dict['software_dir'] = nlp_software_root_dir
-        if project_name is not None:
+        if software_root_dir is not None:
+            acc_user_dir = 'home/users/' + user
+            nlp_sandbox_root_dir = software_root_dir + '/NLP_Sandbox/' + user
+            nlp_software_root_dir = nlp_sandbox_root_dir + '/NLP_Software'
+            self.directory_dict = {}
+            self.directory_dict['acc_user_dir'] = acc_user_dir
+            self.directory_dict['sandbox_dir'] = nlp_sandbox_root_dir
+            self.directory_dict['software_dir'] = nlp_software_root_dir
+            
             project_dir = project_name
             project_subdir = static_data['project_subdir']
-            server = static_data['acc_server'][0]
-            nlp_data_processing_root_dir = nlp_sandbox_root_dir + '/NLP_Data_Processing'
-            nlp_source_data_root_dir = source_data_root_dir + '/NLP_Source_Data/' + \
-                                       project_dir + '/' + project_subdir
+            
+            if static_data['acc_server'] is not None:
+                server = static_data['acc_server'][0]
+            else:
+                server = None
+            
+            nlp_data_processing_root_dir = \
+                nlp_sandbox_root_dir + '/NLP_Data_Processing'
             if self.create_dir_flg:
                 create_directory(nlp_data_processing_root_dir)
-            self.directory_dict['processing_base_dir'] = \
-                os.path.join(nlp_data_processing_root_dir, server)
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['processing_base_dir'])
-            self.directory_dict['processing_project_dir'] = \
-                os.path.join(self.directory_dict['processing_base_dir'], project_dir)
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['processing_project_dir'])
-            self.directory_dict['processing_data_dir'] = \
-                os.path.join(self.directory_dict['processing_project_dir'], project_subdir)
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['processing_data_dir'])
+                
+            if project_dir is not None and project_subdir is not None:
+                nlp_source_data_root_dir = source_data_root_dir + '/NLP_Source_Data/' + \
+                                           project_dir + '/' + project_subdir
+                if self.create_dir_flg:
+                    create_directory(nlp_source_data_root_dir)
+            else:
+                nlp_source_data_root_dir = None
+                
+            self._create_dict_entry('processing_base_dir',
+                                    nlp_data_processing_root_dir, server)
+            self._create_dict_entry('processing_project_dir',
+                                    self.directory_dict['processing_base_dir'],
+                                    project_dir)
+            self._create_dict_entry('processing_data_dir',
+                                    self.directory_dict['processing_project_dir'],
+                                    project_subdir)
+                
             self.directory_dict['raw_data_dir'] = nlp_source_data_root_dir
-            self.directory_dict['log_dir'] = \
-                os.path.join(self.directory_dict['processing_data_dir'], 'log')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['log_dir'])
-            self.directory_dict['metadata_dir'] = \
-                os.path.join(self.directory_dict['processing_data_dir'], 'metadata')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['metadata_dir'])
-            self.directory_dict['preprocessing_data_out'] = \
-                os.path.join(self.directory_dict['processing_data_dir'],
-                             'preprocessing_data_out')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['preprocessing_data_out'])
-            self.directory_dict['postprocessing_data_in'] = \
-                os.path.join(self.directory_dict['processing_data_dir'], 'postprocessing_data_in')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['postprocessing_data_in'])
-            self.directory_dict['postprocessing_data_out'] = \
-                os.path.join(self.directory_dict['processing_data_dir'], 'postprocessing_data_out')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['postprocessing_data_out'])
-            self.directory_dict['source_data'] = \
-                os.path.join(self.directory_dict['processing_data_dir'], 'source_data')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['source_data'])
-            self.directory_dict['template_outlines_dir'] = \
-                os.path.join(self.directory_dict['processing_data_dir'], 'template_outlines')
-            if self.create_dir_flg:
-                create_directory(self.directory_dict['template_outlines_dir'])
+            
+            self._create_dict_entry('log_dir',
+                                    self.directory_dict['processing_data_dir'],
+                                    'log')
+            self._create_dict_entry('metadata_dir',
+                                    self.directory_dict['processing_data_dir'],
+                                    'metadata')
+            self._create_dict_entry('preprocessing_data_out',
+                                    self.directory_dict['processing_data_dir'],
+                                    'preprocessing_data_out')
+            self._create_dict_entry('postprocessing_data_in',
+                                    self.directory_dict['processing_data_dir'],
+                                    'postprocessing_data_in')
+            self._create_dict_entry('postprocessing_data_out',
+                                    self.directory_dict['processing_data_dir'],
+                                    'postprocessing_data_out')
+            self._create_dict_entry('source_data',
+                                    self.directory_dict['processing_data_dir'],
+                                    'source_data')
+            self._create_dict_entry('template_outlines_dir',
+                                    self.directory_dict['processing_data_dir'],
+                                    'template_outlines')
+            self._create_dict_entry('simple_templates_dir',
+                                    self.directory_dict['template_outlines_dir'],
+                                    'simple_templates')
+            self._create_dict_entry('AB_fields_dir',
+                                    self.directory_dict['template_outlines_dir'],
+                                    'AB_fields')
             self._linguamatics_i2e_directories(nlp_software_root_dir, server,
                                                project_dir)
             self._melax_clamp_directories()
             self._ohsu_nlp_directories(nlp_software_root_dir, server,
                                             project_dir)
-                
+            
+    #
+    def _create_dict_entry(self, key, base_path, new_dir):
+        if (base_path is not None) and (new_dir is not None):
+            key_dir = os.path.join(base_path, new_dir)
+            create_dir_flg = self.create_dir_flg
+        else:
+            key_dir = None
+            create_dir_flg = False
+        self.directory_dict[key] = key_dir
+        if create_dir_flg:
+            create_directory(self.directory_dict[key])
+                    
     #
     def _linguamatics_i2e_directories(self, nlp_software_root_dir, server,
                                       project_dir):
-        self.directory_dict['linguamatics_i2e_general_queries_dir'] = \
-            nlp_software_root_dir + '/' + server + '/tool_lib/i2qy'
-        self.directory_dict['linguamatics_i2e_project_queries_dir'] = \
-            nlp_software_root_dir + '/' + server + '/projects_lib/' + \
-            project_dir + '/i2e_templates'
-        self.directory_dict['linguamatics_i2e_preprocessing_data_out'] = \
-            os.path.join(self.directory_dict['preprocessing_data_out'],
-                         'linguamatics_i2e_preprocessing_data_out')
-        if self.create_dir_flg:
-            create_directory(self.directory_dict['linguamatics_i2e_preprocessing_data_out'])
-                
+        if server is not None:
+            self.directory_dict['linguamatics_i2e_general_queries_dir'] = \
+                nlp_software_root_dir + '/' + server + '/tool_lib/i2qy'
+        else:
+            self.directory_dict['linguamatics_i2e_general_queries_dir'] = None
+        if project_dir is not None:
+            self.directory_dict['linguamatics_i2e_project_queries_dir'] = \
+                nlp_software_root_dir + '/' + server + '/projects_lib/' + \
+                project_dir + '/i2e_templates'
+        else:
+            self.directory_dict['linguamatics_i2e_project_queries_dir'] = None
+        self._create_dict_entry('linguamatics_i2e_preprocessing_data_out',
+                                self.directory_dict['preprocessing_data_out'],
+                                'linguamatics_i2e_preprocessing_data_out')  
+
     #
     def _melax_clamp_directories(self):
-        self.directory_dict['melax_clamp_preprocessing_data_out'] = \
-            os.path.join(self.directory_dict['preprocessing_data_out'],
-                         'melax_clamp_preprocessing_data_out')
-        if self.create_dir_flg:
-            create_directory(self.directory_dict['melax_clamp_preprocessing_data_out'])
+        self._create_dict_entry('melax_clamp_preprocessing_data_out',
+                                self.directory_dict['preprocessing_data_out'],
+                                'melax_clamp_preprocessing_data_out') 
                 
     #
     def _ohsu_nlp_directories(self, nlp_software_root_dir, server, project_dir):
-        self.directory_dict['ohsu_nlp_preprocessing_data_out'] = \
-            os.path.join(self.directory_dict['preprocessing_data_out'],
-                         'ohsu_nlp_preprocessing_data_out')
-        if self.create_dir_flg:
-            create_directory(self.directory_dict['ohsu_nlp_preprocessing_data_out'])
-        self.directory_dict['ohsu_nlp_project_queries_dir'] = \
-            nlp_software_root_dir + '/' + server + '/projects_lib/' + \
-            project_dir + '/nlp_templates'
+        if project_dir is not None:
+            self.directory_dict['ohsu_nlp_project_simple_templates_dir'] = \
+                nlp_software_root_dir + '/' + server + '/projects_lib/' + \
+                project_dir + '/nlp_templates/simple_templates'
+            self.directory_dict['ohsu_nlp_project_AB_fields_dir'] = \
+                nlp_software_root_dir + '/' + server + '/projects_lib/' + \
+                project_dir + '/nlp_templates/AB_fields'
+        else:
+            self.directory_dict['ohsu_nlp_project_queries_dir'] = None
+        self._create_dict_entry('ohsu_nlp_preprocessing_data_out',
+                                self.directory_dict['preprocessing_data_out'],
+                                'ohsu_nlp_preprocessing_data_out')
             
     #
     def cleanup_directory(self, label):

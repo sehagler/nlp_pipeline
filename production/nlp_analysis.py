@@ -27,22 +27,23 @@ servers = [ 'development', 'production' ]
 #
 pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
                        'linguamatics_i2e_postqueries',
+                       'melax_clamp_run_pipeline',
                        'ohsu_nlp_templates_run_templates',
-                       'ohsu_nlp_templates_train_templates' ]
+                       'ohsu_nlp_templates_generate_primary_template_list']
 
 #
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[3]
+project_name = project_names[5]
 project_subdir = project_subdirs[1]
 server = servers[0]
 
 #
-pipeline_mode_flg = pipeline_mode_flgs[2]
+pipeline_mode_flg = pipeline_mode_flgs[4]
 
 #
-mode_flg = mode_flgs[0]
+mode_flg = mode_flgs[1]
 
 #
 user = getpass.getuser()
@@ -69,7 +70,7 @@ if mode_flg == 'update':
         from nlp_pipeline_lib.py.pipeline_lib.pipeline \
             import Pipeline
         pipeline = Pipeline()
-        pipeline.software_manager(user, password, root_dir)
+        pipeline.software_manager(root_dir, user, password)
         pipeline.move_software()
         sys.path.remove(software_path)
     
@@ -100,8 +101,10 @@ elif mode_flg == 'run':
         pipeline.linguamatics_i2e_prequeries(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_postqueries':
         pipeline.linguamatics_i2e_postqueries(project_subdir)
+    elif pipeline_mode_flg == 'melax_clamp_run_pipeline':
+        pipeline.melax_clamp_run_pipeline()
     elif pipeline_mode_flg == 'ohsu_nlp_templates_run_templates':
         pipeline.ohsu_nlp_templates_run_templates(password, project_subdir)
-    elif pipeline_mode_flg == 'ohsu_nlp_templates_train_templates':
-        pipeline.ohsu_nlp_templates_train_templates(password, project_subdir)
+    elif pipeline_mode_flg == 'ohsu_nlp_templates_generate_primary_template_list':
+        pipeline.ohsu_nlp_templates_generate_primary_template_list()
     sys.path.remove(software_path)

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals, print_function
+
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 2 10:02:08 2021
@@ -14,55 +16,71 @@ Created on Fri Jan 04 10:50:12 2019
 #
 import ast
 import csv
+from fnmatch import fnmatch
+import i2e.easl
 from i2e.wsapi.common import (ClientConnectionSettings, I2EConnection,
                               I2EServer, I2EUser, RequestMaker,
                               RequestConfiguration)
 from i2e.wsapi.serialize import Resource
-from i2e.wsapi.task import MakeIndexConfiguration, TaskLauncher
+from i2e.wsapi.task import MakeIndexConfiguration, QueryConfiguration, TaskLauncher
+from io import open
 import json
 import logging
 import os
+import re
 import requests
 import shutil
 import sys
 import time
+import unicodecsv
 import urllib
+import urllib3
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 #
 from nlp_tools_lib.linguamatics_i2e_lib.py.check_queries \
     import QuerySetFixer, get_logger, yaml_constructor
-from nlp_tools_lib.linguamatics_i2e_lib.py.generate_gold \
-    import generate_gold
-from nlp_tools_lib.linguamatics_i2e_lib.py.linguamatics_i2e_file_manager_class \
-    import Linguamatics_i2e_file_manager
-from nlp_tools_lib.linguamatics_i2e_lib.py.linguamatics_i2e_writer_class \
-    import Linguamatics_i2e_writer
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import write_file
+    import remove_file, write_file, write_zip_file
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible
+    
+#
+urllib3.disable_warnings()
+EASL_MIME_TYPE = "application/vnd.linguamatics.i2e.yaml"
+logging.basicConfig(format='[%(asctime)s.%(msecs)03d]%(levelname)s:%(module)s:%(funcName)s: %(message)s',
+                    datefmt='%Y-%m-%d,%H:%M:%S',
+                    stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
 
 #
 class Linguamatics_i2e_manager(object):
     
     #
-    def __init__(self, static_data_manager, server_manager, password):
-        self.static_data_manager = static_data_manager
-        self.static_data = self.static_data_manager.get_static_data()
-        self.project_name = self.static_data['project_name']
-        self.server = self.static_data['acc_server'][2]
-        self.user = self.static_data['user']
-        self.linguamatics_i2e_file_manager = \
-            Linguamatics_i2e_file_manager(self.project_name, self.user)
-        self.linguamatics_i2e_writer = \
-            Linguamatics_i2e_writer(self.linguamatics_i2e_file_manager,
-                                    server_manager)
-        self.i2e_server = I2EServer(self.server)
-        self.i2e_user = I2EUser(self.user, password)
-        self.connection_settings = ClientConnectionSettings.create()
+    def __init__(self, linguamatics_i2e_file_manager, server_manager,
+                 project_name, server, user, password):
+        self.server_manager = server_manager
+        self.server = server
+        self.user = user
+        self.linguamatics_i2e_file_manager = linguamatics_i2e_file_manager
         self.license_pool = 'admin'
+        self.query_bundle_path = \
+            '/Repository/Saved Queries/__private__/' + user + '/'
+        self.i2e_resources_dict = {}
+        self.i2e_resources_dict['index_template'] = \
+            "/api;type=index_template/" + project_name
+        self.i2e_resources_dict['region_list'] = \
+            "/api;type=region_list/" + \
+            self.linguamatics_i2e_file_manager.filename('regions')
+        self.i2e_resources_dict['source_data'] = \
+            "/api;type=source_data/" + project_name
+        self.i2e_resources_dict['xml_and_html_config_file'] = \
+            '/api;type=xml_and_html_config_file/' + \
+            self.linguamatics_i2e_file_manager.filename('xmlconf')
+        self.i2e_server = I2EServer(server)
+        self.i2e_user = I2EUser(user, password)
+        self.connection_settings = ClientConnectionSettings.create()           
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
@@ -134,14 +152,226 @@ class Linguamatics_i2e_manager(object):
                         shutil.copyfileobj(response, output)
             else:
                 self._folder_downloader(request_maker, child, parent_folder, download_folder)
+                
+    #
+    def _generate_gold(self, inxml, text_spans):
+        outfile = inxml.replace('.xml', '.csv')
+        headers, rows = self._xml_to_gold(inxml, text_spans)
+        with open(outfile, 'wb') as outf:
+            logger.info('written {}'.format(outfile))
+            writer = unicodecsv.writer(outf, delimiter=str(','), lineterminator='\n')
+            writer.writerow(headers)
+            for row in rows:
+                writer.writerow(row)
+    
+    #
+    def _generate_query_bundle_file_component(self, filename, queries_dir,
+                                              dest_path_base, max_files_per_zip):
+        for path, subdirs, files in os.walk(queries_dir):
+            rel_path = os.path.relpath(path, queries_dir)
+            dest_path = os.path.join (dest_path_base, rel_path)
+            data_files = []
+            for file in files:
+                if fnmatch(file, '*.i2qy'):
+                    data_files.append(os.path.join(path, file))
+            write_zip_file(filename, data_files, dest_path, max_files_per_zip, remove_file_flg=False)
                    
     #
-    def _put_keywords_file(self, keywords_file, linguamatics_i2e_writer):
+    def _generate_source_data_file(self, project_name, preprocessing_data_out_dir,
+                                   source_data_dir, max_files_per_zip):
+        source_data_filename = self.linguamatics_i2e_file_manager.source_data_filename()
+        data_files = [os.path.join(preprocessing_data_out_dir, file) \
+                      for file in os.listdir(preprocessing_data_out_dir) \
+                      if os.path.splitext(file)[1] == '.xml']
+        write_zip_file(os.path.join(source_data_dir, source_data_filename),
+                       data_files, None, max_files_per_zip)
+        
+    #
+    def _get_col_ids(self, xml):
+        column_names = dict()
+        query_items = list()
+        colset = xml.find('.//ColumnSet')
+        for col in colset.findall('.//Column'):
+            if col.attrib['type'] != 'queryItem':
+                key = col.attrib['type']
+            else:
+                key = col.find('.//Name').text
+                if key != 'docId' and '[PT]' not in key:
+                    query_items.append(key)
+            if key != 'docId' and '[PT]' not in key:
+                column_names[key] = int(col.attrib['id'])
+        return column_names, query_items
+    
+    #
+    def _get_hit_highlights(self, text_in, targets):
+        text = []
+        for target in targets:
+            target_in_hit = target[0]
+            target_in_text = target[1]
+            start = target_in_hit[0]
+            stop = target_in_hit[1]
+            text_tmp = tuple([ target_in_text, text_in[start:stop] ])
+            text.append(text_tmp)
+        return text
+        
+    #
+    def _prepare_keywords_file(self, keywords_file, keywords_tmp_file):
+        self.server_manager.open_ssh_client()
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.close_ssh_client()
+        shutil.copyfile(keywords_file, self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.open_ssh_client()
+        self.server_manager.exec_sudo_command('chmod 644 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.close_ssh_client()
+        
+    #
+    def _prepare_keywords_file_ssh(self, keywords_file, keywords_tmp_file):
+        self.server_manager.open_ssh_client()
+        self.server_manager.push_file(keywords_file, keywords_tmp_file)
+        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.close_ssh_client()
+    
+    #
+    def _put_keywords_file(self, root_dir_flg, keywords_file):
         keywords_tmp_file = '/tmp/keywords_default.txt'
-        if self.static_data['root_dir_flg'] in ''.join([ 'X', 'Z' ]):
-            linguamatics_i2e_writer.prepare_keywords_file_ssh(keywords_file, keywords_tmp_file)
-        elif self.static_data['root_dir_flg'] in ''.join([ 'dev_server', 'prod_server' ]):
-            linguamatics_i2e_writer.prepare_keywords_file(keywords_file, keywords_tmp_file)
+        if root_dir_flg in ''.join([ 'X', 'Z' ]):
+            self._prepare_keywords_file_ssh(keywords_file, keywords_tmp_file)
+        elif root_dir_flg in ''.join([ 'dev_server', 'prod_server' ]):
+            self._prepare_keywords_file(keywords_file, keywords_tmp_file)
+            
+    #
+    def _read_file_metadata(self, preprocessing_data_out_dir):
+        #data_dir = self.linguamatics_i2e_file_manager.preprocessing_data_directory()
+        files = os.listdir(preprocessing_data_out_dir)
+        xml = ET.parse(os.path.join(preprocessing_data_out_dir, files[0]))
+        root_element = xml.getroot()
+        self.metadata_keys = []
+        for child in root_element:
+            self.metadata_keys.append(child.tag)
+            
+    # 
+    def _xml_to_gold(self, xml, text_spans=True, old_format=False):
+        logger.info('parsing XML')
+        parsed = ET.parse(xml)
+        index_name = parsed.find('.//IndexName').text.replace('.i2etmp', '')
+        #outfile = '{}.csv'.format(index_name)
+    
+        col_to_id, query_cols = self._get_col_ids(parsed)
+        logger.info('query output columns: {}'.format(query_cols))
+        logger.info('evaluate text spans: {}'.format(text_spans))
+        id_to_col = {v: k for k, v in list(col_to_id.items())}
+    
+        #first_cols = ['Doc Id']
+        first_cols = []
+        #if old_format:
+        #    first_cols += ['URL', 'Annotation Type']
+        #headers = first_cols + query_cols + ['Coords', 'Text span']
+        headers = first_cols + query_cols + ['Coords']
+        #headers = first_cols + query_cols + [ 'Coords' ]
+        cell_to_colix = {k: headers.index(k) for k in query_cols}
+        #cell_to_colix['docId'] = headers.index('Doc Id')
+        #cell_to_colix['hit'] = headers.index('Text span')
+        cell_to_colix['hit'] = headers.index('Coords')
+        if text_spans:
+            cell_to_colix['coords'] = headers.index('Coords')
+        rows = list()
+    
+        for n, rowxml in enumerate(parsed.findall('.//Row')):
+            extractions = []
+            row = ['' for _ in headers]
+            for cell_group in rowxml:
+                if cell_group.tag == 'List':
+                    cells = cell_group.findall('.//Cell')
+                else:
+                    cells = [cell_group]
+                for cell in cells:
+                    cellid = int(cell.attrib['columnId'])
+                    
+                    ###
+                    #colname = id_to_col[cellid]
+                    if cellid in id_to_col.keys():
+                        colname = id_to_col[cellid]
+                    else:
+                        colname = None
+                    ###
+                        
+                    if colname is not None and colname in cell_to_colix:
+                        if colname != 'hit':
+                            text = cell.find('.//Text').text
+                            if text is not None:
+                                if row[cell_to_colix[colname]]:
+                                    text = ' {}'.format(text)
+                                    row[cell_to_colix[colname]] += text
+                                else:
+                                    text = text.strip()
+                                    row[cell_to_colix[colname]] = text
+                            else:
+                                row[cell_to_colix[colname]] = ''
+                            if colname not in [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Speciment Id']:
+                                extractions.append(text)
+                        else:
+                            hit_spans = cell.findall('.//HitSpan')
+                            if hit_spans:
+                                hit_spans = set(
+                                    [ET.tostring(h).strip() for h in hit_spans])
+                                htext = cell.find('.//Text').text
+                                targets = list()
+                                #targets_in_hit = list()
+                                #targets_in_text = list()
+                                for hit_span in hit_spans:
+                                    hit_span = ET.fromstring(hit_span)
+                                    is_sent = hit_span.find('.//IsSentence')
+                                    if is_sent is None:
+                                        url = hit_span.find('.//URL').text
+                                        target_id = re.search(r"#(.+)", url).group(1)
+                                        start = int(target_id.split('-')[1])
+                                        hit_len = int(hit_span.find('.//Length').text)
+                                        stop = start + hit_len
+                                        start_in_hit = int(
+                                            hit_span.find('.//Start').text) - 1
+                                        stop_in_hit = start_in_hit + hit_len
+                                        #if (start_in_hit, stop_in_hit) not in targets_in_hit:
+                                        targets_in_hit = (start_in_hit, stop_in_hit)
+                                        #if (start, stop) not in targets_in_text:
+                                        targets_in_text = (start, stop)
+                                        targets.append(tuple([ targets_in_hit,
+                                                               targets_in_text ]))
+                                #targets = remove_overlaps(sorted(targets))
+                                #targets_in_hit = remove_overlaps(sorted(targets_in_hit))
+                                #highlighted_span = get_hit_highlights(htext,
+                                #                                      targets_in_hit)
+                                highlighted_spans = self._get_hit_highlights(htext,
+                                                                             targets)
+                                targets = []
+                                for i in range(len(extractions)):
+                                    extraction = extractions[i]
+                                    highlighted_span_found_flg = False
+                                    for highlighted_span in highlighted_spans:
+                                        if not highlighted_span_found_flg and \
+                                           highlighted_span[1] == extraction:
+                                            targets.append(highlighted_span[0])
+                                            highlighted_span_found_flg = True
+                                    if not highlighted_span_found_flg:
+                                        targets.append('')
+                                targets = targets[1:-1]
+                                #row_text = '{}'.format(highlighted_spans)
+                                #row[cell_to_colix['hit']] = row_text
+                                if text_spans:
+                                    row[cell_to_colix['coords']] = targets
+                                    #row[cell_to_colix['coords']] = highlighted_spans
+                            else:
+                                if text_spans:
+                                    row[cell_to_colix['coords']] = '[]'
+                                #row[cell_to_colix['hit']] = ''
+            #if old_format:
+            #    row[1] = 'no_gold_url'
+            #    row[2] = 'Results'
+            rows.append(row)
+    
+        #return headers, outfile, rows
+        return headers, rows
 
     #
     def create_resource(self, project_name, resource_type, resource_file): 
@@ -160,9 +390,8 @@ class Linguamatics_i2e_manager(object):
                                           "text/plain", source_data)
             
     #
-    def create_source_data_file(self, ctr, metadata, raw_text, rpt_text):
-        static_data = self.static_data_manager.get_static_data()
-        directory_manager = static_data['directory_manager']
+    def create_source_data_file(self, outdir, ctr, metadata,  raw_text,
+                                rpt_text):
         raw_text = make_ascii(raw_text)
         raw_text = make_xml_compatible(raw_text)
         keys = metadata.keys()
@@ -180,7 +409,6 @@ class Linguamatics_i2e_manager(object):
         subelement = ET.SubElement(report, 'rpt_text')
         subelement.text = rpt_text
         xml_str = minidom.parseString(ET.tostring(report)).toprettyxml(indent = "   ")
-        outdir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         filename = str(ctr) + '.xml'
         write_file(os.path.join(outdir, filename), xml_str, False, False)
         ret_val = True
@@ -194,14 +422,8 @@ class Linguamatics_i2e_manager(object):
         request_maker.delete_resource(resource)
         
     #
-    def fix_queries(self):
-        directory_manager = self.static_data['directory_manager']
-        general_queries_dir = \
-            directory_manager.pull_directory('linguamatics_i2e_general_queries_dir')
-        project_queries_dir = \
-            directory_manager.pull_directory('linguamatics_i2e_project_queries_dir')
-        ret_val = self._fix_queries(general_queries_dir)
-        ret_val = self._fix_queries(project_queries_dir)
+    def fix_queries(self, queries_dir):
+        ret_val = self._fix_queries(queries_dir)
 
     #
     def folder_downloader(self, query_folder, local_destination):
@@ -212,20 +434,17 @@ class Linguamatics_i2e_manager(object):
         self._folder_downloader(request_maker, folder, parent, download_path)
         
     #
-    def generate_csv_files(self):
-        directory_manager = self.static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+    def generate_csv_files(self, data_dir):
         for filename in os.listdir(data_dir):
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.xml' ]:
                 print('Converting ' + filename)
                 filename = data_dir + '/' + filename
-                generate_gold(filename, True)
+                #generate_gold(filename, True)
+                self._generate_gold(filename, True)
                 
     #
-    def generate_data_dict(self, data_file):
-        directory_manager = self.static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+    def generate_data_dict(self, data_dir, data_file):
         data_file = os.path.join(data_dir, data_file)
         data_dict = {}
         with open(data_file,'r') as f:
@@ -243,23 +462,106 @@ class Linguamatics_i2e_manager(object):
         if bool(self.data_csv):
             self._build_data_dictionary()
         return self.data_dict_list
+    
+    #
+    def generate_query_bundle_file(self, project_name, 
+                                   general_queries_source_dir,
+                                   processing_data_dir,
+                                   project_queries_source_dir,
+                                   max_files_per_zip):
+        dest_path_base = self.query_bundle_path
+        filename = os.path.join(processing_data_dir,
+                                self.linguamatics_i2e_file_manager.query_bundle_filename())
+        remove_file(filename)
+        general_dest_path_base = dest_path_base + 'General'
+        self._generate_query_bundle_file_component(filename,
+                                                   general_queries_source_dir,
+                                                   general_dest_path_base,
+                                                   max_files_per_zip)
+        project_dest_path_base = dest_path_base + project_name
+        self._generate_query_bundle_file_component(filename,
+                                                   project_queries_source_dir,
+                                                   project_dest_path_base,
+                                                   max_files_per_zip)
+    
+    #
+    def generate_regions_file(self, preprocessing_data_out_dir,
+                              processing_data_dir):
+        self._read_file_metadata(preprocessing_data_out_dir)
+        text = []
+        text.append('hc.metadata\t\"Record Metadata\"\t-\tnonleaf\n')
+        for key in self.metadata_keys:
+            text.append('\thc.' + key + '\t\"' + key + '\"\thc.metadata\tleaf\n')
+        text.append('\n')
+        text.append('hc.pathology_reports\t\"Healthcare Pathology Reports\"\t-\tnonleaf\n')
+        text.append('\n')
+        text.append('hc.section\t\"Section\"\thc.pathology_reports\tnonleaf\n')
+        text.append('\thc.titled_section\t\"Titled Section\"\thc.section\tleaf\n')
+        text.append('\thc.untitled_section\t\"Untitled Section\"\thc.section\tleaf\n')
+        text.append('hc.subsection\t\"Subsection\"\thc.pathology_reports\tnonleaf\n')
+        text.append('\thc.section_title\t\"Section Title\"\thc.subsection\tleaf\n')
+        text.append('\thc.section_body\t\"Section Body\"\thc.subsection\tleaf\n')
+        text.append('hc.shared_field\t\"Shared Field\"\thc.pathology_reports\tnonleaf\n')
+        text.append('\thc.specimen\t\"Specimen Description\"\thc.shared_field\tleaf\n')
+        text.append('\n')
+        text.append('hc.shadow\t\"Healthcare Pathology Reports Shadow Regions\"\t-\tnonleaf,shadow\n')
+        text.append('\thc.specimen_id\t\"Specimen Id\"\thc.shadow\tleaf,shadow\n')
+        text.append('\n')
+        text.append('linguamatics.metadata\t\"File Metadata\"\t-\tnonleaf,shadow\n')
+        text.append('\tlinguamatics.filename\t"File Name"\tlinguamatics.metadata\tleaf,shadow\n')
+        text.append('\tlinguamatics.indextype\t"Index Type"\tlinguamatics.metadata\tleaf,shadow\n')
+        text.append('\tlinguamatics.lastmodified\t"Last Modified"\tlinguamatics.metadata\tleaf,shadow\n')
+        text.append('\tlinguamatics.relativepath\t"Relative Path"\tlinguamatics.metadata\tleaf,shadow\n')
+        text.append('\tlinguamatics.sourcetype\t"Source Type"\tlinguamatics.metadata\tleaf,shadow\n')
+        text = ''.join(text)
+        filename = os.path.join(processing_data_dir,
+                                self.linguamatics_i2e_file_manager.regions_filename())
+        write_file(filename, text, False, False)
         
     #
-    def generate_i2e_resource_files(self, max_files_per_zip):
-        directory_manager = self.static_data['directory_manager']
-        general_queries_source_dir = directory_manager.pull_directory('linguamatics_i2e_general_queries_dir')
-        preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
-        processing_data_dir = directory_manager.pull_directory('processing_data_dir')
-        project_queries_source_dir = directory_manager.pull_directory('linguamatics_i2e_project_queries_dir')
-        self.linguamatics_i2e_writer.generate_query_bundle_file(self.project_name,
-                                                                general_queries_source_dir,
-                                                                processing_data_dir,
-                                                                project_queries_source_dir,
-                                                                max_files_per_zip)
-        self.linguamatics_i2e_writer.generate_regions_file(preprocessing_data_out_dir,
-                                                           processing_data_dir)
-        self.linguamatics_i2e_writer.generate_xml_configuation_file(preprocessing_data_out_dir,
-                                                                    processing_data_dir)
+    def generate_xml_configuation_file(self, preprocessing_data_out_dir,
+                                       processing_data_dir):
+        self._read_file_metadata(preprocessing_data_out_dir)
+        text = []
+        text.append('split Report\n')
+        text.append('\n')
+        for key in self.metadata_keys:
+            text.append('region\t' + key + '\t' + 'hc.' + key + '\t2\n')
+        text.append('\n')
+        text.append('region\tsection\thc.titled_section\t2\n')
+        text.append('region\tuntitled_section\thc.untitled_section\t2\n')
+        text.append('region\tsection_title\thc.section_title\t2\n')
+        text.append('region\tsection_body\thc.section_body\t2\n')
+        text.append('region\tspecimen\thc.specimen\t2\n')
+        text.append('region\tspecimen/@id\thc.specimen_id\t2\n')
+        text.append('\n')
+        text.append('alias\ti2e_metadata_filename = file.name\n')
+        text.append('token\ti2e_metadata_filename\t2\n')
+        text.append('regionname\ti2e_metadata_filename\tlinguamatics.filename\t2\n')
+        text.append('matchclass\ti2e_metadata_filename\texclude\t*\n')
+        text.append('\n')
+        text.append('alias\ti2e_metadata_relativepath = file.relativePath\n')
+        text.append('token\ti2e_metadata_relativepath\t2\n')
+        text.append('region\ti2e_metadata_relativepath\tlinguamatics.relativepath\t2\n')
+        text.append('matchclass\ti2e_metadata_relativepath\texclude\t*\n')
+        text.append('\n')
+        text.append('alias\ti2e_metadata_indextype = \"XML\"\n')
+        text.append('region\ti2e_metadata_indextype\tlinguamatics.indextype\t2\n')
+        text.append('matchclass\ti2e_metadata_indextype\texclude\t*\n')
+        text.append('\n')
+        text.append('alias\ti2e_metadata_lastmodified = file.lastWriteTime\n')
+        text.append('region\ti2e_metadata_lastmodified\tlinguamatics.lastmodified\t2\n')
+        text.append('matchclass\ti2e_metadata_lastmodified\tinclude\tSEMANTIC_DATE_COMMON_FORMATS\texclude\t*\n')
+        text.append('\n')
+        text.append('createontology\tFirst\t1\t\"lineboundaries.Words per Line\"\t0\n')
+        text.append('createontology\tLast\t1\t\"lineboundaries.Words per Line\"\t0\n')
+        text.append('\n')
+        text.append('regions\n')
+        text.append('include\t*\t0\n')
+        text = ''.join(text)
+        filename = os.path.join(processing_data_dir,
+                                self.linguamatics_i2e_file_manager.xmlconf_filename())
+        write_file(filename, text, False, False)
         
     #
     def get_i2e_version(self, password):
@@ -273,6 +575,30 @@ class Linguamatics_i2e_manager(object):
         return response
     
     #
+    def insert_field(self, sub_query_file, alternative_file):
+        sub_query_uri = '/api;type=saved_query/__private__/' + sub_query_file
+        sub_query = Resource(sub_query_uri)
+        filename = alternative_file
+        if filename:
+            with open(filename) as f:
+                alternative_source = f.read()
+        alternative_list = ast.literal_eval(alternative_source)
+        query = i2e.easl.query.Query(5.5)
+        document = query.root  
+        alternative = document.add_alternative()
+        for item in alternative_list:
+            word_item = document.add_word(item)
+            word_item.match_type = "Raw regexp"
+            query.move_item(word_item, new_parent=alternative)
+        query_source = query.to_string()
+        request_maker = RequestMaker(self.conn)
+        task_launcher = TaskLauncher(self.conn)
+        request_config = RequestConfiguration()
+        result = request_maker.update_resource(sub_query,
+                                               EASL_MIME_TYPE,
+                                               query_source, request_config)
+    
+    #
     def login(self):
         self.conn.login()
         
@@ -281,13 +607,12 @@ class Linguamatics_i2e_manager(object):
         self.conn.logout()
 
     #
-    def make_index_runner(self):
-        index_template = \
-            self.linguamatics_i2e_file_manager.i2e_resource('index_template')
-        print('Making I2E index ' + self.project_name)
+    def make_index_runner(self, project_name):
+        index_template = self.i2e_resources_dict['index_template']
+        print('Making I2E index ' + project_name)
         template = Resource(index_template)
         source_data_path = Resource("/api;type=source_data/%s" %
-                                    self.project_name)
+                                    project_name)
         task_launcher = TaskLauncher(self.conn)
         index_config = task_launcher.create_index_configuration()
         index_config.set_source_data(source_data_path)
@@ -297,15 +622,14 @@ class Linguamatics_i2e_manager(object):
         print("Task status is %s" % monitor.get_status())
         
     #
-    def preindexer(self, keywords_file, processing_data_dir, source_data_dir,
-                   max_files_per_zip):
-        directory_manager = self.static_data['directory_manager']
-        preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
-        self.linguamatics_i2e_writer.generate_source_data_file(self.project_name,
-                                                               preprocessing_data_out_dir,
-                                                               source_data_dir,
-                                                               max_files_per_zip)
-        self._put_keywords_file(keywords_file, self.linguamatics_i2e_writer)
+    def preindexer(self, project_name, keywords_file, preprocessing_data_out_dir, 
+                   processing_data_dir, source_data_dir, max_files_per_zip,
+                   root_dir_flg):
+        #directory_manager = self.static_data['directory_manager']
+        #preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
+        self._generate_source_data_file(project_name, preprocessing_data_out_dir,
+                                        source_data_dir, max_files_per_zip)
+        self._put_keywords_file(root_dir_flg, keywords_file)
         for resource in [ 'regions', 'source_data', 'xmlconf' ]:
             filename = os.path.join(processing_data_dir,
                                     self.linguamatics_i2e_file_manager.filename(resource))
@@ -322,7 +646,7 @@ class Linguamatics_i2e_manager(object):
             if resource_type == 'source_data':
                 for source_data_file in sorted(os.listdir(source_data_dir)):
                     try:
-                        self.create_resource(self.project_name, resource_type,
+                        self.create_resource(project_name, resource_type,
                                              os.path.join(source_data_dir, source_data_file))
                     except Exception as e:
                         print(e)

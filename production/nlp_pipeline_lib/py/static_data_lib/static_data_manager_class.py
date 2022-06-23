@@ -11,17 +11,19 @@ import pickle
 #
 from nlp_pipeline_lib.py.static_data_lib.manager_lib.directory_manager_class \
     import Directory_manager
-from tool_lib.py.structure_tools_lib.json_structure_tools \
-    import Json_structure_tools
+from nlp_pipeline_lib.py.static_data_lib.manager_lib.linguamatics_i2e_file_manager_class \
+    import Linguamatics_i2e_file_manager
 from nlp_pipeline_lib.py.static_data_lib.manager_lib.network_manager_class \
     import Network_manager
+from tool_lib.py.structure_tools_lib.json_structure_tools \
+    import Json_structure_tools
 
 #
 class Static_data_manager(object):
     
     #
-    def __init__(self, operation_mode, project_name, project_subdir, user,
-                 root_dir_flg):
+    def __init__(self, operation_mode, user, root_dir_flg,
+                 project_name=None, project_subdir=None):
         network = Network_manager()
         self.static_data = {}
         self.static_data['project_name'] = project_name
@@ -37,7 +39,8 @@ class Static_data_manager(object):
         self.static_data['num_processes'] = 15
         self.static_data['operation_mode'] = operation_mode
         self.static_data['patient_identifiers'] = [ 'MRN', 'MRN_CD', 'OHSU_MRN' ]
-        if self.static_data['project_name'] is not None:
+        if self.static_data['project_name'] is not None and \
+           self.static_data['project_subdir'] is not None:
             self.static_data['performance_data_files'] = \
                 [ self.static_data['project_name']  + '/test/' + \
                   self.static_data['project_name'] + '.performance.json' ]
@@ -58,6 +61,8 @@ class Static_data_manager(object):
             Directory_manager(self.static_data, root_dir_flg)
         self.static_data['json_structure_manager'] = \
             Json_structure_tools()
+        self.static_data['linguamatics_i2e_file_manager'] = \
+            Linguamatics_i2e_file_manager(project_name, user)
             
     #
     def _include_lists(self, docs_files, groups_files, groups_idx_list):
