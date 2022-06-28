@@ -14,23 +14,23 @@ query:
           snid: hc.section_body
           pt: Section Body
           where:
-          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers_blocks/breast_cancer_blocks_filter_query.i2qy, id: link1}
+          - link: {path: ../breast_cancer_block_snippet.i2qy, id: link1}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link1.alternative1.col0
+  - id: link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col1
+    linkItemId: link1.link1
+  - id: link1.link1.link4.class1
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col2
+    linkItemId: link4.link1.link1
+  - id: link1.link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col3
+    linkItemId: link1.link1.link1
+  - id: link1.alternative1
     itemOptions: {}
     linkItemId: link1
   useOutputEditor: true

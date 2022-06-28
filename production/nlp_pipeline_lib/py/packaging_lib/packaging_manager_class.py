@@ -40,13 +40,13 @@ class Packaging_manager(object):
         self.json_manager_registry[filename].write_performance_data_to_package_json_file(data)
         
     #
-    def create_postperformance_production_data_json(self):
+    def create_postperformance_production_data_json(self, performance_data_files):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
         processing_base_dir = \
             directory_manager.pull_directory('processing_base_dir')
         performance_statistics_dict = {}
-        for filename in static_data['performance_data_files']:
+        for filename in performance_data_files:
             file = os.path.join(processing_base_dir, filename)
             performance_statistics_dict_tmp = \
                 self.json_manager_registry[filename].read_performance_data()

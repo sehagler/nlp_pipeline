@@ -610,7 +610,8 @@ class Process_manager(object):
         if static_data['project_subdir'] == 'test':
             self.packaging_manager.create_postperformance_test_data_json()
         elif static_data['project_subdir'] == 'production':
-            self.packaging_manager.create_postperformance_production_data_json()
+            performance_data_files = static_data['performance_data_files']
+            self.packaging_manager.create_postperformance_production_data_json(performance_data_files)
 
     #
     def postprocessor(self):
