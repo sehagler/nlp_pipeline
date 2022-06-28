@@ -1,7 +1,12 @@
 version: 6.3
 creationDate: '2018-10-26 16:08:10'
 multiquery:
-  Union: [/api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers_blocks/breast_cancer_biomarkers_blocks_main.i2qy]
+  Document Join:
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
+  - Union:
+    - output_wrapper/breast_cancer_biomarkers_specimens_wrapper.i2qy
+    - Subtraction: [output_wrapper/breast_cancer_biomarkers_sections_wrapper.i2qy, output_wrapper/breast_cancer_biomarkers_specimen_description_wrapper.i2qy]
 output:
   columns:
   - id: region1
@@ -31,7 +36,7 @@ output:
     itemOptions: {}
     linkItemId: link2
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
-parameters: {Biomarker: PR}
+parameters: {BIOMARKER: ''}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true

@@ -28,6 +28,8 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         
         self.static_data['document_identifiers'] = \
             [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
+        if 'performance_data_files' in self.static_data.keys():
+            self.static_data['performance_data_files'].append('CCC19/test/CCC19.performance.json')
         self.static_data['queries_list'] = \
             [ ('TNM_STAGING', None, 'TNM_STAGING', 'TNM_STAGING', 'single_value', True), 
               ('ER_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_BLOCK', 'single_value', True), 
@@ -57,7 +59,8 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         if self.project_subdir == 'production':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML'] = {}
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['DATETIME_FORMAT'] = '%m/%d/%Y'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['DATETIME_KEY'] = 'SPECIMEN_COLLECTED_DATE'
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['DOCUMENT_FRACTION'] = 1.0
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['FORMATTING'] = 'formatted'
