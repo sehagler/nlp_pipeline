@@ -640,7 +640,7 @@ class Linguamatics_i2e_manager(object):
             elif resource == 'xmlconf':
                 resource_type = 'xml_and_html_config_file'
             try:
-                self.delete_resource(self.linguamatics_i2e_file_manager.i2e_resource(resource_type))
+                self.delete_resource(self.i2e_resources_dict[resource_type])
             except Exception as e:
                 print(e)
             if resource_type == 'source_data':
