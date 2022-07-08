@@ -6,7 +6,7 @@ Created on Fri Jun 11 16:41:11 2021
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from nlp_text_normalization_lib.pretokenizer_lib.normalizers_lib.personal_name_normalizer_class \
     import Personal_name_normalizer
@@ -37,7 +37,7 @@ class Pretokenizer(Preprocessor_base):
         
     #
     def _extract_section_headers(self):
-        self.dynamic_data_manager.append_keywords_text(self.body_header)
+        self.dynamic_data_manager.append_keywords_text(self.body_header, 0)
         self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         self.section_header_normalizer.push_text(self.text)
         self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
@@ -52,32 +52,49 @@ class Pretokenizer(Preprocessor_base):
             
     #
     def _format_section_headers(self):
-        self._general_command('(?i)progress note \d+/(\d+|\*+)/\d+', {'\d+/(\d+|\*+)/\d+' : ''})
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('progress note \d+/(\d+|\*+)/\d+', '\d+/(\d+|\*+)/\d+', self.text, '')
         
     #
     def _normalize_punctuation(self):
-        self._general_command('(?i)(\n)[A-Z]:[ \t]', {':' : '.'})
-        self._general_command('(\s)?\(\n', {None : '\n'})
-        self._general_command('(?i)-grade', {None : ' grade'})
-        self._general_command('(?i)-to-', {None : ' to '})
-        self._general_command('(?i)in-situ', {None : 'in situ'})
-        self._general_command('(?i)in-toto', {None : 'in toto'})
-        self._general_command('(?i)intermediate to strong', {None : 'intermediate-strong'})
-        self._general_command('(?i)moderate to strong', {None : 'moderate-strong'})
-        self._general_command('(?i)moderate to weak', {None : 'weak-moderate'})
-        self._general_command('(?i)over-expression', {None : 'overexpression'})
-        self._general_command('(?i)strong to moderate', {None : 'moderate-strong'})
-        self._general_command('(?i)weak to moderate', {None : 'weak-moderate'})
-        self._general_command('(?i)weak to strong', {None : 'weak-strong'})
-        self._general_command('____+(\n_+)*', {None : '' })
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(\n)[A-Z]:[ \t]', ':', self.text, '.')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(\s)?\(\n', self.text, '\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion('-grade', self.text, ' grade')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)-to-', self.text, ' to ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)in-situ', self.text, 'in situ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)in-toto', self.text, 'in toto')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)intermediate to strong', self.text, 'intermediate-strong')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)moderate to strong', self.text, 'moderate-strong')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)moderate to weak', self.text, 'weak-moderate')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)over-expression', self.text, 'overexpression')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)strong to moderate', self.text, 'moderate-strong')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)weak to moderate', self.text, 'weak-moderate')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)weak to strong', self.text, 'weak-strong')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('____+(\n_+)*', self.text)
         text_list = [ 'negative', 'positive']
         for text_str in text_list:
             regex_str = '(?i)(?<=' + text_str + ')\('
-            self._general_command(regex_str, {None : ' ('})
+            self.text = \
+                self.lambda_manager.lambda_conversion(regex_str, self.text, ' (')
     
     #
     def _remove_extraneous_text(self):
-        self._general_command('(?i)\(HCC\)', {None : ''})
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)\(HCC\)', self.text)
     
     #
     def _text_setup(self):
@@ -97,22 +114,30 @@ class Pretokenizer(Preprocessor_base):
         self.text = text
         self._text_setup()
         self._normalize_whitespace()
-        self._clear_command_list()
-        self._general_command('(?i)(\n)[A-Z]\.[ \t]', {'\.' : ':'})
-        self._general_command('(\s)?\(\n', {None : '\n'})
-        self._general_command('(?i)-grade', {None : ' grade'})
-        self._general_command('(?i)-to-', {None : ' to '})
-        self._general_command('____+(\n_+)*', {None : '' })
-        self._general_command('(?i)fine needle', {None : 'fine-needle'})
-        self._general_command('(?i)in-situ', {None : 'in situ'})
-        self._general_command('(?i)in-toto', {None : 'in toto'})
-        self._general_command('(?i)over-expression', {None : 'overexpression'})
-        self._process_command_list()
-        self._clear_command_list()
-        self._general_command('(?i)margin\(s\)', {None : 'margins'})
-        self._general_command('(?i)from (the )?nipple', {None : 'fn'})
-        self._general_command('(?i)histologic grade', {None : 'grade'})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?i)(\n)[A-Z]\.[ \t]', '\.', self.text, ':')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(\s)?\(\n', self.text, '\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)-grade', self.text, ' grade')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)-to-', self.text, ' to ')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('____+(\n_+)*', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)fine needle', self.text, 'fine-needle')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)in-situ', self.text, 'in situ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)in-toto', self.text, 'in toto')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)over-expression', self.text, 'overexpression')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)margin\(s\)', self.text, 'margins')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)from (the )?nipple', self.text, 'fn')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)histologic grade', self.text, 'grade')
         self.text = self.personal_name_normalizer.process_text(self.text)
         self.text = self.table_normalizer.process_text(self.text)
         self.specimen_normalizer.push_text(self.text)

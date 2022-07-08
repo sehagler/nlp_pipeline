@@ -6,7 +6,7 @@ Created on Thu Jun 17 13:12:48 2021
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.cancer_tools \
     import Text_preparation as Text_preparation_cancer

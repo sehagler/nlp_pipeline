@@ -9,7 +9,7 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import regex_from_list, s
@@ -50,25 +50,6 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
     #
-    def _get_stage(self, context_regex, regex, map_func, text):
-        stage_val_list = []
-        for m in re.finditer(context_regex, text):
-            val_list = []
-            for n in re.finditer(regex, m.group(0)):
-                if map_func is not None:
-                    val_list.append(map_func(n.group(0)))
-                else:
-                    val_list.append(n.group(0))
-            if len(val_list) == 1:
-                stage_val_list.append(val_list[0])
-            elif len(val_list) > 1:
-                val_list = sorted(val_list)
-                val_list = [ val_list[0], val_list[-1] ]
-                stage_val_list.append('-'.join(val_list))
-        stage_val_list = list(set(stage_val_list))
-        return stage_val_list
-    
-    #
     def _map_to_cancer_stage(self, value_in):
         switch_dict = {}
         switch_dict['0'] = '0'
@@ -97,19 +78,19 @@ class Postprocessor(Postprocessor_base):
         for i in range(len(cancer_stage_text_list)):
             cancer_stage_text_raw = cancer_stage_text_list[i]
             cancer_stage_text_processed = []
-            stage_val_list = self._get_stage(numeric_stage_context_regex, 
-                                             numeric_stage_regex,
-                                             self._map_to_cancer_stage,
-                                             cancer_stage_text_raw)
+            stage_val_list = self._extract_value(numeric_stage_context_regex, 
+                                                 numeric_stage_regex,
+                                                 self._map_to_cancer_stage,
+                                                 cancer_stage_text_raw)
             for item in stage_val_list:
                 cancer_stage_text_processed.append(item)
-            stage_val_list = self._get_stage(nonnumeric_stage_context_regex, 
-                                             nonnumeric_stage_regex, None,
-                                             cancer_stage_text_raw)
+            stage_val_list = self._extract_value(nonnumeric_stage_context_regex, 
+                                                 nonnumeric_stage_regex, None,
+                                                 cancer_stage_text_raw)
             for item in stage_val_list:
                 cancer_stage_text_processed.append(item.lower())
-            stage_val_list = self._get_stage(in_situ_regex, in_situ_regex, 
-                                             None, cancer_stage_text_raw)
+            stage_val_list = self._extract_value(in_situ_regex, in_situ_regex, 
+                                                 None, cancer_stage_text_raw)
             for item in stage_val_list:
                 cancer_stage_text_processed.append('0')
             if len(cancer_stage_text_processed) == 1:

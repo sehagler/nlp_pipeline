@@ -13,7 +13,7 @@ class Lambda_manager(object):
     
     #
     def lambda_conversion(self, abstraction_operator, expression, argument):
-        return re.sub(abstraction_operator, argument, expression)
+        return re.sub('(?i)' + abstraction_operator, argument, expression)
     
     #
     def contextual_lambda_conversion(self, context_abstraction_operator,
@@ -35,3 +35,12 @@ class Lambda_manager(object):
             if ctr == 100:
                 stop_flg = True
         return expression
+    
+    #
+    def deletion_lambda_conversion(self, abstraction_operator, expression):
+        return self.lambda_conversion(abstraction_operator, expression, '')
+    
+    #
+    def initialism_lambda_conversion(self, abstraction_operator, expression, argument):
+        return self.lambda_conversion(abstraction_operator + '( \( ' + argument + ' \))?',
+                                      expression, argument)

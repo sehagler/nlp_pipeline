@@ -9,7 +9,7 @@ Created on Tue Jan 15 12:13:23 2019
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #

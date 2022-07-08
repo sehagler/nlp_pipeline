@@ -10,9 +10,9 @@ import re
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -49,7 +49,7 @@ class Posttokenizer(Preprocessor_base):
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)partial (/ )?dim', self.text, 'dim/partial')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=CD) (?=[0-9])', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?<=CD) (?=[0-9])', self.text)
         self.text = \
             self.lambda_manager.contextual_lambda_conversion(antigens + '\(', '\(', self.text, ' (')
         self.text = \

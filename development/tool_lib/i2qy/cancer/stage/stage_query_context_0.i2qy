@@ -133,7 +133,7 @@ query:
                           - within
                           - without
           - word: {text: '#'}
-          - CKD
+          - alternative: [CKD, CRD, CRF]
       - phrase:
           findMatches: longestOnly
           maxSentenceGap: -1

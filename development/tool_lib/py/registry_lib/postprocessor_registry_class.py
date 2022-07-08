@@ -9,7 +9,7 @@ Created on Tue Nov 13 08:12:07 2018
 import os
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_registry_base_class \
+from tool_lib.py.registry_lib.base_lib.postprocessor_registry_base_class \
     import Postprocessor_registry_base
 
 #

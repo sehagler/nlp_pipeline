@@ -10,7 +10,7 @@ from word2number import w2n
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_date
@@ -26,69 +26,111 @@ class Tokenizer(Preprocessor_base):
     
     #
     def _process_abbreviations(self):
-        self._general_command('(?i)%age', {None : 'percentage'})
-        self._general_command('(?<=[Dd])iagnosis', {None : 'x'})
-        self._general_command('(?<=[Dd])iagnosed', {None : 'xed'})
-        self._general_command('(?<=[Dd])iagnoses', {None : 'xes'})
-        self._general_command('(?<=[Ll])aboratories', {None : 'abs'})
-        self._general_command('(?<=[Ll])aboratory', {None : 'ab'})
-        self._general_command('(?<=[Mm])ets(?= )', {None : 'etastases'})
-        self._general_command('(?<=[Mm])onth', {None : 'o'})
-        self._general_command('(?<=[Pp])atient', {None : 't'})
-        self._general_command('(?<=[Rr])efills', {None : 'fl'})
-        self._general_command('(?<=[Rr])esection', {None : 'sxn'})
-        self._general_command('(?<=[Yy])ear', {None : 'r'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('%age', self.text, 'percentage')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Dd])iagnosis', self.text, 'x')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Dd])iagnosed', self.text, 'xed')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Dd])iagnoses', self.text, 'xes')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Ll])aboratories', self.text, 'abs')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Ll])aboratory', self.text, 'ab')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Mm])ets(?= )', self.text, 'etastases')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Mm])onth', self.text, 'o')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Pp])atient', self.text, 't')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Rr])efills', self.text, 'fl')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Rr])esection', self.text, 'sxn')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Yy])ear', self.text, 'r')
         
     #
     def _process_chemical_abbreviations(self):
-        self._general_command('(?i)alcohol(?!i)', {'(?i)alcohol' : 'ETOH'})
-        self._normalize_regular_initialism('(?i)butyrate esterase', 'BE')
-        self._normalize_regular_initialism('(>i)methotrexate', 'MTX')
-        self._normalize_regular_initialism('(?i)myeloperoxidase', 'MPO')
-        self._normalize_regular_initialism('(?i)sudan black B', 'SBB')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('alcohol(?!i)', 'alcohol', self.text, 'ETOH')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('butyrate esterase', self.text, 'BE')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('methotrexate', self.text, 'MTX')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('myeloperoxidase', self.text, 'MPO')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('sudan black B', self.text, 'SBB')
+            
+    #
+    def _process_credentials(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('D( \. )?O( \. )', self.text, 'DO')
+        self.text = \
+            self.lambda_manager.lambda_conversion('D( \. )O( \. )?', self.text, 'DO')
+        self.text = \
+            self.lambda_manager.lambda_conversion('Dr( \. )', self.text, 'Dr')
+        self.text = \
+            self.lambda_manager.lambda_conversion('m( \. )?d( \. )', self.text, 'MD')
+        self.text = \
+            self.lambda_manager.lambda_conversion('m( \. )d( \. )?', self.text, 'MD')
+        self.text = \
+            self.lambda_manager.lambda_conversion('ph( \. )?d( \. )', self.text, 'PhD')
+        self.text = \
+            self.lambda_manager.lambda_conversion('ph( \. )d( \. )?', self.text, 'PhD')
         
     #
     def _process_hash(self):
-        self._general_command('#', {None : ' # '})
-        self._general_command('(?i)blocks? +#', {'#' : ''})
+        self.text = \
+            self.lambda_manager.lambda_conversion('#', self.text, ' # ')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('blocks? +#', '#', self.text, '')
         
     #
     def _process_measurements(self):
-        self._general_command('(?i)(<=(\d+)(\-|\+)?) ((out )?of|per) (?= [0-9])', 
-                              {'(?i) ((out )?of|per) ' : '/'})
-        self._normalize_regular_initialism('high(-| )?power(ed)? field' + s(), 'HPF')
-        self._general_command('(?i)HPF(\')?s', {None : 'HPF'})
-        self._general_command('(?i)cmfn', {None : 'cm fn'})
-        self._general_command('(?i)(?<=[0-9])%(?=[A-Za-z])', {None : '% '})
-        self._general_command('(?i)(?<=[0-9])cm', {None : ' cm '})
-        self._general_command('(?i)(?<=[0-9])mm', {None : ' mm '})
-        self._general_command('(?i)(?<=(cm|mm))\.', {None : ''})
-        self._general_command('(?i)[\n\s]+o(\')?clock', {None : ' : 00'})
-        self._general_command('(?i)(?<=[0-9])of', {None : ' of'})
-        self._general_command('(?i)of(?=[0-9])', {None : 'of '})
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(<=(\d+)(\-|\+)?) ((out )?of|per) (?= [0-9])', 
+                                                             ' ((out )?of|per) ', self.text, '/')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('high(-| )?power(ed)? field' + s(), self.text, 'HPF')
+        self.text = \
+            self.lambda_manager.lambda_conversion('HPF(\')?s', self.text, 'HPF')
+        self.text = \
+            self.lambda_manager.lambda_conversion('cmfn', self.text, 'cm fn')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])%(?=[A-Za-z])', self.text, '% ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])cm', self.text, ' cm ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])mm', self.text, ' mm ')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<=(cm|mm))\.', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('[\n\s]+o(\')?clock', self.text, ' : 00')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])of', self.text, ' of')
+        self.text = \
+            self.lambda_manager.lambda_conversion('of(?=[0-9])', self.text, 'of ')
         
     #
     def _process_initialisms(self):
-        self._general_command('(?i)a( \. )?m( \. )', {None : 'AM'})
-        self._general_command('(?i)D( \. )?O( \. )', {None : 'DO'})
-        self._general_command('(?i)Dr( \. )', {None : 'Dr'})
-        text_list = []
-        text_list.append('(?i)m( \. )?d( \. )')
-        text_list.append('(?i)m( \. )d( \. )?')
-        self._general_command(text_list, {None : 'MD'})
-        text_list = []
-        text_list.append('(?i)ph( \. )?d( \. )')
-        text_list.append('(?i)ph( \. )d( \. )?')
-        self._general_command(text_list, {None : 'PhD'})
-        self._general_command('(?i)p( \. )?m( \. )', {None : 'PM'})
-        self._general_command('(?i)(U( \. )?S( \.)?)? Food and Drug Administration', {None : 'FDA'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('a( \. )?m( \. )', self.text, 'AM')
+        self.text = \
+            self.lambda_manager.lambda_conversion('p( \. )?m( \. )', self.text, 'PM')
         
     #
     def _process_medical_abbreviations(self):
-        self._general_command('(?<=[Ff])ollow( |\-)up', {None : ' / u'})
-        self._general_command('(?<=[Hh])istory', {None : 'x'})
-        self._general_command('(?<=[Hh])x of', {None : ' / o'})
-        self._general_command('(?<=[Ss])urgical procedure', {None : ' / p '})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Ff])ollow( |\-)up', self.text, ' / u')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Hh])istory', self.text, 'x')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Hh])x of', self.text, ' / o')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Ss])urgical procedure', self.text, ' / p ')
         
     #
     def _process_numbers(self):
@@ -113,57 +155,103 @@ class Tokenizer(Preprocessor_base):
                         pass
         change_list.sort(key=lambda x: len(x[0]), reverse=True)
         for change in change_list:
-            self._general_command('[ \n\t]' + change[0] + '[ \n\t]', {change[0] : change[1]})
+            self.text = \
+                self.lambda_manager.contextual_lambda_conversion('[ \n\t]' + change[0] + '[ \n\t]',
+                                                                 change[0], self.text, change[1])
         
     #
     def _process_punctuation(self):
-        self._general_command('\*', {None : ''})
-        self._general_command('(?i)(?<=\d) %', {None : '%'})
-        self._general_command('(?<!(:|\d))\d+ ?- ?\d+%', {' ?- ?' : '%-'})
-        self._general_command('(?<!(:|\d))\d+ to \d+%', {' to ' : '%-'})
-        self._general_command('(?<!(:|\d))\d+-\d+:00', {'-' : ' : 00-'})
-        self._general_command('\)\(', {None : ') ('})
-        self._general_command(' \?', {None : ''})
-        self._general_command(':', {None : ' : '})
-        self._general_command('(?<=[0-9]) : (?=[0-9])', {None : ':'})
-        self._general_command(',', {None : ' , '})
-        self._general_command('(?<=[0-9]) , (?=[0-9])', {None : ','})
-        self._general_command('(?<=[0-9]),(?=[0-9]{4})', {None : ' , '})
-        self._general_command('(?<=[0-9]),(?=[0-9]+/)', {None : ' , '})
-        self._general_command(';', {None : ' ; '})
-        self._general_command('(?<=[0-9])-(?=[0-9])', {None : ' - '})
-        self._general_command('(?<=[0-9]) -(?=[0-9]+%)', {None : ' - '})
-        self._general_command('(?<=[0-9])- (?=[0-9]+%)', {None : ' - '})
-        self._general_command('(?<= )-(?=[A-Za-z])', {None : ' - '})
-        self._general_command('(?<=[0-9])\+(?=[A-Za-z])', {None : '+ '})
-        self._general_command('=', {None : ' = '})
-        self._general_command('\/', {None : ' / '})
-        self._general_command('>', {None : ' > '})
-        self._general_command('<', {None : ' < '})
-        self._general_command('~', {None : ' ~ '})
-        self._general_command('\(', {None : '( '})
-        self._general_command('\)', {None : ' )'})
-        self._general_command('(?i)(?<=[a-z0-9])\*', {None : ' *'})
-        self._general_command('\.(?![0-9])', {None : ' . '})
-        self._general_command('\( [0-9\.]+ ?\)', {'\( ' : '('})
-        self._general_command('\( ?[0-9\.]+ \)', {' \)' : ')'})
-        self._general_command('\( ! \)', {None : ''})
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('\*', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=\d) %', self.text, '%')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?<!(:|\d))\d+ ?- ?\d+%',
+                                                             ' ?- ?', self.text, '%-')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?<!(:|\d))\d+ to \d+%',
+                                                             ' to ', self.text, '%-')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?<!(:|\d))\d+-\d+:00',
+                                                             '-', self.text, ' : 00-')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\)\(', self.text, ') (')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion(' \?', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion(':', self.text, ' : ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]) : (?=[0-9])', self.text, ':')
+        self.text = \
+            self.lambda_manager.lambda_conversion(',', self.text, ' , ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]) , (?=[0-9])', self.text, ',')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]),(?=[0-9]{4})', self.text, ' , ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]),(?=[0-9]+/)', self.text, ' , ')
+        self.text = \
+            self.lambda_manager.lambda_conversion(';', self.text, ' ; ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])-(?=[0-9])', self.text, ' - ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]) -(?=[0-9]+%)', self.text, ' - ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])- (?=[0-9]+%)', self.text, ' - ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )-(?=[A-Za-z])', self.text, ' - ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9])\+(?=[A-Za-z])', self.text, '+ ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('=', self.text, ' = ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\/', self.text, ' / ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('>', self.text, ' > ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('<', self.text, ' < ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('~', self.text, ' ~ ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\(', self.text, '( ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\)', self.text, ' )')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<=[a-z0-9])\*', self.text,' *')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\.(?![0-9])', self.text, ' . ')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( [0-9\.]+ ?\)', '\( ', self.text, '(')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( ?[0-9\.]+ \)', ' \)', self.text, ')')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('\( ! \)', self.text)
         
     #
     def _process_simplifications(self):
-        self._general_command('at least(?= \d)', {None : '>'})
-        self._general_command('estimated(?= \d)', {None : '~'})
-        self._general_command('(?i)((only )?about|approx(( \.)|imate(ly)?)?|roughly)(?= \d)', {None : '~'})
-        self._general_command('(?i)(greater|more) th(a|e)n(?= [0-9])', {None : '>'})
-        self._general_command('(?i)less th(a|e)n(?= \d)', {None : '<'})
-        self._general_command('(?i)up to( ~)?(?= \d)', {None : '<'})
-        self._general_command('(?i)according to', {None : 'per'})
-        self._general_command('(?i)for example', {None : 'e.g.'})
-        self._general_command('(?i)w / ', {'(?i)w /' : 'with'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('at least(?= \d)', self.text, '>')
+        self.text = \
+            self.lambda_manager.lambda_conversion('estimated(?= \d)', self.text, '~')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)((only )?about|approx(( \.)|imate(ly)?)?|roughly)(?= \d)', self.text, '~')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(greater|more) th(a|e)n(?= [0-9])', self.text, '>')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)less th(a|e)n(?= \d)', self.text, '<')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)up to( ~)?(?= \d)', self.text, '<')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)according to', self.text, 'per')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)for example', self.text, 'e.g.')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(?i)w / ', '(?i)w /', self.text, 'with')
         
     #
     def _process_underscore(self):
-        self._general_command('_[A-Z][0-9]+_', {'_' : ''})
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('_[A-Z][0-9]+_', '_', self.text, '')
     
     #
     def process_document(self, text):
@@ -174,6 +262,7 @@ class Tokenizer(Preprocessor_base):
         self._process_hash()
         self._process_underscore()
         self._process_initialisms()
+        self._process_credentials()
         self._process_abbreviations()
         self._process_chemical_abbreviations()
         self._process_measurements()

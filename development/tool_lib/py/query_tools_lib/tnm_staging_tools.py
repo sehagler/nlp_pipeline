@@ -10,9 +10,9 @@ import itertools
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -264,21 +264,19 @@ class Summarization(Preprocessor_base):
     
     #
     def _process_tnm_staging(self):
-        self._clear_command_list()
         text_list = []
         text_list.append('(?i)(pathologic( tumor)?|TNM) stag(e|ing)')
         text_list.append('(?i)stage summary')
         for text_str in text_list:
             self.text = \
                 self.lambda_manager.lambda_conversion(text_str, self.text, 'Stage')
-        self._process_command_list()
         
     #
     def _remove_extraneous_text(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', self.text)
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(\( )?AJCC( \))?', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?i)(\( )?AJCC( \))?', self.text)
         
     #
     def run_preprocessor(self):

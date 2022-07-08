@@ -6,9 +6,9 @@ Created on Tue Nov 13 08:12:07 2018
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_registry_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
 from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \
     import Named_entity_recognition as Named_entity_recognition_blasts
@@ -29,42 +29,68 @@ from tool_lib.py.query_tools_lib.smoking_tools \
 class Named_entity_recognition_base(Preprocessor_base):
     
     #
+    def _process_organizations(self):
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('eastern cooperative oncology group', self.text, 'ECOG')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('(u( \. )?s( \.)? ?)?food and drug administration', self.text, 'FDA')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('world health organization', self.text, 'WHO')
+    
+    #
+    def _process_past_medical_history(self):
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('past medical hx', self.text, 'PMH')
+        self.text = \
+            self.lambda_manager.lambda_conversion('PMHx', self.text, 'PMH')
+        self.text = \
+            self.lambda_manager.lambda_conversion('PMH / o', self.text, 'PMH')
+        
+    
+    #
     def _process_regular_initialisms(self):
         
         #
-        self._normalize_regular_initialism('cerebrospinal fluid', 'CSF')
-        self._normalize_regular_initialism('chronic kidney disease', 'CKD')
-        self._normalize_regular_initialism('chronic renal disease( \( CRD \))?', 'CKD')
-        self._normalize_regular_initialism('chronic renal failure( \( CRF \))?', 'CKD')
-        self._normalize_regular_initialism('chronic renal (impairment|insufficiency)', 'CKD')
-        self._normalize_regular_initialism('fluorescen(ce|t) in situ hybridization', 'FISH')
-        self._normalize_regular_initialism('in situ hybridization', 'ISH')
-        self._normalize_regular_initialism('past medical hx', 'PMH')
-        self._normalize_regular_initialism('PMHx', 'PMH')
-        self._normalize_regular_initialism('PMH / o', 'PMH')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)red blood cell', self.text, 'RBC')
+            self.lambda_manager.initialism_lambda_conversion('cerebrospinal fluid', self.text, 'CSF')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)white blood cell', self.text, 'WBC')
-        
+            self.lambda_manager.initialism_lambda_conversion('chronic kidney disease', self.text, 'CKD')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('chronic renal disease', self.text, 'CRD')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('chronic renal failure', self.text, 'CRF')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('fluorescen(ce|t) in situ hybridization', self.text, 'FISH')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('in situ hybridization', self.text, 'ISH')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('red blood cell', self.text, 'RBC')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('white blood cell', self.text, 'WBC')
+            
         #
-        self._normalize_regular_initialism('food and drug administration', 'FDA')
-        self._normalize_regular_initialism('world health organization', 'WHO')
+        self._process_past_medical_history()
+        self._process_organizations()
         
         # miscellaneous
-        self._normalize_regular_initialism('columnar cell change', 'CCC')
-        self._normalize_regular_initialism('eastern cooperative oncology group', 'ECOG')
-        self._normalize_regular_initialism('flat epithelial atypia', 'FEA')
-        self._normalize_regular_initialism('pathologic complete response', 'pCR')
-        self._normalize_regular_initialism('residual ca(ncer)? burden', 'RCB')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('columnar cell change', self.text, 'CCC')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('flat epithelial atypia', self.text, 'FEA')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('pathologic complete response', self.text, 'pCR')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('residual ca(ncer)? burden', self.text, 'RCB')
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)FAB (?=[0-9])', self.text, 'FAB M')
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)HLA-Dr', self.text, 'HLA-DR')
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)blasts ?(\+|and|plus) ?promonocytes', self.text, 'blasts/promonocytes')
-        self._normalize_regular_initialism('(?i)minimal residual disease', 'MRD')
-        self._normalize_regular_initialism('(?i)myelodysplastic syndrome', 'MDS')  
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('(?i)minimal residual disease', self.text, 'MRD')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('(?i)myelodysplastic syndrome', self.text, 'MDS')  
     
     #
     def run_preprocessor(self):

@@ -6,7 +6,7 @@ Created on Wed Nov  4 15:49:43 2020
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import class_label, part_label, specimen_label, s
@@ -21,30 +21,36 @@ class Specimen_normalizer(Preprocessor_base):
             term_list.append('class')
             for term in term_list:
                 match_str = '(?i)' + term   + s() + ' ' + class_label()
-                self._general_command(match_str, {term + s() + ' ' : 'class<HYPHEN>'})
+                self.text = \
+                    self.lambda_manager.contextual_lambda_conversion(match_str, term + s() + ' ', self.text, 'class<HYPHEN>')
             term_list = []
             term_list.append('part')
             for term in term_list:
                 match_str = '(?i)' + term  + s() + ' ' + part_label()
-                self._general_command(match_str, {term + s() + ' ' : 'part<HYPHEN>'})
+                self.text = \
+                    self.lambda_manager.contextual_lambda_conversion(match_str, term + s() + ' ', self.text, 'part<HYPHEN>')
         elif mode_flg == 'undo':
             term_list = []
             term_list.append('class')
             term_list.append('part')
             for term in term_list:
                 match_str = '(?i)' + term + '<HYPHEN>'
-                self._general_command(match_str, {term + '<HYPHEN>' : ' '})
+                self.text = \
+                    self.lambda_manager.contextual_lambda_conversion(match_str, term + '<HYPHEN>', self.text, ' ')
                 
     #
     def _remove_false_specimen(self):
-        self._clear_command_list()
-        self._general_command('(?i) \((([a-l]|[o-s]|[u-z])+[0-9]+(,( )?)?)+\)', {None : ''})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion(' \((([a-l]|[o-s]|[u-z])+[0-9]+(,( )?)?)+\)',
+                                                           self.text)
                 
     #
     def process_specimens(self):
         #self._indicate_nonspecimens('do')
-        self._general_command('(?i)[ \t][a-z]\.[ \t]', {'\.' : ':'})
-        self._general_command('(?i)[ \t][a-z]\.[ \t]', {'(?i)[ \t](?=[a-z])' : '\n\n'})
-        self._general_command('(?i)(\n[A-Z]\: +)(?=[A-Za-z])', {'\n' : '\nSPECIMEN '})
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '\.', self.text, ':')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '(?i)[ \t](?=[a-z])', self.text, '\n\n')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('(\n[A-Z]\: +)(?=[A-Za-z])', '\n', self.text, '\nSPECIMEN ')
         #self._indicate_nonspecimens('undo')

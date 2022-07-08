@@ -10,7 +10,7 @@ import os
 import xlrd
 
 #
-from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.static_data_lib.static_data_manager_class \
     import Static_data_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
@@ -65,8 +65,17 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['ENCODING'] = 'utf-8'
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
-            #self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML' ]
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML'] = {}
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['DATETIME_KEY'] = 'SPECIMEN_COLLECTED_DATE'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['DOCUMENT_FRACTION'] = 1.0
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['ENCODING'] = 'utf-8'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['FORMATTING'] = 'formatted'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
+            #self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220419_093114.XML',
+                                                            'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220608_150449.XML' ]
         elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}

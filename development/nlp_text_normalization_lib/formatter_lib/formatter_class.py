@@ -9,7 +9,7 @@ Created on Wed Jun 16 12:58:14 2021
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -23,30 +23,29 @@ class Formatter(Preprocessor_base):
     #
     def _add_body_header(self):
         self.text = self.body_header + '\n' + self.text
-        self.text = re.sub('^' + self.body_header + '\n' + self.body_header,
-                           self.body_header + '\n', self.text)
-        self.text = re.sub('^' + self.body_header + '[\n\s]*',
-                           self.body_header + '\n\n', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('^' + self.body_header + '\n' + self.body_header,
+                                                  self.text, self.body_header + '\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion('^' + self.body_header + '[\n\s]*',
+                                                  self.text, self.body_header + '\n\n')
     
     #
     def _format_beakerap(self):
-        self._clear_command_list()
         self._pull_out_section_header('(?i)[ \t]case (reviewed|seen) by:?')
         self._pull_out_section_header('(?i)[ \t]clinical history')
         self._pull_out_section_header('(?i)[ \t]comment(s)?( )?(\([a-z0-9 ]*\))?:')
         self._pull_out_section_header('(?i)[ \t]note( )?(\([a-z0-9 ]*\))?:')
-        self._process_command_list()
         self._add_body_header()
-        self._clear_command_list()
-        self._general_command('(?<![0-9]) - (?![0-9])', {None : '\n- '})
-        self._general_command('\n +', {None : '\n'})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<![0-9]) - (?![0-9])', self.text, '\n- ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\n +', self.text, '\n')
         self._format_section_headers()
         self._format_hematopathology_table_beaker_ap()
         
     #
     def _format_hematopathology_table_beaker_ap(self):
-        self._clear_command_list()
         self._pull_out_section_header('(?i)[ \t]antibodies tested')
         self._pull_out_section_header('(?i)[ \t]bone marrow aspirate smears')
         self._pull_out_section_header('(?i)[ \t]bone marrow (biopsy/)?clot section')
@@ -95,13 +94,13 @@ class Formatter(Preprocessor_base):
         self._pull_out_table_entry('[ \t]ROW(?= [0-9])')
         self._pull_out_table_entry('[ \t]WHITE CELL COUNT')
         self._pull_out_table_entry('[ \t]WBC(?= [0-9])')
-        self._general_command('\nFinal Diagnosis\n', {None : '\nFINAL DIAGNOSIS\n'})
-        self._general_command('\n(MANUAL|PERIPHERAL BLOOD) DIFFERENTIAL', {None : '\n\nMANUAL DIFFERENTIAL'})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.lambda_conversion('\nFinal Diagnosis\n', self.text, '\nFINAL DIAGNOSIS\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\n(MANUAL|PERIPHERAL BLOOD) DIFFERENTIAL', self.text, '\n\nMANUAL DIFFERENTIAL')
         
     #
     def _format_hematopathology_table_powerpath(self):
-        self._clear_command_list()
         self._pull_out_table_entry('[ \t]Bands[ \t]+[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Baso(phil)?s[ \t]+(x )?[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Eos(inophils)?[ \t]+(x )?[0-9]')
@@ -109,7 +108,6 @@ class Formatter(Preprocessor_base):
         self._pull_out_table_entry('[ \t](?<!% )Mono(cyte)?s[ \t]+(x )?[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Neutrophils[ \t]+[0-9]')
         self._pull_out_table_entry('[ \t]PMNs[ \t]+(x )?[0-9]')
-        self._process_command_list()
         
     #
     def _format_powerpath(self):
@@ -119,24 +117,22 @@ class Formatter(Preprocessor_base):
         
     #
     def _format_section_headers(self):
-        self._clear_command_list()
-        self._general_command('(?i)\nFinal (Pathologic )?Diagnosis\n', {None : ''})
-        self._general_command('\nDIFFERENTIAL', {None : '\nMANUAL DIFFERENTIAL'})
-        self._general_command('\nImmunologic Analysis\n', {None : ''})
-        self._general_command('\nMicroscopic Description\n', {None : ''})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)\nFinal (Pathologic )?Diagnosis\n', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('\nDIFFERENTIAL', self.text, '\nMANUAL DIFFERENTIAL')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('\nImmunologic Analysis\n', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('\nMicroscopic Description\n', self.text)
         
     #
     def _pull_out_section_header(self, command):
-        self._clear_command_list()
-        self.command_list.append([ 1, command ])
-        self._process_command_list()
+        self._insert_whitespace(command, '\n\n')
         
     #
     def _pull_out_table_entry(self, command):
-        self._clear_command_list()
-        self.command_list.append([ 2, command ])
-        self._process_command_list()
+        self._insert_whitespace(command, '\n')
         
     #
     def process_document(self, text, source_system):

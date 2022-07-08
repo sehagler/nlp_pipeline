@@ -6,7 +6,7 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import regex_from_list, s
@@ -36,38 +36,54 @@ class Named_entity_recognition(Preprocessor_base):
                            [ 'squamous cell (cancer|carcinoma)', 'SCC' ],
                            [ 'transitional cell (cancer|carcinoma)', 'TCC' ] ]
         for carcinoma in carcinoma_list:
-            self._normalize_regular_initialism('invasive ' + carcinoma[0], 'I' + carcinoma[1])
-            self._normalize_regular_initialism(carcinoma[0] + ' in situ', carcinoma[1] + 'IS')
-            self._normalize_regular_initialism(carcinoma[0], carcinoma[1])
-            self._normalize_regular_initialism('invasive ' + carcinoma[1], 'I' + carcinoma[1])
-            self._normalize_regular_initialism(carcinoma[1] + ' in situ', carcinoma[1] + 'IS')
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion('invasive ' + carcinoma[0], self.text, 'I' + carcinoma[1])
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion(carcinoma[0] + ' in situ', self.text, carcinoma[1] + 'IS')
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion(carcinoma[0], self.text, carcinoma[1])
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion('invasive ' + carcinoma[1], self.text, 'I' + carcinoma[1])
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion(carcinoma[1] + ' in situ', self.text, carcinoma[1] + 'IS')
         
         # hyperplasia
         hyperplasia_list = [ [ 'duct(al)? hyperplasia', 'DH' ],
                              [ 'lobular hyperplasia', 'LH' ],
                              [ 'columnar cell hyperplasia', 'CCH' ] ]
         for hyperplasia in hyperplasia_list:
-            self._normalize_regular_initialism('atypical ' + hyperplasia[0], 'A' + hyperplasia[1])
-            self._normalize_regular_initialism('usual ' + hyperplasia[0], 'U' + hyperplasia[1])
-            self._normalize_regular_initialism(hyperplasia[0], hyperplasia[1])
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion('atypical ' + hyperplasia[0], self.text, 'A' + hyperplasia[1])
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion('usual ' + hyperplasia[0], self.text, 'U' + hyperplasia[1])
+            self.text = \
+                self.lambda_manager.initialism_lambda_conversion(hyperplasia[0], self.text, hyperplasia[1])
         
         # leukemia
-        self._normalize_regular_initialism('acute myeloid leukemia', 'AML')
-        self._normalize_regular_initialism('acute myelomonocytic leukemia', 'AMML')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('acute myeloid leukemia', self.text, 'AML')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('acute myelomonocytic leukemia', self.text, 'AMML')
         
         # myeloma
-        self._normalize_regular_initialism('multiple myeloma', 'MM')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('multiple myeloma', self.text, 'MM')
         
         # neoplasm
-        self._normalize_regular_initialism('myelodysplastic / myeloproliferative (disease|neoplasm)', 'MDS/MPN')
-        self._normalize_regular_initialism('myeloproliferative / myelodysplastic (disease|neoplasm)', 'MDS/MPN')
-        self._normalize_regular_initialism('myeloproliferative neoplasm', 'MPN')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('myelodysplastic / myeloproliferative (disease|neoplasm)', self.text, 'MDS/MPN')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('myeloproliferative / myelodysplastic (disease|neoplasm)', self.text, 'MDS/MPN')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('myeloproliferative neoplasm', self.text, 'MPN')
         
         # sarcoma
-        self._normalize_regular_initialism('undifferentiated pleomorphic sarcoma', 'UPS')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('undifferentiated pleomorphic sarcoma', self.text, 'UPS')
         
         # tumor
-        self._normalize_regular_initialism('isolated tumor cell' + s(), 'ITC')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('isolated tumor cell' + s(), self.text, 'ITC')
         
     #
     def process_abbreviations(self):

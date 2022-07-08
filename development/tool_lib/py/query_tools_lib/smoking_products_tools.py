@@ -10,7 +10,7 @@ import re
 import statistics
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #

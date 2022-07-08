@@ -9,7 +9,7 @@ Created on Tue May 12 17:04:28 2020
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class\
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class\
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import amend, clinician, clinician_reviewed, history, patient, review_item, s
@@ -125,56 +125,36 @@ class Section_header_normalizer(Preprocessor_base):
                               match.group(0)[match1.end():]
         self.text += footer
         self.text, num = self._number_section(item_label, self.text)
-
-    '''    
-    #
-    def _normalize_formatted_section_header(self, regex_dict, label, keyword_flg=True):
-        text_list = self._add_punctuation_formatted(regex_dict)
-        for text in text_list:
-            self._clear_command_list()
-            self._general_command(text, self._tagged_section_header(label), keyword_flg)
-            self._process_command_list()
-    '''
         
     #
-    def _normalize_section_headers(self, match_lists, match_strs, section_lbl):
-        for match_list in match_lists:
-            self.text = substitution(match_list[0], 
-                                           {match_list[1]: '\n\n' + section_lbl + ' N\n\n'}, 
-                                           self.text)
-        for match_str in match_strs:
-            self.text = re.sub(match_str, '\n\n' + section_lbl + ' N\n\n', self.text)
-        self.text = re.sub(section_lbl + ' N(\n+' + section_lbl + ' N\n+)+',
-                           section_lbl + ' N\n\n', self.text)
-        self.text, num = self._number_section(section_lbl, self.text)
+    def _normalize_section_headers(self, text_list, label):
+        for text in text_list:
+            match_strs_tmp = text
+            section_lbl = self._tagged_section_header(label)
+            match_strs = []
+            for match_str in match_strs_tmp:
+                match_str = \
+                    re.sub('(?<=[A-Za-z]) (?=[A-Za-z])', '(\n| )', match_str)
+                match_strs.append(match_str)
+            for match_str in match_strs:
+                self.text = \
+                    self.lambda_manager.lambda_conversion(match_str,
+                                                          self.text,
+                                                          '\n\n' + section_lbl + ' N\n\n')
+            self.text = \
+                self.lambda_manager.lambda_conversion(section_lbl + ' N(\n+' + section_lbl + ' N\n+)+',
+                                                      self.text, section_lbl + ' N\n\n')
+            self.text, num = self._number_section(section_lbl, self.text)
         return num
         
-    '''
     #
-    def _normalize_unformatted_section_header(self, regex_dict, label, no_punctuation_flg, keyword_flg=True):
-        text_list = self._add_punctuation_unformatted(regex_dict)
-        for text in text_list:
-            self._clear_command_list()
-            self._general_command(text, self._tagged_section_header(label), keyword_flg)
-            self._process_command_list()
-    '''
-        
-    #
-    def _normalize_section_header(self, mode_flg, text_list, label,
-                                  no_punctuation_flg, keyword_flg=True):
+    def _normalize_section_header(self, mode_flg, text_list, label):
         if mode_flg == 'formatted' or mode_flg == 'unformatted':
-            for text in text_list:
-                self._clear_command_list()
-                self._general_command(text, self._tagged_section_header(label), keyword_flg)
-                self._process_command_list()
+            self._normalize_section_headers(text_list, label)
         elif mode_flg == 'pull_out_section_header_to_bottom_of_report':
-            self._clear_command_list()
-            self._pull_out_section_header_to_bottom_of_report(text_list,
-                                                              self._tagged_section_header(label),
-                                                              keyword_flg)
-            self._process_command_list()
-        else:
-            print('unknown mode: ' + mode_flg)
+            self._extract_section_to_bottom_of_report(text_list,
+                                                      self._tagged_section_header(label))
+        self._append_keywords_text(self._tagged_section_header(label))
             
     #
     def _number_section(self, section_str, text):
@@ -193,14 +173,6 @@ class Section_header_normalizer(Preprocessor_base):
     #
     def _pre_punct(self):
         return('(?i)(^|\n)')
-    
-    #
-    def _pull_out_section_header_to_bottom_of_report(self, command0, command1, keyword_flg=False):
-        self._clear_command_list()
-        self.command_list.append([ 0, command0, command1 ])
-        if keyword_flg:
-            self._append_keywords_text(command1)
-        self._process_command_list()
         
     #
     def _tagged_section_header(self, untagged_text):
@@ -210,60 +182,31 @@ class Section_header_normalizer(Preprocessor_base):
 
     #
     def amendment_section_header(self, mode_flg):
-        '''
-        section_header = 'AMENDMENT COMMENT'
-        text_list = \
-            self.section_header.get_amendment_text_list(section_header)
-        self._normalize_section_header(mode_flg, text_list, self._tagged_section_header('AMENDMENT COMMENT'), False)
-        #self._pull_out_section_header_to_bottom_of_report(text_list,
-        #                                                  self._tagged_section_header('AMENDMENT COMMENT'),
-        #                                                  True)
-        '''
-        self._general_command(self._tagged_section_header('AMENDMENT COMMENT'),
-                              {None : self._tagged_section_header('AMENDMENT_COMMENT')})
+        self.text = \
+            self.lambda_manager.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
+                                                  self.text,
+                                                  self._tagged_section_header('AMENDMENT_COMMENT'))
         section_header = 'AMENDMENT'
         text_list = \
             self.section_header.get_amendment_text_list(section_header)
-        #self._normalize_section_header(mode_flg, text_list, self._tagged_section_header('AMENDMENT'), False)
-        self._pull_out_section_header_to_bottom_of_report(text_list,
-                                                          self._tagged_section_header('AMENDMENT'),
-                                                          True)
-        self._general_command(self._tagged_section_header('AMENDMENT_COMMENT'),
-                              {None : self._tagged_section_header('AMENDMENT COMMENT')})
-
-    '''
-    #
-    def biomarkers_tests_section_header(self, mode_flg):
-        regex_list = []
-        regex_list.append('er, pr and her-2/neu immunohistochemical stains by computer assisted quantitative image analysis')
-        regex_list.append('er, pr and her-2/neu tests')
-        regex_list.append('er and pr tests')
-        regex_list.append('Amendment comment: ER, PR and Her-2/neu tests')
-        
-        if mode_flg == 'formatted':
-            no_punctuation_flg = False
-        elif mode_flg == 'unformatted':
-            no_punctuation_flg = True
-        else:
-            no_punctuation_flg = False
-        if mode_flg == 'formatted':
-            text_list = self._add_punctuation_formatted(regex_list)
-        elif mode_flg == 'unformatted':
-            text_list = self._add_punctuation_unformatted(regex_list,
-                                                          no_punctuation_flg)
-        else:
-            text_list = regex_list
-        
-        self._normalize_section_header(mode_flg, text_list,
-                                       'BIOMARKERS TESTS', False)
-    '''
+        self._extract_section_to_bottom_of_report(text_list,
+                                                  self._tagged_section_header('AMENDMENT'))
+        self._append_keywords_text(self._tagged_section_header('AMENDMENT'))
+        self.text = \
+            self.lambda_manager.lambda_conversion(self._tagged_section_header('AMENDMENT_COMMENT'),
+                                                  self.text,
+                                                  self._tagged_section_header('AMENDMENT COMMENT'))
         
     #
     def clear_section_header_tags(self):
-        self.text = re.sub(' > > >', self.section_header_post_tag, self.text)
-        self.text = re.sub('< < < ', self.section_header_pre_tag, self.text)
-        self.text = re.sub(self.section_header_pre_tag, '', self.text)
-        self.text = re.sub(self.section_header_post_tag, '', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion(' > > >', self.text, self.section_header_post_tag)
+        self.text = \
+            self.lambda_manager.lambda_conversion('< < < ', self.text, self.section_header_pre_tag)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion(self.section_header_pre_tag, self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion(self.section_header_post_tag, self.text)
     
     #
     def comment_section_header(self, mode_flg):
@@ -303,32 +246,24 @@ class Section_header_normalizer(Preprocessor_base):
         else:
             text_list = regex_list
             
-        self._normalize_section_header(mode_flg, text_list, 'COMMENT', False)
+        self._normalize_section_header(mode_flg, text_list, 'COMMENT')
         
     #
     def fix_section_headers(self):
         self.text = \
-            re.sub('(?i)(?<=\nperipheral blood,)\n\n\nflow cytometric analysis \d+', '', self.text)
+            self.lambda_manager.deletion_lambda_conversion('(?i)(?<=\nperipheral blood,)\n\n\nflow cytometric analysis \d+',
+                                                           self.text)
         self.text = \
-            re.sub('(?i)(?<=\nperipheral blood, smear and)\n\n\nflow cytometric analysis \d+', '', self.text)
-        
-        
-    #
-    def general_command(self, section_header_list, mode_flg):
-        for section_header in section_header_list:
-            regex_list = self.section_header_dict[section_header]
-            self._general_command(regex_list,
-                                  self._tagged_section_header(section_header),
-                                  True)
-            
+            self.lambda_manager.deletion_lambda_conversion('(?i)(?<=\nperipheral blood, smear and)\n\n\nflow cytometric analysis \d+',
+                                                           self.text)
+    
     #
     def history_section_header(self, mode_flg):
         section_header = 'FAMILY HISTORY'
         text_list, no_punctuation_flg = \
             self.section_header.get_text_list(section_header, mode_flg)
         section_header = 'FAMILY HSTRY'
-        self._normalize_section_header(mode_flg, text_list, section_header,
-                                       no_punctuation_flg, keyword_flg=False)
+        self._normalize_section_header(mode_flg, text_list, section_header)
         regex_list = []
         if mode_flg == 'formatted':
             regex_list.append('(PMH|PSH)')
@@ -353,10 +288,11 @@ class Section_header_normalizer(Preprocessor_base):
         else:
             text_list = regex_list  
         
-        self._normalize_section_header(mode_flg, text_list, 'HISTORY',
-                                       no_punctuation_flg)
-        self.text = re.sub('FAMILY HSTRY', 'FAMILY HISTORY', self.text)
+        self._normalize_section_header(mode_flg, text_list, 'HISTORY')
+        self.text = \
+            self.lambda_manager.lambda_conversion('FAMILY HSTRY', self.text, 'FAMILY HISTORY')
         self._append_keywords_text('FAMILY HISTORY')
+        self._remove_from_keywords_text('FAMILY HSTRY')
         
     #
     def normalize_section_header(self, mode_flg):
@@ -364,8 +300,7 @@ class Section_header_normalizer(Preprocessor_base):
         for section_header in section_header_list:
             text_list, no_punctuation_flg = \
                 self.section_header.get_text_list(section_header, mode_flg)
-            self._normalize_section_header(mode_flg, text_list, section_header,
-                                           no_punctuation_flg)
+            self._normalize_section_header(mode_flg, text_list, section_header)
             
     #
     def pull_dynamic_data_manager(self):

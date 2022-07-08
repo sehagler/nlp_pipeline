@@ -35,12 +35,12 @@ pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[5]
+project_name = project_names[4]
 project_subdir = project_subdirs[1]
 server = servers[0]
 
 #
-pipeline_mode_flg = pipeline_mode_flgs[4]
+pipeline_mode_flg = pipeline_mode_flgs[1]
 
 #
 mode_flg = mode_flgs[1]
@@ -67,7 +67,7 @@ if mode_flg == 'update':
         software_base = root_base + '/NLP_Software/'
         software_path = software_base + 'development'
         sys.path.insert(0, software_path)
-        from nlp_pipeline_lib.py.pipeline_lib.pipeline \
+        from nlp_pipeline_lib.pipeline_lib.pipeline \
             import Pipeline
         pipeline = Pipeline()
         pipeline.software_manager(root_dir, user, password)
@@ -90,7 +90,7 @@ elif mode_flg == 'run':
     software_base = root_base + '/NLP_Software/'
     software_path = software_base + server
     sys.path.insert(0, software_path)
-    from nlp_pipeline_lib.py.pipeline_lib.pipeline \
+    from nlp_pipeline_lib.pipeline_lib.pipeline \
         import Pipeline
     pipeline = Pipeline()
     pipeline.process_manager(server, root_dir, project_subdir, project_name,

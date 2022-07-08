@@ -6,10 +6,10 @@ Created on Thu Jun 17 12:29:58 2021
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
-    import article, be, note_label, s, specimen_label
+    import article, be, note_label, s, specimen_label, substitution_endings_list
 from tool_lib.py.registry_lib.summarization_registry_class \
     import Summarization_registry
 
@@ -26,55 +26,69 @@ class Summarization(Preprocessor_base):
     def _remove_extraneous_text(self):
         self._remove_mychart()
         self._remove_see()
-        self._clear_command_list()
-        self._general_command('(?i)[\n\s]+based on pathologic finding' + s(), {None : ''})
-        self._general_command('(?i)(?<=Dr [A-Z])\.', {None : ''})
-        self._general_command('(?i)my electronic signature.*' + article() + ' final diagnosis( \.)?', {None : ''})
-        self._general_command('(?i)i have reviewed.*and final diagnosis( \.)?', {None : ''})
-        self._general_command('(?i)inclu(des|sive of) all specimens', {None : ''})
-        self._general_command('(?i)pathologist interpretation ' + be() + ' based on ' + article() + ' review.*representative hematoxylin and eosin stains( \.)?', {None : ''})
-        self._general_command('(?i)' + article() + ' test ' + be() + ' developed.*FDA( \.)?', {None : ''})
-        self._general_command('(?i)' + article() + ' clinical interpretation ' + be() + ' made by ' + article() + ' clinical geneticist( \.)?', {None : ''})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('[\n\s]+based on pathologic finding' + s(), self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<=Dr [A-Z])\.', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('my electronic signature.*' + article() + ' final diagnosis( \.)?', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('i have reviewed.*and final diagnosis( \.)?', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)inclu(des|sive of) all specimens', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)pathologist interpretation ' + be() + ' based on ' + article() + ' review.*representative hematoxylin and eosin stains( \.)?', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)' + article() + ' test ' + be() + ' developed.*FDA( \.)?', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)' + article() + ' clinical interpretation ' + be() + ' made by ' + article() + ' clinical geneticist( \.)?', self.text)
     
     #
     def _remove_mychart(self):
-        self._clear_command_list()
-        self._general_command('(?i)display progress note in mychart : (no|yes)', {None : ''})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('display progress note in mychart : (no|yes)', self.text)
         
     #
     def _remove_see(self):
-        self._clear_command_list()
-        self._general_command('(?i)(\n\s*)?\( (please )?see [^\n\)\]]* \)', {None : ''})
-        self._general_command('(?i)\s*see\n', {None : '\n'})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)(\n\s*)?\( (please )?see [^\n\)\]]* \)', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)\s*see\n', self.text, '\n')
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see[\n\s]+' + \
                     '(the )?(second )?(amendment|cancer|note|synoptic)?( )?' + \
                     '(below|comment|report|synops(e|i))' + s() + \
                     '( and synoptic summary)?( and tumor protocol)?' + \
                     '( below)?( for (additional|technical) (details|information))?( \.)?'
-        self._substitution_endings_list(match_str)
+        self.text = substitution_endings_list(self.text, match_str)
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see ' + \
                     '(note|(staging )?summary|(cancer )?synopsis|synoptic report)' + \
                     '( below)?( for (additional|technical) details)?'
-        self._substitution_endings_list(match_str)
+        self.text = substitution_endings_list(self.text, match_str)
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see (also )?' + \
                     'note' + s() + '( )?' + note_label() + '( to ' + note_label() + ')?'
-        self._substitution_endings_list(match_str)
+        self.text = substitution_endings_list(self.text, match_str)
         match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see (also )?' + \
                     'specimen' + s() + '( )?' + specimen_label() + '( to ' + specimen_label() + ')?'
-        self._substitution_endings_list(match_str)
+        self.text = substitution_endings_list(self.text, match_str)
         
+    '''
     #
     def _substitution_endings_list(self, search_str):
-        self._general_command(search_str + '\n', {None : '\n'})
-        self._general_command(search_str + '\t', {None : '\t'})
-        self._general_command(search_str + ' ', {None : ' '})
-        self._general_command(search_str + ',', {None : ','})
-        self._general_command(search_str + '\.', {None : '.'})
-        self._general_command(search_str + ';', {None : ';'})
-        self._general_command(search_str + '( )?-', {None : '-'})
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + '\n', self.text, '\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + '\t', self.text, '\t')
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + ' ', self.text, ' ')
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + ',', self.text, ',')
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + '\.', self.text, '.')
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + ';', self.text, ';')
+        self.text = \
+            self.lambda_manager.lambda_conversion(search_str + '( )?-', self.text, '-')
+    '''
     
     #
     def process_document(self, text):

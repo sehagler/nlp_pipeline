@@ -11,7 +11,7 @@ import inflect
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.antigens_tools \
     import Posttokenizer as Posttokenizer_antigens
@@ -47,7 +47,8 @@ class Posttokenizer(Preprocessor_base):
                 [ w[0] for w in distances if w[1] == 1 ]
             corrections = [ w for w in corrections if w not in correct_word_list]
             for correction in corrections:
-                self._general_command(correction, {None : correct_word})
+                self.text = \
+                    self.lambda_manager.lambda_conversion(correction, self.text, correct_word)
                 
     #
     def _correct_transpositions(self, words, correct_word_list):
@@ -68,7 +69,8 @@ class Posttokenizer(Preprocessor_base):
                     if (abs(diffs[0][0] - diffs[1][0]) == 1) and \
                        (diffs[0][1] == diffs[1][2]) and \
                        (diffs[0][2] == diffs[1][1]):
-                        self._general_command(correction, {None : correct_word})
+                        self.text = \
+                            self.lambda_manager.lambda_conversion(correction, self.text, correct_word)
     
     #
     def _correct_typos(self):
@@ -86,18 +88,14 @@ class Posttokenizer(Preprocessor_base):
         self._correct_deletions_insertions_replacements(words,
                                                         correct_word_list)
         self._correct_transpositions(words, correct_word_list)
-        self._general_command('(?i)(?<=[Aa])denomcarcinoa', {None : 'denocarcinoma'})
-        self._general_command('(?i)(?<=[Dd])iagnosises', {None : 'iagnoses'})
-        #self._general_command('(?i)(?<=[Ee])ddible', {None : 'dible'})
-        #self._general_command('(?i)(?<=[Ee])strogren', {None : 'strogen'})
-        self._general_command('(?i)(?<=[Ff])lorescen', {None : 'luorescen'})
-        #self._general_command('(?i)(?<=[Pp])ateint', {None : 'atient'})
-        #self._general_command('(?i)(?<=[Pp])ositve', {None : 'ositive'})
-        #self._general_command('(?i)(?<=[Pp])ostiive', {None : 'ositive'})
-        #self._general_command('(?i)(?<=[Pp])rogestrone', {None : 'rogesterone'})
-        #self._general_command('(?i)(?<=[Rr])efrral', {None : 'eferral'})
-        self._general_command('(?i)(?<=[Rr])epector', {None : 'eceptor'})
-        #self._general_command('(?i)(?<=[Ss])erous', {None : 'erious'})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<=[Aa])denomcarcinoa', self.text, 'denocarcinoma')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<=[Dd])iagnosises', self.text, 'iagnoses')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<=[Ff])lorescen', self.text, 'luorescen')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i)(?<=[Rr])epector', self.text, 'eceptor')
     
     #
     def _generate_correct_word_list(self, correct_seed_list):
@@ -126,15 +124,21 @@ class Posttokenizer(Preprocessor_base):
     
     #
     def _process_general(self):
-        self._general_command(' M [:/] E ', {None : ' M:E '})
-        self._general_command(' N [:/] C ', {None : ' N:C '})
-        self._general_command('(?i) n / a ', {None : ' n/a '})
+        self.text = \
+            self.lambda_manager.lambda_conversion(' M [:/] E ', self.text, ' M:E ')
+        self.text = \
+            self.lambda_manager.lambda_conversion(' N [:/] C ', self.text, ' N:C ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i) n / a ', self.text, ' n/a ')
         
     #
     def _process_medical_abbreviations(self):
-        self._general_command('(?i) f / u ', {None : ' f/u '})
-        self._general_command('(?i) h / o ', {None : ' h/o '})
-        self._general_command('(?i) s / p ', {None : ' s/p '})
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i) f / u ', self.text, ' f/u ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i) h / o ', self.text, ' h/o ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i) s / p ', self.text, ' s/p ')
     
     #
     def process_document(self, text):
@@ -156,9 +160,10 @@ class Posttokenizer(Preprocessor_base):
         self.posttokenizer_karyotype.push_text(self.text)
         self.posttokenizer_karyotype.process_karyotype()
         self.text = self.posttokenizer_karyotype.pull_text()
-        self._clear_command_list()
-        self._general_command('\( [0-9]+ - [0-9]+ \)', {' \)' : '.0 )'})
-        self._general_command('\( [0-9]+ - [0-9]+\.[0-9]+ \)', {' - ' : '.0 - '})
-        self._general_command('day 0( is equal to | ?= ?)', {None : ''})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( [0-9]+ - [0-9]+ \)', ' \)', self.text, '.0 )')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( [0-9]+ - [0-9]+\.[0-9]+ \)', ' - ', self.text, '.0 - ')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('day 0( is equal to | ?= ?)', self.text)
         return self.text

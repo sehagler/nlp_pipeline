@@ -9,9 +9,9 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
+from nlp_text_normalization_lib.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
@@ -49,25 +49,6 @@ class Postprocessor(Postprocessor_base):
                 value_dict_list.append(value_dict)
             extracted_data_dict[key] = value_dict_list
         return extracted_data_dict
-    
-    #
-    def _get_status(self, context_regex, regex, map_func, text):
-        status_val_list = []
-        for m in re.finditer(context_regex, text):
-            val_list = []
-            for n in re.finditer(regex, m.group(0)):
-                if map_func is not None:
-                    val_list.append(map_func(n.group(0)))
-                else:
-                    val_list.append(n.group(0))
-            if len(val_list) == 1:
-                status_val_list.append(val_list[0])
-            elif len(val_list) > 1:
-                val_list = sorted(val_list)
-                val_list = [ val_list[0], val_list[-1] ]
-                status_val_list.append('-'.join(val_list))
-        status_val_list = list(set(status_val_list))
-        return status_val_list
                     
     # map karnofsky and lansky value to zubrod values per
     # https://oncologypro.esmo.org/oncology-in-practice/practice-tools/performance-scales
@@ -98,14 +79,14 @@ class Postprocessor(Postprocessor_base):
             test = test_list[i]
             score_processed = score_list[i]
             if test.lower() in [ 'karnofsky', 'lansky' ]:
-                status_val_list = self._get_status(ecog_status_context_regex, 
-                                                   ecog_status_regex,
-                                                   self._map_to_zubrod,
-                                                   score_raw)
+                status_val_list = self._extract_value(ecog_status_context_regex, 
+                                                      ecog_status_regex,
+                                                      self._map_to_zubrod,
+                                                      score_raw)
             else:
-                status_val_list = self._get_status(ecog_status_context_regex, 
-                                                   ecog_status_regex, None,
-                                                   score_raw)
+                status_val_list = self._extract_value(ecog_status_context_regex, 
+                                                      ecog_status_regex, None,
+                                                      score_raw)
             if len(status_val_list) == 1:
                 score_processed = status_val_list[0]
             else:

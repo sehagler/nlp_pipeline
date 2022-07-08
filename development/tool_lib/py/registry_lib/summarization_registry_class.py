@@ -6,7 +6,7 @@ Created on Tue Nov 13 08:12:07 2018
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_registry_base_class \
+from nlp_text_normalization_lib.base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
 from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \
     import Summarization as Summarization_blasts

@@ -1323,7 +1323,7 @@ query:
                       - with
                       - within
                       - without
-          - CKD
+          - alternative: [CKD, CRD, CRF]
       - alternative:
           id: alternative1
           showMultipleColumns: true
@@ -1332,9 +1332,9 @@ query:
           - link: {path: cancer_stage_BA_query.i2qy}
           - link: {path: cancer_stage_in_situ_query.i2qy}
           where:
-          - word:
-              text: CKD
+          - alternative:
               quantifier: {minimum: 0, maximum: 0}
+              of: [CKD, CRD, CRF]
       - alternative:
           includeInQuery: false
           quantifier: {minimum: 0, maximum: 0}
