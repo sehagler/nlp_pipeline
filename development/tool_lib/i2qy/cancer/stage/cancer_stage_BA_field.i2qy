@@ -1,5 +1,55 @@
 version: 6.3
-creationDate: '2022-06-03 17:56:10'
+creationDate: '2022-07-14 13:18:17'
 query:
-  document: {}
+  document:
+  - alternative:
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?(and|or)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?(after|at|for|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?(after|at|for|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?(after|at|for|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?EBV\\+[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?(and|or)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word:
+        text: "(?i)([^A-Za-z0-9 ]+[ \n\r])?[A-Za-z0-9]+(\\-[A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)?"
+        matchType: Raw regexp
+    - word: {text: '(?i)[^A-Za-z0-9 ]+', matchType: Raw regexp}
 creator: haglers

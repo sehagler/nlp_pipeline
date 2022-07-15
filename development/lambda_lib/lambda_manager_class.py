@@ -42,5 +42,7 @@ class Lambda_manager(object):
     
     #
     def initialism_lambda_conversion(self, abstraction_operator, expression, argument):
-        return self.lambda_conversion(abstraction_operator + '( \( ' + argument + ' \))?',
+        expression = self.lambda_conversion(abstraction_operator + '( \( ' + argument + ' \))?',
+                                            expression, argument)
+        return self.lambda_conversion(argument + '( \( ' + argument + ' \))?',
                                       expression, argument)

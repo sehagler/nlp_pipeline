@@ -64,6 +64,8 @@ class Named_entity_recognition(Preprocessor_base):
             self.lambda_manager.initialism_lambda_conversion('acute myeloid leukemia', self.text, 'AML')
         self.text = \
             self.lambda_manager.initialism_lambda_conversion('acute myelomonocytic leukemia', self.text, 'AMML')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('chronic lymphocytic leukemia', self.text, 'CLL')
         
         # myeloma
         self.text = \
@@ -104,28 +106,35 @@ class Posttokenizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
         
 #
-class Text_preparation(Preprocessor_base):
+class Summarization(Preprocessor_base):
     
     #
     def cleanup_text(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)Scarff ', self.text, 'Scarf ')
+            self.lambda_manager.lambda_conversion('Scarff ', self.text, 'Scarf ')
         
     #
     def normalize_text(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)leukaemia', self.text, 'leukemia')
+            self.lambda_manager.lambda_conversion('leukaemia', self.text, 'leukemia')
         self.text = \
             self.lambda_manager.lambda_conversion('(?<=[Tt])umour', self.text, 'umor')
     
     #
     def setup_text(self):
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?i)Scharff(-| )', '(?i)Scharff', self.text, 'Scarff')
+            self.lambda_manager.contextual_lambda_conversion('Scharff(-| )', '(?i)Scharff', self.text, 'Scarff')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?i)Scharf(-| )', '(?i)Scharf', self.text, 'Scarff')
+            self.lambda_manager.contextual_lambda_conversion('Scharf(-| )', '(?i)Scharf', self.text, 'Scarff')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?i)Scarf(-| )', '(?i)Scarf', self.text, 'Scarff')
+            self.lambda_manager.contextual_lambda_conversion('Scarf(-| )', '(?i)Scarf', self.text, 'Scarff')
+            
+    #
+    def run_preprocessor(self):
+        self._setup_text()
+        self._normalize_text()
+        self._cleanup_textf()
+        self._remove_extraneous_text()
             
 #
 def get_initialisms():

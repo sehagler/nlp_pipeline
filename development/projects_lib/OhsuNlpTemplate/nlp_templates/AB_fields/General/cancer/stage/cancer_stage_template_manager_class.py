@@ -43,14 +43,10 @@ class Cancer_stage_template_manager(object):
     def _finish_templates(self, template_list):
         for i in range(len(template_list)):
             template_list[i] = \
-                re.sub(self.blank_space, '[ \n\r]', template_list[i])
+                re.sub(self.blank_space, '[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?', template_list[i])
             template_list[i] = \
-                template_list[i].replace('[^A-Za-z0-9 ]+[ \n\r]', '([^A-Za-z0-9 ]+[ \n\r])?')
-            template_list[i] = '(?i)' + template_list[i]
-        #for i in range(len(template_list)):
-        #    template_list[i] = \
-        #        '(?i)(?<![A-Za-z0-9])' + template_list[i]
-        #    template_list[i] += '(?![A-Za-z0-9])'
+                '(?i)([^A-Za-z0-9 ]+[ \n\r])?' + template_list[i] + '([ \n\r][^A-Za-z0-9 ]+)?'
+        template_list.append('(?i)[^A-Za-z0-9 ]+')
         return template_list
     
     #

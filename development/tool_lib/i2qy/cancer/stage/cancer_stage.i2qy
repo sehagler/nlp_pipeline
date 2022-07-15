@@ -10,6 +10,9 @@ query:
           of:
           - alternative:
               quantifier: {minimum: 0, maximum: 1}
+              of: ['>', <, '~']
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
               of:
               - phrase:
                 - clinical
@@ -31,6 +34,9 @@ query:
       - phrase:
           displayChildren: false
           of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of: ['>', <, '~']
           - alternative:
               view: {height: 188, width: 106}
               of: [advanced, early, end, extensive, mild, moderate, severe]

@@ -6,11 +6,16 @@ Created on Mon Mar 16 13:28:29 2020
 """
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
-	import Preprocessor_base
+
+from lambda_lib.lambda_manager_class import Lambda_manager
 
 #
-class Deidentifier(Preprocessor_base):
+class Deidentifier(object):
+    
+    #
+    def __init__(self, static_data):
+        self.static_data = static_data
+        self.lambda_manager = Lambda_manager()
     
     #
     def _deidentify_age(self):
@@ -45,6 +50,12 @@ class Deidentifier(Preprocessor_base):
     def _deidentify_mrn(self):
         self.text = \
             self.lambda_manager.contextual_lambda_conversion('mr: \d{8} ', '\d{8}', self.text, 'PHI_MRN')
+            
+    #
+    def _deidentify_personal_name(self):
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[A-Za-z]+ [A-Z]\. [A-Za-z]+, M(\.)?D(\.)?',
+                                                             ' [A-Z]\.(?!D)', self.text, '')
         
     #
     def _deidentify_telephone_number(self):
@@ -54,10 +65,13 @@ class Deidentifier(Preprocessor_base):
             self.lambda_manager.contextual_lambda_conversion('\d{3} \d{3} \d{4}', '\d{3} \d{3} \d{4}', self.text, 'PHI_TELEPHONE_NUMBER')
     
     #
-    def remove_phi(self):
+    def deidentify_text(self, text):
+        self.text = text
         self._deidentify_age()
         if self.static_data['remove_date']:
             self._deidentify_date()
         self._deidentify_gender()
         self._deidentify_mrn()
         self._deidentify_telephone_number()
+        self._deidentify_personal_name()
+        return self.text

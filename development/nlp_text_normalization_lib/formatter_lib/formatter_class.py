@@ -11,6 +11,10 @@ import re
 #
 from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
+from nlp_text_normalization_lib.formatter_lib.normalizers_lib.section_header_normalizer_class \
+    import Section_header_normalizer
+from nlp_text_normalization_lib.formatter_lib.normalizers_lib.table_normalizer_class \
+    import Table_normalizer
 
 #
 class Formatter(Preprocessor_base):
@@ -18,6 +22,9 @@ class Formatter(Preprocessor_base):
     #
     def __init__(self, static_data):
         Preprocessor_base.__init__(self, static_data)
+        self.section_header_normalizer = \
+            Section_header_normalizer(self.static_data)
+        self.table_normalizer = Table_normalizer(self.static_data)
         self.body_header = 'SUMMARY'
     
     #
@@ -29,6 +36,21 @@ class Formatter(Preprocessor_base):
         self.text = \
             self.lambda_manager.lambda_conversion('^' + self.body_header + '[\n\s]*',
                                                   self.text, self.body_header + '\n\n')
+            
+    #
+    def _extract_section_headers(self):
+        self.dynamic_data_manager.append_keywords_text(self.body_header, 0)
+        self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
+        self.section_header_normalizer.push_text(self.text)
+        self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report')
+        #self.section_header_normalizer.history_section_header(self.formatting)
+        self.section_header_normalizer.normalize_section_header(self.formatting)
+        self.section_header_normalizer.amendment_section_header(self.formatting)
+        self.section_header_normalizer.clear_section_header_tags()
+        self.section_header_normalizer.fix_section_headers()
+        self.text = self.section_header_normalizer.pull_text()
+        self.dynamic_memory_manager = \
+            self.section_header_normalizer.pull_dynamic_data_manager()
     
     #
     def _format_beakerap(self):
@@ -125,6 +147,8 @@ class Formatter(Preprocessor_base):
             self.lambda_manager.deletion_lambda_conversion('\nImmunologic Analysis\n', self.text)
         self.text = \
             self.lambda_manager.deletion_lambda_conversion('\nMicroscopic Description\n', self.text)
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('progress note \d+/(\d+|\*+)/\d+', '\d+/(\d+|\*+)/\d+', self.text, '')
         
     #
     def _pull_out_section_header(self, command):
@@ -135,10 +159,15 @@ class Formatter(Preprocessor_base):
         self._insert_whitespace(command, '\n')
         
     #
-    def process_document(self, text, source_system):
+    def format_text(self, dynamic_data_manager, text, source_system, formatting):
+        self.formatting = formatting
+        self.dynamic_data_manager = dynamic_data_manager
         self.text = text
+        self._normalize_whitespace()
         if source_system == 'Epic Beaker':
             self._format_beakerap()
         else:
             self._format_powerpath()
-        return self.text
+        self.text = self.table_normalizer.process_text(self.text)
+        self._extract_section_headers()
+        return self.dynamic_data_manager, self.text

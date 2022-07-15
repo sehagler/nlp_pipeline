@@ -7,7 +7,7 @@ query:
       id: phrase1
       multiSentence: true
       of:
-      - link: {path: cancer_type.i2qy, id: link2}
+      - link: {path: cancer_type_query.i2qy, id: link1}
       - link:
           path: cancer_stage_AB_field.i2qy
           quantifier: {minimum: 0, maximum: 1}
@@ -18,8 +18,8 @@ output:
   - id: link3.alternative1
     itemOptions: {}
     linkItemId: link3
-  - id: link2.phrase1
+  - id: link1.alternative1
     itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1
   useOutputEditor: true
 creator: haglers

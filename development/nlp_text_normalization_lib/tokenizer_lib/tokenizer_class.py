@@ -25,7 +25,7 @@ class Tokenizer(Preprocessor_base):
         self.tokenizer_date = Tokenizer_date(self.static_data)
     
     #
-    def _process_abbreviations(self):
+    def _normalize_abbreviations(self):
         self.text = \
             self.lambda_manager.lambda_conversion('%age', self.text, 'percentage')
         self.text = \
@@ -52,7 +52,7 @@ class Tokenizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion('(?<=[Yy])ear', self.text, 'r')
         
     #
-    def _process_chemical_abbreviations(self):
+    def _normalize_chemical_abbreviations(self):
         self.text = \
             self.lambda_manager.contextual_lambda_conversion('alcohol(?!i)', 'alcohol', self.text, 'ETOH')
         self.text = \
@@ -65,7 +65,7 @@ class Tokenizer(Preprocessor_base):
             self.lambda_manager.initialism_lambda_conversion('sudan black B', self.text, 'SBB')
             
     #
-    def _process_credentials(self):
+    def _normalize_credentials(self):
         self.text = \
             self.lambda_manager.lambda_conversion('D( \. )?O( \. )', self.text, 'DO')
         self.text = \
@@ -80,16 +80,16 @@ class Tokenizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion('ph( \. )?d( \. )', self.text, 'PhD')
         self.text = \
             self.lambda_manager.lambda_conversion('ph( \. )d( \. )?', self.text, 'PhD')
+            
+    #
+    def _normalize_initialisms(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('a( \. )?m( \. )', self.text, 'AM')
+        self.text = \
+            self.lambda_manager.lambda_conversion('p( \. )?m( \. )', self.text, 'PM')
         
     #
-    def _process_hash(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('#', self.text, ' # ')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('blocks? +#', '#', self.text, '')
-        
-    #
-    def _process_measurements(self):
+    def _normalize_measurements(self):
         self.text = \
             self.lambda_manager.contextual_lambda_conversion('(<=(\d+)(\-|\+)?) ((out )?of|per) (?= [0-9])', 
                                                              ' ((out )?of|per) ', self.text, '/')
@@ -115,14 +115,7 @@ class Tokenizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion('of(?=[0-9])', self.text, 'of ')
         
     #
-    def _process_initialisms(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('a( \. )?m( \. )', self.text, 'AM')
-        self.text = \
-            self.lambda_manager.lambda_conversion('p( \. )?m( \. )', self.text, 'PM')
-        
-    #
-    def _process_medical_abbreviations(self):
+    def _normalize_medical_abbreviations(self):
         self.text = \
             self.lambda_manager.lambda_conversion('(?<=[Ff])ollow( |\-)up', self.text, ' / u')
         self.text = \
@@ -131,9 +124,13 @@ class Tokenizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion('(?<=[Hh])x of', self.text, ' / o')
         self.text = \
             self.lambda_manager.lambda_conversion('(?<=[Ss])urgical procedure', self.text, ' / p ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('from (the )?nipple', self.text, 'fn')
+        self.text = \
+            self.lambda_manager.lambda_conversion('histologic grade', self.text, 'grade')
         
     #
-    def _process_numbers(self):
+    def _normalize_numbers(self):
         word_list = list(set(filter(None, re.split('[ \n\t]+', self.text))))
         change_list = []
         for word in word_list:
@@ -160,114 +157,25 @@ class Tokenizer(Preprocessor_base):
                                                                  change[0], self.text, change[1])
         
     #
-    def _process_punctuation(self):
+    def _normalize_simplifications(self):
         self.text = \
-            self.lambda_manager.deletion_lambda_conversion('\*', self.text)
+            self.lambda_manager.lambda_conversion('according to', self.text, 'per')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=\d) %', self.text, '%')
+            self.lambda_manager.lambda_conversion('for example', self.text, 'e.g.')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?<!(:|\d))\d+ ?- ?\d+%',
-                                                             ' ?- ?', self.text, '%-')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?<!(:|\d))\d+ to \d+%',
-                                                             ' to ', self.text, '%-')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?<!(:|\d))\d+-\d+:00',
-                                                             '-', self.text, ' : 00-')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\)\(', self.text, ') (')
-        self.text = \
-            self.lambda_manager.deletion_lambda_conversion(' \?', self.text)
-        self.text = \
-            self.lambda_manager.lambda_conversion(':', self.text, ' : ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]) : (?=[0-9])', self.text, ':')
-        self.text = \
-            self.lambda_manager.lambda_conversion(',', self.text, ' , ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]) , (?=[0-9])', self.text, ',')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]),(?=[0-9]{4})', self.text, ' , ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]),(?=[0-9]+/)', self.text, ' , ')
-        self.text = \
-            self.lambda_manager.lambda_conversion(';', self.text, ' ; ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9])-(?=[0-9])', self.text, ' - ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]) -(?=[0-9]+%)', self.text, ' - ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9])- (?=[0-9]+%)', self.text, ' - ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )-(?=[A-Za-z])', self.text, ' - ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9])\+(?=[A-Za-z])', self.text, '+ ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('=', self.text, ' = ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\/', self.text, ' / ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('>', self.text, ' > ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('<', self.text, ' < ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('~', self.text, ' ~ ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\(', self.text, '( ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\)', self.text, ' )')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<=[a-z0-9])\*', self.text,' *')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\.(?![0-9])', self.text, ' . ')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\( [0-9\.]+ ?\)', '\( ', self.text, '(')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\( ?[0-9\.]+ \)', ' \)', self.text, ')')
-        self.text = \
-            self.lambda_manager.deletion_lambda_conversion('\( ! \)', self.text)
-        
-    #
-    def _process_simplifications(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('at least(?= \d)', self.text, '>')
-        self.text = \
-            self.lambda_manager.lambda_conversion('estimated(?= \d)', self.text, '~')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)((only )?about|approx(( \.)|imate(ly)?)?|roughly)(?= \d)', self.text, '~')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(greater|more) th(a|e)n(?= [0-9])', self.text, '>')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)less th(a|e)n(?= \d)', self.text, '<')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)up to( ~)?(?= \d)', self.text, '<')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)according to', self.text, 'per')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i)for example', self.text, 'e.g.')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('(?i)w / ', '(?i)w /', self.text, 'with')
-        
-    #
-    def _process_underscore(self):
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('_[A-Z][0-9]+_', '_', self.text, '')
+            self.lambda_manager.lambda_conversion(' w / ', self.text, ' with ')
     
     #
-    def process_document(self, text):
+    def normalize_text(self, text):
         self.text = text
-        self._normalize_whitespace()
-        self._process_simplifications()
-        self._process_punctuation()
-        self._process_hash()
-        self._process_underscore()
-        self._process_initialisms()
-        self._process_credentials()
-        self._process_abbreviations()
-        self._process_chemical_abbreviations()
-        self._process_measurements()
-        self._process_medical_abbreviations()
-        self._process_numbers()
+        self._normalize_simplifications()
+        self._normalize_initialisms()
+        self._normalize_credentials()
+        self._normalize_abbreviations()
+        self._normalize_chemical_abbreviations()
+        self._normalize_measurements()
+        self._normalize_medical_abbreviations()
+        self._normalize_numbers()
         self.tokenizer_date.push_text(self.text)
         self.tokenizer_date.process_month()
         self.text = self.tokenizer_date.pull_text()

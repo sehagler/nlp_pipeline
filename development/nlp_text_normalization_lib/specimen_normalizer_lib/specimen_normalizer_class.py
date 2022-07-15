@@ -6,13 +6,16 @@ Created on Wed Nov  4 15:49:43 2020
 """
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from lambda_lib.lambda_manager_class import Lambda_manager
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import class_label, part_label, specimen_label, s
 
 #
-class Specimen_normalizer(Preprocessor_base):
+class Specimen_normalizer(object):
+    
+    #
+    def __init__(self):
+        self.lambda_manager = Lambda_manager()
     
     #
     def _indicate_nonspecimens(self, mode_flg):
@@ -45,7 +48,8 @@ class Specimen_normalizer(Preprocessor_base):
                                                            self.text)
                 
     #
-    def process_specimens(self):
+    def normalize_text(self, text):
+        self.text = text
         #self._indicate_nonspecimens('do')
         self.text = \
             self.lambda_manager.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '\.', self.text, ':')
@@ -54,3 +58,4 @@ class Specimen_normalizer(Preprocessor_base):
         self.text = \
             self.lambda_manager.contextual_lambda_conversion('(\n[A-Z]\: +)(?=[A-Za-z])', '\n', self.text, '\nSPECIMEN ')
         #self._indicate_nonspecimens('undo')
+        return text

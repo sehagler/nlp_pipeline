@@ -1,0 +1,15 @@
+version: 6.3
+creationDate: '2022-07-12 17:55:12'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - link: {path: cancer_type_preceding_site.i2qy}
+      - link: {path: cancer_type_following_site.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

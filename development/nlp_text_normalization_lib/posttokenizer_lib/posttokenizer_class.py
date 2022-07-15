@@ -130,6 +130,8 @@ class Posttokenizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion(' N [:/] C ', self.text, ' N:C ')
         self.text = \
             self.lambda_manager.lambda_conversion('(?i) n / a ', self.text, ' n/a ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?i) w / ', self.text, ' w/ ')
         
     #
     def _process_medical_abbreviations(self):

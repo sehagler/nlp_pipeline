@@ -108,7 +108,7 @@ class Training_worker(Worker_base):
             for j in range(1, len(template_split)-1):
                 word = template_split[j]
                 if re.fullmatch(self._generic_nonword(), word):
-                    template_split[j] = self._generic_nonword()
+                    template_split[j] = '' #self._generic_nonword()
             template_list[i] = self.blank_space.join(template_split)
         return template_list
     
@@ -184,27 +184,6 @@ class Training_worker(Worker_base):
                     N_words += 1
         return N_words
     
-    '''
-    #
-    def _perturb_generic_word(self, primary_template_outline):
-        stopwords_list = stopwords.words('english')
-        i = random.choice(range(len(primary_template_outline)))
-        template_list = primary_template_outline[i].split(self.blank_space)
-        j = random.choice(range(len(template_list)))
-        word = template_list[j]
-        if re.fullmatch(self._generic_word(), word) and \
-           word not in stopwords_list:
-            template_list[j] = self._generic_word()
-            primary_template_outline[i] = self.blank_space.join(template_list)
-        return primary_template_outline
-
-    #
-    def _perturb_primary_template_outline(self, primary_template_outline):
-        primary_template_outline = \
-            self._perturb_generic_word(primary_template_outline)
-        return primary_template_outline
-    '''
-    
     #
     def _read_validation_data(self):
         static_data = self.static_data_manager.get_static_data()
@@ -249,6 +228,13 @@ class Training_worker(Worker_base):
                 #template_list_add.append(self.blank_space.join(template_split))
         #template_list.extend(template_list_add)
         return template_list
+    
+    #
+    def _trim_repeated_blank_spaces(self, primary_template_outline):
+        for i in range(len(primary_template_outline)):
+            primary_template_outline[i] = \
+                re.sub('( ' + self.blank_space[1:-1] + ')+', ' ' + self.blank_space[1:-1], primary_template_outline[i])
+        return primary_template_outline
     
     #
     def _trim_template_outline(self, primary_template_outline_in):
@@ -299,6 +285,8 @@ class Training_worker(Worker_base):
         primary_template_outline = \
             self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
         primary_template_outline = \
+            self._remove_newlines_template_outline(primary_template_outline)
+        primary_template_outline = \
             self._annotate_blank_space(primary_template_outline)
         primary_template_outline = \
             self._trim_context(primary_template_outline)
@@ -318,28 +306,7 @@ class Training_worker(Worker_base):
             self._generalize_grammatical_class_template_outline(primary_template_outline,
                                                                 self._generic_preposition())
         primary_template_outline = \
-            self._remove_newlines_template_outline(primary_template_outline)
+            self._trim_repeated_blank_spaces(primary_template_outline)
         primary_template_outline = \
             self._trim_template_outline(primary_template_outline)
         self.template_manager.push_primary_template_outline(primary_template_outline)
-        
-        '''
-        num_epochs = 25
-        self.template_manager.push_primary_template_outline(primary_template_seed)
-        performance = self._evaluate_performance()
-        cost = self._cost(primary_template_seed, performance)
-        primary_template_outline_best = copy.deepcopy(primary_template_seed)
-        cost_best = copy.copy(cost)
-        primary_template_outline = copy.deepcopy(primary_template_seed)
-        for _ in range(num_epochs):
-            primary_template_outline = \
-                self._perturb_primary_template_outline(primary_template_outline)
-            if primary_template_outline != primary_template_outline_best:
-                self.template_manager.push_primary_template_outline(primary_template_outline)
-                performance = self._evaluate_performance()
-                cost = self._cost(primary_template_outline, performance)
-                if cost < cost_best:
-                    primary_template_outline_best = copy.deepcopy(primary_template_outline)
-                    cost_best = copy.copy(cost)
-        print(cost_best)
-        '''

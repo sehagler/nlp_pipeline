@@ -11,15 +11,15 @@ query:
       - link:
           path: cancer_stage_BA_field.i2qy
           quantifier: {minimum: 0, maximum: 1}
-      - link: {path: cancer_type.i2qy, id: link2}
+      - link: {path: cancer_type_query.i2qy, id: link1}
 output:
   columns:
   - {id: phrase1}
   - id: link3.alternative1
     itemOptions: {}
     linkItemId: link3
-  - id: link2.phrase1
+  - id: link1.alternative1
     itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1
   useOutputEditor: true
 creator: haglers
