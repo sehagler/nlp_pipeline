@@ -11,15 +11,36 @@ import re
 #
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
-class Named_entity_recognition(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        self._normalize_whitespace()
+        self.text = \
+            self.lambda_manager.lambda_conversion('\) \(', self.text, ')(')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\) \[', self.text, ')[')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\] \(', self.text, '](')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( [pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ ?\)', '\( ', self.text, '(')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\( ?[pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ \)', ' \)', self.text, ')')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[XY]) \[', self.text, '[')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[0-9]) , (?=[XY])', self.text, ',')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('\([pq]?[0-9\.]+ ; [pq]?[0-9\.]+\)', ' ; ', self.text, ';')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[0-9]{1,2},[XY]+(\S*(\(\S+\)|\-[0-9]+))? , (\+|\-)?((add|inv)\(|mar|[0-9])', ' , ', self.text, ',')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', ' / ', self.text, '/')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', ' ', self.text, '')
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)inversion \(', self.text, 'inv(')
 
@@ -44,34 +65,6 @@ class Postprocessor(Postprocessor_base):
                 value_dict_list.append(value_dict)
             extracted_data_dict[key] = value_dict_list
         return extracted_data_dict
-
-#
-class Posttokenizer(Preprocessor_base):
-        
-    #
-    def process_karyotype(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('\) \(', self.text, ')(')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\) \[', self.text, ')[')
-        self.text = \
-            self.lambda_manager.lambda_conversion('\] \(', self.text, '](')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\( [pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ ?\)', '\( ', self.text, '(')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\( ?[pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ \)', ' \)', self.text, ')')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[XY]) \[', self.text, '[')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]) , (?=[XY])', self.text, ',')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\([pq]?[0-9\.]+ ; [pq]?[0-9\.]+\)', ' ; ', self.text, ';')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('[0-9]{1,2},[XY]+(\S*(\(\S+\)|\-[0-9]+))? , (\+|\-)?((add|inv)\(|mar|[0-9])', ' , ', self.text, ',')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', ' / ', self.text, '/')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', ' ', self.text, '')
         
 #
 def atomize_karyotype(full_karyotype):

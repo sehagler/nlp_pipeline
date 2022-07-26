@@ -12,7 +12,7 @@ import re
 #
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -260,7 +260,7 @@ class Postprocessor(Postprocessor_base):
         return data_table
 
 #
-class Summarization(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def _process_tnm_staging(self):

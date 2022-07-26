@@ -24,12 +24,9 @@ from tool_lib.py.processing_tools_lib.file_processing_tools \
 class Ohsu_nlp_template_manager(Worker_base):
     
     #
-    def __init__(self, static_data_manager, xls_manager_registry,
-                 evaluation_manager):
+    def __init__(self, static_data_manager):
         Worker_base.__init__(self)
         self.static_data_manager = static_data_manager
-        self.xls_manager_registry = xls_manager_registry
-        self.evaluation_manager = evaluation_manager
     
     #
     def clear_template_output(self):
@@ -58,13 +55,16 @@ class Ohsu_nlp_template_manager(Worker_base):
                              template_sections_list, text_dict)
             
     #
-    def train_template(self, template_manager, metadata_manager, xls_manager,
-                       data_dir, text_dict):
+    def train_template(self, template_manager, metadata_manager, data_dir,
+                       text_dict):
+        A_charge = template_manager.pull_A_charge()
+        B_charge = template_manager.pull_B_charge()
+        primary_template_list = \
+            template_manager.pull_primary_template_list()
         training_worker = Training_worker(self.static_data_manager,
                                           template_manager, metadata_manager,
-                                          self.xls_manager_registry,
-                                          xls_manager, data_dir, text_dict)
-        training_worker.train()
+                                          data_dir, text_dict)
+        training_worker.train(primary_template_list, A_charge, B_charge)
         template_dict = template_manager.training_template()
         self.primary_template_list = template_dict['primary_template_list']
         self.AB_field_list = template_dict['AB_field_list']

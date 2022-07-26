@@ -8,7 +8,7 @@ Created on Fri Mar 08 12:13:29 2019
 #
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.query_tools_lib.antigens_tools import correct_antibodies
 
@@ -36,7 +36,7 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
 #
-class Summarization(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):

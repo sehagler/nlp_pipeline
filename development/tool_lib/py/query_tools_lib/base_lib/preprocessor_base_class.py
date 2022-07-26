@@ -6,7 +6,7 @@ Created on Mon May 20 12:25:32 2019
 """
 
 #
-import re
+#import re
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
@@ -15,12 +15,13 @@ from lambda_lib.lambda_manager_class import Lambda_manager
 class Preprocessor_base(object):
     
     #
-    def __init__(self, static_data):
-        self.static_data = static_data
+    def __init__(self):
+        #self.static_data = static_data
         self.lambda_manager = Lambda_manager()
-        self.command_list = []
-        self.text = ''
+        #self.command_list = []
+        #self.text = ''
         
+    '''
     #
     def _append_keywords_text(self, keyword, index_flg=1):
         keyword = re.sub(self.section_header_pre_tag, '', keyword)
@@ -72,18 +73,19 @@ class Preprocessor_base(object):
     #
     def _remove_from_keywords_text(self, keyword, index_flg=1):
         self.dynamic_data_manager.remove_from_keywords_text(keyword, index_flg)
+    '''
      
     #
-    def pull_dynamic_data_manager(self):
-        return self.dynamic_data_manager
+    #def pull_dynamic_data_manager(self):
+    #    return self.dynamic_data_manager
      
     #
     def pull_text(self):
         return self.text
     
     #
-    def push_dynamic_data_manager(self, dynamic_data_manager):
-        self.dynamic_data_manager = dynamic_data_manager
+    #def push_dynamic_data_manager(self, dynamic_data_manager):
+    #    self.dynamic_data_manager = dynamic_data_manager
      
     #
     def push_text(self, text):

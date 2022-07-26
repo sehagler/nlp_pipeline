@@ -24,7 +24,7 @@ class Lambda_manager(object):
         while not stop_flg:
             ctr += 1
             stop_flg = True
-            for match in re.finditer(context_abstraction_operator, expression):
+            for match in re.finditer('(?i)' + context_abstraction_operator, expression):
                 if match is not None:
                     stop_flg = False
                     search_str = match.group(0)
@@ -42,7 +42,7 @@ class Lambda_manager(object):
     
     #
     def initialism_lambda_conversion(self, abstraction_operator, expression, argument):
-        expression = self.lambda_conversion(abstraction_operator + '( \( ' + argument + ' \))?',
+        expression = self.lambda_conversion(abstraction_operator + '( \( ?' + argument + ' ?\))?',
                                             expression, argument)
-        return self.lambda_conversion(argument + '( \( ' + argument + ' \))?',
+        return self.lambda_conversion(argument + '( \( ?' + argument + ' ?\))?',
                                       expression, argument)

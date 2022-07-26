@@ -21,7 +21,7 @@ query:
                     quantifier: {minimum: 0, maximum: 1}
               - ISS
               - path
-          - stage
+          - word: {text: stage, matchType: Raw regexp}
           - phrase:
               displayChildren: false
               quantifier: {minimum: 0, maximum: 1}
@@ -50,7 +50,7 @@ query:
                     quantifier: {minimum: 0, maximum: 1}
               - ISS
               - path
-          - stage
+          - word: {text: stage, matchType: Raw regexp}
       - phrase: [in, situ]
 output:
   columns:

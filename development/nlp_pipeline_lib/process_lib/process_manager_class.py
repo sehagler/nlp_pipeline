@@ -38,6 +38,8 @@ from nlp_pipeline_lib.packaging_lib.packaging_manager_class \
     import Packaging_manager
 from nlp_pipeline_lib.process_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
+from tool_lib.py.registry_lib.preprocessor_registry_class \
+    import Preprocessor_registry
 from nlp_pipeline_lib.raw_data_lib.raw_data_manager_class \
     import Raw_data_manager
 from nlp_text_normalization_lib.text_normalization_manager_class \
@@ -122,8 +124,6 @@ class Process_manager(object):
         self.nlp_tool_manager_registry = \
             Nlp_tool_manager_registry(self.static_data_manager, 
                                       remote_manager_registry,
-                                      self.xls_manager_registry,
-                                      evaluation_manager,
                                       password)
         self.packaging_manager = \
             Packaging_manager(self.static_data_manager, json_manager_registry)
@@ -141,8 +141,11 @@ class Process_manager(object):
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_manager,
                                    self.metadata_manager)
+        preprocessor_registry = Preprocessor_registry(static_data)
+        preprocessor_registry.create_preprocessors()
         self.text_normalization_manager = \
-            Text_normalization_manager(self.static_data_manager)
+            Text_normalization_manager(self.static_data_manager,
+                                       preprocessor_registry)
         self.output_manager = Output_manager(self.static_data_manager, 
                                              self.metadata_manager,
                                              json_manager_registry)
@@ -457,17 +460,17 @@ class Process_manager(object):
                          ' import ' + class_name + ' as Template_manager'
             exec(import_cmd, globals())
             print('OHSU NLP Template Manager: ' + class_name)
-            template_manager = Template_manager(self.static_data_manager)
             extracts_file = static_data['extracts_file']
             extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                          extracts_file)
             xls_manager = \
                 self.xls_manager_registry[extracts_file]
             xls_manager.read_training_data()
+            template_manager = Template_manager(self.static_data_manager,
+                                                xls_manager)
             ohsu_nlp_template_manager.clear_template_output()
             ohsu_nlp_template_manager.train_template(template_manager,
                                                      self.metadata_manager,
-                                                     xls_manager,
                                                      self.template_data_dir,
                                                      self.template_text_dict)
             data_AB_fields_dir = \
@@ -499,17 +502,17 @@ class Process_manager(object):
                          ' import ' + class_name + ' as Template_manager'
             exec(import_cmd, globals())
             print('OHSU NLP Template Manager: ' + class_name)
-            template_manager = Template_manager(self.static_data_manager)
             extracts_file = static_data['extracts_file']
             extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                          extracts_file)
             xls_manager = \
                 self.xls_manager_registry[extracts_file]
+            template_manager = Template_manager(self.static_data_manager,
+                                                xls_manager)
             xls_manager.read_training_data()
             ohsu_nlp_template_manager.clear_template_output()
             ohsu_nlp_template_manager.train_template(template_manager,
                                                      self.metadata_manager,
-                                                     xls_manager,
                                                      self.template_data_dir,
                                                      self.template_text_dict)
             template_outlines_dir = \

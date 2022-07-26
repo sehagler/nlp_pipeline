@@ -9,19 +9,19 @@ Created on Tue May 12 17:04:28 2020
 import re
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class\
-    import Preprocessor_base
+from lambda_lib.lambda_manager_class import Lambda_manager
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import amend, clinician, clinician_reviewed, history, patient, review_item, s
 from tool_lib.py.structure_tools_lib.section_header_structure_tools \
     import Section_header_structure_tools
 
 #
-class Section_header_normalizer(Preprocessor_base):
+class Section_header_normalizer(object):
     
     #
     def __init__(self, static_data):
-        Preprocessor_base.__init__(self, static_data)
+        self.static_data = static_data
+        self.lambda_manager = Lambda_manager()
         self.section_header = Section_header_structure_tools()
         self.section_header_post_tag = '>>>'
         self.section_header_pre_tag = '<<<'
@@ -108,6 +108,12 @@ class Section_header_normalizer(Preprocessor_base):
         return text_list
     
     #
+    def _append_keywords_text(self, keyword, index_flg=1):
+        keyword = re.sub(self.section_header_pre_tag, '', keyword)
+        keyword = re.sub(self.section_header_post_tag, '', keyword)
+        self.dynamic_data_manager.append_keywords_text(keyword, index_flg)
+    
+    #
     def _extract_section_to_bottom_of_report(self, match_strs, item_label):
         item_label = item_label
         footer = ''
@@ -173,6 +179,10 @@ class Section_header_normalizer(Preprocessor_base):
     #
     def _pre_punct(self):
         return('(?i)(^|\n)')
+    
+    #
+    def _remove_from_keywords_text(self, keyword, index_flg=1):
+        self.dynamic_data_manager.remove_from_keywords_text(keyword, index_flg)
         
     #
     def _tagged_section_header(self, untagged_text):
@@ -181,7 +191,8 @@ class Section_header_normalizer(Preprocessor_base):
         return tagged_text
 
     #
-    def amendment_section_header(self, mode_flg):
+    def amendment_section_header(self, mode_flg, text):
+        self.text = text
         self.text = \
             self.lambda_manager.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
                                                   self.text,
@@ -196,9 +207,11 @@ class Section_header_normalizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion(self._tagged_section_header('AMENDMENT_COMMENT'),
                                                   self.text,
                                                   self._tagged_section_header('AMENDMENT COMMENT'))
+        return self.text
         
     #
-    def clear_section_header_tags(self):
+    def clear_section_header_tags(self, text):
+        self.text = text
         self.text = \
             self.lambda_manager.lambda_conversion(' > > >', self.text, self.section_header_post_tag)
         self.text = \
@@ -207,9 +220,11 @@ class Section_header_normalizer(Preprocessor_base):
             self.lambda_manager.deletion_lambda_conversion(self.section_header_pre_tag, self.text)
         self.text = \
             self.lambda_manager.deletion_lambda_conversion(self.section_header_post_tag, self.text)
+        return self.text
     
     #
-    def comment_section_header(self, mode_flg):
+    def comment_section_header(self, mode_flg, text):
+        self.text = text
         regex_list = []
         if mode_flg == 'pull_out_section_header_to_bottom_of_report':
             regex_list.append(self._pre_punct() + 'comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
@@ -245,17 +260,19 @@ class Section_header_normalizer(Preprocessor_base):
                                                           no_punctuation_flg)
         else:
             text_list = regex_list
-            
         self._normalize_section_header(mode_flg, text_list, 'COMMENT')
+        return self.text
         
     #
-    def fix_section_headers(self):
+    def fix_section_headers(self, text):
+        self.text = text
         self.text = \
             self.lambda_manager.deletion_lambda_conversion('(?i)(?<=\nperipheral blood,)\n\n\nflow cytometric analysis \d+',
                                                            self.text)
         self.text = \
             self.lambda_manager.deletion_lambda_conversion('(?i)(?<=\nperipheral blood, smear and)\n\n\nflow cytometric analysis \d+',
                                                            self.text)
+        return self.text
     
     #
     def history_section_header(self, mode_flg):
@@ -295,12 +312,14 @@ class Section_header_normalizer(Preprocessor_base):
         self._remove_from_keywords_text('FAMILY HSTRY')
         
     #
-    def normalize_section_header(self, mode_flg):
+    def normalize_section_header(self, mode_flg, text):
+        self.text = text
         section_header_list = self.section_header.get_section_header_list()
         for section_header in section_header_list:
             text_list, no_punctuation_flg = \
                 self.section_header.get_text_list(section_header, mode_flg)
             self._normalize_section_header(mode_flg, text_list, section_header)
+        return self.text
             
     #
     def pull_dynamic_data_manager(self):

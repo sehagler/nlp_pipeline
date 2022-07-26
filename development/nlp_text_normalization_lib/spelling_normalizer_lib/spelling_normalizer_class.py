@@ -1,39 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun 17 10:50:58 2021
+Created on Thu Jun 17 08:56:52 2021
 
 @author: haglers
 """
-
 #
 import distance
 import inflect
 import re
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
-    import Preprocessor_base
-from tool_lib.py.query_tools_lib.antigens_tools \
-    import Posttokenizer as Posttokenizer_antigens
-from tool_lib.py.query_tools_lib.cancer_tools \
-    import Posttokenizer as Posttokenizer_cancer
-from tool_lib.py.query_tools_lib.karyotype_tools \
-    import Posttokenizer as Posttokenizer_karyotype
-from tool_lib.py.query_tools_lib.histological_grade_tools \
-    import Posttokenizer as Posttokenizer_histological_grade
+from lambda_lib.lambda_manager_class import Lambda_manager
 
 #
-class Posttokenizer(Preprocessor_base):
+class Spelling_normalizer(object):
     
     #
-    def __init__(self, static_data):
-        Preprocessor_base.__init__(self, static_data)
-        self.posttokenizer_antigens = Posttokenizer_antigens(self.static_data)
-        self.posttokenizer_cancer = Posttokenizer_cancer(self.static_data)
-        self.posttokenizer_histological_grade = \
-            Posttokenizer_histological_grade(self.static_data)
-        self.posttokenizer_karyotype = \
-            Posttokenizer_karyotype(self.static_data)
+    def __init__(self):
+        self.lambda_manager = Lambda_manager()
             
     #
     def _correct_deletions_insertions_replacements(self, words, 
@@ -89,13 +73,13 @@ class Posttokenizer(Preprocessor_base):
                                                         correct_word_list)
         self._correct_transpositions(words, correct_word_list)
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<=[Aa])denomcarcinoa', self.text, 'denocarcinoma')
+            self.lambda_manager.lambda_conversion('(?<=a)denomcarcinoa', self.text, 'denocarcinoma')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<=[Dd])iagnosises', self.text, 'iagnoses')
+            self.lambda_manager.lambda_conversion('(?<=d)iagnosises', self.text, 'iagnoses')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<=[Ff])lorescen', self.text, 'luorescen')
+            self.lambda_manager.lambda_conversion('(?<=f)lorescen', self.text, 'luorescen')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<=[Rr])epector', self.text, 'eceptor')
+            self.lambda_manager.lambda_conversion('(?<=r)epector', self.text, 'eceptor')
     
     #
     def _generate_correct_word_list(self, correct_seed_list):
@@ -123,49 +107,7 @@ class Posttokenizer(Preprocessor_base):
         return correct_word_list
     
     #
-    def _process_general(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion(' M [:/] E ', self.text, ' M:E ')
-        self.text = \
-            self.lambda_manager.lambda_conversion(' N [:/] C ', self.text, ' N:C ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i) n / a ', self.text, ' n/a ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i) w / ', self.text, ' w/ ')
-        
-    #
-    def _process_medical_abbreviations(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i) f / u ', self.text, ' f/u ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i) h / o ', self.text, ' h/o ')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?i) s / p ', self.text, ' s/p ')
-    
-    #
-    def process_document(self, text):
+    def normalize_text(self, text):
         self.text = text
-        self._normalize_whitespace()
         self._correct_typos()
-        self._process_general()
-        self._process_medical_abbreviations()
-        self._normalize_whitespace()  
-        self.posttokenizer_antigens.push_text(self.text)
-        self.posttokenizer_antigens.process_antigens()
-        self.text = self.posttokenizer_antigens.pull_text()
-        self.posttokenizer_cancer.push_text(self.text)
-        self.posttokenizer_cancer.process_general()
-        self.text = self.posttokenizer_cancer.pull_text()
-        self.posttokenizer_histological_grade.push_text(self.text)
-        self.posttokenizer_histological_grade.process_grade()
-        self.text = self.posttokenizer_histological_grade.pull_text()
-        self.posttokenizer_karyotype.push_text(self.text)
-        self.posttokenizer_karyotype.process_karyotype()
-        self.text = self.posttokenizer_karyotype.pull_text()
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\( [0-9]+ - [0-9]+ \)', ' \)', self.text, '.0 )')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('\( [0-9]+ - [0-9]+\.[0-9]+ \)', ' - ', self.text, '.0 - ')
-        self.text = \
-            self.lambda_manager.deletion_lambda_conversion('day 0( is equal to | ?= ?)', self.text)
         return self.text

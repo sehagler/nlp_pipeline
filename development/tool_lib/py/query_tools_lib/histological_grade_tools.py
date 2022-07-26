@@ -6,44 +6,10 @@ Created on Wed Apr  1 11:45:17 2020
 """
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class import Preprocessor_base
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
-class Named_entity_recognition(Preprocessor_base):
-        
-    #
-    def run_preprocessor(self):
-        self._normalize_whitespace()
-        text_list = []
-        text_list.append('(?i)modified Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(mSBR\))?')
-        text_list.append('(?i)modified Bloom(-| )(and(-| ))?Richardson( \(mBR\))?')
-        text_list.append('(?i)Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(SBR\))?')
-        text_list.append('(?i)modified Richardson')
-        text_list.append('(?i)Bloom(-| )(and(-| ))?Richardson( \(BR\))?')
-        for item in text_list:
-            self.text = \
-                self.lambda_manager.lambda_conversion(item, self.text, 'mSBR')
-
-#
-class Posttokenizer(Preprocessor_base):
-
-    #
-    def process_grade(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )I( / | of )III(?=( |\n))', self.text, '1 / 3')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )II( / | of )III(?=( |\n))', self.text, '2 / 3')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )III( / | of )III(?=( |\n))', self.text, '3 / 3')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )1 of 3(?=( |\n))', self.text, '1 / 3')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )2 of 3(?=( |\n))', self.text, '2 / 3')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<= )3 of 3(?=( |\n))', self.text, '3 / 3')
-
-#
-class Summarization(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def _process_mitotic_rate(self):
@@ -138,6 +104,27 @@ class Summarization(Preprocessor_base):
         
     #
     def run_preprocessor(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )I( / | of )III(?=( |\n))', self.text, '1 / 3')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )II( / | of )III(?=( |\n))', self.text, '2 / 3')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )III( / | of )III(?=( |\n))', self.text, '3 / 3')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )1 of 3(?=( |\n))', self.text, '1 / 3')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )2 of 3(?=( |\n))', self.text, '2 / 3')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<= )3 of 3(?=( |\n))', self.text, '3 / 3')
+        text_list = []
+        text_list.append('(?i)modified Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(mSBR\))?')
+        text_list.append('(?i)modified Bloom(-| )(and(-| ))?Richardson( \(mBR\))?')
+        text_list.append('(?i)Scarff(-| )Bloom(-| )(and(-| ))?Richardson( \(SBR\))?')
+        text_list.append('(?i)modified Richardson')
+        text_list.append('(?i)Bloom(-| )(and(-| ))?Richardson( \(BR\))?')
+        for item in text_list:
+            self.text = \
+                self.lambda_manager.lambda_conversion(item, self.text, 'mSBR')
         self._process_mitotic_rate()
         self._process_nuclear_pleomorphism()
         self._process_tubule_formation()

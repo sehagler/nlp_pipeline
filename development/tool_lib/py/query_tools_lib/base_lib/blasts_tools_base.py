@@ -13,18 +13,23 @@ import statistics
 from lambda_lib.lambda_manager_class import Lambda_manager
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
     
 #
-class Named_entity_recognition(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        self._normalize_whitespace()
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)immunohistochemi(cal|stry)',
                                                   self.text, 'IHC')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
+                                                           self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
+                                                           self.text)
 
 #
 class Postprocessor(Postprocessor_base):
@@ -185,18 +190,6 @@ class Postprocessor(Postprocessor_base):
             value_dict['BLAST_PERCENTAGE'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
-    
-#
-class Summarization(Preprocessor_base):
-    
-    #
-    def run_preprocessor(self):
-        self.text = \
-            self.lambda_manager.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
-                                                           self.text)
-        self.text = \
-            self.lambda_manager.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
-                                                           self.text)
 
 #
 def get_blast_value(blast_value_list):

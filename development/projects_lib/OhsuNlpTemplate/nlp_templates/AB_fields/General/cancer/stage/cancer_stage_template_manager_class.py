@@ -20,8 +20,9 @@ from tool_lib.py.query_tools_lib.cancer_tools \
 class Cancer_stage_template_manager(object):
     
     #
-    def __init__(self, static_data_manager):
+    def __init__(self, static_data_manager, xls_manager):
         self.static_data_manager = static_data_manager
+        self.xls_manager = xls_manager
         self._get_secondary_template_list()
         self.blank_space = ' NLP_BLANK_SPACE '
             
@@ -38,44 +39,6 @@ class Cancer_stage_template_manager(object):
             primary_template_list[i] = \
                 re.sub('NLP_CANCER_TYPE', cancer_type, primary_template_list[i] )
         return primary_template_list
-    
-    #
-    def _finish_templates(self, template_list):
-        for i in range(len(template_list)):
-            template_list[i] = \
-                re.sub(self.blank_space, '[ \n\r]([^A-Za-z0-9 ]+[ \n\r])?', template_list[i])
-            template_list[i] = \
-                '(?i)([^A-Za-z0-9 ]+[ \n\r])?' + template_list[i] + '([ \n\r][^A-Za-z0-9 ]+)?'
-        template_list.append('(?i)[^A-Za-z0-9 ]+')
-        return template_list
-    
-    #
-    def _generate_XY_field_list(self, primary_template_list, A_label, B_label):
-        AB_field_list = []
-        for i in range(len(primary_template_list)):
-            template_list = primary_template_list[i].split(self.blank_space)
-            if A_label in template_list:
-                A_idx = template_list.index(A_label)
-            else:
-                A_idx = None
-            if B_label in template_list:
-                B_idx = template_list.index(B_label)
-            else:
-                B_idx = None
-            if A_idx is not None and B_idx is not None:
-                field_idxs = list(range(A_idx+1, B_idx))
-                field_list = []
-                for j in range(len(field_idxs)):
-                    field_list.append(template_list[field_idxs[j]])
-                AB_field_list.append(self.blank_space.join(field_list))
-        AB_field_list = list(set(AB_field_list))
-        AB_field_list = sorted(AB_field_list, key=len, reverse=True)
-        if '' in AB_field_list:
-            AB_field_list.remove('')
-        AB_field_list = \
-            self._finish_templates(AB_field_list)
-        return AB_field_list
-        
     
     #
     def _get_initialisms(self):
@@ -126,17 +89,22 @@ class Cancer_stage_template_manager(object):
         return nlp_cancer_type
     
     #
-    def push_primary_template_outline(self, primary_template_list):
-        self.AB_field_list = \
-            self._generate_XY_field_list(primary_template_list,
-                                         'NLP_CANCER_TYPE',
-                                         'NLP_CANCER_STAGE_VALUE')
-        self.BA_field_list = \
-            self._generate_XY_field_list(primary_template_list,
-                                         'NLP_CANCER_STAGE_VALUE',
-                                         'NLP_CANCER_TYPE')
-        primary_template_list = \
-            self._finish_templates(primary_template_list)
+    def pull_A_charge(self):
+        return 'NLP_CANCER_TYPE'
+    
+    #
+    def pull_B_charge(self):
+        return 'NLP_CANCER_STAGE_VALUE'
+    
+    #
+    def pull_primary_template_list(self):
+        return self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
+    
+    #
+    def push_primary_template_list(self, AB_field_list, BA_field_list,
+                                   primary_template_list):
+        self.AB_field_list = AB_field_list
+        self.BA_field_list = BA_field_list
         self.primary_template_list = \
             self._annotate_primary_template_list(primary_template_list)
         

@@ -14,7 +14,7 @@ import re
 from lambda_lib.lambda_manager_class import Lambda_manager
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class import Preprocessor_base
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
@@ -64,6 +64,10 @@ class Postprocessor(Postprocessor_base):
     
 #
 class Tokenizer(Preprocessor_base):
+    
+    #
+    def __init__(self):
+        self.lambda_manager = Lambda_manager()
     
     #
     def process_month(self):

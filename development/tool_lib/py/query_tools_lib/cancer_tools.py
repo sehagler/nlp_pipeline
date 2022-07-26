@@ -6,13 +6,34 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import regex_from_list, s
 
 #
-class Named_entity_recognition(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
+    
+    #
+    def _cleanup_text(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('Scarff ', self.text, 'Scarf ')
+        
+    #
+    def _normalize_text(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('leukaemia', self.text, 'leukemia')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<=[Tt])umour', self.text, 'umor')
+    
+    #
+    def _setup_text(self):
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('Scharff(-| )', '(?i)Scharff', self.text, 'Scarff')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('Scharf(-| )', '(?i)Scharf', self.text, 'Scarff')
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('Scarf(-| )', '(?i)Scarf', self.text, 'Scarff')
     
     #
     def _process_irregular_initialisms(self):
@@ -93,48 +114,14 @@ class Named_entity_recognition(Preprocessor_base):
         
     #
     def run_preprocessor(self):
-        self._normalize_whitespace()
-        self._process_irregular_initialisms()
-        self._process_regular_initialisms()
-
-#
-class Posttokenizer(Preprocessor_base):
-        
-    #
-    def process_general(self):
         self.text = \
             self.lambda_manager.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
-        
-#
-class Summarization(Preprocessor_base):
-    
-    #
-    def cleanup_text(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('Scarff ', self.text, 'Scarf ')
-        
-    #
-    def normalize_text(self):
-        self.text = \
-            self.lambda_manager.lambda_conversion('leukaemia', self.text, 'leukemia')
-        self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[Tt])umour', self.text, 'umor')
-    
-    #
-    def setup_text(self):
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('Scharff(-| )', '(?i)Scharff', self.text, 'Scarff')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('Scharf(-| )', '(?i)Scharf', self.text, 'Scarff')
-        self.text = \
-            self.lambda_manager.contextual_lambda_conversion('Scarf(-| )', '(?i)Scarf', self.text, 'Scarff')
-            
-    #
-    def run_preprocessor(self):
+        self._process_irregular_initialisms()
+        self._process_regular_initialisms()
         self._setup_text()
         self._normalize_text()
-        self._cleanup_textf()
-        self._remove_extraneous_text()
+        self._cleanup_text()
+        #self._remove_extraneous_text()
             
 #
 def get_initialisms():

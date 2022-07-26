@@ -18,15 +18,14 @@ class Nlp_tool_manager_registry(object):
     
     #
     def __init__(self, static_data_manager, remote_manager_registry,
-                 xls_manager_registry, evaluation_manager, password):
+                 password):
         self.static_data_manager = static_data_manager
         self.nlp_tool_manager_registry = {}
         self._linguamatics_i2e_manager(remote_manager_registry, password)
         self.nlp_tool_manager_registry['melax_clamp_manager'] = \
             Melax_clamp_manager(static_data_manager)
         self.nlp_tool_manager_registry['ohsu_nlp_template_manager'] = \
-            Ohsu_nlp_template_manager(static_data_manager,
-                                      xls_manager_registry, evaluation_manager)
+            Ohsu_nlp_template_manager(static_data_manager)
             
     #
     def _linguamatics_i2e_manager(self, remote_manager_registry, password):

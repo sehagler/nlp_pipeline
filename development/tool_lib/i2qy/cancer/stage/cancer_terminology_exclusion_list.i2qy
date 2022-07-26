@@ -5,8 +5,6 @@ query:
   - alternative:
     - word: {text: cancer, includeInQuery: false}
     - malignancy
-    - metastases
-    - metastasis
-    - metastatic
+    - alternative: [metastases, metastasis, metastatic, mets]
     - oncology
 creator: haglers

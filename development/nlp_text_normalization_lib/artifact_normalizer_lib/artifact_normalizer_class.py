@@ -19,5 +19,15 @@ class Artifact_normalizer(object):
     def normalize_text(self, text):
         self.text = text
         self.text = \
-            self.lambda_manager.deletion_lambda_conversion('(?i)\(HCC\)', self.text)
+            self.lambda_manager.deletion_lambda_conversion('(?<= )\(A\)(?= )', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<= )\(H\)(?= )', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<= )\(HCC\)(?= )', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<= )\(L\)(?= )', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<= )\(LAB\)(?= )', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?<= )\[[A-Z]{2}\](?= )', self.text)
         return self.text

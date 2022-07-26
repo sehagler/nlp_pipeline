@@ -6,12 +6,16 @@ Created on Mon Feb 24 11:19:40 2020
 """
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from lambda_lib.lambda_manager_class import Lambda_manager
 from tool_lib.py.processing_tools_lib.text_processing_tools import s
 
 #
-class Table_normalizer(Preprocessor_base):
+class Table_normalizer(object):
+    
+    #
+    def __init__(self, static_data):
+        self.static_data = static_data
+        self.lambda_manager = Lambda_manager()
     
     #
     def _normalize_atypical_cell(self):
@@ -98,7 +102,7 @@ class Table_normalizer(Preprocessor_base):
     
     #
     def process_text(self, text):
-        self.push_text(text)
+        self.text = text
         self.text = \
             self.lambda_manager.deletion_lambda_conversion('(?i),? POC', self.text)
         self._normalize_atypical_cell()
@@ -122,5 +126,4 @@ class Table_normalizer(Preprocessor_base):
             self.lambda_manager.lambda_conversion(self._pre_punct() + 'RED CELL COUNT', self.text, '\nRBC')
         self.text = \
             self.lambda_manager.lambda_conversion(self._pre_punct() + 'WHITE CELL COUNT', self.text, '\nWBC')
-        text = self.pull_text()
-        return text
+        return self.text

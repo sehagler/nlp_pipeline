@@ -6,12 +6,12 @@ Created on Fri Nov  6 12:13:55 2020
 """
 
 #
-from nlp_text_normalization_lib.base_lib.preprocessor_base_class import Preprocessor_base
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class import Preprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
     import block_label, case_number, part_label, slice_label, slide_label, s, test_label
 
 #
-class Summarization(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     '''
     #

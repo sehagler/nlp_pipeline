@@ -30,24 +30,6 @@ query:
                       of: [adeno, adenoCA, adenocarcinoma, CA, cancer, carcinoma, melanoma]
             - in
             - situ
-      - phrase:
-          displayChildren: false
-          quantifier: {minimum: 0, maximum: 1}
-          of:
-          - of
-          - word:
-              text: the
-              quantifier: {minimum: 0, maximum: 1}
-          - macro:
-              quantifier: {minimum: 0, maximum: 1}
-              snid: ohsu_left_right.left_right
-              pt: Left Right
-              of:
-              - alternative:
-                  macroPt: Left Right
-                  macroSnid: ohsu_left_right.left_right
-                  of: [L, left, lt, lt., R, right, rt, rt.]
-          - class: {snid: icdo.topography, pt: ICD-O Topography}
 output:
   columns:
   - {id: phrase2}
