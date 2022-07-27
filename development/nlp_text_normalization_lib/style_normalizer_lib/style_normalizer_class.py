@@ -7,7 +7,7 @@ Created on Fri Jun 11 16:41:11 2021
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from tool_lib.py.processing_tools_lib.text_processing_tools import s
+from nlp_text_normalization_lib.tool_lib.regex_tools import s
 from tool_lib.py.query_tools_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_date
 

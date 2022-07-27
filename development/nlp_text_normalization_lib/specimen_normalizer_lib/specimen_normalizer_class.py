@@ -7,7 +7,7 @@ Created on Wed Nov  4 15:49:43 2020
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from tool_lib.py.processing_tools_lib.text_processing_tools \
+from nlp_text_normalization_lib.tool_lib.regex_tools \
     import class_label, part_label, specimen_label, s
 
 #

@@ -10,7 +10,7 @@ import re
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from tool_lib.py.processing_tools_lib.text_processing_tools \
+from nlp_text_normalization_lib.tool_lib.regex_tools \
     import amend, article, be, datetime, diagnosis, medication, review_item, s
 
 #

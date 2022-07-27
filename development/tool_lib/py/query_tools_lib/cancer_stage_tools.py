@@ -12,7 +12,7 @@ import re
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
-    import regex_from_list, s
+    import regex_from_list
 from tool_lib.py.query_tools_lib.cancer_tools \
     import nonnumeric_stage, numeric_stage
 

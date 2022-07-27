@@ -10,12 +10,14 @@ import os
 import re
 
 #
+from nlp_text_normalization_lib.tool_lib.regex_tools \
+    import article, be, note_label, s, specimen_label
 from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 from tool_lib.py.registry_lib.base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
 from tool_lib.py.processing_tools_lib.text_processing_tools \
-    import article, be, note_label, s, specimen_label, substitution_endings_list
+    import substitution_endings_list
     
 #
 class Preprocessor_base(Preprocessor_base):

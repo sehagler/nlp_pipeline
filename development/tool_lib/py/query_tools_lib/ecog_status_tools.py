@@ -9,6 +9,8 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
+from nlp_text_normalization_lib.tool_lib.regex_tools \
+    import colon, left_parenthesis, right_parenthesis
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class import Preprocessor_base
@@ -101,14 +103,14 @@ class Preprocessor(Preprocessor_base):
     #
     def run_preprocessor(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<!{ )ecog( :)? (performance )?(status|score|ps)',
-                                                  self.text, 'ECOG ( ZUBROD ) ')
+            self.lambda_manager.lambda_conversion('(?<!{ )ecog(' + colon() + '| )((performance )?(status|score)|ps)?',
+                                                  self.text, 'ECOG (ZUBROD) ')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)karnofsky (performance )?(status|score|ps)',
-                                                  self.text, 'ECOG ( KARNOFSKY ) ')
+            self.lambda_manager.lambda_conversion('karnofsky ((performance )?(status|score)|ps)',
+                                                  self.text, 'ECOG (KARNOFSKY) ')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)lansky (play performance )?(status|score|ps)',
-                                                  self.text, 'ECOG ( LANSKY ) ')
+            self.lambda_manager.lambda_conversion('lansky ((play performance )?(status|score)|ps)',
+                                                  self.text, 'ECOG (LANSKY) ')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(?<!{ )ecog (?!\()',
-                                                  self.text, 'ECOG ( ZUBROD ) ')
+            self.lambda_manager.lambda_conversion('(?<!{ )ecog (?!\()',
+                                                  self.text, 'ECOG (ZUBROD) ')
