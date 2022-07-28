@@ -109,6 +109,10 @@ def s():
     return('(es|s| ?\( ?es ?\)| ?\( ?s ?\))?')
 
 #
+def slash():
+    return ' ?/ ?'
+
+#
 def slice_label():
     return('[0-9]+')
 
@@ -123,3 +127,7 @@ def specimen_label():
 #
 def test_label():
     return('[a-z0-9\-]+')
+
+#
+def space():
+    return ' +'

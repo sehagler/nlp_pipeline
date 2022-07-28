@@ -11,8 +11,18 @@ import re
 
 #
 from nlp_text_normalization_lib.tool_lib.regex_tools \
-    import article, be, colon, comma, left_parenthesis, minus_sign, 
-           right_parenthesis, s
+    import (
+        article,
+        be,
+        colon,
+        comma,
+        left_parenthesis,
+        minus_sign,
+        right_parenthesis,
+        s,
+        slash,
+        space
+    )
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
@@ -30,60 +40,65 @@ class Preprocessor(Preprocessor_base):
         self.text = \
             self.lambda_manager.initialism_lambda_conversion('estrogen receptor', self.text, 'ER')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('ER ' + left_parenthesis() + 'ER' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'ER' + comma() + 'clone', self.text, '')
+            self.lambda_manager.contextual_lambda_conversion('(?<![a-z])ER ' + left_parenthesis() + 'ER' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'ER' + comma() + 'clone', self.text, '')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('ER results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', self.text, '')
+            self.lambda_manager.contextual_lambda_conversion('(?<![a-z])ER results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', self.text, '')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[ \n])ERs', self.text, 'ER')
-        search_str = 'ER ' + self._receptor_predicate() + s()
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])ERs', self.text, 'ER')
+        search_str = '(?<![a-z])ER ' + self._receptor_predicate() + s()
         for _ in range(3):
             self.text = \
-                self.lambda_manager.lambda_conversion('(?<=[ \n])' + search_str, self.text, 'ER')
-        search_str = 'ER(' + comma() + ')?' + self._receptor_predicate() + s() + ' [a-zA-Z0-9]*'
-        for _ in range(2):
-            self.text = \
-                self.lambda_manager.deletion_lambda_conversion('[ \n]+' + search_str, self.text)
+                self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])' + search_str, self.text, 'ER')
+        search_str = '(?<![a-z])ER(' + comma() + ')?' + self._receptor_predicate() + s() + ' [a-zA-Z0-9]*'
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[ \n])ER(' + colon() + ')?-', self.text, 'ER negative')
+            self.lambda_manager.deletion_lambda_conversion(search_str, self.text)
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[ \n])ER(' + colon() + ')?\+', self.text, 'ER positive')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?-', self.text, 'ER negative')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?neg(?![a-z])', self.text, 'ER negative')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?\+', self.text, 'ER positive')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?pos(?![a-z])', self.text, 'ER positive')
             
     #
     def _normalize_GATA3(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('GATA3', self.text, 'GATA3')
+            self.lambda_manager.lambda_conversion('(?<![a-z])GATA3', self.text, 'GATA3')
         self.text = \
-            self.lambda_manager.lambda_conversion('GATA' + minus_sign() + '3', self.text, 'GATA3')
+            self.lambda_manager.lambda_conversion('(?<![a-z])GATA' + minus_sign() + '3', self.text, 'GATA3')
         
     #
     def _normalize_HER2(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('HER( ?(-|/) ?)?2(( | ?/ ?)?(c ?- ?)?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', self.text, 'HER2')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + slash() + ')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', self.text,  'HER2')
         self.text = \
-            self.lambda_manager.lambda_conversion('HER2( ?- ?)( ?/ ?)(c( ?- ?))?neu( ' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', self.text, 'HER2')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER2' + minus_sign() + slash() + '(c' + minus_sign() + ')?neu( ' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', self.text, 'HER2')
         self.text = \
-            self.lambda_manager.initialism_lambda_conversion('C-ERB B2 ' + left_parenthesis() + 'HER2' + right_parenthesis(), self.text, 'HER2')
+            self.lambda_manager.initialism_lambda_conversion('C' + minus_sign() + 'ERB B2 ' + left_parenthesis() + 'HER2' + right_parenthesis(), self.text, 'HER2')
         self.text = \
-            self.lambda_manager.lambda_conversion('HER2(' + colon() + ')?-', self.text, 'HER2 negative')
+            self.lambda_manager.initialism_lambda_conversion('(?<![a-z])HER 2', self.text, 'HER2')
         self.text = \
-            self.lambda_manager.lambda_conversion('HER2neg', self.text, 'HER2 negative')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?-', self.text, 'HER2 negative')
         self.text = \
-            self.lambda_manager.lambda_conversion('HER2(' + colon() + ')?\+', self.text, 'HER2 positive')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?neg(?![a-z])', self.text, 'HER2 negative')
         self.text = \
-            self.lambda_manager.lambda_conversion('HER2pos', self.text, 'HER2 positive')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?\+', self.text, 'HER2 positive')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?pos(?![a-z])', self.text, 'HER2 positive')
         for _ in range(7):
-            search_str = 'HER2 ([a-z]* for )?' + \
+            search_str = '(?<![a-z])HER2 ([a-z]* for )?' + \
                          self._receptor_predicate() + s()
             self.text = \
-                self.lambda_manager.lambda_conversion(search_str, self.text, 'HER2')
+                self.lambda_manager.space_correction_lambda_conversion(search_str, self.text, 'HER2')
         for _ in range(7):
             search_str = self._receptor_predicate() + s() + '\s' + 'for HER2'
             self.text = \
-                self.lambda_manager.lambda_conversion(search_str, self.text, 'for HER2')
+                self.lambda_manager.space_correction_lambda_conversion(search_str, self.text, 'for HER2')
         self.text = \
-            self.lambda_manager.lambda_conversion('' + self._receptor_predicate() + ' of HER2', self.text, 'HER2')
+            self.lambda_manager.space_correction_lambda_conversion(self._receptor_predicate() + ' of HER2', self.text, 'HER2')
         self.text = \
-            self.lambda_manager.lambda_conversion('HER2 ' + self._receptor_predicate(), self.text, 'HER2')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])HER2 ' + self._receptor_predicate(), self.text, 'HER2')
             
     #
     def _normalize_KI67(self):
@@ -103,23 +118,26 @@ class Preprocessor(Preprocessor_base):
         self.text = \
             self.lambda_manager.initialism_lambda_conversion('progesterone receptor', self.text, 'PR')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('PR ' + left_parenthesis() + 'PR' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'PR' + comma() + 'clone', self.text, '')
+            self.lambda_manager.contextual_lambda_conversion('(?<![a-z])PR ' + left_parenthesis() + 'PR' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'PR' + comma() + 'clone', self.text, '')
         self.text = \
-            self.lambda_manager.contextual_lambda_conversion('PR results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', self.text, '')
+            self.lambda_manager.contextual_lambda_conversion('(?<![a-z])PR results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', self.text, '')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[ \n])PRs', self.text, 'PR')
-        search_str = 'PR ' + self._receptor_predicate() + s()
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])PRs', self.text, 'PR')
+        search_str = '(?<![a-z])PR ' + self._receptor_predicate() + s()
         for _ in range(3):
             self.text = \
-                self.lambda_manager.lambda_conversion('(?<=[ \n])' + search_str, self.text, 'PR')
-        search_str = 'PR(' + comma() + ')?' + self._receptor_predicate() + s() + ' [a-zA-Z0-9]*'
-        for _ in range(2):
-            self.text = \
-                self.lambda_manager.deletion_lambda_conversion('[ \n]+' + search_str, self.text)
+                self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])' + search_str, self.text, 'PR')
+        search_str = '(?<![a-z])PR(' + comma() + ')?' + self._receptor_predicate() + s() + ' [a-zA-Z0-9]*'
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[ \n])PR(' + colon() + ')?-', self.text, 'PR negative')
+            self.lambda_manager.deletion_lambda_conversion(search_str, self.text)
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[ \n])PR(' + colon() + ')?\+', self.text, 'PR positive')
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?-', self.text, 'PR negative')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?neg(?![a-z])', self.text, 'PR negative')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?\+', self.text, 'PR positive')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?pos(?![a-z])', self.text, 'PR positive')
         
     #
     def _remove_extraneous_text(self):
@@ -171,15 +189,17 @@ class Preprocessor(Preprocessor_base):
     #
     def run_preprocessor(self):
         self.text = \
+            self.lambda_manager.lambda_conversion('triple negative', self.text, 'ER negative, PR negative, HER2 negative')
+        self.text = \
             self.lambda_manager.lambda_conversion('estrogen and progesterone( receptor' + s() + ')?', self.text, 'ER and PR')
         self.text = \
             self.lambda_manager.lambda_conversion('progesterone and estrogen( receptor' + s() + ')?', self.text, 'PR and ER')
         self.text = \
             self.lambda_manager.initialism_lambda_conversion('androgen receptor', self.text, 'AR')
         self.text = \
-            self.lambda_manager.lambda_conversion('BCL( ?- ?)2', self.text, 'BCL2')
+            self.lambda_manager.lambda_conversion('BCL(( ?- ?)| )2', self.text, 'BCL2')
         self.text = \
-            self.lambda_manager.lambda_conversion('PD( ?- ?)L1', self.text, 'PDL1')
+            self.lambda_manager.lambda_conversion('PD(( ?- ?)| )L1', self.text, 'PDL1')
         self._normalize_ER()
         self._normalize_GATA3()
         self._normalize_HER2()
