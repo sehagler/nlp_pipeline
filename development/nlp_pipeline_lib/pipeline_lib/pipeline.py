@@ -143,9 +143,9 @@ class Pipeline(object):
         self.nlp_software.copy_x_nlp_software_to_nlp_sandbox(dest_drive)
         
     #
-    def ohsu_nlp_templates_generate_primary_template_list(self):
+    def ohsu_nlp_templates_generate_AB_fields(self):
         self.process_manager.ohsu_nlp_templates_setup()
-        self.process_manager.ohsu_nlp_templates_generate_primary_template_list()
+        self.process_manager.ohsu_nlp_templates_generate_AB_fields()
         
     #
     def ohsu_nlp_templates_run_templates(self, password, project_subdir,

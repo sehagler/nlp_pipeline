@@ -66,7 +66,6 @@ class Ohsu_nlp_template_manager(Worker_base):
                                           data_dir, text_dict)
         training_worker.train(primary_template_list, A_charge, B_charge)
         template_dict = template_manager.training_template()
-        self.primary_template_list = template_dict['primary_template_list']
         self.AB_field_list = template_dict['AB_field_list']
         self.BA_field_list = template_dict['BA_field_list']
         
@@ -84,19 +83,6 @@ class Ohsu_nlp_template_manager(Worker_base):
             f.write(str(self.AB_field_list))
         with open(os.path.join(filename[:-4] + '_BA_field.txt'), 'w') as f:
             f.write(str(self.BA_field_list))
-        
-    #
-    def write_primary_template_list(self, template_outlines_dir, filename):
-        filename = os.path.join(template_outlines_dir, filename)
-        if not os.path.exists(os.path.dirname(filename)):
-            try:
-                os.makedirs(os.path.dirname(filename))
-            except OSError as exc: # Guard against race condition
-                if exc.errno != errno.EEXIST:
-                    raise
-        directory = os.path.dirname(filename)
-        with open(filename, 'w') as f:
-            f.write(str(self.primary_template_list))
 
     #
     def write_template_output(self, template_manager, data_dir, filename):

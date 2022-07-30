@@ -25,20 +25,6 @@ class Cancer_stage_template_manager(object):
         self.xls_manager = xls_manager
         self._get_secondary_template_list()
         self.blank_space = ' NLP_BLANK_SPACE '
-            
-    #
-    def _annotate_primary_template_list(self, primary_template_list):
-        cancer_is_value = self._nlp_cancer_is_value()
-        cancer_stage_value = self._nlp_cancer_stage_value()
-        cancer_type = self._nlp_cancer_type()
-        for i in range(len(primary_template_list)):
-            primary_template_list[i] = \
-                re.sub('NLP_CANCER_IS_VALUE', cancer_is_value, primary_template_list[i])
-            primary_template_list[i] = \
-                re.sub('NLP_CANCER_STAGE_VALUE', cancer_stage_value, primary_template_list[i])
-            primary_template_list[i] = \
-                re.sub('NLP_CANCER_TYPE', cancer_type, primary_template_list[i] )
-        return primary_template_list
     
     #
     def _get_initialisms(self):
@@ -101,19 +87,15 @@ class Cancer_stage_template_manager(object):
         return self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
     
     #
-    def push_primary_template_list(self, AB_field_list, BA_field_list,
-                                   primary_template_list):
+    def push_primary_template_list(self, AB_field_list, BA_field_list):
         self.AB_field_list = AB_field_list
         self.BA_field_list = BA_field_list
-        self.primary_template_list = \
-            self._annotate_primary_template_list(primary_template_list)
         
     #
     def training_template(self):
         template_dict = {}
         template_dict['AB_field_list'] = self.AB_field_list
         template_dict['BA_field_list'] = self.BA_field_list
-        template_dict['primary_template_list'] = self.primary_template_list
         template_dict['secondary_template_list'] = self.secondary_template_list
         template_dict['sections_list'] = None
         template_dict['template_headers'] = [ 'Cancer Stage Extract',

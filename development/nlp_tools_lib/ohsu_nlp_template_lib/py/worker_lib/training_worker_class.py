@@ -17,12 +17,18 @@ import random
 import re
 
 #
+from nlp_text_normalization_lib.tool_lib.regex_tools \
+    import (
+        article,
+        conjunction,
+        nonword,
+        preposition,
+        word
+    )
 from nlp_tools_lib.ohsu_nlp_template_lib.py.worker_lib.worker_base_class \
     import Worker_base
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
-from tool_lib.py.processing_tools_lib.text_processing_tools \
-    import regex_from_list
 
 #
 class Training_worker(Worker_base):
@@ -78,9 +84,9 @@ class Training_worker(Worker_base):
         for i in range(len(template_list)):
             template_split = template_list[i].split(self.blank_space)
             for j in range(1, len(template_split)-1):
-                word = template_split[j]
-                if re.fullmatch(self._generic_nonword(), word):
-                    template_split[j] = '' #self._generic_nonword()
+                word_var = template_split[j]
+                if re.fullmatch(nonword(), word_var):
+                    template_split[j] = '' #nonword()
             template_list[i] = self.blank_space.join(template_split)
         return template_list
     
@@ -90,11 +96,24 @@ class Training_worker(Worker_base):
         for i in range(len(template_list)):
             template_split = template_list[i].split(self.blank_space)
             for j in range(1, len(template_split)-1):
-                word = template_split[j]
-                if re.fullmatch(grammatical_class_regex, word):
+                word_var = template_split[j]
+                if re.fullmatch(grammatical_class_regex, word_var):
                     template_split[j] = grammatical_class_regex
             template_list[i] = self.blank_space.join(template_split)
         return template_list
+    
+    #
+    def _generate_phrases(self, template_list_in):
+        template_list_out = []
+        for i in range(len(template_list_in)):
+            template = template_list_in[i]
+            if len(template) > 0:
+                phrase = template.split(self.blank_space)   
+                for j in range(len(phrase)):
+                    phrase[j] = '(?i)([^A-Za-z0-9 ]+[ \n\r])*' + phrase[j] + \
+                                '([ \n\r][^A-Za-z0-9 ]+)*'
+                template_list_out.append(phrase)
+        return template_list_out
     
     #
     def _generalize_words_template_outline(self, template_list):
@@ -102,10 +121,10 @@ class Training_worker(Worker_base):
         for i in range(len(template_list)):
             template_split = template_list[i].split(self.blank_space)
             for j in range(1, len(template_split)-1):
-                word = template_split[j]
-                if re.fullmatch(self._generic_word(), word) and \
-                   word not in stopwords_list:
-                    template_split[j] = self._generic_word()
+                word_var = template_split[j]
+                if re.fullmatch(word(), word_var) and \
+                   word_var not in stopwords_list:
+                    template_split[j] = word()
             template_list[i] = self.blank_space.join(template_split)
         return template_list
         
@@ -130,42 +149,54 @@ class Training_worker(Worker_base):
                 AB_field_list.append(self.blank_space.join(field_list))
         AB_field_list = list(set(AB_field_list))
         AB_field_list = sorted(AB_field_list, key=len, reverse=True)
+        AB_field_list = \
+            self._infer_lower_order_templates(AB_field_list)
+        AB_field_list = \
+            self._sort_template_outline(AB_field_list)
+        '''
+        AB_field_list = \
+            self._trim_template_outline(AB_field_list)
+        AB_field_list = \
+            self._sort_template_outline(AB_field_list)
+        '''
+        #AB_field_list = self._generate_phrases(AB_field_list)
+
+        #
         if '' in AB_field_list:
             AB_field_list.remove('')
         AB_field_list = \
             self._finish_templates(AB_field_list)
+        #
+
         return AB_field_list 
     
     #
-    def _generic_article(self):
-        article_list = [ 'an?', 'the' ]
-        return regex_from_list(article_list)
-    
-    #
-    def _generic_conjunction(self):
-        conjunction_list = [ 'and', 'or' ]
-        return regex_from_list(conjunction_list)
-    
-    #
-    def _generic_nonword(self):
-        return '[^A-Za-z0-9 ]+'
-    
-    #
-    def _generic_preposition(self):
-        preposition_list = [ 'after', 'at', 'for', 'in', 'of', 'on', 'to', 'with' ]
-        return regex_from_list(preposition_list)
-        
-    #
-    def _generic_word(self):
-        return '[A-Za-z0-9]+([\-/][A-Za-z0-9]+)?'
+    def _infer_lower_order_templates(self, primary_template_list):
+        generic_template_lengths = []
+        for template in primary_template_list:
+            template_list = template.split(self.blank_space)
+            is_generic_template = True
+            for item in template_list:
+                if item != word():
+                    is_generic_template = False
+            if is_generic_template:
+                generic_template_lengths.append(len(template_list))
+        if len(generic_template_lengths) > 0:
+            max_generic_template_length = max(generic_template_lengths)
+            for i in range(max_generic_template_length - 1):
+                template =  []
+                for j in range(i):
+                    template.append(word())
+                primary_template_list.append(self.blank_space.join(template))
+        return primary_template_list
                 
     #
     def _number_of_generic_words(self, primary_template_list):
         N_generic_words = 0
         for i in range(len(primary_template_list)):
             template_list = primary_template_list[i].split(self.blank_space)
-            for word in template_list:
-                if word == '[A-Za-z0-9]+':
+            for word_var in template_list:
+                if word_var == '[A-Za-z0-9]+':
                     N_generic_words += 1
         return N_generic_words
     
@@ -178,8 +209,8 @@ class Training_worker(Worker_base):
         N_words = 0
         for i in range(len(primary_template_list)):
             template_list = primary_template_list[i].split(self.blank_space)
-            for word in template_list:
-                if word[:4] != 'NLP_':
+            for word_var in template_list:
+                if word_var[:4] != 'NLP_':
                     N_words += 1
         return N_words
     
@@ -200,6 +231,16 @@ class Training_worker(Worker_base):
         for i in range(len(template_list)):
             template_list[i] = \
                 self._remove_newlines(template_list[i])
+        return template_list
+    
+    #
+    def _sort_template_outline(self, template_list):
+        template_list = list(set(template_list))
+        for i in range(len(template_list)):
+            template_list[i] = template_list[i].split(self.blank_space)
+        template_list = sorted(template_list, key=len, reverse=True)
+        for i in range(len(template_list)):
+            template_list[i] = self.blank_space.join(template_list[i])
         return template_list
     
     #
@@ -240,48 +281,32 @@ class Training_worker(Worker_base):
         return primary_template_list
     
     #
-    def _trim_template_outline(self, primary_template_list_in):
-        primary_template_list_in = list(set(primary_template_list_in))
+    def _trim_template_outline(self, primary_template_list):
         N_list = []
-        for i in range(len(primary_template_list_in)):
-            template_list = primary_template_list_in[i].split(self.blank_space)
+        for i in range(len(primary_template_list)):
+            template_list = primary_template_list[i].split(self.blank_space)
             N_list.append(len(template_list))
-        N_list = list(set(N_list))
-        N_list = sorted(N_list, reverse=True)
+            N_list = sorted(N_list, reverse=True)
+        if 1 in N_list:
+            N_list.remove(1)
         primary_template_list_out = []
         for N in N_list:
             primary_template_list_N = []
-            for i in range(len(primary_template_list_in)):
-                template_list = primary_template_list_in[i].split(self.blank_space)
+            for i in range(len(primary_template_list)):
+                template_list = primary_template_list[i].split(self.blank_space)
                 if len(template_list) == N:
-                    primary_template_list_N.append(primary_template_list_in[i])
-            if N > 1:
-                delete_idxs = []
+                    primary_template_list_N.append(primary_template_list[i])
+            generic_template_exists = False
+            for i in range(len(primary_template_list_N)):
+                X = list(set(primary_template_list_N[i].split(self.blank_space)))
+                if len(X) == 1 and X[0] == word():
+                    generic_template_exists = True
+                    generic_template = X
+            if generic_template_exists:
                 for i in range(len(primary_template_list_N)):
-                    for j in range(len(primary_template_list_N)):
-                        if i != j:
-                            X = primary_template_list_N[i].split(self.blank_space)
-                            Y = primary_template_list_N[j].split(self.blank_space)
-                            diffs = [(X[x], Y[x]) for x in range(len(X)) if X[x] != Y[x]]
-                            delete_flg = False
-                            continue_flg = True
-                            for diff in diffs:
-                                if diff[0] != self._generic_word():
-                                    continue_flg = False
-                            if continue_flg:
-                                delete_flg = True
-                                for diff in diffs:
-                                    if not re.fullmatch(self._generic_word(), diff[1]):
-                                        delete_flg = False
-                            if delete_flg:
-                                delete_idxs.append(j)
-                delete_idxs = list(set(delete_idxs))
-                delete_idxs = sorted(delete_idxs, reverse=True)
-                for i in range(len(delete_idxs)):
-                    del primary_template_list_N[delete_idxs[i]]
-            for template_outline in primary_template_list_N:
-                primary_template_list_out.append(template_outline)
-        return primary_template_list_out
+                    primary_template_list.remove(primary_template_list_N[i])
+                primary_template_list.append(self.blank_space.join(generic_template))
+        return primary_template_list
     
     #
     def train(self, primary_template_list, A_charge, B_charge):          
@@ -299,22 +324,20 @@ class Training_worker(Worker_base):
             self._generalize_nonwords_template_outline(primary_template_list)
         primary_template_list = \
             self._generalize_grammatical_class_template_outline(primary_template_list,
-                                                                self._generic_article())
+                                                                article())
         primary_template_list = \
             self._generalize_grammatical_class_template_outline(primary_template_list,
-                                                                self._generic_conjunction())
+                                                                conjunction())
         primary_template_list = \
             self._generalize_grammatical_class_template_outline(primary_template_list,
-                                                                self._generic_preposition())
+                                                                preposition())
         primary_template_list = \
             self._trim_blank_spaces(primary_template_list)
         primary_template_list = \
-            self._trim_template_outline(primary_template_list)
+            self._sort_template_outline(primary_template_list)
         AB_field_list = self._generate_XY_field_list(primary_template_list,
                                                      A_charge, B_charge)
         BA_field_list = self._generate_XY_field_list(primary_template_list,
                                                      B_charge, A_charge)
-        primary_template_list = self._finish_templates(primary_template_list)
         self.template_manager.push_primary_template_list(AB_field_list,
-                                                            BA_field_list,
-                                                            primary_template_list)
+                                                         BA_field_list)

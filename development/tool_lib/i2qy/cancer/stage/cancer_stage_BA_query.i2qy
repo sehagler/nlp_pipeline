@@ -8,9 +8,16 @@ query:
       multiSentence: true
       of:
       - link: {path: cancer_stage.i2qy, id: link3}
-      - link:
-          path: cancer_stage_BA_field.i2qy
+      - phrase:
           quantifier: {minimum: 0, maximum: 1}
+          of:
+          - link: {path: cancer_stage_BA_field.i2qy}
+          where:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - link: {path: cancer_stage.i2qy}
+              - link: {path: cancer_type_query.i2qy}
       - link: {path: cancer_type_query.i2qy, id: link1}
 output:
   columns:

@@ -7,7 +7,13 @@ Created on Fri Jun 11 16:41:11 2021
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_text_normalization_lib.tool_lib.regex_tools import s
+from nlp_text_normalization_lib.tool_lib.regex_tools \
+    import (
+        article,
+        minus_sign,
+        s,
+        space
+    )
 from tool_lib.py.query_tools_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_date
 
@@ -22,45 +28,49 @@ class Style_normalizer(object):
     #
     def _normalize_abbreviation(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('percentage', self.text, '%age')
+            self.lambda_manager.space_correction_lambda_conversion('percentage', self.text, '%AGE')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=d)iagnosis', self.text, 'x')
+            self.lambda_manager.space_correction_lambda_conversion('diagnosis', self.text, 'DX')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=d)iagnose(?=[ds])', self.text, 'xe')
+            self.lambda_manager.space_correction_lambda_conversion('diagnosed', self.text, 'DXED')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=f)ollow( |\-)up', self.text, '/u')
+            self.lambda_manager.space_correction_lambda_conversion('diagnoses', self.text, 'DXES')
         self.text = \
-            self.lambda_manager.lambda_conversion('for example', self.text, 'e.g.')
+            self.lambda_manager.space_correction_lambda_conversion('follow(' + minus_sign() + '|' + space() + ')up', self.text, 'F/U')
         self.text = \
-            self.lambda_manager.lambda_conversion('from (the )?nipple', self.text, 'fn')
+            self.lambda_manager.space_correction_lambda_conversion('for example', self.text, 'E.G.')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=h)istory', self.text, 'x')
+            self.lambda_manager.space_correction_lambda_conversion('from (' + article() + ' )?nipple', self.text, 'FN')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=h)x of', self.text, '/o')
+            self.lambda_manager.space_correction_lambda_conversion('history', self.text, 'HX')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=l)aborator(ie|y)', self.text, 'ab')
+            self.lambda_manager.space_correction_lambda_conversion('hx' + space() + 'of', self.text, 'H/O')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=m)etastases', self.text, 'ets')
+            self.lambda_manager.space_correction_lambda_conversion('laboratories', self.text, 'LABS')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=m)onth', self.text, 'o')
+            self.lambda_manager.space_correction_lambda_conversion('laboratory', self.text, 'LAB')
+        #self.text = \
+        #    self.lambda_manager.space_correction_lambda_conversion('metastases', self.text, 'ets')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=p)atient', self.text, 't')
+            self.lambda_manager.space_correction_lambda_conversion('month', self.text, 'MO')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=r)efills', self.text, 'fl')
+            self.lambda_manager.space_correction_lambda_conversion('patient', self.text, 'PT')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=r)esection', self.text, 'sxn')
+            self.lambda_manager.space_correction_lambda_conversion('refills', self.text, 'RFL')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=s)urgical procedure', self.text, '/p')
+            self.lambda_manager.space_correction_lambda_conversion('resection', self.text, 'RSXN')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=y)ear', self.text, 'r')
+            self.lambda_manager.space_correction_lambda_conversion('surgical procedure', self.text, 'S/P')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=y)(ear|r)?(s)?(-| )old', self.text, '/o')
+            self.lambda_manager.space_correction_lambda_conversion('year', self.text, 'YR')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=y)\.o\.', self.text, '/o')
+            self.lambda_manager.space_correction_lambda_conversion('y(ear|r)?(s)?(-| )old', self.text, 'Y/O')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9]y)o(?= )', self.text, '/o')
+            self.lambda_manager.space_correction_lambda_conversion('y\.o\.', self.text, 'Y/O')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=[0-9][\- ]y)o(?= )', self.text, '/o')
+            self.lambda_manager.space_correction_lambda_conversion('(?<=[0-9])yo(?= )', self.text, 'Y/O')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('(?<=[0-9][\- ])yo(?= )', self.text, 'Y/O')
             
     #
     def _normalize_colon(self):

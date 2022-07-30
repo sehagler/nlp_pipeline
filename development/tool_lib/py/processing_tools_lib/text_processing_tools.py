@@ -35,15 +35,6 @@ def make_xml_compatible(text):
     return text
 
 #
-def regex_from_list(text_list):
-    regex = '('
-    for i in range(len(text_list)):
-        regex += text_list[i]
-        regex += '|'
-    regex = regex[:-1] + ')'
-    return regex
-
-#
 def remove_repeated_substrings(text):
     ctr = 0
     while True:

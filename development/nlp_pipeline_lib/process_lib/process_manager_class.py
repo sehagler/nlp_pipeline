@@ -481,49 +481,6 @@ class Process_manager(object):
                                                       filename + '.txt')
             
     #
-    def ohsu_nlp_templates_generate_primary_template_list(self):
-        static_data = self.static_data_manager.get_static_data()
-        project_name = static_data['project_name']
-        directory_manager = static_data['directory_manager']
-        ohsu_nlp_template_manager = \
-            self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
-        project_AB_fields_dir = \
-            directory_manager.pull_directory('ohsu_nlp_project_AB_fields_dir')
-        files = glob.glob(project_AB_fields_dir + '/**/*.py', recursive=True)
-        for i in range(len(files)):
-            files[i] = re.sub(project_AB_fields_dir + '/', '', files[i])
-        for file in files:
-            class_filename, extension = os.path.splitext(file)
-            class_filename = re.sub('/', '.', class_filename)
-            class_name, extension = os.path.splitext(os.path.basename(file))
-            class_name = class_name[0].upper() + class_name[1:-6]
-            import_cmd = 'from projects_lib.' + project_name + \
-                         '.nlp_templates.AB_fields.' + class_filename + \
-                         ' import ' + class_name + ' as Template_manager'
-            exec(import_cmd, globals())
-            print('OHSU NLP Template Manager: ' + class_name)
-            extracts_file = static_data['extracts_file']
-            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
-                                         extracts_file)
-            xls_manager = \
-                self.xls_manager_registry[extracts_file]
-            template_manager = Template_manager(self.static_data_manager,
-                                                xls_manager)
-            xls_manager.read_training_data()
-            ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.train_template(template_manager,
-                                                     self.metadata_manager,
-                                                     self.template_data_dir,
-                                                     self.template_text_dict)
-            template_outlines_dir = \
-                directory_manager.pull_directory('template_outlines_dir')
-            file = os.path.basename(file)
-            filename, extension = os.path.splitext(file)
-            filename = filename[:-23] + '_template_outline'
-            ohsu_nlp_template_manager.write_primary_template_list(template_outlines_dir,
-                                                                  filename + '.txt')
-            
-    #
     def ohsu_nlp_templates_post_i2e_linguamatics_setup(self):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']

@@ -8,8 +8,6 @@ Created on Thu Jun 18 16:45:34 2020
 #
 from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
-from tool_lib.py.processing_tools_lib.text_processing_tools \
-    import regex_from_list, s
 
 #
 class Preprocessor(Preprocessor_base):

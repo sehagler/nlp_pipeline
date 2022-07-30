@@ -29,13 +29,13 @@ pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
                        'linguamatics_i2e_postqueries',
                        'melax_clamp_run_pipeline',
                        'ohsu_nlp_templates_run_templates',
-                       'ohsu_nlp_templates_generate_primary_template_list']
+                       'ohsu_nlp_templates_generate_AB_fields']
 
 #
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[4]
+project_name = project_names[5]
 project_subdir = project_subdirs[1]
 server = servers[0]
 
@@ -105,6 +105,6 @@ elif mode_flg == 'run':
         pipeline.melax_clamp_run_pipeline()
     elif pipeline_mode_flg == 'ohsu_nlp_templates_run_templates':
         pipeline.ohsu_nlp_templates_run_templates(password, project_subdir)
-    elif pipeline_mode_flg == 'ohsu_nlp_templates_generate_primary_template_list':
-        pipeline.ohsu_nlp_templates_generate_primary_template_list()
+    elif pipeline_mode_flg == 'ohsu_nlp_templates_generate_AB_fields':
+        pipeline.ohsu_nlp_templates_generate_AB_fields()
     sys.path.remove(software_path)
