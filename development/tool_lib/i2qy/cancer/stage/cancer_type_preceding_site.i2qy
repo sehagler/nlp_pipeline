@@ -129,6 +129,25 @@ query:
           - word:
               text: the
               quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - left
+              - phrase:
+                - left
+                - word:
+                    text: '-'
+                    quantifier: {minimum: 0, maximum: 1}
+                - sided
+              - lt
+              - right
+              - phrase:
+                - right
+                - word:
+                    text: '-'
+                    quantifier: {minimum: 0, maximum: 1}
+                - sided
+              - rt
           - macro:
               quantifier: {minimum: 0, maximum: 1}
               snid: ohsu_anatomical_location.anatomical_location

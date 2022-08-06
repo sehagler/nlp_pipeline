@@ -7,7 +7,7 @@ Created on Fri Jun 11 16:41:11 2021
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import (
         article,
         minus_sign,
@@ -64,7 +64,7 @@ class Style_normalizer(object):
         self.text = \
             self.lambda_manager.space_correction_lambda_conversion('year', self.text, 'YR')
         self.text = \
-            self.lambda_manager.space_correction_lambda_conversion('y(ear|r)?(s)?(-| )old', self.text, 'Y/O')
+            self.lambda_manager.space_correction_lambda_conversion('yr?s?(' + minus_sign() + '|' + space() + ')old', self.text, 'Y/O')
         self.text = \
             self.lambda_manager.space_correction_lambda_conversion('y\.o\.', self.text, 'Y/O')
         self.text = \

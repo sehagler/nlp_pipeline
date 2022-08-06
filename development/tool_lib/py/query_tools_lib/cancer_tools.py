@@ -6,7 +6,7 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import (
         regex_from_list,
         s
@@ -61,15 +61,19 @@ class Preprocessor(Preprocessor_base):
                            [ 'transitional cell (cancer|carcinoma)', 'TCC' ] ]
         for carcinoma in carcinoma_list:
             self.text = \
-                self.lambda_manager.initialism_lambda_conversion('invasive ' + carcinoma[0], self.text, 'I' + carcinoma[1])
+                self.lambda_manager.initialism_lambda_conversion('(infiltrating|invasive) ' + carcinoma[0], self.text, 'I' + carcinoma[1])
             self.text = \
                 self.lambda_manager.initialism_lambda_conversion(carcinoma[0] + ' in situ', self.text, carcinoma[1] + 'IS')
             self.text = \
                 self.lambda_manager.initialism_lambda_conversion(carcinoma[0], self.text, carcinoma[1])
             self.text = \
-                self.lambda_manager.initialism_lambda_conversion('invasive ' + carcinoma[1], self.text, 'I' + carcinoma[1])
+                self.lambda_manager.initialism_lambda_conversion('(infiltrating|invasive) ' + carcinoma[1], self.text, 'I' + carcinoma[1])
             self.text = \
                 self.lambda_manager.initialism_lambda_conversion(carcinoma[1] + ' in situ', self.text, carcinoma[1] + 'IS')
+                
+        # glaucoma
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('primary open angle glaucoma', self.text, 'POAG')
         
         # hyperplasia
         hyperplasia_list = [ [ 'duct(al)? hyperplasia', 'DH' ],

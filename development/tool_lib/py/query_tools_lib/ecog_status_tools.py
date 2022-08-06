@@ -9,7 +9,7 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import colon, left_parenthesis, right_parenthesis
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base

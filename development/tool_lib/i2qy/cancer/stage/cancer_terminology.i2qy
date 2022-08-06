@@ -45,7 +45,7 @@ query:
                     - alternative:
                         macroPt: Cancer Initialism
                         macroSnid: ohsu_cancer_initialisms.cancer_initialism
-                        of: [ADH, AML, AMML, CHH, CLL, DC, DH, DLBCL, GIST, IDC, ILC, ITC, LC, LH, MM, NET, NSCLC, RCC, SCC, SCLC, SLL, SPC, TCC, UDH, UPS]
+                        of: [ADH, AML, AMML, CHH, CLL, DC, DH, DLBCL, GIST, IDC, ILC, ITC, LC, LH, MM, NET, NSCLC, POAG, RCC, SCC, SCLC, SLL, SPC, TCC, UDH, UPS]
                 - macro:
                     snid: ohsu_cancer_types.cancer_type
                     pt: Cancer Type

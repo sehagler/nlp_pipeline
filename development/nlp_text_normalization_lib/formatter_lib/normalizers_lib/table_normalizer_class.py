@@ -7,7 +7,7 @@ Created on Mon Feb 24 11:19:40 2020
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_text_normalization_lib.tool_lib.regex_tools import s
+from regex_lib.regex_tools import s
 
 #
 class Table_normalizer(object):

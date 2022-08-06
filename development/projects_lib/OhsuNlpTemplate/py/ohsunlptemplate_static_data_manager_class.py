@@ -90,8 +90,8 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_second_general_set.pkl'))
                 
-            #self._include_lists(docs_files, groups_files, [0])
-            self._include_lists(docs_files, groups_files, [1, 2, 3])
+            self._include_lists(docs_files, groups_files, [0])
+            #self._include_lists(docs_files, groups_files, [1, 2, 3])
             
             evaluation_docs_file = \
                 os.path.join(training_data_dir, 'training_docs_evaluation.pkl')
@@ -106,8 +106,8 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
                 os.path.join(training_data_dir, 'training_groups_first_general_set.pkl')
             with open(trainng_groups_first_general_set_file, 'rb') as f:
                 patient_list = pickle.load(f)
-            #for idx in [ 0 ]:
-            for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
+            for idx in [ 0 ]:
+            #for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
                 self.static_data['patient_list'].extend(patient_list[idx])
             self.static_data['patient_list'] = \
                 list(set(self.static_data['patient_list']))

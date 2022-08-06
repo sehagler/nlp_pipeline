@@ -9,7 +9,7 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_text_normalization_lib.tool_lib.regex_tools import regex_from_list
+from regex_lib.regex_tools import regex_from_list
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 from tool_lib.py.query_tools_lib.cancer_tools \
@@ -67,7 +67,8 @@ class Postprocessor(Postprocessor_base):
     def _process_cancer_stage_text_list(self, cancer_stage_text_list):
         numeric_stage_context_regex = \
             re.compile('(?i)stage (.* )?' + numeric_stage())
-        numeric_stage_regex = ('(?i)(?<=[ ^])([0-9]+|[IV]+)')
+        numeric_stage_regex = \
+            ('[0-9IV]{1,3}([A-Za-z]([0-9])?)?((-|/)[0-9IV]{1,3}([A-Za-z]([0-9])?)?)?')
         nonnumeric_stage_context_regex = \
             re.compile('(?i)' + nonnumeric_stage() + ' stage')
         nonnumeric_stage_regex = \
@@ -82,6 +83,14 @@ class Postprocessor(Postprocessor_base):
                                                  self._map_to_cancer_stage,
                                                  cancer_stage_text_raw)
             for item in stage_val_list:
+                if '-' in item:
+                    item_list = item.split('-')
+                    item0 = re.match('(?i)([0-9]+|[IV]+)', item_list[0])
+                    item1 = re.match('(?i)([0-9]+|[IV]+)', item_list[1])
+                    item = item0.group(0) + '-' + item1.group(0)
+                else:
+                    item = re.match('(?i)([0-9]+|[IV]+)', item)
+                    item = item.group(0)
                 cancer_stage_text_processed.append(item)
             stage_val_list = self._extract_value(nonnumeric_stage_context_regex, 
                                                  nonnumeric_stage_regex, None,

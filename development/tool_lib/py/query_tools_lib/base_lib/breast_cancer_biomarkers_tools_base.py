@@ -10,7 +10,7 @@ import os
 import re
 
 #
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import (
         article,
         be,

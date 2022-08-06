@@ -118,15 +118,15 @@ class Pipeline(object):
                 static_data['directory_manager'].cleanup_directory('linguamatics_i2e_preprocessing_data_out')
             self.process_manager.read_data()
             self.process_manager.preprocessor(password, start_idx, True)
-            self.process_manager.linguamatics_i2e_generate_resource_files()
-            self.process_manager.linguamatics_i2e_fix_queries()
-            self.process_manager.data_set_summary_info()
-            self.process_manager.linguamatics_i2e_preindexer()
-            self.process_manager.linguamatics_i2e_indexer()
-            self.process_manager.linguamatics_i2e_postindexer()
-            self.process_manager.ohsu_nlp_templates_setup()
-            self.process_manager.ohsu_nlp_templates_generate_AB_fields()
-            self.process_manager.ohsu_nlp_templates_push_AB_fields()
+        self.process_manager.data_set_summary_info()
+        self.process_manager.linguamatics_i2e_push_resources()
+        self.process_manager.linguamatics_i2e_indexer()
+        self.process_manager.linguamatics_i2e_postindexer()
+        self.process_manager.linguamatics_i2e_push_queries()
+        
+    #
+    def linguamatics_i2e_push_queries(self):
+        self.process_manager.linguamatics_i2e_push_queries()
             
     #
     def melax_clamp_run_pipeline(self):

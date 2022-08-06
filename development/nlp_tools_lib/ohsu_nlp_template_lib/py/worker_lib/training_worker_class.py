@@ -17,9 +17,10 @@ import random
 import re
 
 #
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import (
         article,
+        be,
         conjunction,
         nonword,
         preposition,
@@ -67,16 +68,6 @@ class Training_worker(Worker_base):
             template_list[i] = re.sub('\)', '\)', template_list[i])
             template_list[i] = re.sub('\.', '\.', template_list[i])
             template_list[i] = re.sub('\+', '\+', template_list[i])
-        return template_list
-        
-    #
-    def _finish_templates(self, template_list):
-        for i in range(len(template_list)):
-            template_list[i] = \
-                re.sub(self.blank_space, '[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*', template_list[i])
-            template_list[i] = \
-                '(?i)([^A-Za-z0-9 ]+[ \n\r])*' + template_list[i] + '([ \n\r][^A-Za-z0-9 ]+)*'
-        template_list.append('(?i)([^A-Za-z0-9 ]+[ \n\r])*[^A-Za-z0-9 ]+')
         return template_list
     
     #
@@ -159,13 +150,14 @@ class Training_worker(Worker_base):
         AB_field_list = \
             self._sort_template_outline(AB_field_list)
         '''
+        
         #AB_field_list = self._generate_phrases(AB_field_list)
 
         #
-        if '' in AB_field_list:
-            AB_field_list.remove('')
         AB_field_list = \
-            self._finish_templates(AB_field_list)
+            self._replace_blank_spaces(AB_field_list)
+        AB_field_list = \
+            self._sort_template_outline(AB_field_list)
         #
 
         return AB_field_list 
@@ -232,9 +224,18 @@ class Training_worker(Worker_base):
             template_list[i] = \
                 self._remove_newlines(template_list[i])
         return template_list
+            
+    #
+    def _replace_blank_spaces(self, template_list):
+        for i in range(len(template_list)):
+            template_list[i] = \
+                re.sub(self.blank_space, '[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*', template_list[i])
+        return template_list
     
     #
     def _sort_template_outline(self, template_list):
+        if '' in template_list:
+            template_list.remove('')
         template_list = list(set(template_list))
         for i in range(len(template_list)):
             template_list[i] = template_list[i].split(self.blank_space)
@@ -325,6 +326,9 @@ class Training_worker(Worker_base):
         primary_template_list = \
             self._generalize_grammatical_class_template_outline(primary_template_list,
                                                                 article())
+        primary_template_list = \
+            self._generalize_grammatical_class_template_outline(primary_template_list,
+                                                                be())
         primary_template_list = \
             self._generalize_grammatical_class_template_outline(primary_template_list,
                                                                 conjunction())

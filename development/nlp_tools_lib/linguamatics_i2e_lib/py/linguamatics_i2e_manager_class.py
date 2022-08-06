@@ -622,9 +622,9 @@ class Linguamatics_i2e_manager(object):
         print("Task status is %s" % monitor.get_status())
         
     #
-    def preindexer(self, project_name, keywords_file, preprocessing_data_out_dir, 
-                   processing_data_dir, source_data_dir, max_files_per_zip,
-                   root_dir_flg):
+    def push_resources(self, project_name, keywords_file, preprocessing_data_out_dir, 
+                       processing_data_dir, source_data_dir, max_files_per_zip,
+                       root_dir_flg):
         #directory_manager = self.static_data['directory_manager']
         #preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         self._generate_source_data_file(project_name, preprocessing_data_out_dir,
@@ -655,6 +655,15 @@ class Linguamatics_i2e_manager(object):
                     self.create_resource(None, resource_type, filename)
                 except Exception as e:
                     print(e)
+        try:
+            bundle = os.path.join(processing_data_dir,
+                                  self.linguamatics_i2e_file_manager.query_bundle_filename())
+            self.upload_bundle(bundle)
+        except Exception as e:
+            print(e)
+            
+    #
+    def push_queries(self, processing_data_dir):
         try:
             bundle = os.path.join(processing_data_dir,
                                   self.linguamatics_i2e_file_manager.query_bundle_filename())

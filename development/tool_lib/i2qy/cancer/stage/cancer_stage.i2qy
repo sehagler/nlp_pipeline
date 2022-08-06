@@ -3,6 +3,7 @@ creationDate: '2020-10-01 17:54:02'
 query:
   document:
   - alternative:
+      findMatches: longestOnly
       id: alternative1
       of:
       - phrase:
@@ -21,7 +22,7 @@ query:
                     quantifier: {minimum: 0, maximum: 1}
               - ISS
               - path
-          - stage
+          - word: {text: stage, matchType: Raw regexp}
           - phrase:
               displayChildren: false
               quantifier: {minimum: 0, maximum: 1}
@@ -30,7 +31,7 @@ query:
                 - {class: /vg}
                 - is
               - now
-          - word: {text: '[0-9IV]{1,3}([A-Za-z]([0-9])?)?((-|/)[0-9IV]{1,3}([A-Za-z]([0-9])?)?)?', matchType: Regexp, morphoVariants: true}
+          - word: {text: '[0-9IV]{1,3}([A-Za-z]([0-9])?)?((-|/)[0-9IV]{1,3}([A-Za-z]([0-9])?)?)?', matchType: Regexp}
       - phrase:
           displayChildren: false
           of:
@@ -50,7 +51,7 @@ query:
                     quantifier: {minimum: 0, maximum: 1}
               - ISS
               - path
-          - stage
+          - word: {text: stage, matchType: Raw regexp}
       - phrase: [in, situ]
 output:
   columns:

@@ -10,7 +10,7 @@ import re
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import amend, clinician, clinician_reviewed, history, patient, review_item, s
 from tool_lib.py.structure_tools_lib.section_header_structure_tools \
     import Section_header_structure_tools

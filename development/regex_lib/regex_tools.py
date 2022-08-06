@@ -108,7 +108,8 @@ def patient():
 
 #
 def preposition():
-    preposition_list = [ 'after', 'at', 'for', 'in', 'of', 'on', 'to', 'with' ]
+    preposition_list = [ 'after', 'at', 'for', 'from', 'in', 'of', 'on', 'to',
+                         'with' ]
     return regex_from_list(preposition_list)
 
 #

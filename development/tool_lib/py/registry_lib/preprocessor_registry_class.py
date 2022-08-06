@@ -10,7 +10,7 @@ import os
 import re
 
 #
-from nlp_text_normalization_lib.tool_lib.regex_tools \
+from regex_lib.regex_tools \
     import article, be, note_label, s, specimen_label
 from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base

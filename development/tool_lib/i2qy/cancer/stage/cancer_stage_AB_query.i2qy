@@ -8,6 +8,9 @@ query:
       multiSentence: true
       of:
       - link: {path: cancer_type_query.i2qy, id: link1}
+      - link:
+          path: /api;type=saved_query/__private__/haglers/General/tools/punctuation_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
       - phrase:
           quantifier: {minimum: 0, maximum: 1}
           showInDefaultOutput: false
@@ -19,6 +22,10 @@ query:
               of:
               - link: {path: cancer_stage.i2qy}
               - link: {path: cancer_type_query.i2qy}
+              - class: {boundaries: Exact, snid: nlm_plus.0, pt: Diseases and Symptoms}
+      - link:
+          path: /api;type=saved_query/__private__/haglers/General/tools/punctuation_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
       - link: {path: cancer_stage.i2qy, id: link3}
 output:
   columns:
