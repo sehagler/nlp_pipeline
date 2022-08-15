@@ -12,6 +12,7 @@ query:
           path: /api;type=saved_query/__private__/haglers/General/tools/punctuation_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
       - phrase:
+          multiSentence: true
           quantifier: {minimum: 0, maximum: 1}
           showInDefaultOutput: false
           of:

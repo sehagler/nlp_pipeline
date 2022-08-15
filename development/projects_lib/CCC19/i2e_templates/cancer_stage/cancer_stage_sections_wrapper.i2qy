@@ -22,24 +22,24 @@ query:
           snid: hc.section_body
           pt: Section Body
           where:
-          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/stage/stage_filter_query.i2qy, id: link1}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/stage/stage_query_context_0.i2qy, id: link2}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link1.alternative1.col0
+  - id: link2.link9.alternative2.col0
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col1
+    linkItemId: link9.link2
+  - id: link2.link9.alternative2.col1
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col2
+    linkItemId: link9.link2
+  - id: link2.link9.alternative2.col2
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col3
+    linkItemId: link9.link2
+  - id: link2.phrase1
     itemOptions: {}
-    linkItemId: link1
+    linkItemId: link2
   useOutputEditor: true
 creator: haglers

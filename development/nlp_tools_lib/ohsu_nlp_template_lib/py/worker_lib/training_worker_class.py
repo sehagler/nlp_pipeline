@@ -151,14 +151,16 @@ class Training_worker(Worker_base):
             self._sort_template_outline(AB_field_list)
         '''
         
-        #AB_field_list = self._generate_phrases(AB_field_list)
+        AB_field_list = self._generate_phrases(AB_field_list)
 
+        '''        
         #
         AB_field_list = \
             self._replace_blank_spaces(AB_field_list)
         AB_field_list = \
             self._sort_template_outline(AB_field_list)
         #
+        '''
 
         return AB_field_list 
     

@@ -574,6 +574,7 @@ class Linguamatics_i2e_manager(object):
                 response = 'FAILED_TO_CONNECT'
         return response
     
+    '''
     #
     def insert_field(self, sub_query_file, alternative_file):
         sub_query_uri = '/api;type=saved_query/__private__/' + sub_query_file
@@ -590,6 +591,40 @@ class Linguamatics_i2e_manager(object):
             word_item = document.add_word(item)
             word_item.match_type = "Raw regexp"
             query.move_item(word_item, new_parent=alternative)
+        query_source = query.to_string()
+        request_maker = RequestMaker(self.conn)
+        task_launcher = TaskLauncher(self.conn)
+        request_config = RequestConfiguration()
+        result = request_maker.update_resource(sub_query,
+                                               EASL_MIME_TYPE,
+                                               query_source, request_config)
+    '''
+    
+    #
+    def insert_field(self, sub_query_file, alternative_file):
+        sub_query_uri = '/api;type=saved_query/__private__/' + sub_query_file
+        sub_query = Resource(sub_query_uri)
+        filename = alternative_file
+        if filename:
+            with open(filename) as f:
+                alternative_source = f.read()
+        alternative_list = ast.literal_eval(alternative_source)
+        query = i2e.easl.query.Query(5.5)
+        document = query.root  
+        alternative = document.add_alternative()
+        for item in alternative_list:
+            if isinstance(item, str):
+                word_item = document.add_word(item)
+                word_item.match_type = "Raw regexp"
+                query.move_item(word_item, new_parent=alternative)
+            elif isinstance(item, list):
+                phrase_item = document.add_phrase()
+                phrase_item.multi_sentence = True
+                for sub_item in item:
+                    word_item = document.add_word(sub_item)
+                    word_item.match_type = "Raw regexp"
+                    query.move_item(word_item, new_parent=phrase_item)
+                query.move_item(phrase_item, new_parent=alternative)
         query_source = query.to_string()
         request_maker = RequestMaker(self.conn)
         task_launcher = TaskLauncher(self.conn)

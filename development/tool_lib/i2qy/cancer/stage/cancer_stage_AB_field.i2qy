@@ -1,28 +1,339 @@
 version: 6.3
-creationDate: '2022-08-05 13:13:08'
+creationDate: '2022-08-08 10:45:15'
 query:
   document:
   - alternative:
-    - word: {text: '[A-Za-z0-9]+([\-/][A-Za-z0-9]+)?', matchType: Raw regexp}
-    - word:
-        text: "[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?"
-        matchType: Raw regexp
-    - word:
-        text: "[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?"
-        matchType: Raw regexp
-    - word:
-        text: "now[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)"
-        matchType: Raw regexp
-    - word:
-        text: "now[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?"
-        matchType: Raw regexp
-    - word:
-        text: "[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)"
-        matchType: Raw regexp
-    - word:
-        text: "[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(and|or)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(an?|that|the|these|this|those)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*down[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(an?|that|the|these|this|those)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HE_SHE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*had[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(and|or)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HE_SHE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*had"
-        matchType: Raw regexp
-    - word:
-        text: "(after|at|for|from|in|of|on|to|with)[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*PHI_HE_SHE[ \n\r]([^A-Za-z0-9 ]+[ \n\r])*(am|are|be|been|being|is|was|were)"
-        matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(and|or)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(an?|that|the|these|this|those)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*down([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(an?|that|the|these|this|those)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HE_SHE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*had([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HER_HIM_HIS([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(and|or)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HE_SHE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*had([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*now([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_DATE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*PHI_HE_SHE([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(am|are|be|been|being|is|was|were)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*now([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
 creator: haglers

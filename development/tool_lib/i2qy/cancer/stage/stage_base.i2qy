@@ -11,9 +11,7 @@ query:
           - alternative:
               quantifier: {minimum: 0, maximum: 1}
               of:
-              - phrase:
-                  displayChildren: false
-                  of: [at, least]
+              - alternative: ['>', <, '~']
               - metastatic
           - stage
           - phrase:
@@ -43,7 +41,7 @@ query:
           of:
           - alternative:
               view: {height: 188, width: 106}
-              of: [early, end, extensive, severe]
+              of: [advanced, early, end, extensive, mild, moderate, severe]
           - stage
       - phrase:
           displayChildren: false
