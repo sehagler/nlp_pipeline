@@ -104,7 +104,7 @@ query:
             - for
             - nuclei
       - link:
-          path: ../../../../tools/parenthetical_query.i2qy
+          path: /api;type=saved_query/__private__/haglers/General/tools/parenthetical_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:

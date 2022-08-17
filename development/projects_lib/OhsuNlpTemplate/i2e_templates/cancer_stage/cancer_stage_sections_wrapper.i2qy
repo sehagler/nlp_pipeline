@@ -21,17 +21,24 @@ output:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link1.link1.alternative1.col0
+  - title: Excerpt
+    id: link1.link1.alternative1.col0
     itemOptions: {}
     linkItemId: link1.link1
-  - id: link1.link1.alternative1.col1
+  - title: Cancer Stage
+    id: link1.link1.alternative1.col1
     itemOptions: {}
     linkItemId: link1.link1
-  - id: link1.link1.alternative1.col2
+  - title: Histologic Type
+    id: link1.link1.alternative1.col2
     itemOptions: {}
     linkItemId: link1.link1
-  - title: extract
-    id: link1.value1
+  - title: Cancer Site
+    id: link1.link1.alternative1.col3
+    itemOptions: {}
+    linkItemId: link1.link1
+  - title: Snippet
+    id: link1.value2
     columnOptions: [Empty]
     isValueColumn: true
     linkItemId: link1

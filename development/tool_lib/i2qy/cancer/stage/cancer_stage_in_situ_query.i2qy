@@ -16,6 +16,7 @@ query:
               of:
               - alternative:
                 - macro:
+                    boundaries: Exact
                     snid: ohsu_cancer_in_situ_initialisms.cancer_in_situ_initialism
                     pt: Cancer In Situ Initialism
                     of:
@@ -28,6 +29,9 @@ output:
   - {id: phrase3}
   - {id: phrase4}
   - {id: phrase1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers

@@ -5,7 +5,6 @@ query:
   - link: {path: cancer_stage_query.i2qy, id: link1}
   - phrase:
       findMatches: longestOnly
-      id: phrase1
       includeInQuery: false
       maxWordGap: -1
       multiSentence: true
@@ -44,23 +43,25 @@ query:
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - {id: phrase1}
-  - title: Extract
+  - title: Excerpt
     id: link1.alternative1.col0
     itemOptions: {}
     linkItemId: link1
-  - title: Cancer Stage..
+  - title: Cancer Stage
     id: link1.alternative1.col1
     itemOptions: {}
     linkItemId: link1
-  - title: Cancer Type
+  - title: Histologic Type
     id: link1.alternative1.col2
     itemOptions: {}
     linkItemId: link1
-  - title: Neighborhood
-    id: value1
+  - title: Tumor Site
+    id: link1.alternative1.col3
+    itemOptions: {}
+    linkItemId: link1
+  - title: Snippet
+    id: value2
     columnOptions: [Empty]
     isValueColumn: true
-  columnLocations: [1, 2, 3, 4, 0]
   useOutputEditor: true
 creator: haglers

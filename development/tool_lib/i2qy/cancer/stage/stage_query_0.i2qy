@@ -1356,5 +1356,7 @@ output:
     itemOptions: {}
   - id: alternative2.col2
     itemOptions: {}
+  - id: alternative2.col3
+    itemOptions: {}
   useOutputEditor: true
 creator: haglers

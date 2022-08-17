@@ -1,0 +1,37 @@
+version: 6.3
+creationDate: '2020-09-22 00:02:55'
+query:
+  document:
+  - phrase:
+      findMatches: longestOnly
+      id: phrase2
+      of:
+      - alternative:
+        - macro:
+            snid: ohsu_cancer_in_situ_initialisms.cancer_in_situ_initialism
+            pt: Cancer In Situ Initialism
+            of:
+            - alternative:
+                macroPt: Cancer In Situ Initialism
+                macroSnid: ohsu_cancer_in_situ_initialisms.cancer_in_situ_initialism
+                of: [DCIS, LCIS, SCCIS, TCCIS]
+        - phrase:
+            displayChildren: false
+            of:
+            - alternative:
+              - link: {path: cancer_terminology.i2qy}
+              - macro:
+                  snid: ohsu_cancer_types.cancer_type
+                  pt: Cancer Type
+                  of:
+                  - alternative:
+                      macroPt: Cancer Type
+                      macroSnid: ohsu_cancer_types.cancer_type
+                      of: [adeno, adenoCA, adenocarcinoma, CA, cancer, carcinoma, melanoma]
+            - in
+            - situ
+output:
+  columns:
+  - {id: phrase2}
+  useOutputEditor: true
+creator: haglers

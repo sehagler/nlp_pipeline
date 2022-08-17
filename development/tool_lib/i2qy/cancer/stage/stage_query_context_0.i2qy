@@ -2,10 +2,9 @@ version: 6.3
 creationDate: '2020-06-16 19:40:40'
 query:
   document:
-  - link: {path: stage_query_0.i2qy, id: link9}
+  - link: {path: stage_query_0.i2qy, id: link9, showInDefaultOutput: false}
   - phrase:
       findMatches: longestOnly
-      id: phrase1
       maxWordGap: -1
       multiSentence: true
       view: {height: 336, width: 1043}
@@ -22,7 +21,7 @@ query:
               wordGapRestricted: false
               of:
               - {class: /chunk}
-              - link: {path: stage_query_0.i2qy}
+              - link: {path: stage_query_0.i2qy, showInDefaultOutput: false}
               - {class: /chunk}
           - phrase:
               maxWordGap: -1
@@ -30,29 +29,40 @@ query:
               wordGapRestricted: false
               of:
               - {class: /chunk}
-              - link: {path: stage_query_0.i2qy}
+              - link: {path: stage_query_0.i2qy, showInDefaultOutput: false}
           - phrase:
               maxWordGap: -1
               multiSentence: true
               wordGapRestricted: false
               of:
-              - link: {path: stage_query_0.i2qy}
+              - link: {path: stage_query_0.i2qy, showInDefaultOutput: false}
               - {class: /chunk}
-          - link: {path: stage_query_0.i2qy}
+          - link: {path: stage_query_0.i2qy, showInDefaultOutput: false}
       - sentence:
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - {id: phrase1}
-  - id: link9.alternative2.col0
+  - title: Snippet
+    id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - title: Extract
+    id: link9.alternative2.col0
     itemOptions: {}
     linkItemId: link9
-  - id: link9.alternative2.col1
+  - title: Cancer Stage
+    id: link9.alternative2.col1
     itemOptions: {}
     linkItemId: link9
-  - id: link9.alternative2.col2
+  - title: Histologic Type
+    id: link9.alternative2.col2
     itemOptions: {}
     linkItemId: link9
-  columnLocations: [1, 2, 3, 0]
+  - title: Tumor Site
+    id: link9.alternative2.col3
+    itemOptions: {}
+    linkItemId: link9
+  columnLocations: [1, 2, 3, 4, 0]
+  outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers

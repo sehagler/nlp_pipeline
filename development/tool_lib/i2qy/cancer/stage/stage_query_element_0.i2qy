@@ -9,7 +9,7 @@ query:
       maxSentenceGap: -1
       multiSentence: true
       of:
-      - link: {path: cancer_type_query.i2qy, id: link1}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/histology/cancer_histology_query.i2qy, id: link4}
       - phrase:
           maxSentenceGap: -1
           maxWordGap: 10
@@ -24,19 +24,22 @@ query:
           - alternative:
               quantifier: {minimum: 0, maximum: 0}
               of:
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/histology/cancer_histology_query.i2qy}
               - link: {path: cancer_stage.i2qy}
-              - link: {path: cancer_type_query.i2qy}
               - class: {boundaries: Exact, snid: nlm_plus.0, pt: Diseases and Symptoms}
       - link: {path: cancer_stage.i2qy, id: link5}
 output:
   columns:
-  - id: link1.alternative1
-    itemOptions: {}
-    linkItemId: link1
   - id: link5.alternative1
     itemOptions: {}
     linkItemId: link5
   - {id: phrase1}
-  columnLocations: [2, 1, 0]
+  - id: link4.alternative1.col0
+    itemOptions: {}
+    linkItemId: link4
+  - id: link4.alternative1.col1
+    itemOptions: {}
+    linkItemId: link4
+  columnLocations: [1, 0, 2, 3]
   useOutputEditor: true
 creator: haglers

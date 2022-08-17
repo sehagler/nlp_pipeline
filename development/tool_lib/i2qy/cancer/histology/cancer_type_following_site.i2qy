@@ -6,7 +6,6 @@ query:
       boundaries: Exact
       displayChildren: false
       findMatches: shortestOnly
-      id: phrase1
       of:
       - phrase:
           quantifier: {minimum: 0, maximum: 1}
@@ -263,12 +262,21 @@ query:
                   - superomedial
                   - superoposterial
           - alternative:
-            - class: {excludeIfBetterMatch: false, ontologyNodeRangeType: lexical, snid: icdo.topography, pt: ICD-O Topography}
-            - class: {excludeIfBetterMatch: false, snid: nlm.A, pt: Anatomy Branch}
-            - class: {excludeIfBetterMatch: false, snid: nci.C12219, pt: 'Anatomic Structure, System, or Substance'}
-      - link: {path: cancer_type.i2qy}
+              columnOptions: [PT]
+              id: alternative1
+              of:
+              - class: {excludeIfBetterMatch: false, ontologyNodeRangeType: lexical, snid: icdo.topography, pt: ICD-O Topography}
+              - class: {excludeIfBetterMatch: false, snid: nlm.A, pt: Anatomy Branch}
+              - class: {excludeIfBetterMatch: false, snid: nci.C12219, pt: 'Anatomic Structure, System, or Substance'}
+              - colorectal
+      - link: {path: cancer_type.i2qy, id: link2}
 output:
   columns:
-  - {id: phrase1}
+  - {id: alternative1}
+  - id: link2.alternative1
+    itemOptions:
+      columnOptions: [Text]
+    linkItemId: link2
+  columnLocations: [1, 0]
   useOutputEditor: true
 creator: haglers

@@ -690,12 +690,14 @@ class Linguamatics_i2e_manager(object):
                     self.create_resource(None, resource_type, filename)
                 except Exception as e:
                     print(e)
+        '''
         try:
             bundle = os.path.join(processing_data_dir,
                                   self.linguamatics_i2e_file_manager.query_bundle_filename())
             self.upload_bundle(bundle)
         except Exception as e:
             print(e)
+        '''
             
     #
     def push_queries(self, processing_data_dir):

@@ -29,17 +29,26 @@ output:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link2.link9.alternative2.col0
+  - title: Extract
+    id: link2.link9.alternative2.col0
     itemOptions: {}
     linkItemId: link9.link2
-  - id: link2.link9.alternative2.col1
+  - title: Cancer Stage
+    id: link2.link9.alternative2.col1
     itemOptions: {}
     linkItemId: link9.link2
-  - id: link2.link9.alternative2.col2
+  - title: Histologic Type
+    id: link2.link9.alternative2.col2
     itemOptions: {}
     linkItemId: link9.link2
-  - id: link2.phrase1
+  - title: Tumor Site
+    id: link2.link9.alternative2.col3
     itemOptions: {}
+    linkItemId: link9.link2
+  - title: Snippet
+    id: link2.value1
+    columnOptions: [Empty]
+    isValueColumn: true
     linkItemId: link2
   useOutputEditor: true
 creator: haglers

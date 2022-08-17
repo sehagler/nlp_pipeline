@@ -498,10 +498,12 @@ class Process_manager(object):
                                                             max_files_per_zip)
         linguamatics_i2e_manager.fix_queries(general_queries_dir)
         linguamatics_i2e_manager.fix_queries(project_queries_dir)
-        linguamatics_i2e_manager.push_queries(processing_data_dir)
         self._ohsu_nlp_templates_setup()
         self._ohsu_nlp_templates_generate_AB_fields()
+        linguamatics_i2e_manager.login()
+        linguamatics_i2e_manager.push_queries(processing_data_dir)
         self._ohsu_nlp_templates_push_AB_fields()
+        linguamatics_i2e_manager.logout()
         
     #
     def melax_clamp_run_pipeline(self):

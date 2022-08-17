@@ -3,6 +3,8 @@ creationDate: '2020-08-05 01:37:33'
 query:
   document:
   - alternative:
+      boundaries: Exact
+      columnOptions: [Text]
       id: alternative1
       prioritization: span
       of:
