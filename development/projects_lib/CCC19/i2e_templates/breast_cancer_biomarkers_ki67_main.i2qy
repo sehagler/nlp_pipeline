@@ -1,7 +1,7 @@
 version: 6.3
 creationDate: '2018-10-26 16:08:10'
 multiquery:
-  Union: [/api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_main.i2qy]
+  Union: [/api;type=saved_query/__private__/haglers/General/queries/breast_cancer_biomarkers/breast_cancer_biomarkers_main.i2qy]
 output:
   columns:
   - id: region1
