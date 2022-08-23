@@ -1,0 +1,40 @@
+version: 6.3
+creationDate: '2021-06-29 22:50:58'
+query:
+  document:
+  - phrase:
+      findMatches: shortestOnly
+      maxWordGap: 10
+      of:
+      - word:
+          text: (
+          quantifier: {minimum: 0, maximum: 1}
+      - link: {path: ../breast_cancer_biomarkers_score_list.i2qy, id: link3}
+      - phrase:
+          maxWordGap: 10
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - word:
+              text: )
+              quantifier: {minimum: 0, maximum: 1}
+          - phrase:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
+              where:
+              - link:
+                  path: ../../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy
+                  quantifier: {minimum: 0, maximum: 0}
+          - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link4}
+output:
+  columns:
+  - id: link4.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link4
+  - id: link3.link4.phrase1
+    itemOptions: {}
+    linkItemId: link4.link3
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
+creator: haglers
