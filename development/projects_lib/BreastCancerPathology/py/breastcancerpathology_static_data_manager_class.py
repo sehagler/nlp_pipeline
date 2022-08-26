@@ -28,6 +28,7 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         
         self.static_data['document_identifiers'] = \
             [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
+        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         if 'performance_data_files' in self.static_data.keys():
             self.static_data['performance_data_files'].append('CCC19/test/CCC19.performance.json')
         self.static_data['queries_list'] = \

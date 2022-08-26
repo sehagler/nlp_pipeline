@@ -5,8 +5,8 @@ multiquery:
   - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
   - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
   - Union:
-    - /api;type=saved_query/__private__/haglers/General/cancer/cancer_stage/cancer_stage_wrappers/cancer_stage_specimens_wrapper.i2qy
-    - Subtraction: [/api;type=saved_query/__private__/haglers/General/cancer/cancer_stage/cancer_stage_wrappers/cancer_stage_sections_wrapper.i2qy, /api;type=saved_query/__private__/haglers/General/cancer/cancer_stage/cancer_stage_wrappers/cancer_stage_specimen_description_wrapper.i2qy]
+    - /api;type=saved_query/__private__/haglers/General/queries/cancer_stage/cancer_stage_wrappers/cancer_stage_specimens_wrapper.i2qy
+    - Subtraction: [/api;type=saved_query/__private__/haglers/General/queries/cancer_stage/cancer_stage_wrappers/cancer_stage_sections_wrapper.i2qy, /api;type=saved_query/__private__/haglers/General/queries/cancer_stage/cancer_stage_wrappers/cancer_stage_specimen_description_wrapper.i2qy]
 output:
   columns:
   - id: region1

@@ -43,8 +43,8 @@ class Ohsu_nlp_template_manager(Worker_base):
         return ret_val
     
     #
-    def run_template(self, template_manager, text_dict):
-        template_dict = template_manager.template()
+    def run_simple_template(self, template_manager, text_dict):
+        template_dict = template_manager.simple_template()
         primary_template_list = template_dict['primary_template_list']
         if 'secondary_template_list' in template_dict.keys():
             secondary_template_list = template_dict['secondary_template_list']
@@ -79,14 +79,14 @@ class Ohsu_nlp_template_manager(Worker_base):
                 if exc.errno != errno.EEXIST:
                     raise
         directory = os.path.dirname(filename)
-        with open(os.path.join(filename[:-4] + '_AB_field.txt'), 'w') as f:
+        with open(os.path.join(filename + '_AB_field.txt'), 'w') as f:
             f.write(str(self.AB_field_list))
-        with open(os.path.join(filename[:-4] + '_BA_field.txt'), 'w') as f:
+        with open(os.path.join(filename + '_BA_field.txt'), 'w') as f:
             f.write(str(self.BA_field_list))
 
     #
     def write_template_output(self, template_manager, data_dir, filename):
-        template_dict = template_manager.template()
+        template_dict = template_manager.simple_template()
         template_headers = template_dict['template_headers']
         header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
         for i in range(len(template_headers)):

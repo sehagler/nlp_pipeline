@@ -243,10 +243,7 @@ class Process_manager(object):
             self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
         project_AB_fields_dir = \
             directory_manager.pull_directory('ohsu_nlp_project_AB_fields_dir')
-        files = glob.glob(project_AB_fields_dir + '/**/*.py', recursive=True)
-        for i in range(len(files)):
-            files[i] = re.sub(project_AB_fields_dir + '/', '', files[i])
-        for file in files:
+        for file in os.listdir(project_AB_fields_dir):
             class_filename, extension = os.path.splitext(file)
             class_filename = re.sub('/', '.', class_filename)
             class_name, extension = os.path.splitext(os.path.basename(file))
@@ -272,27 +269,52 @@ class Process_manager(object):
             data_AB_fields_dir = \
                 directory_manager.pull_directory('AB_fields_dir')
             filename, extension = os.path.splitext(file)
-            filename = filename[:-23]
+            filename = re.sub('_AB_fields_template_manager_class', '', filename)
             ohsu_nlp_template_manager.write_ab_fields(data_AB_fields_dir,
-                                                      filename + '.txt')
+                                                      filename)
             
     #
     def _ohsu_nlp_templates_push_AB_fields(self):
         static_data = self.static_data_manager.get_static_data()
+        project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
         user = static_data['user']
         AB_fields_dir = \
             directory_manager.pull_directory('AB_fields_dir')
         linguamatics_i2e_manager = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
-        files = glob.glob(AB_fields_dir + '/**/*.txt', recursive=True)
-        for i in range(len(files)):
-            files[i] = re.sub(AB_fields_dir + '/', '', files[i])
+        project_AB_fields_dir = \
+            directory_manager.pull_directory('ohsu_nlp_project_AB_fields_dir')
         linguamatics_i2e_manager.login()
-        for file in files:
-            i2qy_file =  user + '/' + file[:-4] + '.i2qy'
-            txt_file = AB_fields_dir + '/' + file
-            linguamatics_i2e_manager.insert_field(i2qy_file, txt_file)
+        for file in os.listdir(project_AB_fields_dir):
+            class_filename, extension = os.path.splitext(file)
+            class_filename = re.sub('/', '.', class_filename)
+            class_name, extension = os.path.splitext(os.path.basename(file))
+            class_name = class_name[0].upper() + class_name[1:-6]
+            import_cmd = 'from projects_lib.' + project_name + \
+                         '.nlp_templates.AB_fields.' + class_filename + \
+                         ' import ' + class_name + ' as Template_manager'
+            exec(import_cmd, globals())
+            print('OHSU NLP Template Manager: ' + class_name)
+            extracts_file = static_data['extracts_file']
+            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                                         extracts_file)
+            xls_manager = \
+                self.xls_manager_registry[extracts_file]
+            xls_manager.read_training_data()
+            template_manager = Template_manager(self.static_data_manager,
+                                                xls_manager)
+            linguamatics_i2e_AB_fields_path = \
+                template_manager.pull_linguamatics_i2e_AB_fields_path()
+            data_AB_fields_dir = \
+                directory_manager.pull_directory('AB_fields_dir')
+            filename, extension = os.path.splitext(file)
+            filename = re.sub('_AB_fields_template_manager_class', '', filename)
+            for field in [ '_AB_field', '_BA_field' ]:
+                i2qy_file =  user + '/' + linguamatics_i2e_AB_fields_path + \
+                             '/' + filename + field + '.i2qy'
+                txt_file = AB_fields_dir + '/' + filename + field + '.txt'
+                linguamatics_i2e_manager.insert_field(i2qy_file, txt_file)
         linguamatics_i2e_manager.logout()
         
     #
@@ -553,10 +575,10 @@ class Process_manager(object):
             print('OHSU NLP Template Manager: ' + class_name)
             template_manager = Template_manager(self.static_data_manager)
             ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.run_template(template_manager, 
-                                                   self.template_text_dict)
+            ohsu_nlp_template_manager.run_simple_template(template_manager, 
+                                                          self.template_text_dict)
             filename, extension = os.path.splitext(file)
-            filename = re.sub('_template_manager_class', '', filename)
+            filename = re.sub('_simple_template_manager_class', '', filename)
             ohsu_nlp_template_manager.write_template_output(template_manager,
                                                             data_dir,
                                                             filename + '.csv')

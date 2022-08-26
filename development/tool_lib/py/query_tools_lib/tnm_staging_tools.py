@@ -414,7 +414,7 @@ def t_stage_template():
     return t_stage_tmplt_1_list, t_stage_tmplt_2_list, t_stage_tmplt_3_list
 
 #
-def template():
+def simple_template():
     tmplt_prefix = '(?<![A-Za-z0-9])'
     tmplt_suffix = '(?![A-Za-z0-9])'
     t_stage_tmplt_1_list, t_stage_tmplt_2_list, t_stage_tmplt_3_list = \
