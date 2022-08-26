@@ -26,18 +26,15 @@ from regex_lib.regex_tools \
         preposition,
         word
     )
-from nlp_tools_lib.ohsu_nlp_template_lib.py.worker_lib.worker_base_class \
-    import Worker_base
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_json_file
 
 #
-class Training_worker(Worker_base):
+class Training_worker(object):
     
     #
     def __init__(self, static_data_manager, template_manager, metadata_manager,
                  data_dir, text_dict):
-        Worker_base.__init__(self)
         self.static_data_manager = static_data_manager
         self.template_manager = template_manager
         self.metadata_manager = metadata_manager
@@ -219,6 +216,12 @@ class Training_worker(Worker_base):
         validation_data = \
             self.xls_manager_registry[filename].read_validation_data()
         return validation_data
+    
+    #
+    def _remove_newlines(self, text):
+        text = re.sub('\n', ' ', text)
+        text = re.sub(' +', ' ', text)
+        return text
     
     #
     def _remove_newlines_template_outline(self, template_list):

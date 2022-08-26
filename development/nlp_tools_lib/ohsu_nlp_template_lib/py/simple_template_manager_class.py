@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May  6 15:55:10 2022
+Created on Fri Aug 26 12:10:43 2022
 
 @author: haglers
 """
 
 #
+import csv
 import datetime
 import itertools
+import os
 import re
 
 #
-class Worker_base(object):
+class Simple_template_manager(object):
     
     #
     def __init__(self):
@@ -190,3 +192,33 @@ class Worker_base(object):
             for idx in idxs:
                 del data_list_tmp[idx]
         return data_list_out
+    
+    #
+    def clear_template_output(self):
+        self.template_output = []
+        
+    #
+    def run_template(self, template_manager, text_dict):
+        template_dict = template_manager.simple_template()
+        primary_template_list = template_dict['primary_template_list']
+        if 'secondary_template_list' in template_dict.keys():
+            secondary_template_list = template_dict['secondary_template_list']
+        else:
+            secondary_template_list = []
+        template_sections_list = template_dict['sections_list']
+        self._apply_template(primary_template_list, secondary_template_list,
+                             template_sections_list, text_dict)
+        
+    #
+    def write_template_output(self, template_manager, data_dir, filename):
+        template_dict = template_manager.simple_template()
+        template_headers = template_dict['template_headers']
+        header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
+        for i in range(len(template_headers)):
+            header.append(template_headers[i])
+        header.append('Snippet')
+        header.append('Coords')
+        with open(os.path.join(data_dir, filename), 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            writer.writerows(self.template_output)

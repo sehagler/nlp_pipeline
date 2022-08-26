@@ -261,11 +261,10 @@ class Process_manager(object):
             xls_manager.read_training_data()
             template_manager = Template_manager(self.static_data_manager,
                                                 xls_manager)
-            ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.train_template(template_manager,
-                                                     self.metadata_manager,
-                                                     self.template_data_dir,
-                                                     self.template_text_dict)
+            ohsu_nlp_template_manager.train_ab_fields(template_manager,
+                                                      self.metadata_manager,
+                                                      self.template_data_dir,
+                                                      self.template_text_dict)
             data_AB_fields_dir = \
                 directory_manager.pull_directory('AB_fields_dir')
             filename, extension = os.path.splitext(file)
@@ -574,12 +573,12 @@ class Process_manager(object):
             exec(import_cmd, globals())
             print('OHSU NLP Template Manager: ' + class_name)
             template_manager = Template_manager(self.static_data_manager)
-            ohsu_nlp_template_manager.clear_template_output()
+            ohsu_nlp_template_manager.clear_simple_template_output()
             ohsu_nlp_template_manager.run_simple_template(template_manager, 
                                                           self.template_text_dict)
             filename, extension = os.path.splitext(file)
             filename = re.sub('_simple_template_manager_class', '', filename)
-            ohsu_nlp_template_manager.write_template_output(template_manager,
+            ohsu_nlp_template_manager.write_simple_template_output(template_manager,
                                                             data_dir,
                                                             filename + '.csv')
         
