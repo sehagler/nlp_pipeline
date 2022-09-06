@@ -28,7 +28,6 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
         
         self.static_data['document_identifiers'] = \
             [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
-        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         if 'performance_data_files' in self.static_data.keys():
             self.static_data['performance_data_files'].append('CCC19/test/CCC19.performance.json')
         self.static_data['queries_list'] = \
@@ -97,6 +96,8 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
                                                             'DORR_HAGLER_NLP_PATH_RESULTS_20211115_114000.XML' ]
             
             #
+            data_set_flgs = [ 'testing', 'training' ]
+            data_set_flg = data_set_flgs[0]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':
@@ -112,7 +113,10 @@ class BreastCancerPathology_static_data_manager(Static_data_manager):
             groups_files = []
             groups_files.append(os.path.join(training_data_dir, 'training_groups.pkl'))
                 
-            self._include_lists(docs_files, groups_files, [1])
+            if data_set_flg == 'training':
+                self._include_lists(docs_files, groups_files, [0])
+            elif data_set_flg == 'testing':
+                self._include_lists(docs_files, groups_files, [1])
             
             raw_data_dir = \
                 self.static_data['directory_manager'].pull_directory('raw_data_dir')

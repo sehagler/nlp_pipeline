@@ -23,12 +23,13 @@ from tool_lib.py.query_tools_lib.cancer_tools \
 class AB_fields_template_manager(object):
     
     #
-    def __init__(self, static_data_manager, xls_manager):
+    def __init__(self, static_data_manager):
         self.static_data_manager = static_data_manager
-        self.xls_manager = xls_manager
+        self.xls_manager = None
         self._get_secondary_template_list()
-        self.linguamatics_i2e_AB_fields_path = None
         self.blank_space = ' NLP_BLANK_SPACE '
+        self.linguamatics_i2e_AB_fields_path = None
+        self.training_data_file = None
     
     #
     def _get_initialisms(self):
@@ -95,9 +96,17 @@ class AB_fields_template_manager(object):
         return self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
     
     #
+    def pull_training_data_file(self):
+        return self.training_data_file
+    
+    #
     def push_primary_template_list(self, AB_field_list, BA_field_list):
         self.AB_field_list = AB_field_list
         self.BA_field_list = BA_field_list
+        
+    #
+    def push_xls_manager(self, xls_manager):
+        self.xls_manager = xls_manager
         
     #
     def training_template(self):

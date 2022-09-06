@@ -170,6 +170,7 @@ class Performance_data_manager(object):
                     data_item = data_tmp
                 #data_values.append(tuple(data_item))
                 data_values.extend(data_item)
+        data_values = list(set(data_values))
         if len(data_values) > 0:
             
             ###
@@ -182,18 +183,21 @@ class Performance_data_manager(object):
             data_values = []
             data_values.append(data_values_tuple)
         data_values = [tuple(i) for i in set(tuple(i) for i in data_values)]
-        data_value = []
+        data_value = []      
         if section_key_list is not None:  
             data_value = data_values
         else:
             if len(data_values) > 0:
                 if mode_flg == 'multiple_values':
+                    data_value = data_values
+                    '''
                     if len(data_values[0]) > 0:
-                        data_tmp = data_values[0][0].split(', ')
+                        data_tmp = data_values[0].split(', ')
                         data_tmp = tuple(data_tmp)
                     else:
                         data_tmp = ''
-                elif mode_flg == 'single_value':
+                    '''
+                if mode_flg == 'single_value':
                     data_tmp = data_values
                 if isinstance(data_tmp, list):
                     data_tmp = tuple(data_tmp)
@@ -202,7 +206,6 @@ class Performance_data_manager(object):
                 data_value.append(data_tmp)
             else:
                 data_value = data_values
-        #data_value = list(set(data_value))
         data_value = [tuple(i) for i in set(tuple(i) for i in data_value)]
         if len(data_value) > 0:
             if len(data_value[0]) > 1:
@@ -222,6 +225,7 @@ class Performance_data_manager(object):
         elif mode_flg == 'multiple_values':
             if len(data_value) == 0:
                 data_value = None
+
         return data_value
     
     #
@@ -288,7 +292,8 @@ class Performance_data_manager(object):
             for key in nlp_values.keys():
                 if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
                     if len(nlp_values[key][validation_datum_key]) > 1:
-                        nlp_values[key][validation_datum_key] = 'MANUAL_REVIEW',
+                        nlp_values[key][validation_datum_key] = \
+                            self.manual_review,
         return nlp_values
     
     #

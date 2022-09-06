@@ -40,13 +40,14 @@ query:
               of:
               - class: {snid: numerics.decimals, pt: Decimal}
               - class: {snid: numerics.integers, pt: Integer}
-          - word:
-              text: pack
-              morphoVariants: true
-              quantifier: {minimum: 0, maximum: 1}
           - alternative:
-            - word: {text: mo, morphoVariants: true}
-            - word: {text: yr, morphoVariants: true}
+            - phrase:
+              - word:
+                  text: pack
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+              - word: {text: mo, morphoVariants: true}
+            - ppy
           - alternative:
             - smoking
             - phrase:

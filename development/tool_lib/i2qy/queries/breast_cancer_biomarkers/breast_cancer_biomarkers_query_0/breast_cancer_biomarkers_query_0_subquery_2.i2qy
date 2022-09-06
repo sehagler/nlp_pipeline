@@ -46,6 +46,7 @@ output:
   - id: link2.link4.phrase1
     itemOptions: {}
     linkItemId: link4.link2
+  columnLocations: [1, 0]
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true

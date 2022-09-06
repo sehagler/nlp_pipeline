@@ -1,0 +1,69 @@
+version: 6.3
+creationDate: '2022-08-30 18:27:39'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - phrase:
+          showInDefaultOutput: false
+          of:
+          - macro:
+              snid: linguamatics_wc.WC_Negative_Word
+              pt: negative word
+              of:
+              - alternative:
+                  macroPt: negative word
+                  macroSnid: linguamatics_wc.WC_Negative_Word
+                  of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+          - alternative:
+            - phrase:
+              - phrase:
+                  maxWordGap: 3
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - {class: /word}
+                  - class:
+                      quantifier: {minimum: 0, maximum: 1}
+                      snid: /word
+                  where:
+                  - alternative:
+                      quantifier: {minimum: 0, maximum: 0}
+                      of:
+                      - link: {path: ../query_lib/tobacco_products_smoking.i2qy}
+              - smoker
+            - phrase:
+              - word: {text: smoke, morphoVariants: true}
+              - link: {path: ../query_lib/tobacco_products_smoking.i2qy}
+            - phrase:
+                displayChildren: false
+                of:
+                - word: {text: smoke, morphoVariants: true}
+                - hx
+            - smoked
+      - phrase:
+          displayChildren: false
+          of:
+          - word: {text: smoke, morphoVariants: true}
+          - ':'
+          - alternative:
+            - word: {text: deny, morphoVariants: true}
+            - phrase:
+              - macro:
+                  snid: linguamatics_wc.WC_Negative_Word
+                  pt: negative word
+                  of:
+                  - alternative:
+                      macroPt: negative word
+                      macroSnid: linguamatics_wc.WC_Negative_Word
+                      of: [aren't, can't, cannot, couldn't, didn't, doesn't, don't, hadn't, hasn't, haven't, isn't, mustn't, never, neither, 'no', nobody, none, nor, not, nothing, nowhere, oughtn't, shan't, shouldn't, wasn't, weren't, won't, wouldn't]
+              - word:
+                  text: use
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

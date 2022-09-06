@@ -52,7 +52,11 @@ class Style_normalizer(object):
         #self.text = \
         #    self.lambda_manager.space_correction_lambda_conversion('metastases', self.text, 'ets')
         self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('months', self.text, 'MOS')
+        self.text = \
             self.lambda_manager.space_correction_lambda_conversion('month', self.text, 'MO')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('patients', self.text, 'PTS')
         self.text = \
             self.lambda_manager.space_correction_lambda_conversion('patient', self.text, 'PT')
         self.text = \
@@ -61,6 +65,12 @@ class Style_normalizer(object):
             self.lambda_manager.space_correction_lambda_conversion('resection', self.text, 'RSXN')
         self.text = \
             self.lambda_manager.space_correction_lambda_conversion('surgical procedure', self.text, 'S/P')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('weeks', self.text, 'WKS')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('week', self.text, 'WK')
+        self.text = \
+            self.lambda_manager.space_correction_lambda_conversion('years', self.text, 'YRS')
         self.text = \
             self.lambda_manager.space_correction_lambda_conversion('year', self.text, 'YR')
         self.text = \

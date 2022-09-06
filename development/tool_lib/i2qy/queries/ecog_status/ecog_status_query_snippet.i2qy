@@ -43,6 +43,7 @@ query:
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
+  - {id: phrase1, useColumnInResults: false}
   - id: link9.alternative1.col0
     itemOptions: {}
     linkItemId: link9
@@ -52,6 +53,6 @@ output:
   - id: link9.alternative1.col2
     itemOptions: {}
     linkItemId: link9
-  - {id: phrase1, useColumnInResults: false}
+  columnLocations: [1, 2, 3, 0]
   useOutputEditor: true
 creator: haglers

@@ -3,6 +3,7 @@ creationDate: '2022-08-25 16:21:01'
 query:
   document:
   - phrase:
+      findMatches: shortestOnly
       id: phrase1
       of:
       - link: {path: ../../cancer/ecog_status/ecog_test_name_query.i2qy, id: link1}
@@ -10,6 +11,12 @@ query:
           quantifier: {minimum: 0, maximum: 1}
           of:
           - link: {path: ecog_status_AB_fields/ecog_status_AB_field.i2qy}
+          where:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - link: {path: ../../cancer/ecog_status/ecog_score_query.i2qy}
+              - link: {path: ../../cancer/ecog_status/ecog_test_name_query.i2qy}
       - link: {path: ../../cancer/ecog_status/ecog_score_query.i2qy, id: link2}
 output:
   columns:
@@ -20,5 +27,6 @@ output:
     itemOptions: {}
     linkItemId: link2
   - {id: phrase1}
+  columnLocations: [2, 0, 1]
   useOutputEditor: true
 creator: haglers

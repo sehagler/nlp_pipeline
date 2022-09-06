@@ -27,9 +27,9 @@ class Postprocessor(Postprocessor_base):
             test_text_list = []
             context_text_list = []
             for item in text_list[0]:
-                if item[1] != '[0-9]+':
-                    ecog_score_text_list.append(item[1])
-                    test_text_list.append(item[2])
+                if item[2] != '[0-9]+':
+                    test_text_list.append(item[1])
+                    ecog_score_text_list.append(item[2])
                     context_text_list.append(item[3])
             value_list = []
             normalized_ecog_score_text_list = \
@@ -40,7 +40,6 @@ class Postprocessor(Postprocessor_base):
                                    normalized_ecog_score_text_list[i],
                                    test_text_list[i],
                                    context_text_list[i]))
-            value_list = list(set(value_list))
             value_dict_list = []
             for value in value_list:
                 value_dict = {}

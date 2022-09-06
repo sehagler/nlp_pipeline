@@ -28,5 +28,6 @@ output:
   - id: link3.link4.phrase1
     itemOptions: {}
     linkItemId: link4.link3
+  columnLocations: [1, 0]
   useOutputEditor: true
 creator: haglers

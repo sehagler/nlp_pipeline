@@ -68,6 +68,7 @@ class Preprocessing_worker(object):
                                                                              xml_metadata,
                                                                              processed_raw_text,
                                                                              processed_report_text)
+                        '''
                         melax_clamp_manager = \
                             self.nlp_tool_manager_registry.get_manager('melax_clamp_manager')
                         generate_data_file_ret_val = \
@@ -78,6 +79,7 @@ class Preprocessing_worker(object):
                         generate_data_file_ret_val = \
                             ohsu_nlp_template_manager.create_source_data_file(document_idx,
                                                                               processed_report_text)
+                        '''
                         now = datetime.datetime.now()
                         document_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
                         nlp_metadata['DOCUMENT_PREPROCESSING_START_DATETIME'] = \

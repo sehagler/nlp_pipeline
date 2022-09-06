@@ -1,0 +1,35 @@
+version: 6.3
+creationDate: '2020-05-27 17:07:22'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - link: {path: ../smoking_history_query_snippet.i2qy, id: link1}
+output:
+  columns:
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - {id: region1}
+  - id: link1.link5.phrase1
+    itemOptions: {}
+    linkItemId: link5.link1
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  columnLocations: [1, 0, 2, 3]
+  useOutputEditor: true
+creator: haglers

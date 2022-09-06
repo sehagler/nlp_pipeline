@@ -83,6 +83,8 @@ class Process_manager(object):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
         project_name = static_data['project_name']
+        project_AB_fields_dir = \
+            directory_manager.pull_directory('ohsu_nlp_project_AB_fields_dir')
         processing_base_dir = \
             directory_manager.pull_directory('processing_base_dir')
         raw_data_dir = \
@@ -105,11 +107,21 @@ class Process_manager(object):
                 file = os.path.join(raw_data_dir, key)
                 self.xml_manager_registry[file] = \
                     Xml_manager(static_data, file, password)
-        if 'extracts_file' in static_data.keys():
-            filename = static_data['extracts_file']
-            file = os.path.join(raw_data_dir, filename)
+        for file in os.listdir(project_AB_fields_dir):
+            class_filename, extension = os.path.splitext(file)
+            class_filename = re.sub('/', '.', class_filename)
+            class_name, extension = os.path.splitext(os.path.basename(file))
+            class_name = class_name[0].upper() + class_name[1:-6]
+            import_cmd = 'from projects_lib.' + project_name + \
+                         '.nlp_templates.AB_fields.' + class_filename + \
+                         ' import ' + class_name + ' as Template_manager'
+            exec(import_cmd, globals())
+            print('OHSU NLP Template Manager: ' + class_name)
+            template_manager = Template_manager(self.static_data_manager)
+            training_data_file = template_manager.pull_training_data_file()
+            file = os.path.join(raw_data_dir, training_data_file)
             self.xls_manager_registry[file] = \
-                Xls_manager(static_data, file, password)
+                Xls_manager(static_data, file, password) 
         if static_data['project_subdir'] == 'test' and \
            'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
@@ -253,14 +265,14 @@ class Process_manager(object):
                          ' import ' + class_name + ' as Template_manager'
             exec(import_cmd, globals())
             print('OHSU NLP Template Manager: ' + class_name)
-            extracts_file = static_data['extracts_file']
-            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
-                                         extracts_file)
-            xls_manager = \
-                self.xls_manager_registry[extracts_file]
+            template_manager = Template_manager(self.static_data_manager)
+            training_data_file = template_manager.pull_training_data_file()
+            training_data_file = \
+                os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                             training_data_file)
+            xls_manager = self.xls_manager_registry[training_data_file]
             xls_manager.read_training_data()
-            template_manager = Template_manager(self.static_data_manager,
-                                                xls_manager)
+            template_manager.push_xls_manager(xls_manager)
             ohsu_nlp_template_manager.train_ab_fields(template_manager,
                                                       self.metadata_manager,
                                                       self.template_data_dir,
@@ -295,14 +307,15 @@ class Process_manager(object):
                          ' import ' + class_name + ' as Template_manager'
             exec(import_cmd, globals())
             print('OHSU NLP Template Manager: ' + class_name)
-            extracts_file = static_data['extracts_file']
-            extracts_file = os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
-                                         extracts_file)
-            xls_manager = \
-                self.xls_manager_registry[extracts_file]
+            template_manager = Template_manager(self.static_data_manager)
+            '''
+            training_data_file = template_manager.pull_training_data_file()
+            training_data_file = \
+                os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                             training_data_file)
+            xls_manager = self.xls_manager_registry[training_data_file]
             xls_manager.read_training_data()
-            template_manager = Template_manager(self.static_data_manager,
-                                                xls_manager)
+            '''
             linguamatics_i2e_AB_fields_path = \
                 template_manager.pull_linguamatics_i2e_AB_fields_path()
             data_AB_fields_dir = \
