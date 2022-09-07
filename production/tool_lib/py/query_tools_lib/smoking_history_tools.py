@@ -10,8 +10,15 @@ from decimal import Decimal
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from regex_lib.regex_tools \
+    import (
+        colon,
+        slash
+    )
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
+    import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
@@ -72,3 +79,23 @@ class Postprocessor(Postprocessor_base):
             else:
                 value_list.append('MANUAL_REVIEW')
         return value_list
+    
+#
+class Preprocessor(Preprocessor_base):
+    
+    #
+    def run_preprocessor(self):
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('packs?(' + slash() + '| a | per )day', self.text, 'PPD')
+        self.text = \
+            self.lambda_manager.lambda_conversion(' ppd', self.text, ' PPD')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('packs?(' + slash() + '| a | per )wk', self.text, 'PPW')
+        self.text = \
+            self.lambda_manager.lambda_conversion(' ppw', self.text, ' PPW')
+        self.text = \
+            self.lambda_manager.initialism_lambda_conversion('packs?(' + slash() + '| a | per )yr', self.text, 'PPY')
+        self.text = \
+            self.lambda_manager.lambda_conversion(' ppy', self.text, ' PPY')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', self.text)

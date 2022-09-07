@@ -1,0 +1,28 @@
+version: 6.3
+creationDate: '2020-08-05 01:37:33'
+query:
+  document:
+  - alternative:
+      boundaries: Exact
+      columnOptions: [Text]
+      id: alternative1
+      prioritization: span
+      of:
+      - macro:
+          snid: ohsu_cancer_initialisms.cancer_initialism
+          pt: Cancer Initialism
+          of:
+          - alternative:
+              macroPt: Cancer Initialism
+              macroSnid: ohsu_cancer_initialisms.cancer_initialism
+              of: [ADH, AML, AMML, CHH, CLL, DC, DH, DLBCL, GIST, IDC, ILC, ITC, LC, LH, MM, NET, NSCLC, POAG, RCC, SCC, SCLC, SLL, SPC, TCC, UDH, UPS]
+      - word: {text: '(?i)[A-Za-z]+(ca(ncer)?s?|omas?)', matchType: Raw regexp}
+      - word: {text: '(?i)(ca(ncer)?s?|metastas(e|i)s|mets|nodules?|tumors?)', matchType: Raw regexp}
+      - CA
+      - alternative: [ISS, R-ISS]
+output:
+  columns:
+  - {id: alternative1}
+  outputSettings: {outputOrdering: alpha}
+  useOutputEditor: true
+creator: haglers

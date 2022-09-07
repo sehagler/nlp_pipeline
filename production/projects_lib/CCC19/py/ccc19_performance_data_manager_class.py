@@ -9,7 +9,7 @@ Created on Mon Mar 04 12:29:38 2019
 import os
 
 #
-from nlp_pipeline_lib.py.performance_data_lib.performance_data_manager_class \
+from nlp_pipeline_lib.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
 from tool_lib.py.query_tools_lib.base_lib.date_tools_base import compare_dates
 

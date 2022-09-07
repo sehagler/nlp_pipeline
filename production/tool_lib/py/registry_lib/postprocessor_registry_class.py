@@ -7,9 +7,10 @@ Created on Tue Nov 13 08:12:07 2018
 
 #
 import os
+import traceback
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_registry_base_class \
+from tool_lib.py.registry_lib.base_lib.postprocessor_registry_base_class \
     import Postprocessor_registry_base
 
 #
@@ -28,8 +29,9 @@ class Postprocessor_registry(Postprocessor_registry_base):
             exec(import_cmd, globals())
             print('Postprocessor_' + filename + ' import succeeded')
             postprocessor_imported_flg = True
-        except:
+        except Exception:
             print('Postprocessor_' + filename + ' import failed')
+            traceback.print_exc()
             postprocessor_imported_flg = False
         registration_cmd = 'self._register_postprocessor(' + \
                            '\'postprocessor_' + filename + '\', ' + \
@@ -39,8 +41,9 @@ class Postprocessor_registry(Postprocessor_registry_base):
                 self._register_postprocessor('postprocessor_' + filename,
                                              Postprocessor(self.static_data))
                 print(filename + ' registration succeeded')
-            except:
+            except Exception:
                 print(filename + ' registration failed')
+                traceback.print_exc()
      
     #
     def push_data_dict(self, filename, data_dict):

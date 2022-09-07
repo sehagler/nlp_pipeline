@@ -12,9 +12,9 @@ import re
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class import Preprocessor_base
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class import Preprocessor_base
 
 #
 class Postprocessor(Postprocessor_base):
@@ -66,12 +66,16 @@ class Postprocessor(Postprocessor_base):
 class Tokenizer(Preprocessor_base):
     
     #
+    def __init__(self):
+        self.lambda_manager = Lambda_manager()
+    
+    #
     def process_month(self):
         month_list = [ 'Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep',
                        'Oct', 'Nov', 'Dec' ]
         for month in month_list:  
             self.text = \
-                self.lambda_manager.lambda_conversion('(?i)(?<=' + month + ')\.(?= [0-9])', self.text, '')
+                self.lambda_manager.deletion_lambda_conversion('(?i)(?<=' + month + ')\.(?= [0-9])', self.text)
 
 #
 def atomize_date(date_str):

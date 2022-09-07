@@ -1,0 +1,24 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
+  - Union:
+    - sections_wrappers/sections_specimens_wrapper.i2qy
+    - Subtraction: [sections_wrappers/sections_section_wrapper.i2qy, sections_wrappers/sections_specimen_description_wrapper.i2qy]
+output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link1.alternative1
+    itemOptions: {}
+    linkItemId: link1
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+creator: haglers

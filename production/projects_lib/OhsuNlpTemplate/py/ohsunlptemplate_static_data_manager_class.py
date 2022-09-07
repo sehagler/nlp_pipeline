@@ -11,7 +11,7 @@ import pickle
 import xlrd
 
 #
-from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.static_data_lib.static_data_manager_class \
     import Static_data_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
@@ -28,7 +28,6 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
         self.project_subdir = project_subdir
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
-        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         self.static_data['queries_list'] = \
             [ ('CANCER_STAGE', None, 'CANCER_STAGE', 'CANCER_STAGE', 'single_value', True) ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
@@ -90,8 +89,8 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_second_general_set.pkl'))
                 
-            #self._include_lists(docs_files, groups_files, [0])
-            self._include_lists(docs_files, groups_files, [1, 2, 3])
+            self._include_lists(docs_files, groups_files, [0])
+            #self._include_lists(docs_files, groups_files, [1, 2, 3])
             
             evaluation_docs_file = \
                 os.path.join(training_data_dir, 'training_docs_evaluation.pkl')
@@ -106,8 +105,8 @@ class OhsuNlpTemplate_static_data_manager(Static_data_manager):
                 os.path.join(training_data_dir, 'training_groups_first_general_set.pkl')
             with open(trainng_groups_first_general_set_file, 'rb') as f:
                 patient_list = pickle.load(f)
-            #for idx in [ 0 ]:
-            for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
+            for idx in [ 0 ]:
+            #for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
                 self.static_data['patient_list'].extend(patient_list[idx])
             self.static_data['patient_list'] = \
                 list(set(self.static_data['patient_list']))

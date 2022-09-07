@@ -10,7 +10,7 @@ import os
 import xlrd
 
 #
-from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.static_data_lib.static_data_manager_class \
     import Static_data_manager
 
 #

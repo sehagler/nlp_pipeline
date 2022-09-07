@@ -9,6 +9,15 @@ query:
       - word: {text: cigar, morphoVariants: true}
       - word: {text: cigarette, morphoVariants: true}
       - word: {text: e-cigarette, morphoVariants: true}
+      - phrase:
+        - word:
+            text: medical
+            quantifier: {minimum: 0, maximum: 1}
+        - alternative: [marijuana, THC]
+        - alternative:
+            quantifier: {minimum: 0, maximum: 0}
+            of:
+            - word: {text: edible, morphoVariants: true}
       - word: {text: pipe, morphoVariants: true}
 output:
   columns:

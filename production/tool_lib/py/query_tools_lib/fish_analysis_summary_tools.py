@@ -6,9 +6,9 @@ Created on Fri Feb 01 13:28:54 2019
 """
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -43,12 +43,12 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
 #
-class Summarization(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)[\n\s]+by FISH', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?i)[\n\s]+by FISH', self.text)
         
 #
 def template():

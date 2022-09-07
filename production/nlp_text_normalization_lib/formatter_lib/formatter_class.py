@@ -9,44 +9,73 @@ Created on Wed Jun 16 12:58:14 2021
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from lambda_lib.lambda_manager_class import Lambda_manager
+from nlp_text_normalization_lib.formatter_lib.normalizers_lib.section_header_normalizer_class \
+    import Section_header_normalizer
+from nlp_text_normalization_lib.formatter_lib.normalizers_lib.table_normalizer_class \
+    import Table_normalizer
 
 #
-class Formatter(Preprocessor_base):
+class Formatter(object):
     
     #
     def __init__(self, static_data):
-        Preprocessor_base.__init__(self, static_data)
+        self.static_data = static_data
+        self.lambda_manager = Lambda_manager()
+        self.section_header_normalizer = \
+            Section_header_normalizer(self.static_data)
+        self.table_normalizer = Table_normalizer(self.static_data)
         self.body_header = 'SUMMARY'
     
     #
     def _add_body_header(self):
         self.text = self.body_header + '\n' + self.text
-        self.text = re.sub('^' + self.body_header + '\n' + self.body_header,
-                           self.body_header + '\n', self.text)
-        self.text = re.sub('^' + self.body_header + '[\n\s]*',
-                           self.body_header + '\n\n', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('^' + self.body_header + '\n' + self.body_header,
+                                                  self.text, self.body_header + '\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion('^' + self.body_header + '[\n\s]*',
+                                                  self.text, self.body_header + '\n\n')
+            
+    #
+    def _extract_section_headers(self):
+        self.dynamic_data_manager.append_keywords_text(self.body_header, 0)
+        self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
+        #self.section_header_normalizer.push_text(self.text)
+        self.text = \
+            self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report',
+                                                                  self.text)
+        #self.section_header_normalizer.history_section_header(self.formatting)
+        self.texxt = \
+            self.section_header_normalizer.normalize_section_header(self.formatting,
+                                                                    self.text)
+        self.text = \
+            self.section_header_normalizer.amendment_section_header(self.formatting,
+                                                                    self.text)
+        self.text = \
+            self.section_header_normalizer.clear_section_header_tags(self.text)
+        self.text = \
+            self.section_header_normalizer.fix_section_headers(self.text)
+        #self.text = self.section_header_normalizer.pull_text()
+        self.dynamic_memory_manager = \
+            self.section_header_normalizer.pull_dynamic_data_manager()
     
     #
     def _format_beakerap(self):
-        self._clear_command_list()
         self._pull_out_section_header('(?i)[ \t]case (reviewed|seen) by:?')
         self._pull_out_section_header('(?i)[ \t]clinical history')
         self._pull_out_section_header('(?i)[ \t]comment(s)?( )?(\([a-z0-9 ]*\))?:')
         self._pull_out_section_header('(?i)[ \t]note( )?(\([a-z0-9 ]*\))?:')
-        self._process_command_list()
         self._add_body_header()
-        self._clear_command_list()
-        self._general_command('(?<![0-9]) - (?![0-9])', {None : '\n- '})
-        self._general_command('\n +', {None : '\n'})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<![0-9]) - (?![0-9])', self.text, '\n- ')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\n +', self.text, '\n')
         self._format_section_headers()
         self._format_hematopathology_table_beaker_ap()
         
     #
     def _format_hematopathology_table_beaker_ap(self):
-        self._clear_command_list()
         self._pull_out_section_header('(?i)[ \t]antibodies tested')
         self._pull_out_section_header('(?i)[ \t]bone marrow aspirate smears')
         self._pull_out_section_header('(?i)[ \t]bone marrow (biopsy/)?clot section')
@@ -95,13 +124,13 @@ class Formatter(Preprocessor_base):
         self._pull_out_table_entry('[ \t]ROW(?= [0-9])')
         self._pull_out_table_entry('[ \t]WHITE CELL COUNT')
         self._pull_out_table_entry('[ \t]WBC(?= [0-9])')
-        self._general_command('\nFinal Diagnosis\n', {None : '\nFINAL DIAGNOSIS\n'})
-        self._general_command('\n(MANUAL|PERIPHERAL BLOOD) DIFFERENTIAL', {None : '\n\nMANUAL DIFFERENTIAL'})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.lambda_conversion('\nFinal Diagnosis\n', self.text, '\nFINAL DIAGNOSIS\n')
+        self.text = \
+            self.lambda_manager.lambda_conversion('\n(MANUAL|PERIPHERAL BLOOD) DIFFERENTIAL', self.text, '\n\nMANUAL DIFFERENTIAL')
         
     #
     def _format_hematopathology_table_powerpath(self):
-        self._clear_command_list()
         self._pull_out_table_entry('[ \t]Bands[ \t]+[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Baso(phil)?s[ \t]+(x )?[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Eos(inophils)?[ \t]+(x )?[0-9]')
@@ -109,7 +138,6 @@ class Formatter(Preprocessor_base):
         self._pull_out_table_entry('[ \t](?<!% )Mono(cyte)?s[ \t]+(x )?[0-9]')
         self._pull_out_table_entry('[ \t](?<!% )Neutrophils[ \t]+[0-9]')
         self._pull_out_table_entry('[ \t]PMNs[ \t]+(x )?[0-9]')
-        self._process_command_list()
         
     #
     def _format_powerpath(self):
@@ -119,30 +147,44 @@ class Formatter(Preprocessor_base):
         
     #
     def _format_section_headers(self):
-        self._clear_command_list()
-        self._general_command('(?i)\nFinal (Pathologic )?Diagnosis\n', {None : ''})
-        self._general_command('\nDIFFERENTIAL', {None : '\nMANUAL DIFFERENTIAL'})
-        self._general_command('\nImmunologic Analysis\n', {None : ''})
-        self._general_command('\nMicroscopic Description\n', {None : ''})
-        self._process_command_list()
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('(?i)\nFinal (Pathologic )?Diagnosis\n', self.text)
+        self.text = \
+            self.lambda_manager.lambda_conversion('\nDIFFERENTIAL', self.text, '\nMANUAL DIFFERENTIAL')
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('\nImmunologic Analysis\n', self.text)
+        self.text = \
+            self.lambda_manager.deletion_lambda_conversion('\nMicroscopic Description\n', self.text)
+        self.text = \
+            self.lambda_manager.contextual_lambda_conversion('progress note \d+/(\d+|\*+)/\d+', '\d+/(\d+|\*+)/\d+', self.text, '')
+            
+    #
+    def _insert_whitespace(self, match_str, whitespace):
+        match = 0
+        m_str = re.compile(match_str)
+        while match is not None:
+            match = m_str.search(self.text, re.IGNORECASE)
+            if match is not None:
+                self.text = self.text[:match.start()] + whitespace + \
+                            self.text[match.start()+1:]
         
     #
     def _pull_out_section_header(self, command):
-        self._clear_command_list()
-        self.command_list.append([ 1, command ])
-        self._process_command_list()
+        self._insert_whitespace(command, '\n\n')
         
     #
     def _pull_out_table_entry(self, command):
-        self._clear_command_list()
-        self.command_list.append([ 2, command ])
-        self._process_command_list()
+        self._insert_whitespace(command, '\n')
         
     #
-    def process_document(self, text, source_system):
+    def format_text(self, dynamic_data_manager, text, source_system, formatting):
+        self.formatting = formatting
+        self.dynamic_data_manager = dynamic_data_manager
         self.text = text
         if source_system == 'Epic Beaker':
             self._format_beakerap()
         else:
             self._format_powerpath()
-        return self.text
+        self.text = self.table_normalizer.process_text(self.text)
+        self._extract_section_headers()
+        return self.dynamic_data_manager, self.text

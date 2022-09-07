@@ -13,7 +13,7 @@ class Lambda_manager(object):
     
     #
     def lambda_conversion(self, abstraction_operator, expression, argument):
-        return re.sub(abstraction_operator, argument, expression)
+        return re.sub('(?i)' + abstraction_operator, argument, expression)
     
     #
     def contextual_lambda_conversion(self, context_abstraction_operator,
@@ -24,7 +24,7 @@ class Lambda_manager(object):
         while not stop_flg:
             ctr += 1
             stop_flg = True
-            for match in re.finditer(context_abstraction_operator, expression):
+            for match in re.finditer('(?i)' + context_abstraction_operator, expression):
                 if match is not None:
                     stop_flg = False
                     search_str = match.group(0)
@@ -35,3 +35,18 @@ class Lambda_manager(object):
             if ctr == 100:
                 stop_flg = True
         return expression
+    
+    #
+    def deletion_lambda_conversion(self, abstraction_operator, expression):
+        return self.lambda_conversion(abstraction_operator, expression, '')
+    
+    #
+    def initialism_lambda_conversion(self, abstraction_operator, expression, argument):
+        expression = self.lambda_conversion(abstraction_operator + '( \( ?' + argument + ' ?\))?',
+                                            expression, argument)
+        return self.lambda_conversion(argument + ' \( ?' + argument + ' ?\)',
+                                      expression, argument)
+    
+        #
+    def space_correction_lambda_conversion(self, abstraction_operator, expression, argument):
+        return self.lambda_conversion(abstraction_operator, expression, ' ' + argument + ' ')

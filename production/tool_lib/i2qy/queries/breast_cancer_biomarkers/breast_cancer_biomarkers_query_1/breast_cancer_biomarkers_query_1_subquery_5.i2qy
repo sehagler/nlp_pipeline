@@ -1,0 +1,20 @@
+version: 6.3
+creationDate: '2021-06-29 22:50:58'
+query:
+  document:
+  - phrase:
+    - word:
+        text: (
+        quantifier: {minimum: 0, maximum: 1}
+    - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy, id: link2}
+output:
+  columns:
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link2.alternative1
+    itemOptions: {}
+    linkItemId: link2
+  columnLocations: [1, 0]
+  useOutputEditor: true
+creator: haglers

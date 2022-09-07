@@ -10,9 +10,10 @@ import os
 import re
 
 #
-from nlp_pipeline_lib.py.performance_data_lib.performance_data_manager_class \
+from nlp_pipeline_lib.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
 from projects_lib.BeatAML_Waves_1_And_2.py.specimens_class import Specimens
+from tool_lib.py.processing_tools_lib.text_processing_tools import substitution
 from tool_lib.py.query_tools_lib.antigens_tools import extract_antigens
 from tool_lib.py.query_tools_lib.base_lib.date_tools_base import compare_dates
 
@@ -51,20 +52,20 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         text = re.sub('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', ' CD', text)
         text = re.sub('(?i)partial (/ )?dim', 'dim/partial', text)
         text = re.sub('(?i)myeloperoxidase( \(MPO\))?', 'MPO', text)
-        text = self._substitution('([a-z]?CD[0-9]+|MPO|T[Dd]T) : ([a-z]?CD[0-9]+|MPO|T[Dd]T)',
-                                  {' : ' : ':'}, text)
-        text = self._substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) / ([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)',
-                                  {' / ' : '/'}, text)
-        text = self._substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-negative',
-                                  {'-negative' : ' negative'}, text)
-        text = self._substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-positive',
-                                  {'-positive' : ' positive'}, text)
-        text = self._substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-',
-                                  {'-' : ' negative '}, text)
-        text = self._substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)\+',
-                                  {'\+' : ' positive'}, text)
-        text = self._substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) \+',
-                                  {'\+' : ' positive'}, text)
+        text = substitution('([a-z]?CD[0-9]+|MPO|T[Dd]T) : ([a-z]?CD[0-9]+|MPO|T[Dd]T)',
+                            {' : ' : ':'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) / ([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)',
+                            {' / ' : '/'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-negative',
+                            {'-negative' : ' negative'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-positive',
+                            {'-positive' : ' positive'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-',
+                            {'-' : ' negative '}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)\+',
+                            {'\+' : ' positive'}, text)
+        text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) \+',
+                            {'\+' : ' positive'}, text)
         text = re.sub('(?<=HLA) (negative|positive)(?=DR)', '-', text)
         text = re.sub(' +', ' ', text)
         text = re.sub(' \n', '\n', text)
@@ -792,6 +793,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 data_json[identifier][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
         return data_json
     
+    '''
     #
     def _substitution(self, match_pattern, repl_dict, text_in):
         text_out = text_in
@@ -813,3 +815,4 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if ctr == 100:
                 stop_flg = True
         return text_out
+    '''

@@ -10,7 +10,7 @@ import re
 import statistics
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #
@@ -33,7 +33,6 @@ class Postprocessor(Postprocessor_base):
                 value_list.append((smoking_products_text_list[i],
                                    normalized_smoking_products_text_list[i],
                                    context_text_list[i]))
-            value_list = list(set(value_list))
             value_dict_list = []
             for value in value_list:
                 if value[1] is not None:
@@ -68,10 +67,10 @@ class Postprocessor(Postprocessor_base):
                 value = \
                     self.lambda_manager.lambda_conversion('(?i)e-cigarette(s)?', value, 'e-cigarettes')
                 value_sublist.append(value.lower())
-            if re.search('(?i)(marijuana|pipe)', text):
+            if re.search('(?i)(marijuana|pipe|thc)', text):
                 value = 'other'
                 value_sublist.append(value.lower())
-            if re.search('(?i)(packs?|PPY)', text):
+            if re.search('(?i)(packs?|pp[dwy])', text):
                 value_sublist.append('cigarettes')
             value_sublist = list(set(value_sublist))
             value_str = ''

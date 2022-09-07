@@ -1,0 +1,37 @@
+version: 6.3
+creationDate: '2021-06-29 22:50:58'
+query:
+  document:
+  - phrase:
+      findMatches: shortestOnly
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - (
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+          - )
+      - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy, id: link2}
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+          - (
+      - )
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
+          id: link5
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - id: link5.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link5
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  columnLocations: [1, 0]
+  useOutputEditor: true
+creator: haglers

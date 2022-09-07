@@ -1,0 +1,19 @@
+version: 6.3
+creationDate: '2020-06-03 17:12:59'
+query:
+  document:
+  - phrase:
+      findMatches: longestOnly
+      id: phrase1
+      of:
+      - alternative:
+          showInDefaultOutput: false
+          of:
+          - link: {path: smoking_history_element_0.i2qy}
+          - link: {path: smoking_history_element_1.i2qy}
+          - link: {path: smoking_history_element_2.i2qy}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers

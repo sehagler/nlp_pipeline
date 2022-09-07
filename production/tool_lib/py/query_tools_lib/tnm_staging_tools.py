@@ -10,9 +10,9 @@ import itertools
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
@@ -260,25 +260,23 @@ class Postprocessor(Postprocessor_base):
         return data_table
 
 #
-class Summarization(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
     def _process_tnm_staging(self):
-        self._clear_command_list()
         text_list = []
         text_list.append('(?i)(pathologic( tumor)?|TNM) stag(e|ing)')
         text_list.append('(?i)stage summary')
         for text_str in text_list:
             self.text = \
                 self.lambda_manager.lambda_conversion(text_str, self.text, 'Stage')
-        self._process_command_list()
         
     #
     def _remove_extraneous_text(self):
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', self.text)
         self.text = \
-            self.lambda_manager.lambda_conversion('(?i)(\( )?AJCC( \))?', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?i)(\( )?AJCC( \))?', self.text)
         
     #
     def run_preprocessor(self):
@@ -416,7 +414,7 @@ def t_stage_template():
     return t_stage_tmplt_1_list, t_stage_tmplt_2_list, t_stage_tmplt_3_list
 
 #
-def template():
+def simple_template():
     tmplt_prefix = '(?<![A-Za-z0-9])'
     tmplt_suffix = '(?![A-Za-z0-9])'
     t_stage_tmplt_1_list, t_stage_tmplt_2_list, t_stage_tmplt_3_list = \

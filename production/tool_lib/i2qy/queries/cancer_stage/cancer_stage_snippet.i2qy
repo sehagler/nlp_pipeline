@@ -1,0 +1,67 @@
+version: 6.3
+creationDate: '2020-06-16 19:40:40'
+query:
+  document:
+  - link: {path: cancer_stage_query.i2qy, id: link1}
+  - phrase:
+      findMatches: longestOnly
+      includeInQuery: false
+      maxWordGap: -1
+      multiSentence: true
+      view: {height: 336, width: 1043}
+      wordGapRestricted: false
+      of:
+      - sentence:
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          prioritization: span
+          of:
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - {class: /chunk}
+              - link: {path: cancer_stage_query.i2qy}
+              - {class: /chunk}
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - {class: /chunk}
+              - link: {path: cancer_stage_query.i2qy}
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - link: {path: cancer_stage_query.i2qy}
+              - {class: /chunk}
+          - link: {path: cancer_stage_query.i2qy}
+      - sentence:
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - title: Excerpt
+    id: link1.alternative1.col0
+    itemOptions: {}
+    linkItemId: link1
+  - title: Cancer Stage
+    id: link1.alternative1.col1
+    itemOptions: {}
+    linkItemId: link1
+  - title: Histologic Type
+    id: link1.alternative1.col2
+    itemOptions: {}
+    linkItemId: link1
+  - title: Tumor Site
+    id: link1.alternative1.col3
+    itemOptions: {}
+    linkItemId: link1
+  - title: Snippet
+    id: value2
+    columnOptions: [Empty]
+    isValueColumn: true
+  useOutputEditor: true
+creator: haglers

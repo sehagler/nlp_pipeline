@@ -9,7 +9,7 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 
 #
@@ -50,11 +50,11 @@ class Postprocessor(Postprocessor_base):
             value = 'MANUAL_REVIEW'
             if re.search('(?i)(abstain|quit)', text) is not None:
                 value = 'former smoker'
-            if re.search('(?i)current ((every|some) day )?(:|hx|smoker)', text) is not None:
+            if re.search('(?i)current ([a-z]+ ){0,3}(:|hx|smoker)', text) is not None:
                 value = 'current smoker'
             if re.search('(?i)former', text) is not None:
                 value = 'former smoker'
-            if re.search('(?i)never', text) is not None:
+            if re.search('(?i)(never|none)', text) is not None:
                 value = 'never smoker'
             if re.search('(?i)(?!no )smoking (:|hx)', text) is not None:
                 value = 'current smoker'

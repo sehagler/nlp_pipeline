@@ -11,7 +11,7 @@ import pickle
 import xlrd
 
 #
-from nlp_pipeline_lib.py.static_data_lib.static_data_manager_class \
+from nlp_pipeline_lib.static_data_lib.static_data_manager_class \
     import Static_data_manager
 from tool_lib.py.processing_tools_lib.file_processing_tools \
     import read_xlsx_file
@@ -29,7 +29,6 @@ class CCC19_static_data_manager(Static_data_manager):
         
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
-        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         if 'performance_data_files' in self.static_data.keys():
             self.static_data['performance_data_files'].append('BreastCancerPathology/test/BreastCancerPathology.performance.json')
         self.static_data['queries_list'] = \
@@ -37,7 +36,7 @@ class CCC19_static_data_manager(Static_data_manager):
               ('NORMALIZED_ECOG_SCORE', None, 'ECOG_STATUS', 'NORMALIZED_ECOG_SCORE', 'single_value', True),
               ('NORMALIZED_SMOKING_HISTORY', None, 'SMOKING_HISTORY', 'NORMALIZED_SMOKING_HISTORY', 'single_value', True),
               ('NORMALIZED_SMOKING_PRODUCTS', None, 'SMOKING_PRODUCTS', 'NORMALIZED_SMOKING_PRODUCTS', 'multiple_values', False),
-              ('NORMALIZED_SMOKING_STATUS', None, 'SMOKING_STATUS', 'NORMALIZED_SMOKING_STATUS', 'single_value', True) ]
+              ('NORMALIZED_SMOKING_STATUS', None, 'SMOKING_STATUS', 'NORMALIZED_SMOKING_STATUS', 'single_value', True) ] 
         self.static_data['test_postprocessing_data_in_files'] = \
             [ 'cancer_stage.csv', 'ecog_status.csv', 'smoking_history.csv',
               'smoking_products.csv', 'smoking_status.csv' ]
@@ -123,6 +122,8 @@ class CCC19_static_data_manager(Static_data_manager):
                                                              'Nagle_CCC19_NLP_hno_note_v_first_general_set.xml' ]
 
             #
+            data_set_flgs = [ 'testing', 'training' ]
+            data_set_flg = data_set_flgs[0]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':
@@ -147,10 +148,10 @@ class CCC19_static_data_manager(Static_data_manager):
             #                    'training_groups_first_general_set.pkl'))
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_second_general_set.pkl'))
-                
-            #self._include_lists(docs_files, groups_files, [0])
-            self._include_lists(docs_files, groups_files, [1, 2, 3])
-            
+            if data_set_flg == 'training':    
+                self._include_lists(docs_files, groups_files, [0])
+            elif data_set_flg == 'testing':
+                self._include_lists(docs_files, groups_files, [1, 2, 3])
             evaluation_docs_file = \
                 os.path.join(training_data_dir, 'training_docs_evaluation.pkl')
             idx_list = [0, 1, 2]
@@ -164,8 +165,11 @@ class CCC19_static_data_manager(Static_data_manager):
                 os.path.join(training_data_dir, 'training_groups_first_general_set.pkl')
             with open(trainng_groups_first_general_set_file, 'rb') as f:
                 patient_list = pickle.load(f)
-            #for idx in [ 0 ]:
-            for idx in [ 1, 2, 3, 4, 5, 6, 7 ]:
+            if data_set_flg == 'training':
+                idx_list = [0]
+            elif data_set_flg == 'testing':
+                idx_list =[ 1, 2, 3, 4, 5, 6, 7 ]
+            for idx in idx_list:
                 self.static_data['patient_list'].extend(patient_list[idx])
             self.static_data['patient_list'] = \
                 list(set(self.static_data['patient_list']))

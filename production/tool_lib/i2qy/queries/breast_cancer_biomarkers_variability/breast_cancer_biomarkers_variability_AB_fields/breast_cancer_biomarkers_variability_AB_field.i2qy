@@ -1,0 +1,16 @@
+version: 6.3
+creationDate: '2020-08-18 00:19:59'
+query:
+  document:
+  - phrase:
+      maxSentenceGap: -1
+      maxWordGap: -1
+      multiSentence: true
+      wordGapRestricted: false
+      of:
+      - {class: /word}
+      - class:
+          quantifier: {minimum: 0, maximum: 1}
+          snid: /word
+output: {useOutputEditor: true}
+creator: haglers

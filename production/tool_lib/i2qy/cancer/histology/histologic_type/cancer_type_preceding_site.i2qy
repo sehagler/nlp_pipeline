@@ -1,0 +1,399 @@
+version: 6.3
+creationDate: '2022-07-12 17:52:49'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      displayChildren: false
+      findMatches: shortestOnly
+      of:
+      - link: {path: cancer_type.i2qy, id: link2}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - alternative:
+            - {class: /prep}
+            - macro:
+                snid: linguamatics_wc.WC_Preposition
+                pt: preposition
+                of:
+                - alternative:
+                    macroPt: preposition
+                    macroSnid: linguamatics_wc.WC_Preposition
+                    of:
+                    - aboard
+                    - about
+                    - above
+                    - absent
+                    - phrase: [according, to]
+                    - across
+                    - after
+                    - against
+                    - phrase: [ahead, of]
+                    - phrase: [all, over]
+                    - along
+                    - alongside
+                    - amid
+                    - amidst
+                    - among
+                    - amongst
+                    - anti
+                    - around
+                    - as
+                    - phrase: [as, far, as]
+                    - phrase: [as, of]
+                    - phrase: [as, to]
+                    - aside
+                    - astraddle
+                    - astride
+                    - at
+                    - atop
+                    - phrase: [because, of]
+                    - before
+                    - behind
+                    - below
+                    - beneath
+                    - beside
+                    - besides
+                    - between
+                    - beyond
+                    - but
+                    - by
+                    - circa
+                    - despite
+                    - down
+                    - during
+                    - except
+                    - phrase: [except, for]
+                    - for
+                    - from
+                    - given
+                    - in
+                    - phrase: [in, addition, to]
+                    - phrase: [in, between]
+                    - phrase: [in, case, of]
+                    - phrase: [in, place, of]
+                    - phrase: [in, spite, of]
+                    - inside
+                    - phrase: [instead, of]
+                    - into
+                    - less
+                    - lest
+                    - like
+                    - minus
+                    - near
+                    - phrase: [near, to]
+                    - next
+                    - phrase: [next, to]
+                    - notwithstanding
+                    - of
+                    - 'off'
+                    - 'on'
+                    - phrase: ['on', account, of]
+                    - phrase: ['on', top, of]
+                    - onto
+                    - opposite
+                    - phrase: [other, than]
+                    - out
+                    - phrase: [out, of]
+                    - outside
+                    - phrase: [outside, of]
+                    - over
+                    - past
+                    - per
+                    - plus
+                    - save
+                    - since
+                    - through
+                    - throughout
+                    - till
+                    - to
+                    - toward
+                    - towards
+                    - under
+                    - underneath
+                    - unlike
+                    - until
+                    - unto
+                    - up
+                    - phrase: [up, to]
+                    - upon
+                    - versus
+                    - via
+                    - vs
+                    - vs.
+                    - with
+                    - within
+                    - without
+          - word:
+              text: the
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - left
+              - phrase:
+                - left
+                - word:
+                    text: '-'
+                    quantifier: {minimum: 0, maximum: 1}
+                - sided
+              - lt
+              - right
+              - phrase:
+                - right
+                - word:
+                    text: '-'
+                    quantifier: {minimum: 0, maximum: 1}
+                - sided
+              - rt
+          - macro:
+              quantifier: {minimum: 0, maximum: 1}
+              snid: ohsu_anatomical_location.anatomical_location
+              pt: Anatomical Location
+              of:
+              - alternative:
+                  macroPt: Anatomical Location
+                  macroSnid: ohsu_anatomical_location.anatomical_location
+                  of:
+                  - anterior
+                  - phrase: [anterior, dorsal]
+                  - phrase: [anterior, inferior]
+                  - phrase: [anterior, lateral]
+                  - phrase: [anterior, medial]
+                  - phrase: [anterior, posterial]
+                  - phrase: [anterior, superior]
+                  - anterior-dorsal
+                  - anterior-inferior
+                  - anterior-lateral
+                  - anterior-medial
+                  - anterior-posterial
+                  - anterior-superior
+                  - anterior/dorsal
+                  - anterior/inferior
+                  - anterior/lateral
+                  - anterior/medial
+                  - anterior/posterial
+                  - anterior/superior
+                  - antero-dorsal
+                  - antero-inferior
+                  - antero-lateral
+                  - antero-medial
+                  - antero-posterial
+                  - antero-superior
+                  - anterodorsal
+                  - anteroinferior
+                  - anterolateral
+                  - anteromedial
+                  - anteroposterial
+                  - anterosuperior
+                  - central
+                  - deep
+                  - distal
+                  - dorsal
+                  - phrase: [dorsal, anterior]
+                  - phrase: [dorsal, inferior]
+                  - phrase: [dorsal, lateral]
+                  - phrase: [dorsal, medial]
+                  - phrase: [dorsal, posterial]
+                  - phrase: [dorsal, superior]
+                  - dorsal-anterior
+                  - dorsal-inferior
+                  - dorsal-lateral
+                  - dorsal-medial
+                  - dorsal-posterial
+                  - dorsal-superior
+                  - dorsal/anterior
+                  - dorsal/inferior
+                  - dorsal/lateral
+                  - dorsal/medial
+                  - dorsal/posterial
+                  - dorsal/superior
+                  - dorso-anterior
+                  - dorso-inferior
+                  - dorso-lateral
+                  - dorso-medial
+                  - dorso-posterial
+                  - dorso-superior
+                  - dorsoanterior
+                  - dorsoinferior
+                  - dorsolateral
+                  - dorsomedial
+                  - dorsoposterial
+                  - dorsosuperior
+                  - inferior
+                  - phrase: [inferior, anterior]
+                  - phrase: [inferior, dorsal]
+                  - phrase: [inferior, lateral]
+                  - phrase: [inferior, medial]
+                  - phrase: [inferior, posterial]
+                  - phrase: [inferior, superior]
+                  - inferior-anterior
+                  - inferior-dorsal
+                  - inferior-lateral
+                  - inferior-medial
+                  - inferior-posterial
+                  - inferior-superior
+                  - inferior/anterior
+                  - inferior/dorsal
+                  - inferior/lateral
+                  - inferior/medial
+                  - inferior/posterial
+                  - inferior/superior
+                  - infero-anterior
+                  - infero-dorsal
+                  - infero-lateral
+                  - infero-medial
+                  - infero-posterial
+                  - infero-superior
+                  - inferoanterior
+                  - inferodorsal
+                  - inferolateral
+                  - inferomedial
+                  - inferoposterial
+                  - inferosuperior
+                  - lateral
+                  - phrase: [lateral, anterior]
+                  - phrase: [lateral, dorsal]
+                  - phrase: [lateral, inferior]
+                  - phrase: [lateral, medial]
+                  - phrase: [lateral, posterial]
+                  - phrase: [lateral, superior]
+                  - lateral-anterior
+                  - lateral-dorsal
+                  - lateral-inferior
+                  - lateral-medial
+                  - lateral-posterial
+                  - lateral-superior
+                  - lateral/anterior
+                  - lateral/dorsal
+                  - lateral/inferior
+                  - lateral/medial
+                  - lateral/posterial
+                  - lateral/superior
+                  - latero-anterior
+                  - latero-dorsal
+                  - latero-inferior
+                  - latero-medial
+                  - latero-posterial
+                  - latero-superior
+                  - lateroanterior
+                  - laterodorsal
+                  - lateroinferior
+                  - lateromedial
+                  - lateroposterial
+                  - laterosuperior
+                  - medial
+                  - phrase: [medial, anterior]
+                  - phrase: [medial, dorsal]
+                  - phrase: [medial, inferior]
+                  - phrase: [medial, lateral]
+                  - phrase: [medial, posterial]
+                  - phrase: [medial, superior]
+                  - medial-anterior
+                  - medial-dorsal
+                  - medial-inferior
+                  - medial-lateral
+                  - medial-posterial
+                  - medial-superior
+                  - medial/anterior
+                  - medial/dorsal
+                  - medial/inferior
+                  - medial/lateral
+                  - medial/posterial
+                  - medial/superior
+                  - medio-anterior
+                  - medio-dorsal
+                  - medio-inferior
+                  - medio-lateral
+                  - medio-posterial
+                  - medio-superior
+                  - medioanterior
+                  - mediodorsal
+                  - medioinferior
+                  - mediolateral
+                  - medioposterial
+                  - mediosuperior
+                  - peripheral
+                  - posterial
+                  - phrase: [posterial, anterior]
+                  - phrase: [posterial, dorsal]
+                  - phrase: [posterial, inferior]
+                  - phrase: [posterial, lateral]
+                  - phrase: [posterial, medial]
+                  - phrase: [posterial, superior]
+                  - posterial-anterior
+                  - posterial-dorsal
+                  - posterial-inferior
+                  - posterial-lateral
+                  - posterial-medial
+                  - posterial-superior
+                  - posterial/anterior
+                  - posterial/dorsal
+                  - posterial/inferior
+                  - posterial/lateral
+                  - posterial/medial
+                  - posterial/superior
+                  - postero-anterior
+                  - postero-dorsal
+                  - postero-inferior
+                  - postero-lateral
+                  - postero-medial
+                  - postero-superior
+                  - posteroanterior
+                  - posterodorsal
+                  - posteroinferior
+                  - posterolateral
+                  - posteromedial
+                  - posterosuperior
+                  - proximal
+                  - superficial
+                  - superior
+                  - phrase: [superior, anterior]
+                  - phrase: [superior, dorsal]
+                  - phrase: [superior, inferior]
+                  - phrase: [superior, lateral]
+                  - phrase: [superior, medial]
+                  - phrase: [superior, posterial]
+                  - superior-anterior
+                  - superior-dorsal
+                  - superior-inferior
+                  - superior-lateral
+                  - superior-medial
+                  - superior-posterial
+                  - superior/anterior
+                  - superior/dorsal
+                  - superior/inferior
+                  - superior/lateral
+                  - superior/medial
+                  - superior/posterial
+                  - supero-anterior
+                  - supero-dorsal
+                  - supero-inferior
+                  - supero-lateral
+                  - supero-medial
+                  - supero-posterial
+                  - superoanterior
+                  - superodorsal
+                  - superoinferior
+                  - superolateral
+                  - superomedial
+                  - superoposterial
+          - alternative:
+              columnOptions: [PT]
+              id: alternative1
+              of:
+              - class: {excludeIfBetterMatch: false, ontologyNodeRangeType: lexical, snid: icdo.topography, pt: ICD-O Topography}
+              - class: {excludeIfBetterMatch: false, snid: nlm.A, pt: Anatomy Branch}
+              - class: {excludeIfBetterMatch: false, snid: nci.C12219, pt: 'Anatomic Structure, System, or Substance'}
+              - colorectal
+output:
+  columns:
+  - {id: alternative1}
+  - id: link2.alternative1
+    itemOptions:
+      columnOptions: [Text]
+    linkItemId: link2
+  columnLocations: [1, 0]
+  useOutputEditor: true
+creator: haglers

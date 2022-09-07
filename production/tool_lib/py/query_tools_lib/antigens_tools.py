@@ -10,34 +10,16 @@ import re
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
-from nlp_pipeline_lib.py.base_lib.postprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
-from nlp_pipeline_lib.py.base_lib.preprocessor_base_class \
+from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
     import Preprocessor_base
 
 #
-class Postprocessor(Postprocessor_base):
-
-    #
-    def _extract_data_value(self, value_list_dict):
-        extracted_data_dict = {}
-        for key in value_list_dict.keys():
-            text_list = value_list_dict[key]
-            value = []
-            for item in text_list[0]:
-                value.append(item[0])
-            value_dict_list = []
-            value_dict = {}
-            value_dict['ANTIBODIES_TESTED'] = value
-            value_dict_list.append(value_dict)
-            extracted_data_dict[key] = value_dict_list
-        return extracted_data_dict
-
-#
-class Posttokenizer(Preprocessor_base):
+class Preprocessor(Preprocessor_base):
     
     #
-    def process_antigens(self):
+    def run_preprocessor(self):
         antigens = antigens_list()
         self.text = self.lambda_manager.lambda_conversion('HLA ?DR', self.text, 'HLA-DR')
         self.text = \
@@ -49,7 +31,7 @@ class Posttokenizer(Preprocessor_base):
         self.text = \
             self.lambda_manager.lambda_conversion('(?i)partial (/ )?dim', self.text, 'dim/partial')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=CD) (?=[0-9])', self.text, '')
+            self.lambda_manager.deletion_lambda_conversion('(?<=CD) (?=[0-9])', self.text)
         self.text = \
             self.lambda_manager.contextual_lambda_conversion(antigens + '\(', '\(', self.text, ' (')
         self.text = \
@@ -68,6 +50,24 @@ class Posttokenizer(Preprocessor_base):
             self.lambda_manager.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', self.text, ' positive')
         self.text = \
             self.lambda_manager.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', self.text, '-')
+            
+ #
+class Postprocessor(Postprocessor_base):
+
+    #
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            value = []
+            for item in text_list[0]:
+                value.append(item[0])
+            value_dict_list = []
+            value_dict = {}
+            value_dict['ANTIBODIES_TESTED'] = value
+            value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
 
 #
 def antigens_list():
