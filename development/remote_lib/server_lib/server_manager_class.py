@@ -11,6 +11,7 @@ import paramiko
 import re
 from stat import S_ISDIR, S_ISREG
 import time
+import traceback
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
@@ -78,7 +79,8 @@ class Server_manager(object):
             dir_path += r"/{0}".format(dir_folder)
             try:
                 sftp.listdir(dir_path)
-            except:
+            except Exception:
+                traceback.print_exc()
                 sftp.mkdir(dir_path)
         for root, dirs, files in os.walk(source_dir):
             for name in dirs:
@@ -89,7 +91,8 @@ class Server_manager(object):
                     self.lambda_manager.lambda_conversion('\\\\', dir_path, '/')
                 try:
                     sftp.listdir(dir_path)
-                except:
+                except Exception:
+                    traceback.print_exc()
                     sftp.mkdir(dir_path)
             for name in files:
                 source_file = os.path.join(root, name)
@@ -113,6 +116,6 @@ class Server_manager(object):
         sftp = self.ssh_client.open_sftp()
         try:
             self._recursive_delete_directory(sftp, target_dir)
-        except:
-            pass
+        except Exception:
+            traceback.print_exc()
         sftp.close()

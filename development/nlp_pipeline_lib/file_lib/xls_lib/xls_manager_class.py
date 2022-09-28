@@ -8,6 +8,7 @@ Created on Tue Mar 22 14:57:36 2022
 #
 import os
 import re
+import traceback
 
 #
 from nlp_pipeline_lib.file_lib.base_class_lib.reader_base_class import Reader_base
@@ -143,8 +144,8 @@ class Xls_manager(Reader_base):
                 cell_value = sheet.cell_value(row_idx, col_idx)
                 try:
                     cell_value = str(int(cell_value))
-                except:
-                    pass
+                except Exception:
+                    traceback.print_exc()
                 training_data_tmp.append(cell_value)
             training_data.append(training_data_tmp)
         self.training_data = training_data
@@ -162,8 +163,8 @@ class Xls_manager(Reader_base):
                 cell_value = sheet.cell_value(row_idx, col_idx)
                 try:
                     cell_value = str(int(cell_value))
-                except:
-                    pass
+                except Exception:
+                    traceback.print_exc()
                 validation_data_tmp.append(cell_value)
             validation_data.append(validation_data_tmp)
         self.validation_data = validation_data

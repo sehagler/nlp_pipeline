@@ -10,6 +10,7 @@ from collections import Counter
 from datetime import datetime
 import os
 import re
+import traceback
 
 #
 from tool_lib.py.processing_tools_lib.file_processing_tools \
@@ -84,7 +85,8 @@ class Json_manager(object):
                 section_i_lbl = re.sub(' \d+', '', section_i)
                 try:
                     section_i_num = int(re.sub('[A-Z ]*', '', section_i))
-                except:
+                except Exception:
+                    traceback.print_exc()
                     section_i_num = None
                 nlp_output_i = \
                     nlp_data[i][self.nlp_datum_key][self.nlp_value_key]
@@ -98,7 +100,8 @@ class Json_manager(object):
                             section_j_lbl = re.sub(' \d+', '', section_j)
                             try:
                                 section_j_num = int(re.sub('[A-Z ]*', '', section_j))
-                            except:
+                            except Exception:
+                                traceback.print_exc()
                                 section_j_num = None
                             nlp_output_j = \
                                 nlp_data[i+j+1][self.nlp_datum_key][self.nlp_value_key]

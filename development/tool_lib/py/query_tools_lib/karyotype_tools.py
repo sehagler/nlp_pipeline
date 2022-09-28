@@ -96,7 +96,60 @@ def atomize_karyotype(full_karyotype):
     return karyotype_atoms
 
 #
-def template():
+def karyotype_performance(validation_data_manager, evaluation_manager,
+                          labId, nlp_values, nlp_datum_key,
+                          validation_datum_key):
+    validation_data = validation_data_manager.get_validation_data()
+    if labId in nlp_values.keys():
+        keys0 = list(nlp_values[labId])
+        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
+            data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
+        else:
+            data_out = None
+    else:
+        data_out = None
+    if data_out is not None:
+        data_out = data_out.replace('//', '/')
+        data_out_tmp = data_out
+        data_out_tmp = \
+            data_out_tmp.replace(' ', '')
+        data_out = []
+        data_out.append(data_out_tmp)
+    if data_out is not None:
+        nlp_value = tuple(data_out)
+    else:
+        nlp_value = None
+    labid_idx = validation_data[0].index('labId')
+    validation_datum_idx = validation_data[0].index(validation_datum_key)
+    validation_value = None
+    for item in validation_data:
+        if item[labid_idx] == labId:
+            validation_value = item[validation_datum_idx]
+    if validation_value is not None:
+        validation_value = validation_value.replace('//', '/')
+        if validation_value == '':
+            validation_value = None
+        if validation_value == 'N/A':
+            validation_value = None
+        if validation_value == 'Not available':
+            validation_value = None
+        if validation_value == 'None':
+            validation_value = None
+    if validation_value is not None:
+        validation_value_tmp = validation_value
+        validation_value_tmp = \
+            validation_value_tmp.replace(' ', '')
+        validation_value = []
+        validation_value.append(validation_value_tmp)
+    if validation_value is not None:
+        validation_value = tuple(validation_value)
+    display_flg = True
+    performance = \
+        evaluation_manager.evaluation(nlp_value, validation_value, display_flg)
+    return performance
+
+#
+def simple_template():
     template = '([0-9]{1,2} \~ )?[0-9]{1,2},[XY]+.*\[[0-9]+\]'
     template_list = []
     template_list.append(template)

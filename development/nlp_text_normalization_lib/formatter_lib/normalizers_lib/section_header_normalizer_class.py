@@ -25,87 +25,6 @@ class Section_header_normalizer(object):
         self.section_header = Section_header_structure_tools()
         self.section_header_post_tag = '>>>'
         self.section_header_pre_tag = '<<<'
-        
-    #
-    def _add_punctuation_formatted(self, regex_dict):
-        text_list = []
-        if isinstance(regex_dict, dict):
-            for key in regex_dict.keys():
-                text = []
-                text_in = regex_dict[key]
-                if 'PRE_PUNCT' in key and 'POST_PUNCT' in key:
-                    if isinstance(text_in, list):
-                        for i in range(len(text_in)):
-                            text.append('(?i)(^|\n)' + text_in[i] + '(:|\.|\n)([\n\s]*|$)')
-                    else:
-                        text.append('(?i)(^|\n)' + text_in + '(:|\.|\n)([\n\s]*|$)')
-                elif 'PRE_PUNCT' in key:
-                    if isinstance(text_in, list):
-                        for i in range(len(text_in)):
-                            text.append('(?i)(^|\n)' + text_in[i])
-                    else:
-                        text.append('(?i)(^|\n)' + text_in)
-                else:
-                    if isinstance(text_in, list):
-                        for i in range(len(text_in)):
-                            text.append(text_in[i])
-                    else:
-                        text.append(text_in)
-                text_list.append(text)
-        else:
-            text_in = regex_dict
-            text = []
-            if isinstance(text_in, list):
-                for i in range(len(text_in)):
-                    text.append('(?i)(^|\n)' + text_in[i] + '(:|\.|\n)([\n\s]*|$)')
-            else:
-                text.append('(?i)(^|\n)' + text_in + '(:|\.|\n)([\n\s]*|$)')
-            text_list.append(text)
-        return text_list
-        
-    #
-    def _add_punctuation_unformatted(self, regex_dict, no_punctuation_flg):
-        text_list = []
-        if isinstance(regex_dict, dict):
-            for key in regex_dict.keys():
-                text = []
-                text_in = regex_dict[key]
-                if isinstance(text_in, list):
-                    for i in range(len(text_in)):
-                            text.append('(?i)( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-                else:
-                    text.append('(?i)( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-                if no_punctuation_flg:
-                    if isinstance(text_in, list):
-                        for i in range(len(text_in)):
-                            text_in_upper = text_in[i].upper()
-                            text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
-                            text.append('(?<!<<<)' + text_in_upper)
-                    else:
-                        text_in_upper = text_in.upper()
-                        text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
-                        text.append('(?<!<<<)' + text_in_upper)
-                text_list.append(text)
-        else:
-            text_in = regex_dict
-            text = []
-            if isinstance(text_in, list):
-                for i in range(len(text_in)):
-                    text.append('(?i)( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-            else:
-                text.append('(?i)( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-            if no_punctuation_flg:
-                if isinstance(text_in, list):
-                    for i in range(len(text_in)):
-                        text_in_upper = text_in[i].upper()
-                        text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
-                        text.append('(?<!<<<)' + text_in_upper)
-                else:
-                    text_in_upper = text_in.upper()
-                    text_in_upper = re.sub('\(\?I\)', '(?i)', text_in_upper)
-                    text.append('(?<!<<<)' + text_in_upper)
-            text_list.append(text)
-        return text_list
     
     #
     def _append_keywords_text(self, keyword, index_flg=1):
@@ -131,6 +50,15 @@ class Section_header_normalizer(object):
                               match.group(0)[match1.end():]
         self.text += footer
         self.text, num = self._number_section(item_label, self.text)
+                
+    #
+    def _normalize_section_header(self, mode_flg, text_list, label):
+        if mode_flg == 'formatted' or mode_flg == 'unformatted':
+            self._normalize_section_headers(text_list, label)
+        elif mode_flg == 'pull_out_section_header_to_bottom_of_report':
+            self._extract_section_to_bottom_of_report(text_list,
+                                                      self._tagged_section_header(label))
+        self._append_keywords_text(self._tagged_section_header(label))
         
     #
     def _normalize_section_headers(self, text_list, label):
@@ -152,15 +80,6 @@ class Section_header_normalizer(object):
                                                       self.text, section_lbl + ' N\n\n')
             self.text, num = self._number_section(section_lbl, self.text)
         return num
-        
-    #
-    def _normalize_section_header(self, mode_flg, text_list, label):
-        if mode_flg == 'formatted' or mode_flg == 'unformatted':
-            self._normalize_section_headers(text_list, label)
-        elif mode_flg == 'pull_out_section_header_to_bottom_of_report':
-            self._extract_section_to_bottom_of_report(text_list,
-                                                      self._tagged_section_header(label))
-        self._append_keywords_text(self._tagged_section_header(label))
             
     #
     def _number_section(self, section_str, text):

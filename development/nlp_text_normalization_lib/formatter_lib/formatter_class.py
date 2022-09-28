@@ -46,7 +46,7 @@ class Formatter(object):
             self.section_header_normalizer.comment_section_header('pull_out_section_header_to_bottom_of_report',
                                                                   self.text)
         #self.section_header_normalizer.history_section_header(self.formatting)
-        self.texxt = \
+        self.text = \
             self.section_header_normalizer.normalize_section_header(self.formatting,
                                                                     self.text)
         self.text = \
@@ -148,7 +148,7 @@ class Formatter(object):
     #
     def _format_section_headers(self):
         self.text = \
-            self.lambda_manager.deletion_lambda_conversion('(?i)\nFinal (Pathologic )?Diagnosis\n', self.text)
+            self.lambda_manager.deletion_lambda_conversion('(?i)\nFinal (Pathologic )?Dx\n', self.text)
         self.text = \
             self.lambda_manager.lambda_conversion('\nDIFFERENTIAL', self.text, '\nMANUAL DIFFERENTIAL')
         self.text = \

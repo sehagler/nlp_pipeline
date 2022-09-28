@@ -42,8 +42,8 @@ class Postprocessor_registry(Postprocessor_registry_base):
                                              Postprocessor(self.static_data))
                 print(filename + ' registration succeeded')
             except Exception:
-                print(filename + ' registration failed')
                 traceback.print_exc()
+                print(filename + ' registration failed')
      
     #
     def push_data_dict(self, filename, data_dict):

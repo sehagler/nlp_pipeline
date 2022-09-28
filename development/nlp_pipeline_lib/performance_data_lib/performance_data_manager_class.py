@@ -14,6 +14,7 @@ from jsondiff import diff
 import os
 import re
 import shutil
+import traceback
 
 #
 from nlp_pipeline_lib.logger_lib.logger_class import Logger
@@ -433,7 +434,8 @@ class Performance_data_manager(object):
             try:
                 text_eval = '[\'' + text + '\']'
                 text_list = eval(text_eval)
-            except:
+            except Exception:
+                traceback.print_exc()
                 text = text.replace('(\'', '(')
                 text = text.replace('\')', ')')
                 text_eval = '[\'' + text + '\']'

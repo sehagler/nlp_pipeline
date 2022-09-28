@@ -9,6 +9,7 @@ Created on Fri Apr 17 12:06:14 2020
 import os
 import re
 import sys
+import traceback
 
 #
 from tool_lib.py.processing_tools_lib.text_processing_tools \
@@ -183,7 +184,8 @@ class Raw_data_manager(object):
                 nlp_metadata['NOTE_TYPE'] = \
                     source_metadata_list[i]['NOTE_TYPE']
                 xml_metadata_keys = ['NOTE_TYPE']
-            except:
+            except Exception:
+                traceback.print_exc()
                 xml_metadata_keys = []
             nlp_metadata_list.append(nlp_metadata)
                 
@@ -215,11 +217,11 @@ class Raw_data_manager(object):
         del source_metadata['NLP_DOCUMENT_IDX']
         nlp_metadata['NLP_MODE'] = source_metadata['NLP_MODE']
         del source_metadata['NLP_MODE']
-        try:
+        if 'NOTE_TYPE' in source_metadata.keys():
             nlp_metadata['NOTE_TYPE'] = \
                 source_metadata['NOTE_TYPE']
             xml_metadata_keys = [ 'NOTE_TYPE']
-        except:
+        else:
             xml_metadata_keys = []
         return [source_metadata], [nlp_metadata], [text], xml_metadata_keys
     

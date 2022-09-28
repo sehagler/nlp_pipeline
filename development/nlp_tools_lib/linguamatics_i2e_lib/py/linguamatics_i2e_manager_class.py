@@ -32,6 +32,7 @@ import requests
 import shutil
 import sys
 import time
+import traceback
 import unicodecsv
 import urllib
 import urllib3
@@ -570,7 +571,8 @@ class Linguamatics_i2e_manager(object):
         with requests.get(self.server + '/api', auth=auth_values, headers=headers, verify=False) as r:
             try:
                 response = r.headers['X-Version']
-            except:
+            except Exception:
+                traceback.print_exc()
                 response = 'FAILED_TO_CONNECT'
         return response
     
@@ -676,27 +678,27 @@ class Linguamatics_i2e_manager(object):
                 resource_type = 'xml_and_html_config_file'
             try:
                 self.delete_resource(self.i2e_resources_dict[resource_type])
-            except Exception as e:
-                print(e)
+            except Exception:
+                traceback.print_exc()
             if resource_type == 'source_data':
                 for source_data_file in sorted(os.listdir(source_data_dir)):
                     try:
                         self.create_resource(project_name, resource_type,
                                              os.path.join(source_data_dir, source_data_file))
-                    except Exception as e:
-                        print(e)
+                    except Exception:
+                        traceback.print_exc()
             else:
                 try:
                     self.create_resource(None, resource_type, filename)
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    traceback.print_exc()
         '''
         try:
             bundle = os.path.join(processing_data_dir,
                                   self.linguamatics_i2e_file_manager.query_bundle_filename())
             self.upload_bundle(bundle)
-        except Exception as e:
-            print(e)
+        except Exception:
+            traceback.print_exc()
         '''
             
     #
@@ -705,8 +707,8 @@ class Linguamatics_i2e_manager(object):
             bundle = os.path.join(processing_data_dir,
                                   self.linguamatics_i2e_file_manager.query_bundle_filename())
             self.upload_bundle(bundle)
-        except Exception as e:
-            print(e)
+        except Exception:
+            traceback.print_exc()
             
     #
     def set_index_configuration(self, project_name):

@@ -106,35 +106,35 @@ def compare_dates(date0, date1):
     try:
         if len(year0) == 4:
             year0 = year0[2:]
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     try:
         if len(year1) == 4:
             year1 = year1[2:]
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     try:
         month0 = str(int(month0))
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     try:
         day0 = str(int(day0))
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     try:
         month1 = str(int(month1))
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     try:
         day1 = str(int(day1))
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     return_flg = False
     try:
         if ( year0 == year1 ) and ( month0 == month1 ):
             return_flg = True
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     return return_flg
 
 #

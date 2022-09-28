@@ -132,8 +132,8 @@ class Postprocessor_base(object):
             try:
                 data_dict_list[i][self.nlp_data_key] = \
                     data_dict_list[i][self.nlp_data_key][0]
-            except:
-                pass
+            except Exception:
+                traceback.print_exc()
         return data_dict_list
     
     #

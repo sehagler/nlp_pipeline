@@ -7,6 +7,7 @@ Created on Thu Nov 15 12:12:23 2018
 
 #
 import os
+import traceback
 
 #
 from tool_lib.py.processing_tools_lib.file_processing_tools \
@@ -76,7 +77,8 @@ class Metadata_manager(object):
                 try:
                     source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
                         str(int(float(source_metadata_dict[id_key])))
-                except:
+                except Exception:
+                    traceback.print_exc()
                     source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
                         source_metadata_dict[id_key]
         self.metadata_dict_dict[metadata_dict_key] = {}

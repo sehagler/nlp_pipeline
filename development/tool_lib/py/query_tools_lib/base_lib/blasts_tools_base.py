@@ -11,6 +11,8 @@ import statistics
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
+from tool_lib.py.processing_tools_lib.variable_processing_tools \
+    import nlp_to_tuple, validation_to_tuple
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
     import Postprocessor_base
 from tool_lib.py.query_tools_lib.base_lib.preprocessor_base_class \
@@ -190,6 +192,51 @@ class Postprocessor(Postprocessor_base):
             value_dict['BLAST_PERCENTAGE'] = value
             value_dict_list.append(value_dict)
         return value_dict_list
+    
+#
+def blast_performance(validation_data_manager, evaluation_manager, labId,
+                      nlp_values, nlp_datum_key, validation_datum_key):
+    validation_data = validation_data_manager.get_validation_data()
+    if labId in nlp_values.keys():
+        keys0 = list(nlp_values[labId])
+        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
+            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+        else:
+            data_out = None
+    else:
+        data_out = None
+    if data_out is not None:
+        print(data_out)
+        data_out = data_out.replace('~', '')
+        data_out = data_out.replace('>', '')
+        data_out = data_out.replace('<', '')
+        data_out = data_out.replace('.0', '')
+    if data_out is not None:
+        nlp_value = []
+        nlp_value.append(data_out)
+    else:
+        nlp_value = None
+    nlp_value = nlp_to_tuple(nlp_value)
+    labid_idx = validation_data[0].index('labId')
+    validation_datum_idx = validation_data[0].index(validation_datum_key)
+    validation_value = None
+    for item in validation_data:
+        if item[labid_idx] == labId:
+            validation_value = item[validation_datum_idx]
+    if validation_value is not None:
+        if validation_value == '':
+            validation_value = None
+    if validation_value is not None:
+        validation_value = validation_value.replace('~', '')
+        validation_value = validation_value.replace('>', '')
+        validation_value = validation_value.replace('<', '')
+        validation_value = validation_value.replace('.0', '')
+        validation_value = validation_value.replace('None', '0')
+    validation_value = validation_to_tuple(validation_value)
+    display_flg = True
+    performance = evaluation_manager.evaluation(nlp_value, validation_value,
+                                                display_flg, value_range=5.0)
+    return performance
 
 #
 def get_blast_value(blast_value_list):
@@ -259,12 +306,12 @@ def get_blast_value(blast_value_list):
                 greater_than_list = []
     try:
         blast_value.append('< ' + less_than_list[0])
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     try:
         blast_value.append('> ' + greater_than_list[0])
-    except:
-        pass
+    except Exception:
+        traceback.print_exc()
     if len(blast_value) == 1:
         return blast_value[0]
     elif len(blast_value) > 1:

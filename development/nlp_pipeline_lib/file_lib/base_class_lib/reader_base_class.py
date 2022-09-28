@@ -8,6 +8,7 @@ Created on Tue Nov 17 09:32:11 2020
 #
 import datetime
 import re
+import traceback
 import xlrd
 
 #
@@ -28,7 +29,8 @@ class Reader_base(object):
             y, m, d, h, mi, s = \
                 xlrd.xldate_as_tuple(value, book.datemode)
             datetime_str = str(m) + '/' + str(d) + '/' + str(y)
-        except:
+        except Exception:
+            traceback.print_exc()
             datetime_str = ''
         return datetime_str
     

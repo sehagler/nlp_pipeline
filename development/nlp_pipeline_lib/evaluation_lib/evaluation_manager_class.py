@@ -7,6 +7,7 @@ Created on Wed Mar 30 16:03:49 2022
 
 #
 import collections
+import traceback
 
 #
 class Evaluation_manager(object):
@@ -26,13 +27,13 @@ class Evaluation_manager(object):
         try:
             if self.manual_review in x:
                 x = self.manual_review
-        except:
-            pass
+        except Exception:
+            traceback.print_exc()
         try:
             if len(x) == 0:
                 x = None
-        except:
-            pass
+        except Exception:
+            traceback.print_exc()
         if x != self.manual_review:
             if y is not None:
                 if x is not None:
@@ -67,8 +68,8 @@ class Evaluation_manager(object):
         try:
             if self.manual_review in x:
                 x = self.manual_review
-        except:
-            pass
+        except Exception:
+            traceback.print_exc()
         if x != self.manual_review:
             if y is not None:
                 if x is not None:
@@ -104,8 +105,8 @@ class Evaluation_manager(object):
         try:
             if self.manual_review in x:
                 x = self.manual_review
-        except:
-            pass
+        except Exception:
+            traceback.print_exc()
         if x != self.manual_review:
             if y is not None:
                 if x is not None:

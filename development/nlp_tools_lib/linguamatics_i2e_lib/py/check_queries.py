@@ -97,6 +97,7 @@ class QueryFixer(object):
             try:
                 query = rtyaml.load(query_file)
             except Exception:
+                #traceback.print_exc()
                 query_file.seek(0)
                 contents = query_file.read()
                 if contents.strip():

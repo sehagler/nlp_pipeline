@@ -7,6 +7,7 @@ Created on Wed Mar 13 11:10:44 2019
 
 #
 import os
+import traceback
 
 #
 class Logger(object):
@@ -35,7 +36,8 @@ class Logger(object):
     def log_entry(self, patientId, labId, data_item, value0, value1):
         try:
             item = [ str(patientId), str(labId), str(data_item), str(value0), str(value1) ]
-        except:
+        except Exception:
+            traceback.print_exc()
             item = []
         self.log_list.append(item)
         

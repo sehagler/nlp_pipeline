@@ -32,15 +32,15 @@ class Section_header_structure_tools(object):
                 if 'PRE_PUNCT' in key and 'POST_PUNCT' in key:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
-                            text.append('(?i)(^|\n)' + text_in[i] + '(:|\.|\n)([\n\s]*|$)')
+                            text.append('(^|\n| )' + text_in[i] + '(:|\.|\n)')
                     else:
-                        text.append('(?i)(^|\n)' + text_in + '(:|\.|\n)([\n\s]*|$)')
+                        text.append('(^|\n| )' + text_in + '(:|\.|\n)')
                 elif 'PRE_PUNCT' in key:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
-                            text.append('(?i)(^|\n)' + text_in[i])
+                            text.append('(^|\n| )' + text_in[i])
                     else:
-                        text.append('(?i)(^|\n)' + text_in)
+                        text.append('(^|\n| )' + text_in)
                 else:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
@@ -53,12 +53,13 @@ class Section_header_structure_tools(object):
             text = []
             if isinstance(text_in, list):
                 for i in range(len(text_in)):
-                    text.append('(?i)(^|\n)' + text_in[i] + '(:|\.|\n)([\n\s]*|$)')
+                    text.append('(^|\n| )' + text_in[i] + '(:|\.|\n)')
             else:
-                text.append('(?i)(^|\n)' + text_in + '(:|\.|\n)([\n\s]*|$)')
+                text.append('(^|\n| )' + text_in + '(:|\.|\n)')
             text_list.append(text)
         return text_list
         
+    '''
     #
     def _add_punctuation_unformatted(self, regex_dict, no_punctuation_flg):
         text_list = []
@@ -68,9 +69,9 @@ class Section_header_structure_tools(object):
                 text_in = regex_dict[key]
                 if isinstance(text_in, list):
                     for i in range(len(text_in)):
-                            text.append('(?i)( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
+                            text.append('( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
                 else:
-                    text.append('(?i)( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
+                    text.append('( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
                 if no_punctuation_flg:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
@@ -89,9 +90,9 @@ class Section_header_structure_tools(object):
             text = []
             if isinstance(text_in, list):
                 for i in range(len(text_in)):
-                    text.append('(?i)( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
+                    text.append('( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
             else:
-                text.append('(?i)( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
+                text.append('( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
             if no_punctuation_flg:
                 if isinstance(text_in, list):
                     for i in range(len(text_in)):
@@ -106,14 +107,15 @@ class Section_header_structure_tools(object):
                     text.append('(?<!<<<)' + text_in_upper)
             text_list.append(text)
         return text_list
+    '''
     
     #
     def _post_punct(self):
-        return('(:|\.|\n)([\n\s]*|$)')
+        return('(:|\.|\n)')
         
     #
     def _pre_punct(self):
-        return('(?i)(^|\n)')
+        return('(^|\n| )')
     
     #
     def _section_header_amendment_dict(self):
@@ -468,11 +470,13 @@ class Section_header_structure_tools(object):
             no_punctuation_flg = True
         else:
             no_punctuation_flg = False
+        text_list = self._add_punctuation_formatted(regex_list)
         if mode_flg == 'formatted':
             text_list = self._add_punctuation_formatted(regex_list)
         elif mode_flg == 'unformatted':
-            text_list = self._add_punctuation_unformatted(regex_list, 
-                                                          no_punctuation_flg)
+            text_list = self._add_punctuation_formatted(regex_list)
+            #text_list = self._add_punctuation_unformatted(regex_list, 
+            #                                              no_punctuation_flg)
         else:
             text_list = regex_list
         return text_list, no_punctuation_flg

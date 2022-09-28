@@ -8,6 +8,7 @@ Created on Tue Nov 13 08:12:07 2018
 #
 import os
 import re
+import traceback
 
 #
 from regex_lib.regex_tools \
@@ -182,5 +183,5 @@ class Preprocessor_registry(Preprocessor_registry_base):
                     exec(import_cmd, globals())
                     self._register_preprocessor(filename, Preprocessor())
                     print('Registered Preprocessor from ' + filename)
-                except:
-                    pass
+                except Exception:
+                    traceback.print_exc()

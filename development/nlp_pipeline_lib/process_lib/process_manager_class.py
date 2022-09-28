@@ -19,6 +19,7 @@ import pickle
 import re
 import shutil
 import time
+import traceback
 
 #
 from nlp_pipeline_lib.dynamic_data_lib.dynamic_data_manager_class \
@@ -147,8 +148,8 @@ class Process_manager(object):
                                          self.metadata_manager,
                                          self.xls_manager_registry)
             print('Performance_data_manager: ' + project_name + '_performance_data_manager')
-        except Exception as e:
-            print(e)
+        except Exception:
+            traceback.print_exc()
             self.performance_data_manager = None
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_manager,
@@ -379,8 +380,8 @@ class Process_manager(object):
                      '_performance_data_manager as Performance_data_manager'
         try:
             exec(import_cmd, globals())
-        except Exception as e:
-            print(e)
+        except Exception:
+            traceback.print_exc()
         try:
             import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                          project_name.lower() + \
@@ -388,10 +389,10 @@ class Process_manager(object):
                          '_postprocessor_registry as Postprocessor_registry'
             exec(import_cmd, globals())
             print('Postprocessor_registry: ' + project_name + '_postprocessor_registry')
-        except Exception as e:
+        except Exception:
+            traceback.print_exc()
             import_cmd = 'from tool_lib.py.registry_lib.postprocessor_registry_class import Postprocessor_registry'
             exec(import_cmd, globals())
-            print(e)
             print('Postprocessor_registry: Postprocessor_registry')
             
     #

@@ -12,6 +12,7 @@ import math
 import os
 import sys
 import time
+import traceback
 import xlrd
 import xml.etree.ElementTree as ET
 from xmldiff import main
@@ -45,7 +46,8 @@ def _read_file(mode_flg, filename):
             elif mode_flg == 2:
                 data = ET.parse(filename)
             read_file = True
-        except:
+        except Exception:
+            traceback.print_exc()
             if retry_ctr == 0:
                 print('failed to read ' + filename)
             time.sleep(retry_sleep)
@@ -69,7 +71,8 @@ def _remove_file(filename):
                 removed_file = True
             else:
                 removed_file = True
-        except:
+        except Exception:
+            traceback.print_exc()
             if retry_ctr == 0:
                 print('failed to remove ' + filename)
             time.sleep(retry_sleep)
@@ -118,7 +121,8 @@ def _write_file(filename, data, include_datetime_flg, verbose_flg):
                 with open(filename, 'w+') as f:
                     f.write(data)
             wrote_file = True
-        except:
+        except Exception:
+            traceback.print_exc()
             if retry_ctr == 0:
                 print('failed to write ' + filename)
             time.sleep(retry_sleep)
@@ -166,7 +170,8 @@ def _write_zip_file(filename, data_files, zip_path, max_files_per_zip, remove_fi
                                         zip_data_file = os.path.join(zip_path, zip_data_file)
                                     f.write(data_file, zip_data_file)
                                     wrote_file = True
-                                except:
+                                except Exception:
+                                    traceback.print_exc()
                                     if retry_ctr == 0:
                                         print('failed to write ' + filename)
                                     time.sleep(retry_sleep)
@@ -243,7 +248,8 @@ def xml_diff(file0, file1):
         try:
             diff_output = main.diff_files(file0, file1)
             read_file = True
-        except:
+        except Exception:
+            traceback.print_exc()
             if retry_ctr == 0:
                 print('failed to read ' + file0 + ' or ' + file1)
             time.sleep(retry_sleep)
