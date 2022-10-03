@@ -107,75 +107,31 @@ class Preprocessing_worker(object):
         raw_data_files_dict = static_data['raw_data_files']
         raw_data_files = list(raw_data_files_dict.keys())
         raw_data_files_extensions = []
-        
-        # kludge to handle legacy XLS or XLSX files missing some metadata
-        for data_file in raw_data_files:
-            filename, extension = os.path.splitext(data_file)
-            raw_data_files_extensions.append(extension.lower())
-        if '.xls' in raw_data_files_extensions or '.xlsx' in raw_data_files_extensions:
-            extension = '.xls'
-        else:
-            extension = '.xml'
-        # kludge to handle legacy XLS or XLSX files missing some metadata
-            
         for data_file in raw_data_files:
             formatting = static_data['raw_data_files'][data_file]['FORMATTING']
-            if extension.lower() in [ '.xml' ]:
-                document_numbers = \
-                    raw_data_manager.get_document_numbers(data_file)
-                for document_number in document_numbers:
-                    data_tmp, document_idx, source_metadata_list, \
-                    nlp_metadata_list, text_list, xml_metadata_list, \
-                    source_system = \
-                        raw_data_manager.get_data_by_document_number(data_file,
-                                                                     document_number,
-                                                                     document_ctr,
-                                                                     self.i2e_version,
-                                                                     self.num_processes,
-                                                                     self.process_idx,
-                                                                     password)
-                    if bool(data_tmp):
-                        document_ctr, fail_ctr = \
-                            self._preprocess_document(raw_data_manager, data_tmp, 
-                                                      start_idx, document_idx,
-                                                      source_metadata_list,
-                                                      nlp_metadata_list,
-                                                      xml_metadata_list,
-                                                      text_list, source_system, 
-                                                      formatting, document_ctr,
-                                                      fail_ctr, password)
-                            
-            # kludge to handle legacy XLS or XLSX files missing some metadata 
-            elif extension.lower() in [ '.xls', '.xlsx' ]:
-                document_values = \
-                    raw_data_manager.get_document_values(data_file)
-                for i in range(len(document_values)):
-                    document_value = document_values[i]
-                    data_tmp, document_idx, source_metadata_list, \
-                    nlp_metadata_list, text_list, xml_metadata_list, \
-                    source_system = \
-                        raw_data_manager.get_data_by_document_value(data_file,
-                                                                    document_value[0],
-                                                                    document_value[1],
-                                                                    document_ctr,
-                                                                    self.i2e_version,
-                                                                    self.num_processes,
-                                                                    self.process_idx,
-                                                                    password)
-                    if bool(data_tmp):
-                        document_ctr, fail_ctr = \
-                            self._preprocess_document(raw_data_manager, data_tmp, 
-                                                      start_idx, document_idx,
-                                                      source_metadata_list,
-                                                      nlp_metadata_list,
-                                                      xml_metadata_list,
-                                                      text_list, source_system,
-                                                      formatting, document_ctr, 
-                                                      fail_ctr, password)
-            # kludge to handle legacy XLS or XLSX files missing some metadata
-            
-            else:
-                print('invalid file extension: ' + extension)
+            document_numbers = \
+                raw_data_manager.get_document_numbers(data_file)
+            for document_number in document_numbers:
+                data_tmp, document_idx, source_metadata_list, \
+                nlp_metadata_list, text_list, xml_metadata_list, \
+                source_system = \
+                    raw_data_manager.get_data_by_document_number(data_file,
+                                                                 document_number,
+                                                                 document_ctr,
+                                                                 self.i2e_version,
+                                                                 self.num_processes,
+                                                                 self.process_idx,
+                                                                 password)
+                if bool(data_tmp):
+                    document_ctr, fail_ctr = \
+                        self._preprocess_document(raw_data_manager, data_tmp, 
+                                                  start_idx, document_idx,
+                                                  source_metadata_list,
+                                                  nlp_metadata_list,
+                                                  xml_metadata_list,
+                                                  text_list, source_system, 
+                                                  formatting, document_ctr,
+                                                  fail_ctr, password)
         return document_ctr, fail_ctr
     
     #

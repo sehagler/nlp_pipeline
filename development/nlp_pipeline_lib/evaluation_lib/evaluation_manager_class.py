@@ -24,16 +24,10 @@ class Evaluation_manager(object):
         
     #
     def _compare_lists(self, x, y, display_flg):
-        try:
-            if self.manual_review in x:
-                x = self.manual_review
-        except Exception:
-            traceback.print_exc()
-        try:
-            if len(x) == 0:
-                x = None
-        except Exception:
-            traceback.print_exc()
+        if x is not None and self.manual_review in x:
+            x = self.manual_review
+        if x is not None and len(x) == 0:
+            x = None
         if x != self.manual_review:
             if y is not None:
                 if x is not None:
@@ -65,11 +59,8 @@ class Evaluation_manager(object):
         
     #
     def _compare_values(self, x, y, display_flg):
-        try:
-            if self.manual_review in x:
-                x = self.manual_review
-        except Exception:
-            traceback.print_exc()
+        if x is not None and self.manual_review in x:
+            x = self.manual_review
         if x != self.manual_review:
             if y is not None:
                 if x is not None:
@@ -102,11 +93,8 @@ class Evaluation_manager(object):
     #
     def _compare_values_range(self, x, y, display_flg, value_range):
         display_data_flg = False
-        try:
-            if self.manual_review in x:
-                x = self.manual_review
-        except Exception:
-            traceback.print_exc()
+        if x is not None and self.manual_review in x:
+            x = self.manual_review
         if x != self.manual_review:
             if y is not None:
                 if x is not None:

@@ -10,18 +10,18 @@ import codecs
 import os
 import re
 import xml.etree.ElementTree as ET
-
-#
-from nlp_pipeline_lib.file_lib.base_class_lib.reader_base_class \
-    import Reader_base
     
 #
-class Xml_manager(Reader_base):        
+class Xml_manager(object):
+
+    #
+    def __init__(self, static_data, raw_data_file, password):
+        self.static_data = static_data
+        self.raw_data_file = raw_data_file       
         
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
         filename = os.path.basename(raw_data_file)
-        print('Reading: ' + filename)
         raw_data_encoding = \
             self.static_data['raw_data_files'][filename]['ENCODING']
         filename, file_extension = os.path.splitext(raw_data_file)
@@ -73,8 +73,6 @@ class Xml_manager(Reader_base):
                 keys_appended = []
         if len(data['SOURCE_SYSTEM']) == 0:
             data['SOURCE_SYSTEM'] = data["SOURCE_SYSTEM_NAME"]
-        #for text_identifier in text_identifiers:
-        #    if text_identifier in data.keys():
         keys = list(data.keys())
         for key in keys:
             for text_identifier in text_identifiers:
@@ -85,4 +83,11 @@ class Xml_manager(Reader_base):
                         data['RAW_TEXT'].extend(data[key])
                     del data[key]
         os.remove(tmp_file)
+        return data
+        
+    #
+    def read_file(self):
+        raw_data_files_dict = self.static_data['raw_data_files']
+        print('Reading file: ' + self.raw_data_file)
+        data = self._read_data_file(raw_data_files_dict, self.raw_data_file)
         return data

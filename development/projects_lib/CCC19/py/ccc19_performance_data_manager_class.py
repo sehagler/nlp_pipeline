@@ -113,6 +113,8 @@ class CCC19_performance_data_manager(Performance_data_manager):
         validation_datum_keys = [ 'CANCER_STAGE', 'NORMALIZED_ECOG_SCORE',
                                   'NORMALIZED_SMOKING_HISTORY',
                                   'NORMALIZED_SMOKING_STATUS' ]
+        self.validation_data_manager.column_to_int('CANCER_STAGE')
+        self.validation_data_manager.column_to_int('NORMALIZED_ECOG_SCORE')
         nlp_values = \
             self._identify_manual_review(nlp_values, validation_datum_keys)
         N_manual_review = {}

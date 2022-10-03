@@ -7,6 +7,7 @@ Created on Fri Mar 08 12:42:14 2019
 
 #
 import re
+import traceback
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager

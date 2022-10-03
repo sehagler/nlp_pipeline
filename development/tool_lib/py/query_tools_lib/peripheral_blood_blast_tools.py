@@ -6,6 +6,9 @@ Created on Mon Apr  4 15:52:26 2022
 """
 
 #
+import traceback
+
+#
 from tool_lib.py.processing_tools_lib.variable_processing_tools \
     import trim_data_value
 from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \

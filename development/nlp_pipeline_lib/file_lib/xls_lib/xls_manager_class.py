@@ -9,91 +9,115 @@ Created on Tue Mar 22 14:57:36 2022
 import os
 import re
 import traceback
+import xlrd
 
 #
-from nlp_pipeline_lib.file_lib.base_class_lib.reader_base_class import Reader_base
-from tool_lib.py.processing_tools_lib.file_processing_tools import read_xlsx_file
+from tool_lib.py.processing_tools_lib.file_processing_tools \
+    import read_xlsx_file
     
 #
-class Xls_manager(Reader_base):
+class Xls_manager(object):
+    
+    #
+    def __init__(self, static_data, raw_data_file, password):
+        self.static_data = static_data
+        self.raw_data_file = raw_data_file
+    
+    #
+    def _get_document(self, raw_data, document_value):
+        document_dict = {}
+        for key in raw_data.keys():
+            document_dict[key] = []
+        for i in range(len(raw_data['FILENAME'])):
+            nlp_mode = raw_data['NLP_MODE'][i]
+            if nlp_mode == 'CASE_NUMBER':
+                label0 = 'MRN'
+                label1 = 'CASE_NUMBER'
+            elif nlp_mode == 'RESULT_ID':
+                label0 = 'RESULT_ID'
+                label1 = 'RESULT_ID'
+            elif nlp_mode == 'SOURCE_SYSTEM_RESULT_ID':
+                label0 = 'SOURCE_SYSTEM_RESULT_ID'
+                label1 = 'SOURCE_SYSTEM_RESULT_ID'
+            if raw_data[label1][i] == document_value and \
+               raw_data['REPORT_HEADER'][i] not in document_dict['REPORT_HEADER']:
+                for key in raw_data.keys():
+                    document_dict[key].append(raw_data[key][i])
+        raw_text = ''
+        for i in range(len(document_dict['REPORT_HEADER'])):
+            raw_text += document_dict['REPORT_HEADER'][i] + '\n\n' + \
+                        document_dict['RAW_TEXT'][i] + '\n\n'
+        raw_text = raw_text[:-2]
+        del document_dict['REPORT_HEADER']
+        document_dict['RAW_TEXT'] = [ raw_text ]
+        for key in document_dict.keys():
+            document_dict[key] = list(set(document_dict[key]))
+        for key in document_dict.keys():
+            if len(document_dict[key]) == 0:
+                document_dict[key] = [ '' ]
+        return document_dict
+    
+    #
+    def _get_document_values(self, raw_data):
+        document_value_dict = {}
+        nlp_mode = raw_data['NLP_MODE'][0]
+        document_values = list(set(raw_data[nlp_mode]))
+        return document_values
         
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
         dt_labels = self.static_data['datetime_keys']
         key_label = 'REPORT_HEADER'
-        if 'BeatAML' in self.static_data['project_name']:
-            key_value_list = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
-                               'Karyotype', 'Clinical History',
-                               'Immunologic Analysis', 'Laboratory Data',
-                               'Microscopic Description',
-                               'Cytogenetic Analysis Summary',
-                               'Impressions and Recommendations' ]
-        elif self.static_data['project_name'] == 'BreastCancerPathology':
-            key_value_list = [ 'Final Pathologic Diagnosis' ]
-        data = {}
+        raw_data = {}
         book = read_xlsx_file(raw_data_file)
         sheet = book.sheet_by_index(0)
         keys = sheet.row(0)
         for i in range(len(keys)):
             keys[i] = str(keys[i].value)
-        if 'FILENAME' not in data.keys():
-            data['FILENAME'] = []
-        if 'NLP_MODE' not in data.keys():
-            data['NLP_MODE'] = []
+        if 'FILENAME' not in raw_data.keys():
+            raw_data['FILENAME'] = []
+        if 'NLP_MODE' not in raw_data.keys():
+            raw_data['NLP_MODE'] = []
         for key in keys:
-            if key not in data.keys():
-                data[key] = []
+            if key not in raw_data.keys():
+                raw_data[key] = []
         for row_idx in range(1, sheet.nrows):
             row = sheet.row(row_idx)
-            idx = [ i for i, x in enumerate(keys) if x == key_label]
-            REPORT_KEY_tmp = re.sub(':', '', row[idx[0]].value)
-            if REPORT_KEY_tmp.lower() in map(str.lower, key_value_list):
-                data['FILENAME'].append(os.path.basename(raw_data_file))
-                data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
-                for i in range(len(keys)):
-                    if keys[i] in dt_labels:
-                        data[keys[i]].append(self._read_datetime(book, row[i].value))
-                    else:
-                        data[keys[i]].append(row[i].value)
-        if 'RAW_TEXT' not in data.keys():
-            data['RAW_TEXT'] = data[keys[-1]]
-        else:
-            data['RAW_TEXT'].extend(data[keys[-1]])
-        del data[keys[-1]]
-        return data
-    
-    '''
-    #
-    def _read_data_file_nokey(self, raw_data_files_dict, raw_data_file, dt_labels):
-        data = {}
-        book = read_xlsx_file(raw_data_file)
-        sheet = book.sheet_by_index(0)
-        keys = sheet.row(0)
-        for i in range(len(keys)):
-            keys[i] = str(keys[i].value)
-        if 'FILENAME' not in data.keys():
-            data['FILENAME'] = []
-        if 'NLP_MODE' not in data.keys():
-            data['NLP_MODE'] = []
-        for key in keys:
-            if key not in data.keys():
-                data[key] = []
-        for row_idx in range(1, sheet.nrows):
-            row = sheet.row(row_idx)
-            data['FILENAME'].append(os.path.basename(raw_data_file))
-            data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
+            idx = [i for i, x in enumerate(keys) if x == key_label]
+            raw_data['FILENAME'].append(os.path.basename(raw_data_file))
+            raw_data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
             for i in range(len(keys)):
                 if keys[i] in dt_labels:
-                    data[keys[i]].append(self._read_datetime(book, row[i].value))
+                    raw_data[keys[i]].append(self._read_datetime(book, row[i].value))
                 else:
-                    data[keys[i]].append(row[i].value)
-        if 'RAW_TEXT' not in data.keys():
-            data['RAW_TEXT'] = data[keys[-1]]
-        else:
-            data['RAW_TEXT'].extend(data[keys[-1]])
-        del data[keys[-1]]
+                    raw_data[keys[i]].append(row[i].value)
+        raw_data['RAW_TEXT'] = raw_data[keys[-1]]
+        del raw_data[keys[-1]]
+        data = {}
+        for key in raw_data.keys():
+            data[key] = []
+        del data['REPORT_HEADER']
+        document_values = self._get_document_values(raw_data)
+        for document_value in document_values:
+            document_dict = self._get_document(raw_data, document_value)
+            for key in document_dict.keys():
+                data[key].append(document_dict[key][0])
         return data
-    '''
+    
+    #
+    def _read_datetime(self, book, value):
+        if value != '':
+            try:
+                value = float(value)
+                y, m, d, h, mi, s = \
+                    xlrd.xldate_as_tuple(value, book.datemode)
+                datetime_str = str(m) + '/' + str(d) + '/' + str(y)
+            except Exception:
+                traceback.print_exc()
+                datetime_str = ''
+        else:
+            datetime_str = ''
+        return datetime_str
     
     #
     def column(self, column_label):
@@ -107,6 +131,17 @@ class Xls_manager(Reader_base):
     #
     def column_labels(self):
         return self.validation_data[0]
+    
+    #
+    def column_to_int(self, column_label):
+        column_labels = self.validation_data[0]
+        idx = column_labels.index(column_label)
+        for i in range(1, len(self.validation_data)):
+            try:
+                self.validation_data[i][idx] = \
+                    str(int(float(self.validation_data[i][idx])))
+            except Exception:
+                traceback.print_exc()
     
     #
     def get_validation_csn_list(self):
@@ -130,6 +165,13 @@ class Xls_manager(Reader_base):
     #
     def length(self):
         return len(self.validation_data)
+        
+    #
+    def read_file(self):
+        raw_data_files_dict = self.static_data['raw_data_files']
+        print('Reading file: ' + self.raw_data_file)
+        data = self._read_data_file(raw_data_files_dict, self.raw_data_file)
+        return data
     
     #
     def read_training_data(self):
@@ -142,10 +184,13 @@ class Xls_manager(Reader_base):
             training_data_tmp = []
             for col_idx in range(ncols):
                 cell_value = sheet.cell_value(row_idx, col_idx)
+                cell_value = str(cell_value)
+                '''
                 try:
                     cell_value = str(int(cell_value))
                 except Exception:
                     traceback.print_exc()
+                '''
                 training_data_tmp.append(cell_value)
             training_data.append(training_data_tmp)
         self.training_data = training_data
@@ -161,10 +206,7 @@ class Xls_manager(Reader_base):
             validation_data_tmp = []
             for col_idx in range(ncols):
                 cell_value = sheet.cell_value(row_idx, col_idx)
-                try:
-                    cell_value = str(int(cell_value))
-                except Exception:
-                    traceback.print_exc()
+                cell_value = str(cell_value)
                 validation_data_tmp.append(cell_value)
             validation_data.append(validation_data_tmp)
         self.validation_data = validation_data

@@ -71,7 +71,7 @@ class Metadata_manager(object):
         
     #
     def append_metadata_dicts(self, metadata_dict_key, source_metadata_dict, 
-                             nlp_metadata_dict):
+                              nlp_metadata_dict):
         for id_key in self.static_data['document_identifiers']:
             if id_key in source_metadata_dict.keys():
                 try:

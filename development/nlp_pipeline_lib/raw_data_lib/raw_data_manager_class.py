@@ -30,62 +30,11 @@ class Raw_data_manager(object):
             self.num_processes = static_data['num_processes']
         else:
             self.num_processes = 1
-        
-    #
-    def _finish_document_data(self, data_file, document_data, document_ctr):
-        if self.multiprocessing_flg:
-            document_idx = int(document_data['NLP_DOCUMENT_IDX'][0])
-        else:
-            document_idx = document_ctr
-            document_data['NLP_DOCUMENT_IDX'] = []
-            document_data['NLP_DOCUMENT_IDX'].append(document_idx)
-        filename, extension = os.path.splitext(data_file)
-        if extension.lower() in [ '.xls', '.xlsx' ]:
-            header_key = 'REPORT_HEADER'
-            header_value_list = [ 'Final Diagnosis', 'Final Pathologic Diagnosis',
-                                  'Karyotype', 'Clinical History',
-                                  'Immunologic Analysis', 'Laboratory Data',
-                                  'Microscopic Description',
-                                  'Cytogenetic Analysis Summary',
-                                  'Impressions and Recommendations' ]
-            raw_text = ''
-            for header_value in header_value_list:
-                header_value = re.sub(':', '', header_value)
-                for i in range(len(document_data[header_key])):
-                    data_value = \
-                        re.sub(':', '', document_data[header_key][i])
-                    if header_value.lower() == data_value.lower():
-                        raw_text += '\n' + header_value + '\n'
-                        raw_text += '\n' + document_data['RAW_TEXT'][i] + '\n'
-            for key in document_data.keys():
-                document_data[key] = list(set(document_data[key]))
-            document_data['RAW_TEXT'] = raw_text
-        return document_data, document_idx
-                
-    #
-    def _get_data_by_document_value(self, data_file, document_value,
-                                    document_value_key=None):
-        document_data = {}
-        for i in range(len(self.data)):
-            if self.data[i]['FILENAME'][0] == data_file:
-                data = self.data[i]
-        nlp_mode = data['NLP_MODE'][0]
-        if nlp_mode in [ 'RESULT_ID', 'SOURCE_SYSTEM_RESULT_ID' ]:
-            document_value_key = None
-        idxs = [i for i, x in enumerate(data[nlp_mode]) if x == document_value]
-        if len(idxs) > 0:
-            if document_value_key is not None:
-                idxs0 = [i for i, x in enumerate(data['MRN']) if x == document_value_key]
-                idxs = list(set(idxs) & set(idxs0))
-            for key in data.keys():
-                document_data[key] = [data[key][i] for i in idxs]
-        return document_data
     
     #
     def _partition_data_by_thread(self, data):
         static_data = self.static_data_manager.get_static_data()
         num_processes = static_data['num_processes']
-        partitioned_data = {}
         partitioned_data = {}
         if self.multiprocessing_flg:
             for i in range(num_processes):
@@ -266,40 +215,14 @@ class Raw_data_manager(object):
                     doc_idx = data[keys[0]].index(document_number)
                     for key in keys:
                         document_data[key] = [ data[key][doc_idx] ]
-        document_data, document_idx = \
-            self._finish_document_data(data_file, document_data, document_ctr)
+        if self.multiprocessing_flg:
+            document_idx = int(document_data['NLP_DOCUMENT_IDX'][0])
+        else:
+            document_idx = document_ctr
+            document_data['NLP_DOCUMENT_IDX'] = []
+            document_data['NLP_DOCUMENT_IDX'].append(document_idx)
+        filename, extension = os.path.splitext(data_file)
             
-        #
-        source_metadata_list, nlp_metadata_list, text_list, \
-            xml_metadata_keys, source_system = \
-                self._read_data_wrapper(password, document_data, i2e_version,
-                                        num_processes, process_idx)
-        #
-        
-        xml_metadata_list = []
-        for i in range(len(text_list)):
-            source_metadata = source_metadata_list[i]
-            nlp_metadata = nlp_metadata_list[i]
-            xml_metadata = {}
-            xml_metadata['DOCUMENT_ID'] = str(document_idx)
-            xml_metadata['SOURCE_SYSTEM'] = \
-                source_metadata['SOURCE_SYSTEM']
-            for key in xml_metadata_keys:
-                xml_metadata[key] = nlp_metadata[key]
-            xml_metadata_list.append(xml_metadata)
-        return document_data, document_idx, source_metadata_list, \
-               nlp_metadata_list, text_list, xml_metadata_list, source_system
-    
-    #
-    def get_data_by_document_value(self, data_file, document_value_key,
-                                   document_value, document_ctr, i2e_version,
-                                   num_processes, process_idx, password):
-        document_data = \
-            self._get_data_by_document_value(data_file, document_value, 
-                                             document_value_key)
-        document_data, document_idx = \
-            self._finish_document_data(data_file, document_data, document_ctr)
-        
         #
         source_metadata_list, nlp_metadata_list, text_list, \
             xml_metadata_keys, source_system = \
@@ -330,46 +253,6 @@ class Raw_data_manager(object):
                 keys = list(data.keys())
                 document_numbers.extend(data[keys[0]])
         return document_numbers
-    
-    #
-    def get_document_values(self, data_file):
-        static_data = self.static_data_manager.get_static_data()
-        directory_manager = static_data['directory_manager']
-        raw_data_dir = \
-            directory_manager.pull_directory('raw_data_dir')
-        document_value_dict = {}
-        for i in range(len(self.data)):
-            filename = self.data[i]['FILENAME'][0]
-            document_value_dict[os.path.join(raw_data_dir, filename)] = {}
-            nlp_mode = self.data[i]['NLP_MODE'][0]
-            if nlp_mode == 'CASE_NUMBER':
-                label0 = 'MRN'
-                label1 = 'CASE_NUMBER'
-            elif nlp_mode == 'RESULT_ID':
-                label0 = 'RESULT_ID'
-                label1 = 'RESULT_ID'
-            elif nlp_mode == 'SOURCE_SYSTEM_RESULT_ID':
-                label0 = 'SOURCE_SYSTEM_RESULT_ID'
-                label1 = 'SOURCE_SYSTEM_RESULT_ID'
-            data_label0 = self.data[i][label0]
-            data_label1 = self.data[i][label1]
-            items = sorted(set(data_label0))
-            for item in items:
-                document_value_list = []
-                idxs = [j for j, x in enumerate(data_label0) if x == item ]
-                document_value_list.append([data_label1[j] for j in idxs])
-                document_value_dict[os.path.join(raw_data_dir, filename)][item] = \
-                    sorted(list(set(document_value_list[0])))
-        document_value_keys = \
-            sorted(document_value_dict[os.path.join(raw_data_dir, data_file)].keys())
-        document_values = []
-        for i in range(len(document_value_keys)):
-            document_value_key = document_value_keys[i]
-            document_values_tmp = \
-                sorted(document_value_dict[os.path.join(raw_data_dir, data_file)][document_value_key])
-            for j in range(len(document_values_tmp)):
-                document_values.append([document_value_key, document_values_tmp[j]])
-        return document_values
     
     #
     def get_multiprocessing_flg(self):

@@ -7,6 +7,7 @@ Created on Tue Jan 15 12:13:23 2019
 
 #
 import re
+import traceback
 
 #
 from tool_lib.py.processing_tools_lib.variable_processing_tools \

@@ -168,8 +168,6 @@ class Process_manager(object):
             keys = list(static_data['raw_data_files'].keys())
             for key in keys:
                 filename, extension = os.path.splitext(key)
-                if extension in [ '.xls', '.xlsx' ]:
-                    multiprocessing_flg = False
         self.raw_data_manager = Raw_data_manager(self.static_data_manager, 
                                                  multiprocessing_flg,
                                                  password)
@@ -421,6 +419,49 @@ class Process_manager(object):
         patient_list = list(set(patient_list))
         num_patients = str(len(patient_list))
         print('number of patients: ' + num_patients)
+        
+    #
+    def _trim_data_by_document_list(self, data):
+        static_data = self.static_data_manager.get_static_data()
+        document_identifiers = static_data['document_identifiers']
+        data_csn_list = []
+        for document_identifier in document_identifiers:
+            if document_identifier in data.keys():
+                data_csn_list.extend(data[document_identifier])
+        if 'document_list' in static_data.keys():
+            document_list = static_data['document_list']
+        else:
+            document_list = list(set(data_csn_list))
+        csn_list = []
+        delete_idx_list = []
+        for i in range(len(data_csn_list)):
+            if (data_csn_list[i] in document_list and
+                data_csn_list[i] not in csn_list):
+                csn_list.append(data_csn_list[i])
+            else:
+                delete_idx_list.append(i)
+        for key in data.keys():
+            for i in sorted(delete_idx_list, reverse=True):
+                del data[key][i]
+        return data
+    
+    #
+    def _trim_data_by_patient_list(self, data):
+        static_data = self.static_data_manager.get_static_data()
+        patient_list = static_data['patient_list']
+        delete_idxs = []
+        for key in static_data['patient_identifiers']:
+            if key in data.keys():
+                patient_identifiers = data[key]
+                for i in range(len(patient_identifiers)):
+                    if patient_identifiers[i] not in patient_list:
+                        delete_idxs.append(i)
+        delete_idxs.sort(reverse=True)
+        for i in range(len(delete_idxs)):
+            idx = delete_idxs[i]
+            for key in data.keys():
+                del data[key][idx]
+        return data
             
     #
     def calculate_performance(self):
@@ -716,22 +757,16 @@ class Process_manager(object):
             if extension.lower() in [ '.xls', '.xlsx' ]:
                 xls_manager = \
                     self.xls_manager_registry[raw_data_files[i]]
-                raw_data_in = xls_manager.read_file()
+                raw_data = xls_manager.read_file()
             elif extension.lower() in [ '.xml' ]:
                 xml_manager = \
                     self.xml_manager_registry[raw_data_files[i]]
-                raw_data_in = xml_manager.read_file()
+                raw_data = xml_manager.read_file()
             else:
-                print('invalid file extension: ' + extension)
-            raw_data = {}
-            for document_identifier_key in static_data['document_identifiers']:
-                if document_identifier_key in raw_data_in.keys():
-                    for key in raw_data_in.keys():
-                        raw_data[key] = []
-                    for i in range(len(raw_data_in[document_identifier_key])):
-                        if raw_data_in[document_identifier_key][i] not in document_identifier_list:
-                            document_identifier_list.append(raw_data_in[document_identifier_key][i])
-                            for key in raw_data_in.keys():
-                                raw_data[key].append(raw_data_in[key][i])
-            self.raw_data_manager.append_raw_data(raw_data)       
+                print('invalid file extension: ' + extension)  
+            if 'document_list' in static_data:
+                raw_data = self._trim_data_by_document_list(raw_data)
+            if 'patient_list' in static_data:
+                raw_data = self._trim_data_by_patient_list(raw_data)
+            self.raw_data_manager.append_raw_data(raw_data) 
         self.raw_data_manager.partition_data()
