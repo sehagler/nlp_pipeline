@@ -85,12 +85,12 @@ class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
         self.data_json = self._evaluate_generic('Extramedullary.dx', self.data_json)
         self.data_json = self._evaluate_generic('FAB/Blast.Morphology', self.data_json)
         self.data_json = self._evaluate_generic('FISH.Analysis.Summary', self.data_json)
-        #self.data_json = self._evaluate_generic('karyotype', self.data_json)
+        self.data_json = self._evaluate_generic('karyotype', self.data_json)
         self.data_json = evaluate_peripheral_blood_blast(self.data_json)
         self.data_json = self._evaluate_generic('Relapse.Date', self.data_json)
         self.data_json = self._evaluate_generic('Residual.dx', self.data_json)
         self.data_json = evaluate_specific_diagnosis(self.data_json)
-        #self.data_json = evaluate_surface_antigens('surfaceAntigensImmunohistochemicalStains', self.data_json)
+        self.data_json = evaluate_surface_antigens('surfaceAntigensImmunohistochemicalStains', self.data_json)
 
     #
     def _get_days_window(self, label):

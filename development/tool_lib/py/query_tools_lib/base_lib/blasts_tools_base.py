@@ -8,9 +8,15 @@ Created on Wed Jun  5 13:49:19 2019
 #
 import re
 import statistics
+import traceback
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
+from regex_lib.regex_tools \
+    import (
+        article,
+        s
+    )
 from tool_lib.py.processing_tools_lib.variable_processing_tools \
     import nlp_to_tuple, validation_to_tuple
 from tool_lib.py.query_tools_lib.base_lib.postprocessor_base_class \
@@ -194,6 +200,40 @@ class Postprocessor(Postprocessor_base):
         return value_dict_list
     
 #
+class Section_header_structure():
+    
+    #
+    def add_section_header(self, section_header_dict):
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('bone marrow aspirate( smear(' + s() + ')?)?')
+        regex_list.append('bone marrow (aspirate and )?touch prep(aration' + s() + ')?')
+        regex_list.append('(bilateral )?bone marrow aspirate' + s() + '(, (left|right) and (left|right))?')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['BONE MARROW ASPIRATE'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('bone marrow (core )?(biopsy(/| and ))?clot section')
+        regex_list.append('(bilateral )?bone marrow (biopsies|biopsy cores) and clot section' + \
+                          s() + '(, (left|right) and (left|right))?')
+        regex_list.append('bone marrow (core )?biopsy')
+        regex_list.append('clot section')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['BONE MARROW CLOT SECTION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('(' + article() + ' )?(bone marrow( aspirate)?|manual) differential(( count)? (\(.+\) )?includes)?[\n\s]*')
+        regex_list.append(article() + ' differential count [ A-Za-z]+ includes[\n\s]*')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['BONE MARROW DIFFERENTIAL'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('(?i)peripheral blood (differential count includes|morphology|smear)')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['PERIPHERAL BLOOD MORPHOLOGY'] = regex_dict
+        return section_header_dict
+    
+#
 def blast_performance(validation_data_manager, evaluation_manager, labId,
                       nlp_values, nlp_datum_key, validation_datum_key):
     validation_data = validation_data_manager.get_validation_data()
@@ -206,17 +246,35 @@ def blast_performance(validation_data_manager, evaluation_manager, labId,
     else:
         data_out = None
     if data_out is not None:
-        print(data_out)
         data_out = data_out.replace('~', '')
         data_out = data_out.replace('>', '')
         data_out = data_out.replace('<', '')
         data_out = data_out.replace('.0', '')
+        
+    '''
+    if data_out is not None:
+        for i in range(len(data_out)):
+            data_list_tmp = []
+            for j in range(len(data_out[i])):
+                data_tmp = data_out[i][j]
+                data_tmp = data_tmp.replace('~', '')
+                data_tmp = data_tmp.replace('>', '')
+                data_tmp = data_tmp.replace('<', '')
+                data_tmp = data_tmp.replace('.0', '')
+                data_list_tmp.append(data_tmp)
+            print(data_list_tmp)
+            data_out[i] = tuple(data_list_tmp)
+    '''
+    
+    '''
     if data_out is not None:
         nlp_value = []
         nlp_value.append(data_out)
     else:
         nlp_value = None
-    nlp_value = nlp_to_tuple(nlp_value)
+    nlp_value = nlp_to_tuple(data_out)
+    '''
+    nlp_value = data_out
     labid_idx = validation_data[0].index('labId')
     validation_datum_idx = validation_data[0].index(validation_datum_key)
     validation_value = None
@@ -234,6 +292,22 @@ def blast_performance(validation_data_manager, evaluation_manager, labId,
         validation_value = validation_value.replace('None', '0')
     validation_value = validation_to_tuple(validation_value)
     display_flg = True
+    #f nlp_value is not None:
+    #  nlp_value = nlp_value[0]
+    '''
+    try:
+        nlp_value = float(nlp_value)
+    except Exception:
+        traceback.print_exc()
+        nlp_value = None
+    try:
+        validation_value = float(validation_value[0])
+    except Exception:
+        traceback.print_exc()
+        validation_value = None
+    '''
+    if validation_value is not None:
+        validation_value = validation_value[0]
     performance = evaluation_manager.evaluation(nlp_value, validation_value,
                                                 display_flg, value_range=5.0)
     return performance

@@ -8,7 +8,6 @@ Created on Fri Jan 10 09:57:35 2020
 #
 import os
 import pickle
-import traceback
 
 #
 from nlp_pipeline_lib.static_data_lib.static_data_manager_class \
@@ -42,7 +41,8 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
               ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
               ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
         self.static_data['remove_date'] = False
-        self.static_data['validation_file'] = 'Sup Table 5 Clinical summary.xlsx'
+        self.static_data['validation_file'] = \
+            'Sup Table 5 Clinical summary.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls'] = {}
@@ -71,10 +71,7 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['NLP_MODE'] = 'CASE_NUMBER'
         else:
-            if isinstance(self.project_subdir, str):
-                print('Bad project_subdir value: ' + self.project_subdir)
-            elif self.project_subdir is None:
-                print('Bad project_subdir value: None')
+            print('Bad project_subdir value')
         
         #
         raw_data_dir = \
@@ -91,5 +88,5 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
                 patient_list.extend(patient_lists[2])
                 patient_list.extend(patient_lists[3])
                 self.static_data['patient_list'] = patient_list
-            except Exception:
-                traceback.print_exc()
+            except:
+                pass

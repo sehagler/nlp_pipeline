@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 04 10:19:41 2019
+Created on Fri Mar 01 08:34:59 2019
 
 @author: haglers
 """
@@ -11,15 +11,16 @@ from copy import deepcopy
 import json
 import os
 from pathlib import Path
-import traceback
+import xlrd
 
 #
 from nlp_pipeline_lib.logger_lib.logger_class import Logger
-from tool_lib.py.processing_tools_lib.variable_processing_tools \
-    import trim_data_value
+from nlp_pipeline_lib.specimens_lib.lib.specimens_base_class \
+    import Specimens_base
+from tool_lib.py.query_tools_lib.base_lib.date_tools_base import get_date_difference
 
 #
-class Specimens_manager(object):
+class Specimens_jsons(Specimens_base):
     
     #
     def __init__(self, static_data, data_json):
@@ -35,7 +36,42 @@ class Specimens_manager(object):
         self.logger.create_file('file_map.txt')
         self.data_json = self._correct_merged_data(data_json)
         self._evaluate_features()
-    
+        
+    #
+    def _cluster_specimens(self, specimen_tree_in):
+        deidentifier_key_dict = self._get_deidentifier_keys()
+        specimen_dict = {}
+        for key0 in specimen_tree_in.keys():
+            if key0 in deidentifier_key_dict.keys():
+                if key0 not in specimen_dict.keys():
+                    specimen_dict[key0] = {}
+                labid_dict = deidentifier_key_dict[key0]['labIds']
+                for key1 in labid_dict.keys():
+                    if key1 not in specimen_dict[key0].keys():
+                        specimen_dict[key0][key1] = {}
+                    for key2 in specimen_tree_in[key0].keys():
+                        documents = specimen_tree_in[key0][key2]
+                        for document in documents:
+                            if 'PROC_NM' in self.metadata_dict_dict[document.split('_')[0]]['METADATA'].keys():
+                                proc_nm = self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NM']
+                            else:
+                                proc_nm = self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NAME']
+                            for document in documents:
+                                if 'PROC_NM' in self.metadata_dict_dict[document.split('_')[0]]['METADATA'].keys():
+                                    proc_nm_tmp = self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NM']
+                                else:
+                                    proc_nm_tmp = self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NAME']
+                                if proc_nm_tmp == proc_nm:
+                                    doc_label = document.split('_')[1]
+                                    lower_bound_days, upper_bound_days = self._get_days_window(proc_nm)
+                                    date_diff = get_date_difference(key2, key1)
+                                    if ( lower_bound_days <= date_diff ) and ( date_diff <= upper_bound_days ):
+                                        process_label = self._get_process_label(proc_nm, doc_label)
+                                        if process_label not in specimen_dict[key0][key1].keys():
+                                            specimen_dict[key0][key1][process_label] = []
+                                        specimen_dict[key0][key1][process_label].append([date_diff, document])
+        return specimen_dict
+        
     #
     def _correct_merged_data(self, raw_data_json):
         filename = 'file_map.txt'
@@ -72,37 +108,7 @@ class Specimens_manager(object):
         else:
             corrected_data_json = {}
         return corrected_data_json
-    
-    #                 
-    def _evaluate_generic(self, entry_label, data_json):
-        data_json_tmp = data_json
-        for key0 in data_json_tmp.keys():
-            for key1 in data_json_tmp[key0].keys():
-                for key2 in data_json_tmp[key0][key1].keys():
-                    try:
-                        values = data_json_tmp[key0][key1][key2][entry_label]
-                        values = trim_data_value(values)
-                        values = list(set(values))
-                        if len(values) == 1:
-                            value = values[0]
-                        elif len(values) > 1:
-                            value = 'MANUAL_REVIEW'
-                            
-                            # kludge to fix BeatAML projects
-                            if entry_label == 'FISH.Analysis.Summary':
-                                value = values[-1]
-                            # kludge to fix BeatAML projects
-                            
-                        else:
-                            value = None
-                        if value is not None:
-                            data_json[key0][key1][key2][entry_label] = value
-                        else:
-                            del data_json[key0][key1][key2][entry_label]
-                    except Exception:
-                        traceback.print_exc()
-        return data_json
-    
+                    
     #
     def _generate_document_map(self, specimen_tree):
         deidentifier_key_dict = self._get_deidentifier_keys()
@@ -123,6 +129,30 @@ class Specimens_manager(object):
                 documents = specimen_tree[key0][key1]
                 documents = list(set(documents))
                 self.logger.log_entry_merge_documents(key0, key1, date_str, key[0], documents)
+                
+    #
+    def _get_deidentifier_keys(self):
+        deidentifier_key_dict = {}
+        book = xlrd.open_workbook(self.deidentifier_xlsx)
+        sheet = book.sheet_by_index(0)
+        labids = sheet.col_values(0)[1:]
+        mrns = sheet.col_values(1)[1:]
+        specimen_dates = self._make_strings(sheet.col_values(2)[1:])
+        patientids = sheet.col_values(3)[1:]
+        for mrn in list(set(mrns)):
+            idxs = [ i for i, j in enumerate(mrns) if j == mrn ]
+            patientid_tmp = list(set([ patientids[i] for i in idxs ]))
+            for i in range(len(patientid_tmp)):
+                patientid_tmp[i] = int(patientid_tmp[i])
+            tmp_list = [ [labids[i], specimen_dates[i]] for i in idxs ]
+            doc_dict = {}
+            for item in tmp_list:
+                doc_dict[item[1]] = item[0]
+            if len(patientid_tmp) == 1:
+                deidentifier_key_dict[mrn] = {}
+                deidentifier_key_dict[mrn]['patientId'] = str(patientid_tmp[0])
+                deidentifier_key_dict[mrn]['labIds'] = doc_dict
+        return deidentifier_key_dict
     
     #
     def _get_specimen_dict(self, specimen_tree, key0, key1):
@@ -141,7 +171,7 @@ class Specimens_manager(object):
                                 specimen_dict[process_label] = []
                             specimen_dict[process_label].append([date_diff, document])
         return specimen_dict
-        
+    
     #
     def _identify_documents_for_same_specimen(self, specimen_tree):
         for key0 in specimen_tree.keys():
@@ -163,12 +193,6 @@ class Specimens_manager(object):
         return specimen_tree
     
     #
-    def _make_strings(self, column_values):
-        for i in range(len(column_values)):
-            column_values[i] = str(column_values[i])
-        return column_values
-    
-    #
     def _merge_documents(self, documents_in):
         document = {}
         doc_keys = []
@@ -186,7 +210,7 @@ class Specimens_manager(object):
                 if doc_key in documents_in[key].keys():
                     document[doc_nums][doc_key].extend(documents_in[key][doc_key])
         return document
-    
+                    
     #
     def _trim_data_value(self, data_value):
         data_value_tmp = data_value
@@ -195,8 +219,8 @@ class Specimens_manager(object):
             data_value.extend(item)
         try:
             data_value = list(set(data_value))
-        except Exception:
-            traceback.print_exc()
+        except:
+            pass
         return data_value
     
     #
@@ -265,12 +289,3 @@ class Specimens_manager(object):
                     else:
                         print('error')
         return specimen_tree
-    
-    #
-    def generate_json_file(self, jsons_out_dir, filename):
-        with open(os.path.join(jsons_out_dir, filename), 'w') as f:
-            json.dump(self.data_json, f)
-            
-    #
-    def get_data_json(self):
-        return self.data_json

@@ -226,7 +226,6 @@ class Performance_data_manager(object):
         elif mode_flg == 'multiple_values':
             if len(data_value) == 0:
                 data_value = None
-
         return data_value
     
     #
@@ -480,7 +479,6 @@ class Performance_data_manager(object):
                                              key, identifier)
         nlp_values = self._get_nlp_values(self.nlp_data, data_json)
         self.performance_statistics_overall_dict = {}
-        
         static_data = self.static_data_manager.get_static_data()
         validation_filename = static_data['validation_file']
         directory_manager = static_data['directory_manager']

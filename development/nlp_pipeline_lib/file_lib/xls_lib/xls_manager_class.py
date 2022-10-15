@@ -39,8 +39,11 @@ class Xls_manager(object):
             elif nlp_mode == 'SOURCE_SYSTEM_RESULT_ID':
                 label0 = 'SOURCE_SYSTEM_RESULT_ID'
                 label1 = 'SOURCE_SYSTEM_RESULT_ID'
-            if raw_data[label1][i] == document_value and \
-               raw_data['REPORT_HEADER'][i] not in document_dict['REPORT_HEADER']:
+            if raw_data[label1][i] == document_value:
+                if raw_data['REPORT_HEADER'][i] in document_dict['REPORT_HEADER']:
+                    idx = document_dict['REPORT_HEADER'].index(raw_data['REPORT_HEADER'][i])
+                    for key in document_dict.keys():
+                        del document_dict[key][idx]
                 for key in raw_data.keys():
                     document_dict[key].append(raw_data[key][i])
         raw_text = ''

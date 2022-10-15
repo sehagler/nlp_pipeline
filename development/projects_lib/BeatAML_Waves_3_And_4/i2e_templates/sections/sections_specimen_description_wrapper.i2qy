@@ -1,0 +1,46 @@
+version: 6.3
+creationDate: '2019-02-01 21:57:54'
+query:
+  document:
+  - region:
+      view: {height: 160, width: 316}
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          view: {height: 122, width: 170}
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              view: {height: 84, width: 152}
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - link: {path: /api;type=saved_query/__private__/haglers/General/tools/sections_query.i2qy, id: link3}
+  - alternative:
+    - link: {path: ../tools_lib/document_filter_query.i2qy}
+    - region:
+        view: {height: 120, width: 121}
+        snid: hc.titled_section
+        pt: Titled Section
+        where:
+        - region:
+            view: {height: 82, width: 102}
+            snid: hc.section_title
+            pt: Section Title
+            where: [KARYOTYPE]
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link3.alternative1
+    itemOptions: {}
+    linkItemId: link3
+  useOutputEditor: true
+creator: haglers

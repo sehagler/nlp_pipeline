@@ -107,6 +107,10 @@ def patient():
     return '(learner|patient|subject)'
 
 #
+def period():
+    return ' ?\. ?'
+
+#
 def preposition():
     preposition_list = [ 'after', 'at', 'for', 'from', 'in', 'of', 'on', 'to',
                          'with' ]
@@ -152,6 +156,10 @@ def specimen_label():
 #
 def test_label():
     return '[a-z0-9\-]+'
+
+#
+def tilde():
+    return ' ?~ ?'
 
 #
 def space():

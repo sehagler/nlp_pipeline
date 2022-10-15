@@ -26,13 +26,15 @@ class Postprocessor(Postprocessor_base):
             for entry_text in fish_text_list:
                 entry_text = self.lambda_manager.lambda_conversion('\( ', entry_text, '(')
                 entry_text = \
-                    self.lambda_manager.lambda_conversion(' (?=(:|,|\)))', entry_text, '')
+                    self.lambda_manager.deletion_lambda_conversion(' (?=(:|,|\)))', entry_text)
                 entry_text = \
-                    self.lambda_manager.lambda_conversion('(?i)preliminary (report|results).*', entry_text, '')
+                    self.lambda_manager.deletion_lambda_conversion('(?i)preliminary (report|results).*', entry_text)
                 entry_text = \
-                    self.lambda_manager.lambda_conversion('(?i)(\*\*)?amended (for|to).*', entry_text, '')
+                    self.lambda_manager.deletion_lambda_conversion('(?i)(\*\*)?amended (for|to).*', entry_text)
                 entry_text = \
-                    self.lambda_manager.lambda_conversion(':[ \n\t]*$', entry_text, '')
+                    self.lambda_manager.deletion_lambda_conversion(':[ \n\t]*$', entry_text)
+                entry_text = \
+                    self.lambda_manager.deletion_lambda_conversion('( \.)* ?$', entry_text)
                 value_list.append(entry_text)
             value_dict_list = []
             for value in value_list:
@@ -49,6 +51,18 @@ class Preprocessor(Preprocessor_base):
     def run_preprocessor(self):
         self.text = \
             self.lambda_manager.deletion_lambda_conversion('(?i)[\n\s]+by FISH', self.text)
+            
+#
+class Section_header_structure():
+    
+    #
+    def add_section_header(self, section_header_dict):
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('(interphase )?fish analysis summary')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['FISH ANALYSIS SUMMARY'] = regex_dict
+        return section_header_dict
             
 #
 def fish_analysis_summary_performance(validation_data_manager,

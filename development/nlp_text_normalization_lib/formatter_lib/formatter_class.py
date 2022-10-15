@@ -25,21 +25,21 @@ class Formatter(object):
         self.section_header_normalizer = \
             Section_header_normalizer(self.static_data)
         self.table_normalizer = Table_normalizer(self.static_data)
-        self.body_header = 'SUMMARY'
-    
+        self.report_text_header = 'REPORT TEXT'
+        
     #
-    def _add_body_header(self):
-        self.text = self.body_header + '\n' + self.text
+    def _add_report_text_header(self):
+        self.text = self.report_text_header + '\n' + self.text
         self.text = \
-            self.lambda_manager.lambda_conversion('^' + self.body_header + '\n' + self.body_header,
-                                                  self.text, self.body_header + '\n')
+            self.lambda_manager.lambda_conversion('^' + self.report_text_header + '\n' + self.report_text_header,
+                                                  self.text, self.report_text_header + '\n')
         self.text = \
-            self.lambda_manager.lambda_conversion('^' + self.body_header + '[\n\s]*',
-                                                  self.text, self.body_header + '\n\n')
-            
+            self.lambda_manager.lambda_conversion('^' + self.report_text_header + '[\n\s]*',
+                                                  self.text, self.report_text_header + '\n\n')
+          
     #
     def _extract_section_headers(self):
-        self.dynamic_data_manager.append_keywords_text(self.body_header, 0)
+        self.dynamic_data_manager.append_keywords_text(self.report_text_header, 0)
         self.section_header_normalizer.push_dynamic_data_manager(self.dynamic_data_manager)
         #self.section_header_normalizer.push_text(self.text)
         self.text = \
@@ -66,7 +66,7 @@ class Formatter(object):
         self._pull_out_section_header('(?i)[ \t]clinical history')
         self._pull_out_section_header('(?i)[ \t]comment(s)?( )?(\([a-z0-9 ]*\))?:')
         self._pull_out_section_header('(?i)[ \t]note( )?(\([a-z0-9 ]*\))?:')
-        self._add_body_header()
+        self._add_report_text_header()
         self.text = \
             self.lambda_manager.lambda_conversion('(?<![0-9]) - (?![0-9])', self.text, '\n- ')
         self.text = \
@@ -141,14 +141,12 @@ class Formatter(object):
         
     #
     def _format_powerpath(self):
-        self._add_body_header()
+        self._add_report_text_header()
         self._format_section_headers()
         self._format_hematopathology_table_powerpath()
         
     #
     def _format_section_headers(self):
-        self.text = \
-            self.lambda_manager.deletion_lambda_conversion('(?i)\nFinal (Pathologic )?Dx\n', self.text)
         self.text = \
             self.lambda_manager.lambda_conversion('\nDIFFERENTIAL', self.text, '\nMANUAL DIFFERENTIAL')
         self.text = \

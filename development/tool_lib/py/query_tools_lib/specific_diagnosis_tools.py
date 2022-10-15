@@ -96,7 +96,6 @@ def specific_diagnosis_performance(validation_data_manager, evaluation_manager,
             data_out = None
     else:
         data_out = None
-    print(data_out)
     if data_out is not None:
         data_out = re.sub('/', 'and', data_out)
         data_out = re.sub('monocytic and monoblastic', 'monoblastic and monocytic', data_out)

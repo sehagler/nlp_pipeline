@@ -40,7 +40,8 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
               ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
               ('surfaceAntigensImmunohistochemicalStains', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
         self.static_data['remove_date'] = False
-        self.static_data['validation_file'] = 'wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
+        self.static_data['validation_file'] = \
+            'wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}
@@ -69,10 +70,7 @@ class BeatAML_Waves_3_And_4_static_data_manager(Static_data_manager):
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
         else:
-            if isinstance(self.project_subdir, str):
-                print('Bad project_subdir value: ' + self.project_subdir)
-            elif self.project_subdir is None:
-                print('Bad project_subdir value: None')
+            print('Bad project_subdir value')
         
         #
         raw_data_dir = \

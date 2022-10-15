@@ -20,6 +20,7 @@ import re
 import shutil
 import time
 import traceback
+import xml.etree.ElementTree as ET
 
 #
 from nlp_pipeline_lib.dynamic_data_lib.dynamic_data_manager_class \
@@ -332,15 +333,17 @@ class Process_manager(object):
     def _ohsu_nlp_templates_setup(self):
         static_data = self.static_data_manager.get_static_data()
         directory_manager = static_data['directory_manager']
-        data_dir = \
+        ohsu_nlp_preprocessing_data_out_dir = \
             directory_manager.pull_directory('ohsu_nlp_preprocessing_data_out')
+        linguamatics_i2e_preprocessing_data_out_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         keywords_file = self.dynamic_data_manager.keywords_file()
         keywords = read_txt_file(keywords_file)
         keywords_regexp = self._create_keywords_regexp(keywords)
         text_dict = \
-            self._create_text_dict_preprocessing_data_out(data_dir,
+            self._create_text_dict_preprocessing_data_out(linguamatics_i2e_preprocessing_data_out_dir,
                                                           keywords_regexp)
-        self.template_data_dir = data_dir
+        self.template_data_dir = ohsu_nlp_preprocessing_data_out_dir
         self.template_text_dict = text_dict
     
     #

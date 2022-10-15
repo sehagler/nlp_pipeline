@@ -11,6 +11,12 @@ import traceback
 
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
+from regex_lib.regex_tools \
+    import (
+        article,
+        colon,
+        period
+    )
 from tool_lib.py.processing_tools_lib.text_processing_tools import substitution
 from tool_lib.py.processing_tools_lib.variable_processing_tools \
     import trim_data_value
@@ -111,6 +117,23 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
 #
+class Section_header_structure():
+    
+    #
+    def _post_punct(self):
+        return '(' + colon() + '|' + period() + '|\n)'
+    
+    #
+    def add_section_header(self, section_header_dict):
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('anti(bodie|gen)s tested(?= CD)?')
+        regex_list.append('(?i)please see below for (' + article() + ' list of )?antibodies tested' + self._post_punct() + '(?=CD)')
+        regex_dict['ADD PRE_PUNCT'] = regex_list
+        section_header_dict['ANTIBODIES TESTED'] = regex_dict
+        return section_header_dict
+    
+#
 def antibodies_tested_performance(validation_data_manager, evaluation_manager,
                                   labId, nlp_values, nlp_datum_key,
                                   validation_datum_key):
@@ -198,7 +221,6 @@ def evaluate_antibodies_tested(data_json):
 
 #                 
 def evaluate_surface_antigens(entry_label, data_json):
-    '''
     data_json_tmp = data_json
     for key0 in data_json_tmp.keys():
         for key1 in data_json_tmp[key0].keys():
@@ -219,7 +241,6 @@ def evaluate_surface_antigens(entry_label, data_json):
                         del data_json[key0][key1][key2][entry_label]
                 except Exception:
                     traceback.print_exc()
-    '''
     return data_json
 
 #

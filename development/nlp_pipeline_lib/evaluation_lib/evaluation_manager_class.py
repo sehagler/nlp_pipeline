@@ -7,7 +7,6 @@ Created on Wed Mar 30 16:03:49 2022
 
 #
 import collections
-import traceback
 
 #
 class Evaluation_manager(object):
@@ -93,12 +92,14 @@ class Evaluation_manager(object):
     #
     def _compare_values_range(self, x, y, display_flg, value_range):
         display_data_flg = False
+        print(x)
+        print(y)
         if x is not None and self.manual_review in x:
             x = self.manual_review
         if x != self.manual_review:
             if y is not None:
                 if x is not None:
-                    if abs(float(x[0]) - float(y[0])) <= value_range:
+                    if abs(float(x) - float(y)) <= value_range:
                         result = 'true positive'
                     else:
                         result = 'false positive + false negative'

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 26 10:49:48 2021
+Created on Mon Apr 26 10:' + self.max_pattern_repetitions + '9:' + self.max_pattern_repetitions + '8 2021
 
 @author: haglers
 """
@@ -11,13 +11,42 @@ import re
 #
 from lambda_lib.lambda_manager_class import Lambda_manager
 from regex_lib.regex_tools \
-    import amend, article, be, datetime, diagnosis, medication, review_item, s
+    import (
+        amend,
+        article,
+        be,
+        colon,
+        datetime,
+        diagnosis,
+        medication,
+        period,
+        review_item,
+        s
+    )
+from tool_lib.py.query_tools_lib.antigens_tools \
+    import Section_header_structure as Antigens_section_header_structure
+from tool_lib.py.query_tools_lib.fish_analysis_summary_tools \
+    import Section_header_structure as Fish_analysis_summary_section_header_structure
+from tool_lib.py.query_tools_lib.karyotype_tools \
+    import Section_header_structure as Karyotype_section_header_structure
+from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \
+    import Section_header_structure as Blasts_section_header_structure
 
 #
 class Section_header_structure_tools(object):
     
     #
     def __init__(self):
+        max_pattern_repetitions = 4
+        self.prefix_str = '([a-z\(\)]+ ?){0,' + str(max_pattern_repetitions) + '}'
+        self.antigens_section_header_structure = \
+            Antigens_section_header_structure()
+        self.blasts_section_header_structure = \
+            Blasts_section_header_structure()
+        self.fish_analysis_summary_section_header_structure = \
+            Fish_analysis_summary_section_header_structure()
+        self.karyotype_section_header_structure = \
+            Karyotype_section_header_structure()
         self.lambda_manager = Lambda_manager()
         self._section_header_amendment_dict()
         self._section_header_dict()
@@ -32,15 +61,15 @@ class Section_header_structure_tools(object):
                 if 'PRE_PUNCT' in key and 'POST_PUNCT' in key:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
-                            text.append('(^|\n| )' + text_in[i] + '(:|\.|\n)')
+                            text.append(self._pre_punct() + text_in[i] + self._post_punct())
                     else:
-                        text.append('(^|\n| )' + text_in + '(:|\.|\n)')
+                        text.append(self._pre_punct() + text_in + self._post_punct())
                 elif 'PRE_PUNCT' in key:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
-                            text.append('(^|\n| )' + text_in[i])
+                            text.append(self._pre_punct() + text_in[i])
                     else:
-                        text.append('(^|\n| )' + text_in)
+                        text.append(self._pre_punct() + text_in)
                 else:
                     if isinstance(text_in, list):
                         for i in range(len(text_in)):
@@ -53,9 +82,9 @@ class Section_header_structure_tools(object):
             text = []
             if isinstance(text_in, list):
                 for i in range(len(text_in)):
-                    text.append('(^|\n| )' + text_in[i] + '(:|\.|\n)')
+                    text.append(self._pre_punct() + text_in[i] + self._post_punct())
             else:
-                text.append('(^|\n| )' + text_in + '(:|\.|\n)')
+                text.append(self._pre_punct() + text_in + self._post_punct())
             text_list.append(text)
         return text_list
         
@@ -111,11 +140,11 @@ class Section_header_structure_tools(object):
     
     #
     def _post_punct(self):
-        return('(:|\.|\n)')
+        return '(' + colon() + '|' + period() + '|\n)'
         
     #
     def _pre_punct(self):
-        return('(^|\n| )')
+        return '(^|\n| )'
     
     #
     def _section_header_amendment_dict(self):
@@ -143,17 +172,69 @@ class Section_header_structure_tools(object):
         regex_list.append('(?i)(?<!see )' + amend() + ' note' + s() + self._post_punct())
         self.section_header_amendment_dict['AMENDMENT COMMENT'] = regex_list
         '''
+        
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self._pre_punct() + '(' + article() + ' )?([a-z]+ )?' + \
+                         amend() + ' comment' + s() + self._post_punct())
+        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + self._post_punct())
+        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
+        regex_list.append('(?i)(?<!see )' + amend() + ' comment' + s() + ' #\d' + self._post_punct())
+        regex_list.append('(?i)(?<!see )' + amend() + ' note' + s() + self._post_punct())
+        regex_dict['ADD PRE_PUNCT'] = regex_list
+        self.section_header_amendment_dict['AMENDMENT COMMENT'] = regex_dict 
     
     #
     def _section_header_dict(self):
         self.section_header_dict = {}
+        self.section_header_dict = \
+            self.antigens_section_header_structure.add_section_header(self.section_header_dict)
+        self.section_header_dict = \
+            self.blasts_section_header_structure.add_section_header(self.section_header_dict)
+        self.section_header_dict = \
+            self.fish_analysis_summary_section_header_structure.add_section_header(self.section_header_dict)
+        self.section_header_dict = \
+            self.karyotype_section_header_structure.add_section_header(self.section_header_dict)
+
+        # kludge until a better place to put these is identified    
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'inflammation')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        self.section_header_dict['INFLAMMATION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('microorganisms')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        self.section_header_dict['MICROORGANISMS'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('csf cell count and differential')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        self.section_header_dict['CSF DIFFERENTIAL'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('cytochemical stain' + s())
+        regex_list.append('cytogenetic and fish studies')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        self.section_header_dict['CYTOGENETIC AND FISH STUDIES'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('flow cytometric( immunologic)? analysis')
+        regex_list.append('flow cytometry( results)?')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        self.section_header_dict['FLOW CYTOMETRY RESULTS'] = regex_dict
+        # kludge until a better place to put these is identified 
+        
+        self.section_header_dict = \
+            self._section_header_structure(self.section_header_dict)
+        
+        '''
         regex_dict = {}
         regex_list = []
         regex_list.append('allergies')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['ALLERGIES'] = regex_dict
-        
-        '''
         regex_dict = {}
         regex_list = []
         regex_list.append('(?i)\n' + article() + ' ([a-z]+ )?' + amend() + \
@@ -166,19 +247,6 @@ class Section_header_structure_tools(object):
                           review_item() + ')?\s?#\d' + self._post_punct())
         regex_dict['ADD PRE_PUNCT'] = regex_list
         self.section_header_dict['AMENDMENT'] = regex_dict
-        '''
-        
-        regex_dict = {}
-        regex_list = []
-        regex_list.append(self._pre_punct() + '(' + article() + ' )?([a-z]+ )?' + \
-                         amend() + ' comment' + s() + self._post_punct())
-        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + self._post_punct())
-        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
-        regex_list.append('(?i)(?<!see )' + amend() + ' comment' + s() + ' #\d' + self._post_punct())
-        regex_list.append('(?i)(?<!see )' + amend() + ' note' + s() + self._post_punct())
-        regex_dict['ADD PRE_PUNCT'] = regex_list
-        self.section_header_dict['AMENDMENT COMMENT'] = regex_dict
-
         regex_dict = {}
         regex_list = []
         regex_list.append('(?i)' + article() + ' following antibodies were used')
@@ -186,27 +254,9 @@ class Section_header_structure_tools(object):
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         regex_dict = {}
         regex_list = []
-        regex_list.append('anti(bodie|gen)s tested(?= CD)?')
-        regex_list.append('(?i)please see below for (' + article() + ' list of )?antibodies tested' + self._post_punct() + '(?=CD)')
-        regex_dict['ADD PRE_PUNCT'] = regex_list
-        self.section_header_dict['ANTIBODIES TESTED'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('((impression and|nutrition) )?assessment')
-        regex_list.append('(nutrition )?assessment(/| and )plan')
-        regex_list.append('findings')
-        regex_list.append('plan of care')
-        regex_list.append('((activity|current therapy treatment)? )?plan')
-        regex_list.append('treatment')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['ASSESSMENT'] = regex_dict
-        regex_dict = {}
-        regex_list = []
         regex_list.append('(background (and )?)?(information|method)' + s())
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['BACKGROUND'] = regex_dict
-        
-        '''
         regex_dict = {}
         regex_list = []
         regex_list.append('er, pr and her-2/neu immunohistochemical stains by computer assisted quantitative image analysis')
@@ -215,82 +265,11 @@ class Section_header_structure_tools(object):
         regex_list.append('Her-2/neu ISH\n')
         regex_dict['NEITHER'] = regex_list
         self.section_header_dict['BIOMARKERS TESTS'] = regex_dict
-        '''
-        
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('bone marrow aspirate( smear(' + s() + ')?)?')
-        regex_list.append('bone marrow (aspirate and )?touch prep(aration' + s() + ')?')
-        regex_list.append('(bilateral )?bone marrow aspirate' + s() + '(, (left|right) and (left|right))?')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['BONE MARROW ASPIRATE'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('bone marrow (core )?(biopsy(/| and ))?clot section')
-        regex_list.append('(bilateral )?bone marrow (biopsies|biopsy cores) and clot section' + \
-                          s() + '(, (left|right) and (left|right))?')
-        regex_list.append('bone marrow (core )?biopsy')
-        regex_list.append('clot section')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['BONE MARROW CLOT SECTION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(' + article() + ' )?(bone marrow( aspirate)?|manual) differential(( count)? (\(.+\) )?includes)?[\n\s]*')
-        regex_list.append(article() + ' differential count [ A-Za-z]+ includes[\n\s]*')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['BONE MARROW DIFFERENTIAL'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('cytogenetic analysis summary')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['CYTOGENETIC ANALYSIS SUMMARY'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('cytochemical stain' + s())
-        regex_list.append('cytogenetic and fish studies')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['CYTOGENETIC AND FISH STUDIES'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(?i)(?<!(.. no| quit|start|.. to) )' + datetime() + '( of (' + diagnosis() + '|' + datetime(mode_flg='modifier') + '))?(:|;) PHI_DATE')
-        regex_list.append('(?i)(?<!(.. no| quit|start|.. to) )' + datetime() + '( of (' + diagnosis() + '|' + datetime(mode_flg='modifier') + '))?(:|;)')
-        regex_list.append('(?i)start of care(:|;) PHI_DATE')
-        regex_list.append('(?i)start of care(:|;)')
-        regex_dict['UNCHANGED'] = regex_list
-        self.section_header_dict['DATETIME'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('dx/rx')
-        regex_list.append('(referred for )?' + diagnosis())
-        regex_list.append('intraoperative consult \(frozen section\) diagnosis')
-        regex_list.append('frozen section diagnosis')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['DIAGNOSIS'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(radiographic )?evaluation')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['EVALUATION'] = regex_dict
         regex_dict = {}
         regex_list = []
         regex_list.append('explanation of interpretation')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['EXPLANATION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('((brief|past) )?' + '(family history|FH)')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['FAMILY HISTORY'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(interphase )?fish analysis summary')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['FISH ANALYSIS SUMMARY'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('flow cytometr(ic (immunologic)?analysis|y)')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['FLOW CYTOMETRIC ANALYSIS'] = regex_dict
         regex_dict = {}
         regex_list = []
         regex_list.append('goals')
@@ -313,29 +292,9 @@ class Section_header_structure_tools(object):
         self.section_header_dict['IMMUNOHISTOCHEMICAL STAINS'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('immunologic analysis')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['IMMUNOLOGIC ANALYSIS'] = regex_dict
-        regex_dict = {}
-        text_list = []
-        regex_list.append('discharge recommendation' + s())
-        regex_list.append('impression' + s() + ' and recommendation' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['IMPRESSION AND RECOMMENDATION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
         regex_list.append('insurance')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['INSURANCE'] = regex_dict
-        
-        '''
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('interpretation')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['INTERPRETATION'] = regex_dict
-        '''
-        
         regex_dict = {}
         regex_list = []
         regex_list.append('(therapeutic )?exercise')
@@ -345,42 +304,14 @@ class Section_header_structure_tools(object):
         self.section_header_dict['INTERVENTION'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('karyotype' + s())
-        regex_list.append('karyotype result' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['KARYOTYPE'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('cbc')
-        regex_list.append('laboratory data([ \-]+CBC)?([ \-]+\d\d?/\d\d?/\d\d\d\d)?')
-        regex_list.append('(nutrition related )?labs to\n\nnote')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['LAB DATA'] = regex_dict
-        regex_dict = {}
-        regex_list = []
         regex_list.append(medication() + ' and lab(oratory)? tests')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['LAB DATA AND MEDICATION'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('materials received' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['MATERIALS RECEIVED'] = regex_dict
-        regex_dict = {}
-        regex_list = []
         regex_list.append('(current )?' + medication())
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['MEDICATION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('method' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['METHOD'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('molecular studies')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['MOLECULAR STUDIES'] = regex_dict
         regex_dict = {}
         regex_list = []
         regex_list.append('anthropometrics')
@@ -396,26 +327,11 @@ class Section_header_structure_tools(object):
         self.section_header_dict['OTHER'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('(?i)(?<!SUMMARY\n)\n(' + article() + ' )?peripheral blood (differential count includes|morphology|smear)')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['PERIPHERAL BLOOD MORPHOLOGY'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('pre( |-)' + amend() + ' (final )?(pathologic(al)? )?diagnosis')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['PREAMENDMENT DIAGNOSIS'] = regex_dict
-        regex_dict = {}
-        regex_list = []
         regex_list.append('((chief|main) complaint| cc)')
         regex_list.append('problem')
         regex_list.append('reason for (admission|(requested )?consultation|referral|(office )?visit)')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['REASON'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('reference' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['REFERENCES'] = regex_dict
         regex_dict = {}
         regex_list = []
         regex_list.append('service')
@@ -434,26 +350,157 @@ class Section_header_structure_tools(object):
         regex_list.append(term)
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         self.section_header_dict['SUBJECTIVE'] = regex_dict
+        '''
+        
+    #
+    def _section_header_structure(self, section_header_dict):
         regex_dict = {}
         regex_list = []
-        regex_list.append('surgical pathology summary')
+        regex_list.append(self.prefix_str + 'addendum( \d+)?')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['SURGICAL PATHOLOGY SUMMARY'] = regex_dict
+        section_header_dict['ADDENDUM'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('synopsis')
+        regex_list.append(self.prefix_str + 'adequacy')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['SYNOPSIS'] = regex_dict
+        section_header_dict['ADEQUACY'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('technique')
+        regex_list.append(self.prefix_str + 'analysis')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['TECHNIQUE'] = regex_dict
+        section_header_dict['ANALYSIS'] = regex_dict
         regex_dict = {}
         regex_list = []
-        regex_list.append('24( hour|( )?h(r)?) events')
+        regex_list.append(self.prefix_str + 'assessment')
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['TWENTY-FOUR HOUR EVENTS'] = regex_dict
+        section_header_dict['ASSESSMENT'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('body site')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['BODY SITE'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'description')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['DESCRIPTION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + '(diagnosis|dx)')
+        regex_dict['ADD PRE)_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['DIAGNOSIS'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'evaluation')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['EVALUATION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'examination')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['EXAMINATION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'finding' + s())
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['FINDING'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + '(history|hx)')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['HISTORY'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('impression' + s() + ' and recommendation' + s())
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['IMPRESSION AND RECOMMENDATION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'index')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['INDEX'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'information')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['INFORMATION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'interpretation')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['INTERPRETATION'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('lab(oratory)? (data|results)( for this specimen)?')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['LABORATORY DATA'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('materials received')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['MATERIALS RECEIVED'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('method' + s())
+        regex_list.append('methodology')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['METHODOLOGY'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'procedure')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['PROCEDURE'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('reference' + s())
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['REFERENCES'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'result' + s())
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['RESULT'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('case reviewed by')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['REVIEWERS'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'stain' + s())
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['STAIN'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'stud(ies|y)')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['STUDY'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'submitted')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['SUBMITTED'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'summary')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['SUMMARY'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'synopsis')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['SYNOPSIS'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'system')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['SYSTEM'] = regex_dict
+        regex_dict = {}
+        regex_list = []
+        regex_list.append(self.prefix_str + 'technique')
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
+        section_header_dict['TECHNIQUE'] = regex_dict
+        return section_header_dict
         
     #
     def get_amendment_text_list(self, section_header):
