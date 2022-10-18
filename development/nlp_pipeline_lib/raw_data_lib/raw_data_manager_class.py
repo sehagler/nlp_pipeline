@@ -69,80 +69,6 @@ class Raw_data_manager(object):
         return metadata
                
     #
-    def _read_beakerap_data(self, poject_datda, data_tmp, password,
-                            i2e_version, num_processes, process_idx):
-        
-        # initialize lists
-        metadata_list = []
-        text_list = []
-        
-        # iterate through filtered data by result IDs
-        RESULT_IDS = sorted(set(data_tmp['RESULT_ID']))
-        for result_id in RESULT_IDS:
-            
-            # filter filtered data by result ID
-            data_tmp_tmp = {}
-            idxs = [i for i, x in enumerate(data_tmp['RESULT_ID']) \
-                    if x == result_id]
-            for key in data_tmp.keys():
-                data_tmp_tmp[key] = [data_tmp[key][i] for i in idxs]
-    
-            # iterate through filtered filtered data by report groups
-            REPORT_GROUPS = sorted(set(data_tmp_tmp['REPORT_GROUP']))
-            for report_group in REPORT_GROUPS:
-                
-                #
-                idxs = [i for i, x in enumerate(data_tmp_tmp['REPORT_GROUP']) \
-                        if x == report_group]
-                REPORT_LINE = [data_tmp_tmp['REPORT_LINE'][i] for i in idxs]
-                LINE = [data_tmp_tmp['RAW_TEXT'][i] for i in idxs]
-                raw_text = []
-                for i in range(len(REPORT_LINE)):
-                    idxss = [j for j, x in enumerate(REPORT_LINE) if x == i+1]
-                    if len(idxss) == 1:
-                        idx = idxss[0]
-                        raw_text.append(LINE[idx])
-                        
-                #
-                raw_text = ''.join(raw_text)
-                text = remove_repeated_substrings(raw_text)
-                
-                #
-                source_metadata = {}
-                for key in data_tmp_tmp.keys():
-                    metadata[key] = data_tmp_tmp[key][0]
-                source_metadata = self._prune_metadata(source_metadata)
-                
-                #
-                source_metadata_list.append(source_metadata)
-                text_list.append(text)
-                
-        #
-        nlp_metadata_list = []
-        for i in range(len(source_metadata_list)):
-            nlp_metadata = _get_nlp_metadata(static_data, password, i2e_version,
-                                             num_processes, process_idx)
-            nlp_metadata['FILENAME'] = source_metadata_list[i]['FILENAME']
-            del source_metadata_list[i]['FILENAME']
-            nlp_metadata['NLP_DOCUMENT_IDX'] = \
-                str(source_metadata_list[i]['NLP_DOCUMENT_IDX'])
-            del source_metadata_list[i]['NLP_DOCUMENT_IDX']
-            nlp_metadata['NLP_MODE'] = source_metadata_list[i]['NLP_MODE']
-            del source_metadata_list[i]['NLP_MODE']
-            try:
-                nlp_metadata['NOTE_TYPE'] = \
-                    source_metadata_list[i]['NOTE_TYPE']
-                xml_metadata_keys = ['NOTE_TYPE']
-            except Exception:
-                traceback.print_exc()
-                xml_metadata_keys = []
-            nlp_metadata_list.append(nlp_metadata)
-                
-        #
-        return source_metadata_list, nlp_metadata_list, text_list, \
-               xml_metadata_keys
-               
-    #
     def _read_data(self, static_data, data_tmp, password, i2e_version,
                    num_processes, process_idx):
         if 'RAW_TEXT' in data_tmp.keys() and \
@@ -178,22 +104,15 @@ class Raw_data_manager(object):
     def _read_data_wrapper(self, password, data_tmp, i2e_version,
                            num_processes, process_idx):
         static_data = self.static_data_manager.get_static_data()
-        do_beakerap_flg = static_data['do_beakerap_flg']
         if 'SOURCE_SYSTEM' in data_tmp.keys():
             source_system = data_tmp['SOURCE_SYSTEM'][0]
         else:
             source_system = 'UNKNOWN'
-        if do_beakerap_flg and source_system == 'BeakderAP':
-            source_metadata_list, nlp_metadata_list, text_list, \
-            xml_metadata_keys = \
-                    self._read_beakerap_data(static_data, data_tmp, password, 
-                                             i2e_version, num_processes,
-                                             process_idx)
-        else:
-            source_metadata_list, nlp_metadata_list, text_list, \
-            xml_metadata_keys = \
-                    self._read_data(static_data, data_tmp, password,
-                                    i2e_version, num_processes, process_idx)
+            
+        source_metadata_list, nlp_metadata_list, text_list, \
+        xml_metadata_keys = \
+                self._read_data(static_data, data_tmp, password,
+                                i2e_version, num_processes, process_idx)     
         return source_metadata_list, nlp_metadata_list, text_list, \
                xml_metadata_keys, source_system
                        

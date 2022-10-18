@@ -87,56 +87,6 @@ class Section_header_structure_tools(object):
                 text.append(self._pre_punct() + text_in + self._post_punct())
             text_list.append(text)
         return text_list
-        
-    '''
-    #
-    def _add_punctuation_unformatted(self, regex_dict, no_punctuation_flg):
-        text_list = []
-        if isinstance(regex_dict, dict):
-            for key in regex_dict.keys():
-                text = []
-                text_in = regex_dict[key]
-                if isinstance(text_in, list):
-                    for i in range(len(text_in)):
-                            text.append('( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-                else:
-                    text.append('( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-                if no_punctuation_flg:
-                    if isinstance(text_in, list):
-                        for i in range(len(text_in)):
-                            text_in_upper = text_in[i].upper()
-                            text_in_upper = \
-                                self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
-                            text.append('(?<!<<<)' + text_in_upper)
-                    else:
-                        text_in_upper = text_in.upper()
-                        text_in_upper = \
-                            self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
-                        text.append('(?<!<<<)' + text_in_upper)
-                text_list.append(text)
-        else:
-            text_in = regex_dict
-            text = []
-            if isinstance(text_in, list):
-                for i in range(len(text_in)):
-                    text.append('( |\n)' + text_in[i] + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-            else:
-                text.append('( |\n)' + text_in + '(( updated)? \d+/\d+/\d+)?( )?(:|;)')
-            if no_punctuation_flg:
-                if isinstance(text_in, list):
-                    for i in range(len(text_in)):
-                        text_in_upper = text_in[i].upper()
-                        text_in_upper = \
-                            self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
-                        text.append('(?<!<<<)' + text_in_upper)
-                else:
-                    text_in_upper = text_in.upper()
-                    text_in_upper = \
-                        self.lambda_manager.lambda_conversion('\(\?I\)', text_in_upper, '(?i)')
-                    text.append('(?<!<<<)' + text_in_upper)
-            text_list.append(text)
-        return text_list
-    '''
     
     #
     def _post_punct(self):
@@ -160,19 +110,6 @@ class Section_header_structure_tools(object):
         regex_list.append('(?i)(' + article() + ' )?' + amend() + '( ' + \
                           review_item() + ')?\s?#\d' + self._post_punct())
         self.section_header_amendment_dict['AMENDMENT'] = regex_list
-        
-        '''
-        regex_dict = {}
-        regex_list = []
-        regex_list.append(self._pre_punct() + '(' + article() + ' )?([a-z]+ )?' + \
-                         amend() + ' comment' + s() + self._post_punct())
-        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + self._post_punct())
-        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
-        regex_list.append('(?i)(?<!see )' + amend() + ' comment' + s() + ' #\d' + self._post_punct())
-        regex_list.append('(?i)(?<!see )' + amend() + ' note' + s() + self._post_punct())
-        self.section_header_amendment_dict['AMENDMENT COMMENT'] = regex_list
-        '''
-        
         regex_dict = {}
         regex_list = []
         regex_list.append(self._pre_punct() + '(' + article() + ' )?([a-z]+ )?' + \
@@ -228,130 +165,7 @@ class Section_header_structure_tools(object):
         
         self.section_header_dict = \
             self._section_header_structure(self.section_header_dict)
-        
-        '''
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('allergies')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['ALLERGIES'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(?i)\n' + article() + ' ([a-z]+ )?' + amend() + \
-                          ' ' +  '(' + be() + '|reports)')
-        regex_list.append('(?i)\n' + article() + ' ' + review_item() + \
-                         ' ' + be() + ' (additionally|further|re)?( )?' + amend())
-        regex_list.append('(?i)\n(' + article() + ' )?([a-z]+ )?' + \
-                         amend() + '( ' + review_item() + ')?(' + self._post_punct() + '|\n)')
-        regex_list.append('(?i)(' + article() + ' )?' + amend() + '( ' + \
-                          review_item() + ')?\s?#\d' + self._post_punct())
-        regex_dict['ADD PRE_PUNCT'] = regex_list
-        self.section_header_dict['AMENDMENT'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(?i)' + article() + ' following antibodies were used')
-        regex_list.append('(?i)using ' + article() + ' following antibody combination')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(background (and )?)?(information|method)' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['BACKGROUND'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('er, pr and her-2/neu immunohistochemical stains by computer assisted quantitative image analysis')
-        regex_list.append('er, pr and her-2/neu tests')
-        regex_list.append('er and pr tests')
-        regex_list.append('Her-2/neu ISH\n')
-        regex_dict['NEITHER'] = regex_list
-        self.section_header_dict['BIOMARKERS TESTS'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('explanation of interpretation')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['EXPLANATION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('goals')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['GOALS'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('hospital course')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['HOSPITAL COURSE'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(' + diagnosis() + '/)?icd-9')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['ICD-9'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(microscopic description/)?immunohistochemi(cal stain' + s() + '|stry)')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['IMMUNOHISTOCHEMICAL STAINS'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('insurance')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['INSURANCE'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(therapeutic )?exercise')
-        regex_list.append('current therapy')
-        regex_list.append('(description of )?(intervention|procedure)' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['INTERVENTION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append(medication() + ' and lab(oratory)? tests')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['LAB DATA AND MEDICATION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('(current )?' + medication())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['MEDICATION'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('anthropometrics')
-        regex_list.append('(brief )?(physical )?exam')
-        regex_list.append('(last )?vitals( seated pre-treatment)?')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['OBJECTIVE'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('modules accepted')
-        regex_list.append('read back done')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['OTHER'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('((chief|main) complaint| cc)')
-        regex_list.append('problem')
-        regex_list.append('reason for (admission|(requested )?consultation|referral|(office )?visit)')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['REASON'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('service')
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['SERVICE'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('special stain' + s())
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['SPECIAL STAINS'] = regex_dict
-        regex_dict = {}
-        regex_list = []
-        base = '(impression|subjective|symptom)' + s()
-        modifier = '(current)'
-        term = '(' + modifier + ' )?' + base
-        regex_list.append(term)
-        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
-        self.section_header_dict['SUBJECTIVE'] = regex_dict
-        '''
-        
+
     #
     def _section_header_structure(self, section_header_dict):
         regex_dict = {}
@@ -518,6 +332,7 @@ class Section_header_structure_tools(object):
         else:
             no_punctuation_flg = False
         text_list = self._add_punctuation_formatted(regex_list)
+        '''
         if mode_flg == 'formatted':
             text_list = self._add_punctuation_formatted(regex_list)
         elif mode_flg == 'unformatted':
@@ -526,6 +341,7 @@ class Section_header_structure_tools(object):
             #                                              no_punctuation_flg)
         else:
             text_list = regex_list
+        '''
         return text_list, no_punctuation_flg
         
     #
@@ -533,24 +349,3 @@ class Section_header_structure_tools(object):
         section_header_list = list(self.section_header_dict.keys())
         section_header_list.sort(key=len, reverse=True)
         return section_header_list
-    
-    '''
-    #
-    def person_section_header(self, mode_flg):
-        regex_list = []
-        if mode_flg == 'formatted':
-            regex_list.append('discussed with[^ \d]')
-            regex_list.append(review_item() + ' (' + amend() + '|' + clinician_reviewed() + ') by')
-            regex_list.append(amend() + ' ' + clinician_reviewed() + ' by')
-            regex_list.append('(frozen section diagnosis|intraoperative consult(ation)? diagnosis) ' + \
-                             clinician_reviewed() + ' by')
-            regex_list.append(clinician_reviewed() + ' by[^ \d]?')
-        elif mode_flg == 'unformatted':
-            regex_list.append(patient())
-            regex_list.append('name of ' + clinician() + '/clinical support person notified')
-            regex_list.append(patient() + ' (identification|name)')
-            regex_list.append('(addended|performed|referred|requested) by')
-            regex_list.append(clinician())
-            regex_list.append('(primary care ' + clinician() + '|pcp)')
-        self._normalize_section_header(mode_flg, regex_list, 'PERSON')
-    '''

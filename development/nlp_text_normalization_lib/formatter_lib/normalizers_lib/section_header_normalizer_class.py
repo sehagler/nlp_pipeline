@@ -22,7 +22,7 @@ class Section_header_normalizer(object):
     def __init__(self, static_data):
         self.static_data = static_data
         self.lambda_manager = Lambda_manager()
-        self.section_header = Section_header_structure_tools()
+        self.section_header_structure = Section_header_structure_tools()
         self.section_header_post_tag = '>>>'
         self.section_header_pre_tag = '<<<'
     
@@ -118,7 +118,7 @@ class Section_header_normalizer(object):
                                                   self._tagged_section_header('AMENDMENT_COMMENT'))
         section_header = 'AMENDMENT'
         text_list = \
-            self.section_header.get_amendment_text_list(section_header)
+            self.section_header_structure.get_amendment_text_list(section_header)
         self._extract_section_to_bottom_of_report(text_list,
                                                   self._tagged_section_header('AMENDMENT'))
         self._append_keywords_text(self._tagged_section_header('AMENDMENT'))
@@ -193,11 +193,12 @@ class Section_header_normalizer(object):
                                                            self.text)
         return self.text
     
+    '''
     #
     def history_section_header(self, mode_flg):
         section_header = 'FAMILY HISTORY'
         text_list, no_punctuation_flg = \
-            self.section_header.get_text_list(section_header, mode_flg)
+            self.section_header_structure.get_text_list(section_header, mode_flg)
         section_header = 'FAMILY HSTRY'
         self._normalize_section_header(mode_flg, text_list, section_header)
         regex_list = []
@@ -229,15 +230,20 @@ class Section_header_normalizer(object):
             self.lambda_manager.lambda_conversion('FAMILY HSTRY', self.text, 'FAMILY HISTORY')
         self._append_keywords_text('FAMILY HISTORY')
         self._remove_from_keywords_text('FAMILY HSTRY')
+    '''
         
     #
     def normalize_section_header(self, mode_flg, text):
         self.text = text
-        section_header_list = self.section_header.get_section_header_list()
+        self.text = \
+            self.comment_section_header('pull_out_section_header_to_bottom_of_report', self.text)
+        section_header_list = \
+            self.section_header_structure.get_section_header_list()
         for section_header in section_header_list:
             text_list, no_punctuation_flg = \
-                self.section_header.get_text_list(section_header, mode_flg)
+                self.section_header_structure.get_text_list(section_header, mode_flg)
             self._normalize_section_header(mode_flg, text_list, section_header)
+        self.text = self.amendment_section_header(mode_flg, self.text)
         return self.text
             
     #

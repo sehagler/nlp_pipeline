@@ -31,7 +31,6 @@ class Static_data_manager(object):
         self.static_data['acc_server'] = network.pull_server(operation_mode)
         self.static_data['datetime_keys'] = \
             ['RESULT_COMPLETED_DT','SPECIMEN_COLL_DT']
-        self.static_data['do_beakerap_flg'] = False
         self.static_data['max_files_per_zip'] = 10000
         self.static_data['mrn_list'] = None
         self.static_data['multiprocessing'] = True
