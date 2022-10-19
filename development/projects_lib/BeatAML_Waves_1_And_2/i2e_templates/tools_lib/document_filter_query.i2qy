@@ -14,7 +14,7 @@ query:
               view: {height: 82, width: 96}
               snid: hc.section_title
               pt: Section Title
-              where: [SUMMARY]
+              where: [DIAGNOSIS]
           - region:
               columnOptions: [Text]
               showWholeRegion: true

@@ -12,11 +12,7 @@ query:
           snid: hc.section_title
           pt: Section Title
           where:
-          - alternative:
-            - phrase:
-                displayChildren: false
-                of: [MATERIALS, RECEIVED]
-            - SUMMARY
+          - alternative: [DIAGNOSIS]
       - region:
           columnOptions: [Text]
           showWholeRegion: true

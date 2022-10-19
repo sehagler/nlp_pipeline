@@ -12,7 +12,7 @@ query:
           snid: hc.section_title
           pt: Section Title
           where:
-          - alternative: [COMMENT, NOTE, SUMMARY]
+          - alternative: [COMMENT, DIAGNOSIS, NOTE]
       - region:
           columnOptions: [Text]
           showWholeRegion: true

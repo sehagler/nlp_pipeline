@@ -35,8 +35,8 @@ class Preprocessing_worker(object):
     def _preprocess_document(self, raw_data_manager, data_tmp, start_idx, 
                              document_idx, source_metadata_list,
                              nlp_metadata_list, xml_metadata_list,
-                             text_list, source_system, formatting, 
-                             document_ctr, fail_ctr, password):
+                             text_list, source_system, document_ctr, fail_ctr,
+                             password):
         linguamatics_outdir = \
             self.directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         document_ctr += 1
@@ -57,8 +57,7 @@ class Preprocessing_worker(object):
                         self.dynamic_data_manager, processed_raw_text, \
                         processed_report_text = \
                             self.text_normalization_manager.process_document(self.dynamic_data_manager,
-                                                                             text_item, source_system,
-                                                                             formatting)
+                                                                             text_item, source_system)
                         self._set_metadata(xml_metadata)
                         linguamatics_i2e_manager = \
                             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
@@ -108,7 +107,6 @@ class Preprocessing_worker(object):
         raw_data_files = list(raw_data_files_dict.keys())
         raw_data_files_extensions = []
         for data_file in raw_data_files:
-            formatting = static_data['raw_data_files'][data_file]['FORMATTING']
             document_numbers = \
                 raw_data_manager.get_document_numbers(data_file)
             for document_number in document_numbers:
@@ -130,8 +128,8 @@ class Preprocessing_worker(object):
                                                   nlp_metadata_list,
                                                   xml_metadata_list,
                                                   text_list, source_system, 
-                                                  formatting, document_ctr,
-                                                  fail_ctr, password)
+                                                  document_ctr, fail_ctr,
+                                                  password)
         return document_ctr, fail_ctr
     
     #

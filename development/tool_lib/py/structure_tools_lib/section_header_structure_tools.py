@@ -323,26 +323,10 @@ class Section_header_structure_tools(object):
         return text_list
         
     #
-    def get_text_list(self, section_header, mode_flg):
+    def get_text_list(self, section_header):
         regex_list = self.section_header_dict[section_header]
-        if mode_flg == 'formatted':
-            no_punctuation_flg = False
-        elif mode_flg == 'unformatted':
-            no_punctuation_flg = True
-        else:
-            no_punctuation_flg = False
         text_list = self._add_punctuation_formatted(regex_list)
-        '''
-        if mode_flg == 'formatted':
-            text_list = self._add_punctuation_formatted(regex_list)
-        elif mode_flg == 'unformatted':
-            text_list = self._add_punctuation_formatted(regex_list)
-            #text_list = self._add_punctuation_unformatted(regex_list, 
-            #                                              no_punctuation_flg)
-        else:
-            text_list = regex_list
-        '''
-        return text_list, no_punctuation_flg
+        return text_list
         
     #
     def get_section_header_list(self):

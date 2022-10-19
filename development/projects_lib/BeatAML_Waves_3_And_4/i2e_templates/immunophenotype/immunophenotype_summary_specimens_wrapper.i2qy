@@ -1,4 +1,4 @@
-version: 6.2
+version: 6.3
 creationDate: '2019-02-21 17:20:20'
 query:
   document:
@@ -11,7 +11,7 @@ query:
           snid: hc.section_title
           pt: Section Title
           where:
-          - alternative: [SUMMARY]
+          - alternative: [DIAGNOSIS]
       - region:
           snid: hc.section_body
           pt: Section Body
@@ -30,15 +30,14 @@ query:
                       text: peripheral
                       quantifier: {minimum: 0, maximum: 1}
                   - blood
-              - link: {path: immunophenotype.i2qy, id: link3}
-  - link:
-      path: [../tools_lib/document_filter_query.i2qy, ../tools_lib/document_filter_query.i2qy]
+              - link: {path: immunophenotype.i2qy, id: link2}
+  - link: {path: ../tools_lib/document_filter_query.i2qy}
 output:
   columns:
   - {id: region1}
   - {id: shadow region1}
-  - id: link3.alternative1
+  - id: link2.alternative1
     itemOptions: {}
-    linkItemId: link3
+    linkItemId: link2
   useOutputEditor: true
 creator: haglers

@@ -53,7 +53,7 @@ class Section_header_normalizer(object):
                 
     #
     def _normalize_section_header(self, mode_flg, text_list, label):
-        if mode_flg == 'formatted' or mode_flg == 'unformatted':
+        if mode_flg == 'formatted':
             self._normalize_section_headers(text_list, label)
         elif mode_flg == 'pull_out_section_header_to_bottom_of_report':
             self._extract_section_to_bottom_of_report(text_list,
@@ -110,7 +110,7 @@ class Section_header_normalizer(object):
         return tagged_text
 
     #
-    def amendment_section_header(self, mode_flg, text):
+    def amendment_section_header(self, text):
         self.text = text
         self.text = \
             self.lambda_manager.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
@@ -154,32 +154,12 @@ class Section_header_normalizer(object):
             regex_list.append(self._pre_punct() + 'note\s+\([^\)]*\)' + self._post_punct())
             regex_list.append(self._pre_punct() + 'note (\([^\)]*\))?' + self._post_punct())
             regex_list.append(self._pre_punct() + 'note( [A-Z])?' + self._post_punct())
-        elif mode_flg == 'unformatted':
-            regex_list = []
-            regex_list.append('comment' + s())
-            regex_list.append('miscellaneous')
-            regex_list.append('(?<!labs to\n\n)note')
-            regex_list.append(patient() + ' ?/ ?family baseline understanding')
-            regex_list.append(patient() + ' ?/ ?family readiness to learn')
-            regex_list.append(patient() + ' ?/ ?family responses to teaching')
-            regex_list.append('regarding')
-            regex_list.append('teaching provided')
-            regex_list.append('visit type')
-            
-        if mode_flg == 'formatted':
-            no_punctuation_flg = False
-        elif mode_flg == 'unformatted':
-            no_punctuation_flg = True
-        else:
-            no_punctuation_flg = False
         if mode_flg == 'formatted':
             text_list = self._add_punctuation_formatted(regex_list)
-        elif mode_flg == 'unformatted':
-            text_list = self._add_punctuation_unformatted(regex_list,
-                                                          no_punctuation_flg)
         else:
             text_list = regex_list
-        self._normalize_section_header(mode_flg, text_list, 'COMMENT')
+        if mode_flg == 'formatted' or mode_flg == 'pull_out_section_header_to_bottom_of_report':
+            self._normalize_section_header(mode_flg, text_list, 'COMMENT')
         return self.text
         
     #
@@ -192,58 +172,20 @@ class Section_header_normalizer(object):
             self.lambda_manager.deletion_lambda_conversion('(?i)(?<=\nperipheral blood, smear and)\n\n\nflow cytometric analysis \d+',
                                                            self.text)
         return self.text
-    
-    '''
-    #
-    def history_section_header(self, mode_flg):
-        section_header = 'FAMILY HISTORY'
-        text_list, no_punctuation_flg = \
-            self.section_header_structure.get_text_list(section_header, mode_flg)
-        section_header = 'FAMILY HSTRY'
-        self._normalize_section_header(mode_flg, text_list, section_header)
-        regex_list = []
-        if mode_flg == 'formatted':
-            regex_list.append('(PMH|PSH)')
-        elif mode_flg == 'unformated':
-            regex_list.append('(PMH|PSH) :')
-        regex_list.append('(brief|past) ' + history())
-        regex_list.append(patient() + ' ' + history())
-        regex_list.append('(?!<family )' + history())
-        regex_list.append('(?<!' + patient() + ') id( |/hpi)')
-        
-        if mode_flg == 'formatted':
-            no_punctuation_flg = False
-        elif mode_flg == 'unformatted':
-            no_punctuation_flg = True
-        else:
-            no_punctuation_flg = False
-        if mode_flg == 'formatted':
-            text_list = self._add_punctuation_formatted(regex_list)
-        elif mode_flg == 'unformatted':
-            text_list = self._add_punctuation_unformatted(regex_list,
-                                                          no_punctuation_flg)
-        else:
-            text_list = regex_list  
-        
-        self._normalize_section_header(mode_flg, text_list, 'HISTORY')
-        self.text = \
-            self.lambda_manager.lambda_conversion('FAMILY HSTRY', self.text, 'FAMILY HISTORY')
-        self._append_keywords_text('FAMILY HISTORY')
-        self._remove_from_keywords_text('FAMILY HSTRY')
-    '''
         
     #
-    def normalize_section_header(self, mode_flg, text):
+    def normalize_section_header(self, text):
+        mode_flg = 'formatted'
         self.text = text
         self.text = \
             self.comment_section_header('pull_out_section_header_to_bottom_of_report', self.text)
         section_header_list = \
             self.section_header_structure.get_section_header_list()
         for section_header in section_header_list:
-            text_list, no_punctuation_flg = \
-                self.section_header_structure.get_text_list(section_header, mode_flg)
+            text_list = \
+                self.section_header_structure.get_text_list(section_header)
             self._normalize_section_header(mode_flg, text_list, section_header)
-        self.text = self.amendment_section_header(mode_flg, self.text)
+        self.text = self.amendment_section_header(self.text)
         return self.text
             
     #

@@ -93,15 +93,17 @@ class Character_normalizer(object):
                 if re.search('-', word):
                     element_list = word.split('-')
                     for element in element_list:
-                        if 'w2n' in locals():
+                        try:
                             num = w2n.word_to_num(element)
-                        else:
+                        except:
                             do_w2n = False
                 if do_w2n:
-                    if 'w2n' in locals():
+                    try:
                         num = w2n.word_to_num(word)
                         if num < 100:
                             change_list.append([word, str(num)])
+                    except:
+                        pass
         change_list.sort(key=lambda x: len(x[0]), reverse=True)
         for change in change_list:
             self.text = \

@@ -8,6 +8,7 @@ Created on Fri Jan 10 09:57:35 2020
 #
 import os
 import pickle
+import traceback
 
 #
 from nlp_pipeline_lib.static_data_lib.static_data_manager_class \
@@ -28,50 +29,47 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
         self.static_data['document_identifiers'] = [ 'CSN' ]
         self.static_data['queries_list'] = \
             [ ('Antibodies.Tested', [ 'ANTIBODIES TESTED' ], 'ANTIGENS', 'ANTIBODIES_TESTED', 'multiple_values', True),
-              ('dxAtSpecimenAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-              ('dx.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'DIAGNOSIS_DATE', 'DATE', 'multiple_values', True),
-              ('Extramedullary.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE', 'EXTRAMEDULLARY_DISEASE', 'multiple_values', True),
+              ('dxAtSpecimenAcquisition', [ 'DIAGNOSIS', 'COMMENT', 'AMENDMENT COMMENT' ], 'DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
+              ('dx.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'DIAGNOSIS' ], 'DIAGNOSIS_DATE', 'DATE', 'multiple_values', True),
+              ('Extramedullary.dx', [ 'DIAGNOSIS', 'COMMENT', 'AMENDMENT COMMENT' ], 'EXTRAMEDULLARY_DISEASE', 'EXTRAMEDULLARY_DISEASE', 'multiple_values', True),
               ('FAB/Blast.Morphology', [ 'COMMENT', 'AMENDMENT COMMENT', 'BONE MARROW' ], 'FAB_CLASSIFICATION', 'FAB_CLASSIFICATION', 'multiple_values', True),
               ('FISH.Analysis.Summary', [ 'FISH ANALYSIS SUMMARY' ], 'FISH_ANALYSIS_SUMMARY', 'FISH_ANALYSIS_SUMMARY', 'multiple_values', True),
               ('Karyotype', [ 'KARYOTYPE', 'IMPRESSIONS AND RECOMMENDATIONS' ], 'KARYOTYPE', 'KARYOTYPE', 'multiple_values', True),
-              ('%.Blasts.in.BM', [ 'SUMMARY', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
-              ('%.Blasts.in.PB', [ 'SUMMARY', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
-              ('Relapse.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'SUMMARY' ], 'RELAPSE_DATE', 'DATE', 'multiple_values', True),
-              ('Residual.dx', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE', 'DIAGNOSIS', 'multiple_values', True),
-              ('specificDxAtAcquisition', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
-              ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'SUMMARY', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
+              ('%.Blasts.in.BM', [ 'DIAGNOSIS', 'BONE MARROW DIFFERENTIAL', 'BONE MARROW ASPIRATE' ], 'BONE_MARROW_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
+              ('%.Blasts.in.PB', [ 'DIAGNOSIS', 'PERIPHERAL BLOOD MORPHOLOGY' ], 'PERIPHERAL_BLOOD_BLAST', 'BLAST_PERCENTAGE', 'multiple_values', True),
+              ('Relapse.Date', [ 'HISTORY', 'COMMENT', 'AMENDMENT COMMENT', 'DIAGNOSIS' ], 'RELAPSE_DATE', 'DATE', 'multiple_values', True),
+              ('Residual.dx', [ 'DIAGNOSIS', 'COMMENT', 'AMENDMENT COMMENT' ], 'RESIDUAL_DISEASE', 'DIAGNOSIS', 'multiple_values', True),
+              ('specificDxAtAcquisition', [ 'DIAGNOSIS', 'COMMENT', 'AMENDMENT COMMENT' ], 'SPECIFIC_DIAGNOSIS', 'DIAGNOSIS', 'multiple_values', True),
+              ('Surface.Antigens.(Immunohistochemical.Stains)', [ 'DIAGNOSIS', 'COMMENT', 'AMENDMENT COMMENT' ], 'IMMUNOPHENOTYPE', 'IMMUNOPHENOTYPE', 'multiple_values', True) ]
         self.static_data['remove_date'] = False
-        self.static_data['validation_file'] = \
-            'Sup Table 5 Clinical summary.xlsx'
+        self.static_data['validation_file'] = 'Sup Table 5 Clinical summary.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
             self.static_data['raw_data_files']['Beaker Results.xls']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
-            self.static_data['raw_data_files']['Beaker Results.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Beaker Results.xls']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Bone Marrow Morph Report.xls'] = {}
             self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
             self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
-            self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Bone Marrow Morph Report.xls']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx'] = {}
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
-            self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Chromosome Reports w Karyotype.xlsx']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['PowerPath Results.xls'] = {}
             self.static_data['raw_data_files']['PowerPath Results.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
             self.static_data['raw_data_files']['PowerPath Results.xls']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
-            self.static_data['raw_data_files']['PowerPath Results.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['PowerPath Results.xls']['NLP_MODE'] = 'RESULT_ID'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls'] = {}
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
-            self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['FORMATTING'] = 'formatted'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['NLP_MODE'] = 'CASE_NUMBER'
         else:
-            print('Bad project_subdir value')
+            if isinstance(self.project_subdir, str):
+                print('Bad project_subdir value: ' + self.project_subdir)
+            elif self.project_subdir is None:
+                print('Bad project_subdir value: None')
         
         #
         raw_data_dir = \
@@ -88,5 +86,5 @@ class BeatAML_Waves_1_And_2_static_data_manager(Static_data_manager):
                 patient_list.extend(patient_lists[2])
                 patient_list.extend(patient_lists[3])
                 self.static_data['patient_list'] = patient_list
-            except:
-                pass
+            except Exception:
+                traceback.print_exc()

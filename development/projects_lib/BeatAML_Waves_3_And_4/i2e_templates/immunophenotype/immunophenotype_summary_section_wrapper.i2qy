@@ -12,7 +12,7 @@ query:
           snid: hc.section_title
           pt: Section Title
           where:
-          - alternative: [SUMMARY]
+          - alternative: [DIAGNOSIS]
       - region:
           columnOptions: [Text]
           showWholeRegion: true
