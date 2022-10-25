@@ -5,8 +5,8 @@ multiquery:
   - ../../tools/document_id_query.i2qy
   - ../../tools/run_datetime_query.i2qy
   - Union:
-    - smoking_history/smoking_history_specimens_wrapper.i2qy
-    - Subtraction: [smoking_history/smoking_history_sections_wrapper.i2qy, smoking_history/smoking_history_specimen_description_wrapper.i2qy]
+    - smoking_history_wrappers/smoking_history_specimens_wrapper.i2qy
+    - Subtraction: [smoking_history_wrappers/smoking_history_sections_wrapper.i2qy, smoking_history_wrappers/smoking_history_specimen_description_wrapper.i2qy]
 output:
   columns:
   - id: region1

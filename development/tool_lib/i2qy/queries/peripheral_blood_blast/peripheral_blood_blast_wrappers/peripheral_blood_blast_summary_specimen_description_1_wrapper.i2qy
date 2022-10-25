@@ -1,0 +1,41 @@
+version: 6.3
+creationDate: '2019-01-29 18:22:39'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - alternative: [DIAGNOSIS]
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - alternative:
+                  id: alternative1
+                  showMultipleColumns: true
+                  of:
+                  - link: {path: peripheral_blood_blast_summary.i2qy}
+                  - link: {path: ../../../cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast_summary_base_1.i2qy}
+  - link: {path: ../document_filter_query.i2qy}
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: alternative1.col0
+    itemOptions: {}
+  useOutputEditor: true
+creator: haglers

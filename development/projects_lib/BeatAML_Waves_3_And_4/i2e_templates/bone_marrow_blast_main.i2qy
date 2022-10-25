@@ -1,15 +1,7 @@
 version: 6.3
 creationDate: '2018-10-26 16:08:10'
 multiquery:
-  Document Join:
-  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
-  - Union:
-    - Union: [bone_marrow_blast/bone_marrow_blast_bone_marrow_specimens_wrapper.i2qy, bone_marrow_blast/bone_marrow_blast_summary_specimens_0_wrapper.i2qy, bone_marrow_blast/bone_marrow_blast_summary_specimens_1_wrapper.i2qy]
-    - Union:
-      - Subtraction: [bone_marrow_blast/bone_marrow_blast_bone_marrow_section_wrapper.i2qy, bone_marrow_blast/bone_marrow_blast_bone_marrow_specimen_description_wrapper.i2qy]
-      - Subtraction: [bone_marrow_blast/bone_marrow_blast_summary_section_0_wrapper.i2qy, bone_marrow_blast/bone_marrow_blast_summary_specimen_description_0_wrapper.i2qy]
-      - Subtraction: [bone_marrow_blast/bone_marrow_blast_summary_section_1_wrapper.i2qy, bone_marrow_blast/bone_marrow_blast_summary_specimen_description_1_wrapper.i2qy]
+  Union: [/api;type=saved_query/__private__/haglers/General/queries/bone_marrow_blast/bone_marrow_blast_main.i2qy]
 output:
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers

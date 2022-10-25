@@ -1,0 +1,37 @@
+version: 6.3
+creationDate: '2019-01-29 17:44:49'
+query:
+  document:
+  - region:
+      view: {height: 255, width: 869}
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region2
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - alternative: [DIAGNOSIS]
+      - region:
+          columnOptions: [Text]
+          showWholeRegion: true
+          view: {height: 124, width: 607}
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - phrase: [bone, marrow]
+          - phrase: [peripheral, blood]
+          - link: {path: bone_marrow_blast_summary.i2qy, id: link3}
+  - link: {path: ../document_filter_query.i2qy}
+output:
+  columns:
+  - {id: region2}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link3.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link3
+  useOutputEditor: true
+creator: haglers

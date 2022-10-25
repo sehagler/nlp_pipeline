@@ -1,0 +1,41 @@
+version: 6.3
+creationDate: '2019-01-30 17:42:24'
+query:
+  document:
+  - phrase:
+      maxWordGap: -1
+      view: {height: 163, width: 1132}
+      wordGapRestricted: false
+      of:
+      - phrase:
+          maxWordGap: -1
+          view: {height: 124, width: 628}
+          wordGapRestricted: false
+          of:
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 0}
+              of: [bone, marrow]
+          - phrase:
+              displayChildren: false
+              of: [peripheral, blood]
+          - word:
+              text: ':'
+              quantifier: {minimum: 0, maximum: 0}
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 0}
+              of: [bone, marrow]
+          - ':'
+      - phrase:
+          displayChildren: false
+          quantifier: {minimum: 0, maximum: 0}
+          of: [bone, marrow]
+      - link: {path: ../../../cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast_summary_base_0.i2qy, id: link2}
+output:
+  columns:
+  - id: link2.alternative1
+    itemOptions: {}
+    linkItemId: link2
+  useOutputEditor: true
+creator: haglers
