@@ -94,7 +94,8 @@ class Section_header_structure_tools(object):
         
     #
     def _pre_punct(self):
-        return '(^|\n| )'
+        #return '(^|\n| )'
+        return '(^|\n)'
     
     #
     def _section_header_amendment_dict(self):
@@ -201,7 +202,7 @@ class Section_header_structure_tools(object):
         regex_dict = {}
         regex_list = []
         regex_list.append(self.prefix_str + '(diagnosis|dx)')
-        regex_dict['ADD PRE)_PUNCT AND POST_PUNCT'] = regex_list
+        regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         section_header_dict['DIAGNOSIS'] = regex_dict
         regex_dict = {}
         regex_list = []

@@ -110,8 +110,19 @@ class Section_header_normalizer(object):
         return tagged_text
 
     #
-    def amendment_section_header(self, text):
+    def amendment_and_comment_section_header(self, text):
         self.text = text
+        regex_list = []
+        regex_list.append(self._pre_punct() + 'comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
+        regex_list.append(self._pre_punct() + 'comment' + s() + ' (for specimen )?[A-Z]' + self._post_punct())
+        regex_list.append(self._pre_punct() + 'comment' + s() + self._post_punct())
+        regex_list.append(self._pre_punct() + '(\()?comment' + s() + '[\n\s]*:')
+        regex_list.append(self._pre_punct() + 'note' + self._post_punct())
+        regex_list.append(self._pre_punct() + 'note\s+\([^\)]*\)' + self._post_punct())
+        regex_list.append(self._pre_punct() + 'note (\([^\)]*\))?' + self._post_punct())
+        regex_list.append(self._pre_punct() + 'note( [A-Z])?' + self._post_punct())
+        text_list = regex_list
+        self._normalize_section_header('pull_out_section_header_to_bottom_of_report', text_list, 'COMMENT')
         self.text = \
             self.lambda_manager.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
                                                   self.text,
@@ -141,6 +152,7 @@ class Section_header_normalizer(object):
             self.lambda_manager.deletion_lambda_conversion(self.section_header_post_tag, self.text)
         return self.text
     
+    '''
     #
     def comment_section_header(self, text):
         self.text = text
@@ -156,23 +168,18 @@ class Section_header_normalizer(object):
         text_list = regex_list
         self._normalize_section_header('pull_out_section_header_to_bottom_of_report', text_list, 'COMMENT')
         return self.text
+    '''
         
     #
     def normalize_section_header(self, text):
         self.text = text
-        
-        # Consolidate these
-        self.text = self.comment_section_header(self.text)
-        self.text = self.amendment_section_header(self.text)
-        # Consolidate these
-        
+        self.text = self.amendment_and_comment_section_header(self.text)
         section_header_list = \
             self.section_header_structure.get_section_header_list()
         for section_header in section_header_list:
             text_list = \
                 self.section_header_structure.get_text_list(section_header)
             self._normalize_section_header('formatted', text_list, section_header)
-        #self.text = self.amendment_section_header(self.text)
         return self.text
             
     #
