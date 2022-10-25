@@ -56,7 +56,7 @@ def surface_antigens_performance(validation_data_manager, evaluation_manager,
     if labId in nlp_values.keys():
         keys0 = list(nlp_values[labId])
         if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-            data_out = nlp_values[labId][keys0[0]][nlp_datum_key][0][0]
+            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
             if data_out == '':
                 data_out = None
         else:
