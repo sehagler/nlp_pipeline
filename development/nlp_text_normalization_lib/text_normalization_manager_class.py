@@ -76,8 +76,7 @@ class Text_normalization_manager(object):
                 self.lambda_manager.lambda_conversion(' \n', self.text, '\n')
             
     #
-    def process_document(self, dynamic_data_manager, text, source_system,
-                         formatting):
+    def process_document(self, dynamic_data_manager, text, source_system):
         self.raw_text = make_ascii(copy.copy(text))
         self.text = make_ascii(text)
         self._normalize_whitespace()
@@ -91,7 +90,7 @@ class Text_normalization_manager(object):
         self._normalize_whitespace()
         dynamic_data_manager, self.text = \
             self.formatter.format_text(dynamic_data_manager, self.text,
-                                       source_system, formatting)
+                                       source_system)
         self._normalize_whitespace()
         self.text = self.preprocessor_registry.run_registry(self.text)
         self._normalize_whitespace()
