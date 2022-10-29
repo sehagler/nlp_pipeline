@@ -11,5 +11,16 @@ multiquery:
       - Subtraction: [peripheral_blood_blast_wrappers/peripheral_blood_blast_summary_section_0_wrapper.i2qy, peripheral_blood_blast_wrappers/peripheral_blood_blast_summary_specimen_description_0_wrapper.i2qy]
       - Subtraction: [peripheral_blood_blast_wrappers/peripheral_blood_blast_summary_section_1_wrapper.i2qy, peripheral_blood_blast_wrappers/peripheral_blood_blast_summary_specimen_description_1_wrapper.i2qy]
 output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: alternative1
+    itemOptions: {}
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers

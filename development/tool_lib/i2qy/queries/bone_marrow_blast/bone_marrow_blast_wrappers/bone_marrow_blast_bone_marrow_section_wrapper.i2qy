@@ -27,7 +27,6 @@ query:
           pt: Section Body
           where:
           - link: {path: ../../../cancer/blast_%/bone_marrow_blast_%/bone_marrow_blast_%_query.i2qy, id: link3}
-  - link: {path: ../document_filter_query.i2qy}
 output:
   columns:
   - id: value1

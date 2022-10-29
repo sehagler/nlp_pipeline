@@ -25,7 +25,6 @@ query:
               quantifier: {minimum: 0, maximum: 0}
               of: [bone, marrow]
           - link: {path: ../../../cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast.i2qy, id: link3}
-  - link: {path: ../document_filter_query.i2qy}
 output:
   columns:
   - {id: region1}

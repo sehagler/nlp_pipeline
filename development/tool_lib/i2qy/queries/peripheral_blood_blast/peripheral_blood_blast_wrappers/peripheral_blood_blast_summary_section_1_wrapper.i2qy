@@ -29,7 +29,6 @@ query:
               of:
               - link: {path: peripheral_blood_blast_summary.i2qy}
               - link: {path: ../../../cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast_summary_base_1.i2qy}
-  - link: {path: ../document_filter_query.i2qy}
 output:
   columns:
   - {id: region1}

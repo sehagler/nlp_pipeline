@@ -30,7 +30,6 @@ query:
               where:
               - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
               - link: {path: ../../../cancer/blast_%/bone_marrow_blast_%/bone_marrow_blast_%_query.i2qy, id: link1}
-  - link: {path: ../document_filter_query.i2qy}
 output:
   columns:
   - {id: shadow region1}

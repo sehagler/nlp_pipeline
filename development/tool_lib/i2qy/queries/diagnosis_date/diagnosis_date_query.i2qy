@@ -1,0 +1,13 @@
+version: 6.3
+creationDate: '2019-01-30 00:13:24'
+query:
+  document:
+  - link: {path: ../../date/diagnosis_date/diagnosis_date_query.i2qy, id: link1}
+output:
+  columns:
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  outputSettings: {allResults: true, allRows: true, allTime: true}
+  useOutputEditor: true
+creator: haglers

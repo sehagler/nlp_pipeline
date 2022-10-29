@@ -1,0 +1,12 @@
+version: 6.3
+creationDate: '2020-05-27 16:56:09'
+query:
+  document:
+  - link: {path: ../../cancer/fab_classification/fab_classification_query.i2qy, id: link1}
+output:
+  columns:
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers

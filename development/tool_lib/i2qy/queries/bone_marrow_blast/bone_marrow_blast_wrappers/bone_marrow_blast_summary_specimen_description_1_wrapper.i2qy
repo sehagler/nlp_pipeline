@@ -23,7 +23,6 @@ query:
               pt: Specimen Description
               where:
               - link: {path: bone_marrow_blast_summary.i2qy, id: link3}
-  - link: {path: ../document_filter_query.i2qy}
 output:
   columns:
   - {id: region1}

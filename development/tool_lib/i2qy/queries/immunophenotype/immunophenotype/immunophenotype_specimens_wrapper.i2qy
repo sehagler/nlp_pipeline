@@ -1,0 +1,36 @@
+version: 6.3
+creationDate: '2018-10-26 16:03:06'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - alternative: [COMMENT, NOTE]
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
+              - link: {path: immunophenotype_comment.i2qy, id: link2}
+output:
+  columns:
+  - {id: shadow region1}
+  - {id: region1}
+  - id: link2.alternative1
+    itemOptions: {}
+    linkItemId: link2
+  columnLocations: [1, 0, 2]
+  useOutputEditor: true
+creator: haglers

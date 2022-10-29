@@ -1,0 +1,51 @@
+version: 6.3
+creationDate: '2020-06-16 19:40:40'
+query:
+  document:
+  - link: {path: relapse_date_query.i2qy, id: link1}
+  - phrase:
+      findMatches: longestOnly
+      id: phrase1
+      maxWordGap: -1
+      multiSentence: true
+      view: {height: 336, width: 1043}
+      wordGapRestricted: false
+      of:
+      - sentence:
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          prioritization: span
+          of:
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - {class: /chunk}
+              - link: {path: relapse_date_query.i2qy}
+              - {class: /chunk}
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - {class: /chunk}
+              - link: {path: relapse_date_query.i2qy}
+          - phrase:
+              maxWordGap: -1
+              multiSentence: true
+              wordGapRestricted: false
+              of:
+              - link: {path: relapse_date_query.i2qy}
+              - {class: /chunk}
+          - link: {path: relapse_date_query.i2qy}
+      - sentence:
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - id: link1.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link1
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers

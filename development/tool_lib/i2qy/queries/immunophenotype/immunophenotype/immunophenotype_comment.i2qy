@@ -1,0 +1,45 @@
+version: 6.3
+creationDate: '2019-04-10 18:20:03'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      label: Extract
+      view: {height: 340, width: 548}
+      of:
+      - phrase:
+          maxSentenceGap: -1
+          maxWordGap: -1
+          multiSentence: true
+          view: {height: 301, width: 530}
+          wordGapRestricted: false
+          of:
+          - alternative:
+            - phrase:
+                maxWordGap: -1
+                wordGapRestricted: false
+                of:
+                - alternative:
+                    view: {layout: list}
+                    of: [immunophenotype, phenotype]
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 0}
+                    view: {layout: list}
+                    of: [':', for, of]
+                - alternative:
+                    view: {layout: list}
+                    of: [':', for, of]
+            - phrase:
+                displayChildren: false
+                of:
+                - alternative:
+                    view: {layout: list}
+                    of: [negative, positive]
+                - for
+          - link: {path: ../../../cancer/immunophenotype/immunophenotype_query.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

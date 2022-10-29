@@ -1,0 +1,12 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
+  - Union:
+    - fab_classification_wrappers/fab_classification_specimens_wrapper.i2qy
+    - Subtraction: [fab_classification_wrappers/fab_classification_sections_wrapper.i2qy, fab_classification_wrappers/fab_classification_specimen_description_wrapper.i2qy]
+output:
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+creator: haglers
