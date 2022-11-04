@@ -23,10 +23,8 @@ urllib3.disable_warnings()
 class Output_manager(object):
 
     #
-    def __init__(self, static_data_manager, metadata_manager,
-                 json_manager_registry):
+    def __init__(self, static_data_manager, metadata_manager):
         self.static_data_manager = static_data_manager
-        self.json_manager_registry = json_manager_registry
         static_data = self.static_data_manager.get_static_data()
         json_structure_manager = static_data['json_structure_manager']
         self.document_wrapper_key = \
@@ -119,33 +117,21 @@ class Output_manager(object):
     def append(self, data_dict):
         self.data_dict_classes_list.append(data_dict)
         
+    '''
     #
     def cleanup_json_files_dir(self):
         outdir = self.data_out + '/' + self.project_name
         file_list = glob.glob(os.path.join(outdir, '*.json'))
         for f in file_list:
             os.remove(f)
-
-    #
-    def create_json_files(self):
-        static_data = self.static_data_manager.get_static_data()
-        directory_manager = static_data['directory_manager']
-        processing_base_dir = \
-            directory_manager.pull_directory('processing_base_dir')
-        for data_dict in self.merged_data_dict_list:
-            if self.nlp_data_key in data_dict.keys():
-                if bool(data_dict[self.nlp_data_key]):
-                    outdir = self.data_out
-                    filename = data_dict['DOCUMENT_ID'] + '.json'
-                    data_dict.pop('DOCUMENT_ID', None)
-                    file = os.path.join(outdir, filename)
-                    filename = file.replace(processing_base_dir + '/', '')
-                    self.json_manager_registry[filename] = \
-                        Json_manager(self.static_data_manager, file)
-                    self.json_manager_registry[filename].write_file(data_dict)
+    '''
     
     #
     def get_data(self):
+        return self.merged_data_dict_list
+    
+    #
+    def get_merged_data_dict_list(self):
         return self.merged_data_dict_list
     
     #

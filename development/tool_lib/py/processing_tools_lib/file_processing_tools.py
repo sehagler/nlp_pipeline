@@ -222,6 +222,11 @@ def write_file(filename, data, include_datetime_flg, multiple_files_flg):
         max_documents = 1000
         documents = data['DOCUMENTS']
         documents_chunks = []
+        head, tail = os.path.split(filename)
+        filename, extension = os.path.splitext(tail)
+        head = os.path.join(head, filename)
+        if not os.path.exists(head):
+            os.makedirs(head)
         while len(documents) > max_documents:
             documents_chunks.append(documents[0:max_documents])
             del documents[0:max_documents]
@@ -229,6 +234,7 @@ def write_file(filename, data, include_datetime_flg, multiple_files_flg):
         for chunk in documents_chunks:
             data = {}
             data['DOCUMENTS'] = chunk
+            filename = os.path.join(head, tail)
             _write_file(filename, data, include_datetime_flg, True)
             time.sleep(1)
     else:

@@ -167,7 +167,8 @@ class Raw_data_manager(object):
     def get_document_numbers(self, data_file):
         document_numbers = []
         doc_num = 0
-        for data in self.data:
+        for i in range(len(self.data)):
+            data = self.data[i]
             if len(data['FILENAME']) > 0 and data['FILENAME'][0] == data_file:
                 keys = list(data.keys())
                 document_numbers.extend(data[keys[0]])

@@ -6,6 +6,7 @@ Created on Fri Jan 18 09:04:57 2019
 """
 
 #
+from datetime import datetime
 import os
 
 #
@@ -115,6 +116,12 @@ class Directory_manager(object):
                                     'AB_fields')
             self._linguamatics_i2e_directories(nlp_software_root_dir, server,
                                                project_dir)
+            if self.directory_dict['processing_data_dir'] is not None:
+                now = datetime.now()
+                datetime_str = now.strftime('_%Y%m%d_%H%M%S')
+                self.directory_dict['production_data_dir'] = \
+                    os.path.join(self.directory_dict['processing_data_dir'],
+                                 static_data['project_name'] + datetime_str)
             self._melax_clamp_directories()
             self._ohsu_nlp_directories(nlp_software_root_dir, server,
                                             project_dir)

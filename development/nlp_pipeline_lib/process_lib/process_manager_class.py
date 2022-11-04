@@ -36,8 +36,6 @@ from nlp_pipeline_lib.file_lib.xml_lib.xml_manager_class \
 from nlp_pipeline_lib.metadata_lib.metadata_manager_class \
     import Metadata_manager
 from nlp_pipeline_lib.output_lib.output_manager_class import Output_manager
-from nlp_pipeline_lib.packaging_lib.packaging_manager_class \
-    import Packaging_manager
 from nlp_pipeline_lib.process_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
 from tool_lib.py.registry_lib.preprocessor_registry_class \
@@ -49,7 +47,7 @@ from nlp_text_normalization_lib.text_normalization_manager_class \
 from nlp_pipeline_lib.registry_lib.nlp_tool_manager_registry_class \
     import Nlp_tool_manager_registry
 from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_json_file, read_txt_file
+    import read_json_file, read_txt_file, write_file
 
 #
 class Process_manager(object):
@@ -68,6 +66,62 @@ class Process_manager(object):
         self.i2e_version = \
             linguamatics_i2e_manager.get_i2e_version(password)
         # Kludge to get around memory issue in processor
+        
+        # Kludge import production data file generation
+        self.static_data = self.static_data_manager.get_static_data()
+        json_structure_manager = self.static_data['json_structure_manager']
+        self.document_wrapper_key = \
+            json_structure_manager.pull_key('document_wrapper_key')
+        self.documents_wrapper_key = \
+            json_structure_manager.pull_key('documents_wrapper_key')
+        self.metadata_key = \
+            json_structure_manager.pull_key('metadata_key')
+        self.nlp_data_key = \
+            json_structure_manager.pull_key('nlp_data_key')
+        self.nlp_datetime_key = \
+            json_structure_manager.pull_key('nlp_datetime_key')
+        self.nlp_datum_key = \
+            json_structure_manager.pull_key('nlp_datum_key')
+        self.nlp_metadata_key = \
+            json_structure_manager.pull_key('nlp_metadata_key')
+        self.nlp_performance_key = \
+            json_structure_manager.pull_key('nlp_performance_key')
+        self.nlp_performance_metadata_key = \
+            json_structure_manager.pull_key('nlp_performance_metadata_key')
+        self.nlp_query_key = \
+            json_structure_manager.pull_key('nlp_query_key')
+        self.nlp_section_key = \
+            json_structure_manager.pull_key('nlp_section_key')
+        self.nlp_specimen_key = \
+            json_structure_manager.pull_key('nlp_specimen_key')
+        self.nlp_source_text_key = \
+            json_structure_manager.pull_key('nlp_source_text_key')
+        self.nlp_text_element_key = \
+            json_structure_manager.pull_key('nlp_text_element_key')
+        self.nlp_text_key = \
+            json_structure_manager.pull_key('nlp_text_key')
+        self.nlp_tool_output_key = \
+            json_structure_manager.pull_key('nlp_tool_output_key')
+        self.nlp_value_key = \
+            json_structure_manager.pull_key('nlp_value_key')
+        # Kludge import production data file generation
+        
+    #
+    def _collect_performance_statistics_dict(self):
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        performance_data_files = static_data['performance_data_files']
+        processing_base_dir = \
+            directory_manager.pull_directory('processing_base_dir')
+        performance_statistics_dict = {}
+        for filename in performance_data_files:
+            file = os.path.join(processing_base_dir, filename)
+            performance_statistics_dict_tmp = \
+                self.json_manager_registry[filename].read_performance_data()
+            for key in performance_statistics_dict_tmp.keys():
+                performance_statistics_dict[key] = \
+                    performance_statistics_dict_tmp[key]
+        return performance_statistics_dict
         
     #
     def _create_keywords_regexp(self, keywords):
@@ -139,8 +193,6 @@ class Process_manager(object):
             Nlp_tool_manager_registry(self.static_data_manager, 
                                       remote_manager_registry,
                                       password)
-        self.packaging_manager = \
-            Packaging_manager(self.static_data_manager, json_manager_registry)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_manager,
@@ -161,8 +213,7 @@ class Process_manager(object):
             Text_normalization_manager(self.static_data_manager,
                                        preprocessor_registry)
         self.output_manager = Output_manager(self.static_data_manager, 
-                                             self.metadata_manager,
-                                             json_manager_registry)
+                                             self.metadata_manager)
         
         multiprocessing_flg = static_data['multiprocessing']
         if multiprocessing_flg:
@@ -172,6 +223,10 @@ class Process_manager(object):
         self.raw_data_manager = Raw_data_manager(self.static_data_manager, 
                                                  multiprocessing_flg,
                                                  password)
+        
+        # kludge to get postperformance() working
+        self.json_manager_registry = json_manager_registry
+        # kludge to get postperformance() working
         
     #
     def _create_text_dict_postprocessing_data_in(self, sections):
@@ -539,24 +594,6 @@ class Process_manager(object):
                                                 max_files_per_zip, root_dir_flg)
         linguamatics_i2e_manager.logout()
         
-    '''
-    #
-    def linguamatics_i2e_push_resource_files(self):
-        static_data = self.static_data_manager.get_static_data()
-        directory_manager = static_data['directory_manager']
-        project_name = static_data['project_name']
-        preprocessing_data_out_dir = \
-            directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
-        processing_data_dir = \
-            directory_manager.pull_directory('processing_data_dir')
-        linguamatics_i2e_manager = \
-            self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_manager')
-        linguamatics_i2e_manager.generate_regions_file(preprocessing_data_out_dir,
-                                                       processing_data_dir)
-        linguamatics_i2e_manager.generate_xml_configuation_file(preprocessing_data_out_dir,
-                                                                processing_data_dir)
-    '''
-        
     #
     def linguamatics_i2e_push_queries(self):
         static_data = self.static_data_manager.get_static_data()
@@ -643,11 +680,38 @@ class Process_manager(object):
     #
     def postperformance(self):
         static_data = self.static_data_manager.get_static_data()
-        if static_data['project_subdir'] == 'test':
-            self.packaging_manager.create_postperformance_test_data_json()
-        elif static_data['project_subdir'] == 'production':
-            performance_data_files = static_data['performance_data_files']
-            self.packaging_manager.create_postperformance_production_data_json(performance_data_files)
+        directory_manager = static_data['directory_manager']
+        if static_data['project_subdir'] == 'production':
+            performance_statistics_dict = \
+                self._collect_performance_statistics_dict()
+            filename = static_data['project_name'] + '/' + \
+                       static_data['project_subdir'] + '/' + \
+                       static_data['project_name'] + '.json'
+            documents_wrapper = \
+                self.json_manager_registry[filename].read_json_file()
+            for i in range(len(documents_wrapper[self.documents_wrapper_key])):
+                nlp_data = \
+                    documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_data_key]
+                query_list = []
+                for nlp_datum in nlp_data:
+                    if self.nlp_query_key in nlp_datum[self.nlp_datum_key].keys():
+                        query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
+                query_list = list(set(query_list))
+                performance_statistics_dict_tmp = []
+                tmp_dict = {}
+                for key in performance_statistics_dict.keys():
+                    if key in query_list:
+                        tmp_dict = performance_statistics_dict[key]
+                        tmp_dict['QUERY'] = key
+                if tmp_dict:    
+                    documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
+                        static_data['project_name'] + '.performance.json'
+            production_data_file = directory_manager.pull_directory('production_data_dir')  + '/' + \
+                                   static_data['project_name'] + '.json'                     
+            write_file(production_data_file, documents_wrapper, True, True)
+            performance_data_file = directory_manager.pull_directory('production_data_dir')  + '/' + \
+                                    static_data['project_name'] + '.performance.json'
+            write_file(performance_data_file, performance_statistics_dict, False, False)
 
     #
     def postprocessor(self):
@@ -679,11 +743,39 @@ class Process_manager(object):
         self.output_manager.merge_data_dict_lists()
         self.output_manager.include_metadata()
         self.output_manager.include_text()
-        self.output_manager.create_json_files()
+        merged_data_dict_list = \
+            self.output_manager.get_merged_data_dict_list()
+        processing_base_dir = \
+            directory_manager.pull_directory('processing_base_dir')
+        data_out = directory_manager.pull_directory('postprocessing_data_out')
+        for data_dict in merged_data_dict_list:
+            if self.nlp_data_key in data_dict.keys():
+                if bool(data_dict[self.nlp_data_key]):
+                    outdir = data_out
+                    filename = data_dict['DOCUMENT_ID'] + '.json'
+                    data_dict.pop('DOCUMENT_ID', None)
+                    file = os.path.join(outdir, filename)
+                    filename = file.replace(processing_base_dir + '/', '')
+                    self.json_manager_registry[filename] = \
+                        Json_manager(self.static_data_manager, file)
+                    self.json_manager_registry[filename].write_file(data_dict)
         
     #
     def preperformance(self):
-        self.packaging_manager.create_preperformance_test_data_json()
+        static_data = self.static_data_manager.get_static_data()
+        directory_manager = static_data['directory_manager']
+        load_dir = \
+            directory_manager.pull_directory('postprocessing_data_out')
+        data = {}
+        for filename in os.listdir(load_dir):
+            json_file = Json_manager(self.static_data_manager,
+                                     os.path.join(load_dir, filename))
+            key = filename[0:-5]
+            data[key] = json_file.read_json_file()
+        filename = static_data['project_name'] + '/' + \
+                   static_data['project_subdir'] + '/' + \
+                   static_data['project_name'] + '.json'
+        self.json_manager_registry[filename].write_performance_data_to_package_json_file(data)
     
     #
     def preprocessor(self, password, start_idx, preprocess_files_flg):

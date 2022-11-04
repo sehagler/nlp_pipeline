@@ -106,6 +106,16 @@ class Section_header_normalizer(object):
         section_header_list = list(section_header_dict.keys())
         section_header_list.sort(key=len, reverse=True)
         return section_header_list
+    
+    #
+    def _insert_whitespace(self, text, match_str, whitespace):
+        match = 0
+        m_str = re.compile(match_str)
+        while match is not None:
+            match = m_str.search(text, re.IGNORECASE)
+            if match is not None:
+                text = text[:match.start()] + whitespace + text[match.start()+1:]
+        return text
                 
     #
     def _normalize_section_header(self, mode_flg, text_list, label):
@@ -154,6 +164,11 @@ class Section_header_normalizer(object):
     #
     def _pre_punct(self):
         return '(^|\n)'
+        
+    #
+    def _pull_out_section_header(self, text, command):
+        text = self._insert_whitespace(text, command, '\n\n')
+        return text
     
     #
     def _remove_from_keywords_text(self, keyword, index_flg=1):
@@ -255,6 +270,29 @@ class Section_header_normalizer(object):
     #
     def pull_dynamic_data_manager(self):
         return self.dynamic_data_manager
+    
+    #
+    def pull_out_section_headers(self, text):
+        text = self._pull_out_section_header(text, '(?i)[ \t]antibodies tested')
+        text = self._pull_out_section_header(text, '(?i)[ \t]bone marrow aspirate smears')
+        text = self._pull_out_section_header(text, '(?i)[ \t]bone marrow (biopsy/)?clot section')
+        text = self._pull_out_section_header(text, '(?i)[ \t]bone marrow differential')
+        text = self._pull_out_section_header(text, '(?i)[ \t]case (reviewed|seen) by:?')
+        text = self._pull_out_section_header(text, '(?i)[ \t]cbc')
+        text = self._pull_out_section_header(text, '(?i)[ \t]clinical history')
+        text = self._pull_out_section_header(text, '(?i)[ \t]comment(s)?( )?(\([a-z0-9 ]*\))?:')
+        text = self._pull_out_section_header(text, '(?i)[ \t]component value')
+        text = self._pull_out_section_header(text, '(?i)[ \t]cytogenetic and fish studies')
+        text = self._pull_out_section_header(text, '(?i)[ \t]flow cytometric analysis')
+        text = self._pull_out_section_header(text, '(?i)[ \t]immunohistochemical stains:')
+        text = self._pull_out_section_header(text, '(?i)[ \t]immunologic analysis:')
+        text = self._pull_out_section_header(text, '(?i)[ \t]molecular studies:')
+        text = self._pull_out_section_header(text, '(?i)[ \t]note( )?(\([a-z0-9 ]*\))?:')
+        text = self._pull_out_section_header(text, '(?i)[ \t]peripheral blood differential')
+        text = self._pull_out_section_header(text, '(?i)[ \t]peripheral blood morphology')
+        text = self._pull_out_section_header(text, '(?i)[ \t]resulting agency')
+        text = self._pull_out_section_header(text, '(?i)[ \t]special stains')
+        return text
         
     #
     def push_dynamic_data_manager(self, dynamic_data_manager):

@@ -135,8 +135,8 @@ class CCC19_static_data_manager(Static_data_manager):
             groups_files = []
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_covid_positive.pkl'))
-            #groups_files.append(os.path.join(training_data_dir,
-            #                    'training_groups_first_general_set.pkl'))
+            groups_files.append(os.path.join(training_data_dir,
+                                'training_groups_first_general_set.pkl'))
             groups_files.append(os.path.join(training_data_dir,
                                 'training_groups_second_general_set.pkl'))
             if data_set_flg == 'training':    

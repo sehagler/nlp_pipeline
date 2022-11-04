@@ -161,6 +161,13 @@ class Style_normalizer(object):
             self.lambda_manager.lambda_conversion('weak to moderate', self.text, 'weak-moderate')
         self.text = \
             self.lambda_manager.lambda_conversion('weak to strong', self.text, 'weak-strong')
+        self.text = \
+            self.lambda_manager.lambda_conversion('(?<![0-9]) - (?![0-9])', self.text, '\n- ')
+            
+    #
+    def _normalize_newline(self):
+        self.text = \
+            self.lambda_manager.lambda_conversion('\n +', self.text, '\n')
             
     #
     def _normalize_number_sign(self):
@@ -240,6 +247,7 @@ class Style_normalizer(object):
         self._normalize_greater_than_sign()
         self._normalize_less_than_sign()
         self._normalize_minus_sign()
+        self._normalize_newline()
         self._normalize_number_sign()
         self._normalize_of()
         self._normalize_per()
