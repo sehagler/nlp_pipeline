@@ -1,0 +1,500 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 16 09:39:27 2020
+
+@author: haglers
+"""
+
+#
+import ast
+from copy import deepcopy
+import os
+import re
+import traceback
+
+#
+from base_lib.manager_base_class  import Manager_base
+
+#
+def _difference(x, y):
+    z = list(set(x) - set(y))
+    return z
+
+#
+def _display_performance_statistics(performance_statistics_overall_dict):
+    for key in performance_statistics_overall_dict.keys():
+        print(key)
+        print('\t\t\tNON_MAN_REV\tMAN_REV')
+        print(' N documents:\t\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+              '\t\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_MANUAL_REVIEW'])
+        print(' N hit documents:\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+              '\t\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_MANUAL_REVIEW'])
+        print(' accuracy:\t\t ' + performance_statistics_overall_dict[key]['ACCURACY']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+              '\t\t ' + performance_statistics_overall_dict[key]['ACCURACY']['NLP_MANUAL_REVIEW'])
+        print(' precision:\t\t ' + performance_statistics_overall_dict[key]['PRECISION']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+              '\t\t ' + performance_statistics_overall_dict[key]['PRECISION']['NLP_MANUAL_REVIEW'])
+        print(' recall:\t\t ' + performance_statistics_overall_dict[key]['RECALL']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+              '\t\t ' + performance_statistics_overall_dict[key]['RECALL']['NLP_MANUAL_REVIEW'])
+        print(' F1:\t\t\t ' + performance_statistics_overall_dict[key]['F1']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+              '\t\t ' + performance_statistics_overall_dict[key]['F1']['NLP_MANUAL_REVIEW'])
+            
+#
+def _get_data_value(section_data_list, section_key_list, mode_flg):
+    data_values = []
+    if section_key_list is not None:
+        for i in range(len(section_key_list)):
+            section_key = section_key_list[i]
+            if len(data_values) == 0:
+                for j in range(len(section_data_list)):
+                    section_data = section_data_list[j]
+                    if section_data[0] == section_key:
+                        data_item = section_data[1]
+                        if not isinstance(data_item, list):
+                            data_tmp = []
+                            data_tmp.append(data_item)
+                            data_item = data_tmp
+                        #data_values.append(tuple(data_item))
+                        data_values.extend(data_item)
+    else:
+        for j in range(len(section_data_list)):
+            section_data = section_data_list[j]
+            data_item = section_data[1]
+            if not isinstance(data_item, list):
+                data_tmp = []
+                data_tmp.append(data_item)
+                data_item = data_tmp
+            #data_values.append(tuple(data_item))
+            data_values.extend(data_item)
+    data_values = list(set(data_values))
+    if len(data_values) > 0:
+        
+        ###
+        data_values = [x for x in data_values if x]
+        ###
+        
+        data_values = list(set(data_values))
+        data_values.sort()
+        data_values_tuple = tuple(data_values)
+        data_values = []
+        data_values.append(data_values_tuple)
+    data_values = [tuple(i) for i in set(tuple(i) for i in data_values)]
+    data_value = []      
+    if section_key_list is not None:  
+        data_value = data_values
+    else:
+        if len(data_values) > 0:
+            if mode_flg == 'multiple_values':
+                data_value = data_values
+                '''
+                if len(data_values[0]) > 0:
+                    data_tmp = data_values[0].split(', ')
+                    data_tmp = tuple(data_tmp)
+                else:
+                    data_tmp = ''
+                '''
+            if mode_flg == 'single_value':
+                data_tmp = data_values
+            if isinstance(data_tmp, list):
+                data_tmp = tuple(data_tmp)
+            elif isinstance(data_tmp, tuple):
+                data_tmp = tuple(data_tmp)
+            data_value.append(data_tmp)
+        else:
+            data_value = data_values
+    data_value = [tuple(i) for i in set(tuple(i) for i in data_value)]
+    if len(data_value) > 0:
+        if len(data_value[0]) > 1:
+            data_tmp = list(data_value[0])
+            data_tmp = [ x for x in data_tmp if x != ('equivocal',) ]
+            data_tmp = tuple(data_tmp)
+            data_value[0] = data_tmp
+    if mode_flg == 'single_value':
+        if len(data_value) == 0:
+            data_value = None
+        elif len(data_value[0]) == 1:
+            data_value = [ data_value[0][0] ]
+        elif len(data_value[0]) > 1:
+            data_value = [ 'MANUAL_REVIEW' ]
+            data_value = tuple(data_value)
+            data_value = [ data_value ]
+    elif mode_flg == 'multiple_values':
+        if len(data_value) == 0:
+            data_value = None
+    return data_value, section_data_list
+
+#
+def _get_nlp_values(nlp_data, data_json):
+    nlp_values = data_json
+    return nlp_values
+
+#
+def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
+    for validation_datum_key in validation_datum_keys:
+        for key in nlp_values.keys():
+            if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
+                if len(nlp_values[key][validation_datum_key]) > 1:
+                    nlp_values[key][validation_datum_key] = \
+                        manual_review,
+    return nlp_values
+
+#
+def _intersection(self, x, y):
+    return list(set(x) & set(y))
+
+#
+def _nlp_to_tuple(value):
+    if value is not None:
+        value = list(value)
+        for i in range(len(value)):
+            value[i] = value[i].replace(' ', '')
+        value_tuple = tuple(value)
+    else:
+        value_tuple = None
+    return value_tuple
+
+#
+def _performance_values(input_list):
+    FN = len([ x for x in input_list if x == 'false negative' ])
+    FP = len([ x for x in input_list if x == 'false positive' ])
+    FP_plus_FN = \
+        len([ x for x in input_list if x == 'false positive + false negative' ])
+    TN = len([ x for x in input_list if x == 'true negative' ])
+    TP = len([ x for x in input_list if x == 'true positive' ])
+    return FN, FP, FP_plus_FN, TN, TP
+
+#
+def _performance_statistics(FN, FP, FP_plus_FN, TN, TP,
+                            N_validation_documents,
+                            N_validation_hit_documents):
+    N = N_validation_documents
+    if N > 0:
+        A = (TP + TN) / N
+    else:
+        A = 'NA'
+    if TP + FP + FP_plus_FN > 0:
+        P = TP / (TP + FP + FP_plus_FN)
+    else:
+        P = 'NA'
+    if TP + FN + FP_plus_FN > 0:
+        R = TP / (TP + FN + FP_plus_FN)
+    else:
+        R = 'NA'
+    if P != 'NA' and R != 'NA':
+        if P * R > 0:
+            F1 = 2 / (1/P + 1/R)
+        else:
+            F1 = 'NA'
+    else:
+        F1 = 'NA'
+    performance_statistics = {}
+    if isinstance(A, str):
+        performance_statistics['ACCURACY'] = A
+    else:
+        performance_statistics['ACCURACY'] = str(round(A, 3))
+    if isinstance(F1, str):
+        performance_statistics['F1'] = F1
+    else:
+        performance_statistics['F1'] = str(round(F1, 3))
+    if isinstance(N_validation_documents, str):
+        performance_statistics['N_VALIDATION_DOCUMENTS'] = \
+            N_validation_documents
+    else:
+        performance_statistics['N_VALIDATION_DOCUMENTS'] = \
+            str(N_validation_documents)
+    if N_validation_hit_documents is not None:
+        if isinstance(N_validation_hit_documents, str):
+            performance_statistics['N_VALIDATION_HIT_DOCUMENTS'] = \
+                N_validation_hit_documents
+        else:
+            performance_statistics['N_VALIDATION_HIT_DOCUMENTS'] = \
+                str(N_validation_hit_documents)
+    else:
+        performance_statistics['N_VALIDATION_HIT_DOCUMENTS'] = 'NA'
+    if isinstance(P, str):
+        performance_statistics['PRECISION'] = P
+    else:
+        performance_statistics['PRECISION'] = str(round(P, 3))
+    if isinstance(R, str):
+        performance_statistics['RECALL'] = R
+    else:
+        performance_statistics['RECALL'] = str(round(R, 3))
+    return performance_statistics
+
+#
+def _process_validation_item(x):
+    if x == '':
+        x = None
+    return x
+
+#
+def _read_metadata(nlp_data):
+    metadata_keys = []
+    metadata_dict_dict = {}
+    for key in nlp_data.keys():
+        metadata_dict_dict[key] = {}
+        metadata_dict_dict[key]['METADATA'] = \
+            nlp_data[key]['METADATA']
+        metadata_dict_dict[key]['NLP_METADATA'] = \
+            nlp_data[key]['NLP_METADATA']
+    for metadata_key in metadata_dict_dict.keys():
+        for key in metadata_dict_dict[metadata_key].keys():
+            if key not in metadata_keys:
+                metadata_keys.append(key)
+    return metadata_keys, metadata_dict_dict
+
+#
+def _validation_to_tuple(text):
+    if text is not None:
+        text = text.replace(' ', '')
+        text = text.replace(',', '\',\'')
+        text = text.replace('(', '(\'')
+        text = text.replace(')', '\')')
+        text = text.replace('\'(', '(')
+        text = text.replace(')\'', ')')
+        try:
+            text_eval = '[\'' + text + '\']'
+            text_list = eval(text_eval)
+        except Exception:
+            traceback.print_exc()
+            text = text.replace('(\'', '(')
+            text = text.replace('\')', ')')
+            text_eval = '[\'' + text + '\']'
+            text_list = eval(text_eval)
+        for i in range(len(text_list)):
+            if isinstance(text_list[i], tuple):
+                text_list[i] = str(text_list[i])
+                text_list[i] = text_list[i].replace('\'', '')
+                text_list[i] = text_list[i].replace(' ', '')
+        text_tuple = tuple(text_list)
+    else:
+        text_tuple = None
+    return text_tuple
+
+#
+class Performance_data_manager(Manager_base):
+    
+    #
+    def __init__(self, static_data_object, evaluation_manager,
+                 json_manager_registry, metadata_manager,
+                 xls_manager_registry):
+        Manager_base.__init__(self, static_data_object)
+        self.evaluation_manager = evaluation_manager
+        self.json_manager_registry = json_manager_registry
+        self.metadata_manager = metadata_manager
+        self.xls_manager_registry = xls_manager_registry
+        
+        static_data = self.static_data_object.get_static_data()
+        self.directory_manager = static_data['directory_manager']
+        self.save_dir = \
+            self.directory_manager.pull_directory('processing_data_dir')
+        self.log_dir = self.directory_manager.pull_directory('log_dir')
+    
+    #
+    def _difference(self, x, y):
+        return _difference(x, y)
+    
+    #
+    def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
+                                         nlp_performance_nlp_manual_review_dict, 
+                                         N_documents, N_manual_review,
+                                         N_hit_documents_wo_nlp_manual_review_dict,
+                                         N_hit_documents_nlp_manual_review_dict):
+        for key0 in nlp_performance_wo_nlp_manual_review_dict.keys():
+            N_validation_documents = N_documents - N_manual_review[key0]
+            if N_hit_documents_nlp_manual_review_dict is not None:
+                N_validation_hit_manual_review = \
+                    N_hit_documents_nlp_manual_review_dict[key0]
+            else:
+                N_validation_hit_manual_review = None
+            if N_hit_documents_wo_nlp_manual_review_dict is not None:
+                N_hit_documents = N_hit_documents_wo_nlp_manual_review_dict[key0]
+                N_validation_hit_documents = \
+                    N_hit_documents - N_validation_hit_manual_review
+            else:
+                N_validation_hit_documents = None
+            FN, FP, FP_plus_FN, TN, TP = \
+                _performance_values(nlp_performance_wo_nlp_manual_review_dict[key0])
+            performance_statistics_wo_nlp_manual_review_dict = \
+                _performance_statistics(FN, FP, FP_plus_FN, TN, TP,
+                                        N_validation_documents,
+                                        N_validation_hit_documents)
+            FN, FP, FP_plus_FN, TN, TP = \
+                _performance_values(nlp_performance_nlp_manual_review_dict[key0])
+            performance_statistics_nlp_manual_review_dict = \
+                _performance_statistics(FN, FP, FP_plus_FN, TN, TP, 
+                                        N_manual_review[key0], 
+                                        N_validation_hit_manual_review)
+            self.performance_statistics_overall_dict[key0] = {}
+            for key1 in performance_statistics_wo_nlp_manual_review_dict.keys():
+                self.performance_statistics_overall_dict[key0][key1] = {}
+                self.performance_statistics_overall_dict[key0][key1]['NLP_WITHOUT_MANUAL_REVIEW'] = \
+                    performance_statistics_wo_nlp_manual_review_dict[key1]
+                self.performance_statistics_overall_dict[key0][key1]['NLP_MANUAL_REVIEW'] = \
+                    performance_statistics_nlp_manual_review_dict[key1]
+                
+    #
+    def _get_data_value(self, node, section_key_list, target_key, data_key, 
+                                mode_flg='multiple_values'):
+        self.section_data_list = []
+        self._walk(node, target_key, data_key, [], section_key_list)
+        section_data_list = self.section_data_list
+        del self.section_data_list
+        data_value, section_data_list = _get_data_value(section_data_list,
+                                                        section_key_list,
+                                                        mode_flg)
+        self.section_data_list = section_data_list
+        return data_value
+    
+    #
+    def _get_nlp_data(self, data_in, queries):
+        data_out = {}
+        for query in queries:
+            key = query[0]
+            sections = query[1]
+            query_name = query[2]
+            data_key = query[3]
+            mode_flg = query[4]
+            strip_flg = query[5]
+            data_out[key] = \
+                self._get_data_value(data_in, sections,
+                                     query_name + '_' + self.nlp_value_key,
+                                     data_key, mode_flg=mode_flg)
+            if strip_flg and data_out[key] is not None:
+                data_out[key] = data_out[key][0]
+        del_keys = []
+        for key in data_out:
+            if data_out[key] is None:
+                del_keys.append(key)
+        for key in del_keys:
+            del data_out[key]  
+        if not data_out:
+            data_out = None
+        return data_out
+    
+    #
+    def _get_nlp_values(self, nlp_data, data_json):
+        return _get_nlp_values(nlp_data, data_json)
+    
+    #
+    def _get_performance(self, csn, nlp_values, nlp_datum_key, 
+                         validation_datum_key, display_flg):
+        if csn in nlp_values.keys():
+            data_out = nlp_values[csn]
+            if nlp_datum_key in data_out.keys():
+                nlp_value = data_out[nlp_datum_key]
+            else:
+                nlp_value = None
+        else:
+            nlp_value = None
+        nlp_value = _nlp_to_tuple(nlp_value)
+        column_labels = self.validation_data_manager.column_labels()
+        for i in range(1, self.validation_data_manager.length()):
+            row = self.validation_data_manager.row(i)
+            validation_idx = \
+                [j for j in range(len(column_labels)) \
+                 if column_labels[j] == validation_datum_key][0]
+            if row[2] == csn:
+                validation_value = \
+                    self._process_validation_item(row[validation_idx])
+        validation_value = _validation_to_tuple(validation_value)
+        performance = \
+            self.evaluation_manager.evaluation(nlp_value, validation_value,
+                                               display_flg)
+        return performance
+    
+    #
+    def _identify_manual_review(self, nlp_values, validation_datum_keys):
+        return _identify_manual_review(nlp_values, validation_datum_keys,
+                                       self.manual_review)
+    
+    #
+    def _intersection(self, x, y):
+        return _intersection(x, y)
+    
+    #
+    def _nlp_to_tuple(self, value):
+        return _nlp_to_tuple(value)
+    
+    #
+    def _process_validation_item(self, x):
+        return _process_validation_item(x)
+    
+    #
+    def _read_metadata(self, nlp_data):
+        return _read_metadata(nlp_data)
+    
+    #
+    def _read_nlp_value(self, nlp_data, data_json, key, identifier):
+        data_out = self._get_nlp_data(nlp_data[key][self.nlp_data_key],
+                                      self.queries)
+        data_json[identifier] = data_out
+        return data_json
+    
+    #
+    def _validation_to_tuple(self, text):
+        return _validation_to_tuple(text)
+    
+    #
+    def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
+        for k, v in node.items():
+            key_list = deepcopy(key_list_in)
+            key_list.append(k)
+            if k == target_key:
+                section_key = ast.literal_eval(key_list[0])[0]
+                section_key = re.sub(' [0-9]+$', '', section_key)
+                if section_key_list is not None:
+                    if section_key in section_key_list:
+                        for v_item in v:
+                            if data_key in v_item.keys():
+                                self.section_data_list.append(tuple([section_key, v_item[data_key]]))
+                else:
+                    for v_item in v:
+                        if data_key in v_item.keys():
+                            self.section_data_list.append(tuple([section_key, v_item[data_key]]))
+            elif isinstance(v, dict):
+                self._walk(v, target_key, data_key, key_list, section_key_list)
+                
+    #
+    def calculate_performance(self):
+        data_json = {}
+        for key in self.nlp_data.keys():
+            identifier = \
+                self.nlp_data[key][self.metadata_key][self.identifier_key]
+            data_json = self._read_nlp_value(self.nlp_data, data_json,
+                                             key, identifier)
+        nlp_values = self._get_nlp_values(self.nlp_data, data_json)
+        self.performance_statistics_overall_dict = {}
+        static_data = self.static_data_object.get_static_data()
+        validation_filename = static_data['validation_file']
+        directory_manager = static_data['directory_manager']
+        project_name = static_data['project_name']
+        data_dir = directory_manager.pull_directory('raw_data_dir')
+        filename = os.path.join(data_dir, validation_filename)
+        self.validation_data_manager = self.xls_manager_registry[filename]
+        self.validation_data_manager.read_validation_data()
+        self._process_performance(nlp_values)
+        
+    #
+    def display_performance_statistics(self):
+        _display_performance_statistics(self.performance_statistics_overall_dict)
+        
+    #
+    def get_performance_data(self):
+        self.read_nlp_data()
+        self.calculate_performance()
+            
+    #
+    def read_nlp_data(self):
+        static_data = self.static_data_object.get_static_data()
+        filename = static_data['project_name'] + '/' + \
+                   static_data['project_subdir'] + '/' + \
+                   static_data['project_name'] + '.json'
+        self.nlp_data = \
+            self.json_manager_registry[filename].read_nlp_data_from_package_json_file()
+         
+    #
+    def write_performance_data(self):
+        static_data = self.static_data_object.get_static_data()
+        filename = static_data['project_name'] + '/test/' + \
+                   static_data['project_name'] + '.performance.json'
+        self.json_manager_registry[filename].write_file(self.performance_statistics_overall_dict)

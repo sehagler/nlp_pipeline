@@ -6,52 +6,47 @@ Created on Mon Mar 04 12:29:38 2019
 """
 
 #
-import os
-import re
-
-#
-from nlp_pipeline_lib.performance_data_lib.performance_data_manager_class \
+from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
 from projects_lib.BeatAML_Waves_3_And_4.py.beataml_waves_3_and_4_specimens_manager_class \
     import BeatAML_Waves_3_And_4_specimens_manager as Specimens_manager
-from tool_lib.py.query_tools_lib.antigens_tools \
+from query_lib.processor_lib.antigens_tools \
     import antibodies_tested_performance
-from tool_lib.py.query_tools_lib.diagnosis_tools \
+from query_lib.processor_lib.diagnosis_tools \
     import diagnosis_performance
-from tool_lib.py.query_tools_lib.diagnosis_date_tools \
+from query_lib.processor_lib.diagnosis_date_tools \
     import diagnosis_date_performance
-from tool_lib.py.query_tools_lib.extramedullary_disease_tools \
+from query_lib.processor_lib.extramedullary_disease_tools \
     import extramedullary_disease_performance
-from tool_lib.py.query_tools_lib.fab_classification_tools \
+from query_lib.processor_lib.fab_classification_tools \
     import fab_classification_performance
-from tool_lib.py.query_tools_lib.fish_analysis_summary_tools \
+from query_lib.processor_lib.fish_analysis_summary_tools \
     import fish_analysis_summary_performance
-from tool_lib.py.query_tools_lib.immunophenotype_tools \
+from query_lib.processor_lib.immunophenotype_tools \
     import surface_antigens_performance
-from tool_lib.py.query_tools_lib.karyotype_tools import karyotype_performance
-from tool_lib.py.query_tools_lib.relapse_date_tools \
+from query_lib.processor_lib.karyotype_tools import karyotype_performance
+from query_lib.processor_lib.relapse_date_tools \
     import relapse_date_performance
-from tool_lib.py.query_tools_lib.residual_disease_tools \
+from query_lib.processor_lib.residual_disease_tools \
     import residual_disease_performance
-from tool_lib.py.query_tools_lib.specific_diagnosis_tools \
+from query_lib.processor_lib.specific_diagnosis_tools \
     import specific_diagnosis_performance
-from tool_lib.py.query_tools_lib.base_lib.blasts_tools_base \
+from query_lib.processor_lib.base_lib.blasts_tools_base \
     import blast_performance
-from tool_lib.py.query_tools_lib.base_lib.date_tools_base import compare_dates
 
 #
 class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager, evaluation_manager,
+    def __init__(self, static_data_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
-        Performance_data_manager.__init__(self, static_data_manager,
+        Performance_data_manager.__init__(self, static_data_object,
                                           evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)
-        static_data = self.static_data_manager.get_static_data()
+        static_data = self.static_data_object.get_static_data()
         if static_data['project_subdir'] == 'test':
             self.identifier_key = 'MRN'
             self.identifier_list = static_data['patient_list']
@@ -143,11 +138,12 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     
     #
     def _get_nlp_values(self, nlp_data, data_json):
-        static_data = self.static_data_manager.get_static_data()
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
-        validation_object = Specimens_manager(static_data, metadata_dict_dict, data_json)
-        validation_object.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
-        nlp_values = validation_object.get_data_json()
+        specimens_manager = Specimens_manager(self.static_data_object,
+                                              metadata_dict_dict)
+        specimens_manager.generate_document_map(data_json, 'file_map.txt')
+        specimens_manager.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
+        nlp_values = specimens_manager.get_data_json()
         return nlp_values
     
     #
@@ -164,8 +160,8 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
             
     #
     def _process_performance(self, nlp_values_in):
-        document_csn_list = \
-            self.metadata_manager.pull_document_identifier_list('SOURCE_SYSTEM_DOCUMENT_ID')
+        #document_csn_list = \
+        #    self.metadata_manager.pull_document_identifier_list('SOURCE_SYSTEM_DOCUMENT_ID')
         nlp_performance_wo_validation_manual_review_dict = {}
         nlp_performance_w_validation_manual_review_dict = {}
         wo_validation_manual_review_dict = {}

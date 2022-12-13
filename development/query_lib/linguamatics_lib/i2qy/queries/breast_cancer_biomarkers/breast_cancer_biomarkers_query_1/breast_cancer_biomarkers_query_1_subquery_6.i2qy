@@ -1,0 +1,19 @@
+version: 6.3
+creationDate: '2021-06-29 22:50:58'
+query:
+  document:
+  - phrase:
+    - word:
+        text: (
+        quantifier: {minimum: 0, maximum: 1}
+    - link: {path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy, id: link2}
+output:
+  columns:
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  useOutputEditor: true
+creator: haglers

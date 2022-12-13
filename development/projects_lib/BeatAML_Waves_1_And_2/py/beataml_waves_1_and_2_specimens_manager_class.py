@@ -6,44 +6,60 @@ Created on Mon Dec 23 08:56:27 2019
 """
 
 #
-import json
-import os
 import xlrd
 
 #
-from nlp_pipeline_lib.specimens_lib.specimens_manager_class \
-    import Specimens_manager
-from tool_lib.py.processing_tools_lib.file_processing_tools \
-    import read_json_file
-from tool_lib.py.query_tools_lib.antigens_tools \
+from query_lib.processor_lib.antigens_tools \
     import evaluate_antibodies_tested
-from tool_lib.py.query_tools_lib.antigens_tools \
+from query_lib.processor_lib.antigens_tools \
     import evaluate_surface_antigens
-from tool_lib.py.query_tools_lib.bone_marrow_blast_tools \
+from query_lib.processor_lib.bone_marrow_blast_tools \
     import evaluate_bone_marrow_blast
-from tool_lib.py.query_tools_lib.diagnosis_tools \
+from query_lib.processor_lib.diagnosis_tools \
     import evaluate_diagnosis
-from tool_lib.py.query_tools_lib.peripheral_blood_blast_tools \
+from query_lib.processor_lib.peripheral_blood_blast_tools \
     import evaluate_peripheral_blood_blast
-from tool_lib.py.query_tools_lib.specific_diagnosis_tools \
+from query_lib.processor_lib.specific_diagnosis_tools \
     import evaluate_specific_diagnosis
-from tool_lib.py.query_tools_lib.base_lib.date_tools_base \
+from query_lib.processor_lib.base_lib.date_tools_base \
     import get_date_difference
+from specimens_lib.manager_lib.specimens_manager_class \
+    import Specimens_manager
+    
+#
+def _get_days_window(label):
+    if 'chromosome' in label.lower() or \
+       'cytogenetics' in label.lower():
+        upper_bound_days = 7
+        lower_bound_days = -36525
+    else:
+        upper_bound_days = 2
+        lower_bound_days = -2
+    return lower_bound_days, upper_bound_days
+
+#
+def _get_process_label(proc_nm, doc_label):
+    if 'chromosome' in proc_nm.lower() or \
+       'cytogenetics' in proc_nm.lower():
+        process_label = 'cytogenetics_NA'
+    else:
+        process_label = 'hematopathology_' + doc_label
+    return process_label
 
 #
 class BeatAML_Waves_1_And_2_specimens_manager(Specimens_manager):
     
     #
-    def __init__(self, static_data, metadata_dict_dict, data_json):
-        self.metadata_dict_dict = metadata_dict_dict
+    def __init__(self, static_data_object, metadata_dict_dict):
+        Specimens_manager.__init__(self, static_data_object)
+        static_data = static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
-        Specimens_manager.__init__(self, static_data, data_json)
+        self.metadata_dict_dict = metadata_dict_dict
         
     #
-    def _cluster_specimens(self, specimen_tree_in):
-        deidentifier_key_dict = self._get_deidentifier_keys()
+    def _cluster_specimens(self, specimen_tree_in, deidentifier_key_dict):
         specimen_dict = {}
         for key0 in specimen_tree_in.keys():
             if key0 in deidentifier_key_dict.keys():
@@ -60,10 +76,10 @@ class BeatAML_Waves_1_And_2_specimens_manager(Specimens_manager):
                             for document in documents:
                                 if self.metadata_dict_dict[document.split('_')[0]]['METADATA']['PROC_NM'] == proc_nm:
                                     doc_label = document.split('_')[1]
-                                    lower_bound_days, upper_bound_days = self._get_days_window(proc_nm)
+                                    lower_bound_days, upper_bound_days = _get_days_window(proc_nm)
                                     date_diff = get_date_difference(key2, key1)
                                     if ( lower_bound_days <= date_diff ) and ( date_diff <= upper_bound_days ):
-                                        process_label = self._get_process_label(proc_nm, doc_label)
+                                        process_label = _get_process_label(proc_nm, doc_label)
                                         if process_label not in specimen_dict[key0][key1].keys():
                                             specimen_dict[key0][key1][process_label] = []
                                         specimen_dict[key0][key1][process_label].append([date_diff, document])
@@ -84,22 +100,11 @@ class BeatAML_Waves_1_And_2_specimens_manager(Specimens_manager):
         self.data_json = self._evaluate_generic('Residual.dx', self.data_json)
         self.data_json = evaluate_specific_diagnosis(self.data_json)
         self.data_json = evaluate_surface_antigens('Surface.Antigens.(Immunohistochemical.Stains)', self.data_json)
-                    
-    #
-    def _get_days_window(self, label):
-        if 'chromosome' in label.lower() or \
-           'cytogenetics' in label.lower():
-            upper_bound_days = 7
-            lower_bound_days = -36525
-        else:
-            upper_bound_days = 2
-            lower_bound_days = -2
-        return lower_bound_days, upper_bound_days
     
     #
-    def _get_deidentifier_keys(self):
+    def _get_deidentifier_keys(self, deidentifier_file):
         deidentifier_key_dict = {}
-        book = xlrd.open_workbook(self.deidentifier_xlsx)
+        book = xlrd.open_workbook(deidentifier_file)
         sheet = book.sheet_by_index(0)
         patientids = sheet.col_values(0)[1:]
         mrns = sheet.col_values(1)[1:]
@@ -119,12 +124,3 @@ class BeatAML_Waves_1_And_2_specimens_manager(Specimens_manager):
                 deidentifier_key_dict[mrn]['patientId'] = str(patientid_tmp[0])
                 deidentifier_key_dict[mrn]['labIds'] = doc_dict
         return deidentifier_key_dict
-    
-    #
-    def _get_process_label(self, proc_nm, doc_label):
-        if 'chromosome' in proc_nm.lower() or \
-           'cytogenetics' in proc_nm.lower():
-            process_label = 'cytogenetics_NA'
-        else:
-            process_label = 'hematopathology_' + doc_label
-        return process_label

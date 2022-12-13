@@ -10,14 +10,14 @@ import inflect
 import re
 
 #
-from lambda_lib.lambda_manager_class import Lambda_manager
+from lambda_lib.object_lib.lambda_object_class import Lambda_object
 
 #
 class Spelling_normalizer(object):
     
     #
     def __init__(self):
-        self.lambda_manager = Lambda_manager()
+        self.lambda_object = Lambda_object()
             
     #
     def _correct_deletions_insertions_replacements(self, words, 
@@ -32,7 +32,7 @@ class Spelling_normalizer(object):
             corrections = [ w for w in corrections if w not in correct_word_list]
             for correction in corrections:
                 self.text = \
-                    self.lambda_manager.lambda_conversion(correction, self.text, correct_word)
+                    self.lambda_object.lambda_conversion(correction, self.text, correct_word)
                 
     #
     def _correct_transpositions(self, words, correct_word_list):
@@ -54,7 +54,7 @@ class Spelling_normalizer(object):
                        (diffs[0][1] == diffs[1][2]) and \
                        (diffs[0][2] == diffs[1][1]):
                         self.text = \
-                            self.lambda_manager.lambda_conversion(correction, self.text, correct_word)
+                            self.lambda_object.lambda_conversion(correction, self.text, correct_word)
     
     #
     def _correct_typos(self):
@@ -73,13 +73,13 @@ class Spelling_normalizer(object):
                                                         correct_word_list)
         self._correct_transpositions(words, correct_word_list)
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=a)denomcarcinoa', self.text, 'denocarcinoma')
+            self.lambda_object.lambda_conversion('(?<=a)denomcarcinoa', self.text, 'denocarcinoma')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=d)iagnosises', self.text, 'iagnoses')
+            self.lambda_object.lambda_conversion('(?<=d)iagnosises', self.text, 'iagnoses')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=f)lorescen', self.text, 'luorescen')
+            self.lambda_object.lambda_conversion('(?<=f)lorescen', self.text, 'luorescen')
         self.text = \
-            self.lambda_manager.lambda_conversion('(?<=r)epector', self.text, 'eceptor')
+            self.lambda_object.lambda_conversion('(?<=r)epector', self.text, 'eceptor')
     
     #
     def _generate_correct_word_list(self, correct_seed_list):

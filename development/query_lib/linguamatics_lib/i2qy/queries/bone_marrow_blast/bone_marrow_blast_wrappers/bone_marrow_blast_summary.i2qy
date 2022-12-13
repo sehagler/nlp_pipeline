@@ -1,0 +1,39 @@
+version: 6.3
+creationDate: '2019-01-30 17:22:01'
+query:
+  document:
+  - phrase:
+      maxWordGap: -1
+      view: {height: 162, width: 844}
+      wordGapRestricted: false
+      of:
+      - phrase:
+          maxWordGap: -1
+          view: {height: 123, width: 466}
+          wordGapRestricted: false
+          of:
+          - phrase:
+              displayChildren: false
+              of: [bone, marrow]
+          - word:
+              text: ':'
+              quantifier: {minimum: 0, maximum: 0}
+          - phrase:
+              displayChildren: false
+              includeInQuery: false
+              quantifier: {minimum: 0, maximum: 0}
+              of: [peripheral, blood]
+          - ':'
+      - phrase:
+          displayChildren: false
+          quantifier: {minimum: 0, maximum: 0}
+          of: [peripheral, blood]
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/bone_marrow_blast_%25/bone_marrow_blast_%25_query.i2qy, id: link2}
+output:
+  columns:
+  - title: Extract
+    id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  useOutputEditor: true
+creator: haglers

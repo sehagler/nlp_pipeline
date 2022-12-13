@@ -1,0 +1,33 @@
+version: 6.3
+creationDate: '2018-10-26 16:03:06'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+          - link: {path: ../immunophenotype_query_snippet.i2qy, id: link1}
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link1.link6.alternative1
+    itemOptions: {}
+    linkItemId: link6.link1
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers

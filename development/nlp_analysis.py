@@ -33,7 +33,7 @@ pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[4]
+project_name = project_names[2]
 project_subdir = project_subdirs[1]
 server = servers[0]
 
@@ -65,11 +65,11 @@ if mode_flg == 'update':
         software_base = root_base + '/NLP_Software/'
         software_path = software_base + 'development'
         sys.path.insert(0, software_path)
-        from nlp_pipeline_lib.pipeline_lib.pipeline \
-            import Pipeline
-        pipeline = Pipeline()
-        pipeline.software_manager(root_dir, user, password)
-        pipeline.move_software()
+        from nlp_pipeline_lib.object_lib.pipeline_lib.pipeline_object_class \
+            import Pipeline_object
+        pipeline_object = Pipeline_object()
+        pipeline_object.software_manager(root_dir, user, password)
+        pipeline_object.move_software()
         sys.path.remove(software_path)
     
 #
@@ -88,17 +88,17 @@ elif mode_flg == 'run':
     software_base = root_base + '/NLP_Software/'
     software_path = software_base + server
     sys.path.insert(0, software_path)
-    from nlp_pipeline_lib.pipeline_lib.pipeline \
-        import Pipeline
-    pipeline = Pipeline()
-    pipeline.process_manager(server, root_dir, project_subdir, project_name,
-                             user, password)
+    from nlp_pipeline_lib.object_lib.pipeline_lib.pipeline_object_class \
+        import Pipeline_object
+    pipeline_object = Pipeline_object()
+    pipeline_object.process_manager(server, root_dir, project_subdir,
+                                    project_name, user, password)
     if pipeline_mode_flg == 'training_sets':
-        pipeline.generate_training_data_sets(password)
+        pipeline_object.generate_training_data_sets(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_prequeries':
-        pipeline.linguamatics_i2e_prequeries(password)
+        pipeline_object.linguamatics_i2e_prequeries(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_postqueries':
-        pipeline.linguamatics_i2e_postqueries(project_subdir)
+        pipeline_object.linguamatics_i2e_postqueries(project_subdir)
     elif pipeline_mode_flg == 'linguamatics_i2e_push_queries':
-        pipeline.linguamatics_i2e_push_queries()
+        pipeline_object.linguamatics_i2e_push_queries()
     sys.path.remove(software_path)

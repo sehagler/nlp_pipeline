@@ -1,0 +1,27 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - fab_classification_wrappers/fab_classification_specimens_wrapper.i2qy
+    - Subtraction: [fab_classification_wrappers/fab_classification_sections_wrapper.i2qy, fab_classification_wrappers/fab_classification_specimen_description_wrapper.i2qy]
+output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link2.link5.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link5.link2
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+creator: haglers
