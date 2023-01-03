@@ -3,6 +3,7 @@ creationDate: '2021-06-29 22:50:58'
 query:
   document:
   - phrase:
+    - link: {path: ../breast_cancer_biomarkers_score_phrase.i2qy, id: link1}
     - word:
         text: (
         quantifier: {minimum: 0, maximum: 1}
@@ -15,5 +16,9 @@ output:
   - id: link2.phrase1
     itemOptions: {}
     linkItemId: link2
+  - id: link1.alternative2
+    itemOptions: {}
+    linkItemId: link1
+  columnLocations: [0, 2, 1]
   useOutputEditor: true
 creator: haglers

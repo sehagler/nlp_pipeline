@@ -3,45 +3,41 @@ creationDate: '2015-12-14 15:22:31'
 query:
   document:
   - phrase:
-      boundaries: Exact
-      findMatches: longestOnly
-      id: phrase1
+      id: phrase2
       of:
-      - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link1}
-      - alternative:
-        - IHC
-        - word: {text: result, morphoVariants: true}
-        - word: {text: stain, morphoVariants: true}
-      - alternative:
-          quantifier: {minimum: 0, maximum: 1}
-          of:
-          - link: {path: ../breast_cancer_biomarkers_relation_verbal.i2qy}
-          - alternative: [':', ',', ;]
-      - alternative:
+      - phrase:
+          boundaries: Exact
           findMatches: longestOnly
+          showInDefaultOutput: false
+          of:
+          - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link3}
+          - alternative:
+            - IHC
+            - word: {text: result, morphoVariants: true}
+            - word: {text: stain, morphoVariants: true}
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - link: {path: ../breast_cancer_biomarkers_relation_verbal.i2qy}
+              - alternative: [':', ',', ;]
+      - alternative:
           id: alternative1
           showMultipleColumns: true
           of:
-          - link: {path: breast_cancer_biomarkers_query_9_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_0.i2qy, showInDefaultOutput: false}
           - link: {path: breast_cancer_biomarkers_query_9_subquery_1.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_9_subquery_2.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_9_subquery_3.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_9_subquery_4.i2qy}
 output:
   columns:
-  - {id: phrase1}
-  - id: value1
-    columnOptions: [Empty]
-    isValueColumn: true
+  - {id: phrase2}
+  - id: link3.link2.class1
+    itemOptions: {}
+    linkItemId: link2.link3
   - id: alternative1.col0
     itemOptions: {}
   - id: alternative1.col1
     itemOptions: {}
-  - id: link1.link2.class1
-    itemOptions: {}
-    linkItemId: link2.link1
-  columnLocations: [0, 4, 1, 2, 3]
   outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
   useOutputEditor: true
-parameters: {BIOMARKER: ''}
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
 creator: szhang

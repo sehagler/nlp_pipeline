@@ -119,7 +119,7 @@ class Raw_data_manager(object):
         return metadata
                
     #
-    def _read_beakerap_data(self, poject_datda, data_tmp, password,
+    def _read_beaker_ap_data(self, poject_datda, data_tmp, password,
                             i2e_version, num_processes, process_idx):
         
         # initialize lists
@@ -227,15 +227,15 @@ class Raw_data_manager(object):
     def _read_data_wrapper(self, password, data_tmp, i2e_version,
                            num_processes, process_idx):
         static_data = self.static_data_manager.get_static_data()
-        do_beakerap_flg = static_data['do_beakerap_flg']
+        do_beaker_ap_flg = static_data['do_beaker_ap_flg']
         if 'SOURCE_SYSTEM' in data_tmp.keys():
             source_system = data_tmp['SOURCE_SYSTEM'][0]
         else:
             source_system = 'UNKNOWN'
-        if do_beakerap_flg and source_system == 'BeakderAP':
+        if do_beaker_ap_flg and source_system == 'BeakderAP':
             source_metadata_list, nlp_metadata_list, text_list, \
             xml_metadata_keys = \
-                    self._read_beakerap_data(static_data, data_tmp, password, 
+                    self._read_beaker_ap_data(static_data, data_tmp, password, 
                                              i2e_version, num_processes,
                                              process_idx)
         else:

@@ -1,19 +1,19 @@
 version: 6.3
-creationDate: '2021-06-30 22:15:34'
+creationDate: '2021-06-07 17:36:39'
 query:
   document:
   - phrase:
-      id: phrase1
+      boundaries: Exact
+      findMatches: longestOnly
       of:
-      - alternative:
-          id: alternative1
-          showMultipleColumns: true
-          of:
-          - link: {path: breast_cancer_biomarkers_query_4_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_4_subquery_1.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_4_subquery_2.i2qy}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy, id: link6}
+      - link: {path: breast_cancer_biomarkers_query_4_names_phrase.i2qy, id: link4}
+      - link:
+          path: ../breast_cancer_biomarkers_score_parenthetical.i2qy
+          id: link3
+          quantifier: {minimum: 0, maximum: 1}
       - phrase:
-          quantifier: {minimum: 0, maximum: 0}
+          quantifier: {minimum: 0, maximum: 1}
           of:
           - alternative:
             - {class: /prep}
@@ -129,20 +129,22 @@ query:
                     - with
                     - within
                     - without
-          - link: {path: /api;type=saved_query/__private__/haglers/General/tools/breast_cancer_biomarkers_names.i2qy}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link5}
 output:
   columns:
-  - id: alternative1.col0
+  - id: link6.alternative1
     itemOptions: {}
-  - id: alternative1.col1
+    linkItemId: link6
+  - id: link5.link2.phrase1
     itemOptions: {}
-  - id: alternative1.col2
+    linkItemId: link2.link5
+  - id: link3.link2.link4.phrase1
     itemOptions: {}
-  - id: alternative1.col3
+    linkItemId: link4.link2.link3
+  - id: link4.link1.link2.class1
     itemOptions: {}
-  - {id: phrase1}
-  columnLocations: [4, 0, 1, 2, 3]
+    linkItemId: link2.link1.link4
+  columnLocations: [3, 0, 2, 1]
   useOutputEditor: true
-parameters: {Biomarker: ''}
-runAsSmartQuery: true
+parameters: {BIOMARKER: ''}
 creator: haglers

@@ -11,17 +11,10 @@ query:
       - link: {path: breast_cancer_biomarkers_query_11/breast_cancer_biomarkers_query_11.i2qy}
       - link: {path: breast_cancer_biomarkers_query_8/breast_cancer_biomarkers_query_8.i2qy}
       - link: {path: breast_cancer_biomarkers_query_0/breast_cancer_biomarkers_query_0.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_1/breast_cancer_biomarkers_query_1.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_2/breast_cancer_biomarkers_query_2.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_3/breast_cancer_biomarkers_query_3.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_12/breast_cancer_biomarkers_query_12.i2qy}
+      - link: {path: breast_cancer_biomarkers_query_10/breast_cancer_biomarkers_query_10.i2qy}
       - link: {path: breast_cancer_biomarkers_query_14/breast_cancer_biomarkers_query_14.i2qy}
       - link: {path: breast_cancer_biomarkers_query_4/breast_cancer_biomarkers_query_4.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_5/breast_cancer_biomarkers_query_5.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_6/breast_cancer_biomarkers_query_6.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_7/breast_cancer_biomarkers_query_7.i2qy}
       - link: {path: breast_cancer_biomarkers_query_9/breast_cancer_biomarkers_query_9.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_10/breast_cancer_biomarkers_query_10.i2qy}
 output:
   columns:
   - id: alternative1.col0

@@ -11,10 +11,11 @@ from copy import deepcopy
 import json
 import os
 from pathlib import Path
+import xlrd
 
 #
 from nlp_pipeline_lib.logger_lib.logger_class import Logger
-from projects_lib.BeatAML_Waves_1_And_2.py.specimens_lib.specimens_base_class \
+from nlp_pipeline_lib.specimens_lib.lib.specimens_base_class \
     import Specimens_base
 from tool_lib.py.query_tools_lib.base_lib.date_tools_base import get_date_difference
 
@@ -121,6 +122,30 @@ class Specimens_jsons(Specimens_base):
                 documents = specimen_tree[key0][key1]
                 documents = list(set(documents))
                 self.logger.log_entry_merge_documents(key0, key1, date_str, key[0], documents)
+                
+    #
+    def _get_deidentifier_keys(self):
+        deidentifier_key_dict = {}
+        book = xlrd.open_workbook(self.deidentifier_xlsx)
+        sheet = book.sheet_by_index(0)
+        patientids = sheet.col_values(0)[1:]
+        mrns = sheet.col_values(1)[1:]
+        labids = sheet.col_values(2)[1:]
+        specimen_dates = self._make_strings(sheet.col_values(3)[1:])
+        for mrn in list(set(mrns)):
+            idxs = [ i for i, j in enumerate(mrns) if j == mrn ]
+            patientid_tmp = list(set([ patientids[i] for i in idxs ]))
+            for i in range(len(patientid_tmp)):
+                patientid_tmp[i] = int(patientid_tmp[i])
+            tmp_list = [ [labids[i], specimen_dates[i]] for i in idxs ]
+            doc_dict = {}
+            for item in tmp_list:
+                doc_dict[item[1]] = item[0]
+            if len(patientid_tmp) == 1:
+                deidentifier_key_dict[mrn] = {}
+                deidentifier_key_dict[mrn]['patientId'] = str(patientid_tmp[0])
+                deidentifier_key_dict[mrn]['labIds'] = doc_dict
+        return deidentifier_key_dict
     
     #
     def _get_specimen_dict(self, specimen_tree, key0, key1):

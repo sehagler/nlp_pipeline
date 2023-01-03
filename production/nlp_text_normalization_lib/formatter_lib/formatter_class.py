@@ -61,7 +61,7 @@ class Formatter(object):
             self.section_header_normalizer.pull_dynamic_data_manager()
     
     #
-    def _format_beakerap(self):
+    def _format_beaker_ap(self):
         self._pull_out_section_header('(?i)[ \t]case (reviewed|seen) by:?')
         self._pull_out_section_header('(?i)[ \t]clinical history')
         self._pull_out_section_header('(?i)[ \t]comment(s)?( )?(\([a-z0-9 ]*\))?:')
@@ -182,7 +182,7 @@ class Formatter(object):
         self.dynamic_data_manager = dynamic_data_manager
         self.text = text
         if source_system == 'Epic Beaker':
-            self._format_beakerap()
+            self._format_beaker_ap()
         else:
             self._format_powerpath()
         self.text = self.table_normalizer.process_text(self.text)
