@@ -9,6 +9,7 @@ query:
           id: alternative1
           showMultipleColumns: true
           of:
+          - link: {path: breast_cancer_biomarkers_query_4_subquery_3.i2qy}
           - link: {path: breast_cancer_biomarkers_query_4_subquery_0.i2qy}
           - link: {path: breast_cancer_biomarkers_query_4_subquery_1.i2qy}
           - link: {path: breast_cancer_biomarkers_query_4_subquery_2.i2qy}

@@ -247,6 +247,17 @@ query:
                     - without
       - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link10}
       - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - IHC
+          - word: {text: result, morphoVariants: true}
+          - word: {text: stain, morphoVariants: true}
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - link: {path: ../breast_cancer_biomarkers_relation_verbal.i2qy}
+          - alternative: [':', ',', ;]
+      - alternative:
           id: alternative1
           showMultipleColumns: true
           of:
@@ -259,6 +270,9 @@ query:
           - link: {path: breast_cancer_biomarkers_query_1_subquery_2.i2qy}
           - link: {path: breast_cancer_biomarkers_query_2_subquery_0.i2qy}
           - link: {path: breast_cancer_biomarkers_query_2_subquery_1.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_9_subquery_1.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_14_subquery_0.i2qy}
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
           of:
