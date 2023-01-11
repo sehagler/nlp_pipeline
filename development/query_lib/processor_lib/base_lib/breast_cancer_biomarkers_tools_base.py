@@ -6,10 +6,16 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
-import os
 import re
 
 #
+from base_lib.postprocessor_base_class \
+    import Postprocessor_base
+from base_lib.preprocessor_base_class \
+    import Preprocessor_base
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
+from tools_lib.processing_tools_lib.function_processing_tools \
+    import composite_function
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -23,190 +29,195 @@ from tools_lib.regex_lib.regex_tools \
         slash,
         space
     )
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
+    
+#
+def _normalize_AR(text):
+    text = \
+        lambda_lib.initialism_lambda_conversion('androgen receptor', text, 'AR')
+    return text
 
 #
-class Preprocessor(Preprocessor_base):
+def _normalize_BCL2(text):
+    text = \
+        lambda_lib.lambda_conversion('BCL(( ?- ?)| )2', text, 'BCL2')
+    return text
     
-    #
-    def _receptor_predicate(self):
-        return('(ampification|antigen|clone|(over)?expression|immunoreactivity|protein|receptor|status)')
-    
-    #
-    def _normalize_ER(self):
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('estrogen receptor', self.text, 'ER')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion('(?<![a-z])ER ' + left_parenthesis() + 'ER' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'ER' + comma() + 'clone', self.text, '')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion('(?<![a-z])ER results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', self.text, '')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])ERs', self.text, 'ER')
-        search_str = '(?<![a-z])ER ' + self._receptor_predicate() + s()
-        for _ in range(3):
-            self.text = \
-                self.lambda_object.space_correction_lambda_conversion('(?<![a-z])' + search_str, self.text, 'ER')
-        search_str = '(?<![a-z])ER(' + comma() + ')?' + self._receptor_predicate() + s() + ' [a-zA-Z0-9]*'
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(search_str, self.text)
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?-', self.text, 'ER negative')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?neg(?![a-z])', self.text, 'ER negative')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?\+', self.text, 'ER positive')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?pos(?![a-z])', self.text, 'ER positive')
-            
-    #
-    def _normalize_GATA3(self):
-        self.text = \
-            self.lambda_object.lambda_conversion('(?<![a-z])GATA3', self.text, 'GATA3')
-        self.text = \
-            self.lambda_object.lambda_conversion('(?<![a-z])GATA' + minus_sign() + '3', self.text, 'GATA3')
-        
-    #
-    def _normalize_HER2(self):
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + slash() + ')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', self.text,  'HER2')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER2' + minus_sign() + slash() + '(c' + minus_sign() + ')?neu( ' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', self.text, 'HER2')
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('C' + minus_sign() + 'ERB B2 ' + left_parenthesis() + 'HER2' + right_parenthesis(), self.text, 'HER2')
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('(?<![a-z])HER 2', self.text, 'HER2')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?-', self.text, 'HER2 negative')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?neg(?![a-z])', self.text, 'HER2 negative')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?\+', self.text, 'HER2 positive')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?pos(?![a-z])', self.text, 'HER2 positive')
-        for _ in range(7):
-            search_str = '(?<![a-z])HER2 ([a-z]* for )?' + \
-                         self._receptor_predicate() + s()
-            self.text = \
-                self.lambda_object.space_correction_lambda_conversion(search_str, self.text, 'HER2')
-        for _ in range(7):
-            search_str = self._receptor_predicate() + s() + '\s' + 'for HER2'
-            self.text = \
-                self.lambda_object.space_correction_lambda_conversion(search_str, self.text, 'for HER2')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion(self._receptor_predicate() + ' of HER2', self.text, 'HER2')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])HER2 ' + self._receptor_predicate(), self.text, 'HER2')
-            
-    #
-    def _normalize_KI67(self):
-        self.text = \
-            self.lambda_object.lambda_conversion('Ki' + minus_sign() + '67', self.text, 'KI67')
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('proliferati(on|ve) (index|rate)', self.text, 'KI67')
-        self.text = \
-            self.lambda_object.lambda_conversion('KI67( proliferati(on|ve))? (index|rate)', self.text, 'KI67')
-        self.text = \
-            self.lambda_object.lambda_conversion('KI67( ' + left_parenthesis() + 'mm-1' + right_parenthesis() + ')?', self.text, 'KI67')
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('KI67', self.text, 'KI67')
-        
-    #
-    def _normalize_PR(self):
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('progesterone receptor', self.text, 'PR')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion('(?<![a-z])PR ' + left_parenthesis() + 'PR' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'PR' + comma() + 'clone', self.text, '')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion('(?<![a-z])PR results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', self.text, '')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])PRs', self.text, 'PR')
-        search_str = '(?<![a-z])PR ' + self._receptor_predicate() + s()
-        for _ in range(3):
-            self.text = \
-                self.lambda_object.space_correction_lambda_conversion('(?<![a-z])' + search_str, self.text, 'PR')
-        search_str = '(?<![a-z])PR(' + comma() + ')?' + self._receptor_predicate() + s() + ' [a-zA-Z0-9]*'
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(search_str, self.text)
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?-', self.text, 'PR negative')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?neg(?![a-z])', self.text, 'PR negative')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?\+', self.text, 'PR positive')
-        self.text = \
-            self.lambda_object.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?pos(?![a-z])', self.text, 'PR positive')
-        
-    #
-    def _remove_extraneous_text(self):
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(left_parenthesis() + 'Hereceptest' + right_parenthesis(), self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('by IHC', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(article() + ' positive ER or PR result requires.*moderate to strong nuclear staining( \.)?', self.text)
-        self.text = \
-            self.lambda_object.lambda_conversion('(, )?Pathway TM', self.text, ' ')
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(left_parenthesis() + 'PATHWAYTMHER2 kit ?, ?4B5' + right_parenthesis(), self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(left_parenthesis() + 'PATHWAY(TMHER2| ' + left_parenthesis() + 'TM' + right_parenthesis() + ' HER2 ?) Kit( ?, clone [0-9A-Z]+)?' + right_parenthesis(), self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('\* ' + article() + ' asterisk indicates that ' + article() + ' IHC.*computer assisted quantitative image analysis( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(left_parenthesis() + 'analyte specific reagents.*clinical lab testing( \.)?' + right_parenthesis() + '( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(left_parenthesis() + 'analyte specific reagents.*FDA( \.)?' + right_parenthesis() + '( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('IHC stains are performed on formalin\-fixed(.*\n)*.*appropriate positive and negative controls( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('Scoring and interpretation are per(.*\n)*.*' + left_parenthesis() + 'interpretation : positive' + right_parenthesis() + '( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(article() + ' ER and PR stains are considered(.*\n)*.*Arch Pathol Lab Med 134\(6\) : 907 \- 22 \. 2010( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(article() + ' ER and PR stains are considered(.*\n)*.*Indeterminate recommend repeat on another specimen( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(article() + ' ER and PR IHC stains are performed(.*\n)*.*10% of ' + article() + ' tumor cells( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('Brightfield Dual ISH analysis(.*\n)*.*positive and negative controls( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('HER2 IHC staining is performed with(.*\n)*.*Arch Pathol Lab Med 131:18 \- 43 \. 2007( \.)?', self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('HER2 IHC staining is performed with(.*\n)*.*specimens[\- ]are fixed longer than 1 hour( \.)?', self.text)           
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('HER2 scoring and interpretation are per(.*\n)*.*proficiency testing for ER , PR and HER2 IHC( \.)?', self.text)  
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('HER2 (expression )?' + be() + ' expressed by ' + article() + ' ACIS score(.*\n)*.*confirm HER2 DNA amplification( \.)?', self.text)  
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(article() + ' HER2 analysis is done(.*\n)*.*tissue sent for confirmation by FISH analysis( \.)?', self.text) 
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion(article() + ' ER , PR and HER2 IHC stains are performed(.*\n)*.*Inadequate specimens[\- ]are not reported \.', self.text) 
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('; see ISH results below', self.text) 
-    
-    #
-    def run_preprocessor(self):
-        self.text = \
-            self.lambda_object.lambda_conversion('triple negative', self.text, 'ER negative, PR negative, HER2 negative')
-        self.text = \
-            self.lambda_object.lambda_conversion('estrogen and progesterone( receptor' + s() + ')?', self.text, 'ER and PR')
-        self.text = \
-            self.lambda_object.lambda_conversion('progesterone and estrogen( receptor' + s() + ')?', self.text, 'PR and ER')
-        self.text = \
-            self.lambda_object.initialism_lambda_conversion('androgen receptor', self.text, 'AR')
-        self.text = \
-            self.lambda_object.lambda_conversion('BCL(( ?- ?)| )2', self.text, 'BCL2')
-        self.text = \
-            self.lambda_object.lambda_conversion('PD(( ?- ?)| )L1', self.text, 'PDL1')
-        self._normalize_ER()
-        self._normalize_GATA3()
-        self._normalize_HER2()
-        self._normalize_KI67()
-        self._normalize_PR()
-        self._remove_extraneous_text()
+#
+def _normalize_ER(text):
+    text = \
+        lambda_lib.initialism_lambda_conversion('estrogen receptor', text, 'ER')
+    text = \
+        lambda_lib.contextual_lambda_conversion('(?<![a-z])ER ' + left_parenthesis() + 'ER' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'ER' + comma() + 'clone', text, '')
+    text = \
+        lambda_lib.contextual_lambda_conversion('(?<![a-z])ER results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', text, '')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])ERs', text, 'ER')
+    search_str = '(?<![a-z])ER ' + _receptor_predicate() + s()
+    for _ in range(3):
+        text = \
+            lambda_lib.space_correction_lambda_conversion('(?<![a-z])' + search_str, text, 'ER')
+    search_str = '(?<![a-z])ER(' + comma() + ')?' + _receptor_predicate() + s() + ' [a-zA-Z0-9]*'
+    text = \
+        lambda_lib.deletion_lambda_conversion(search_str, text)
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?-', text, 'ER negative')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?neg(?![a-z])', text, 'ER negative')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?\+', text, 'ER positive')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])ER(' + colon() + '|' + space() + ')?pos(?![a-z])', text, 'ER positive')
+    return text
 
+#
+def _normalize_GATA3(text):
+    text = \
+        lambda_lib.lambda_conversion('(?<![a-z])GATA3', text, 'GATA3')
+    text = \
+        lambda_lib.lambda_conversion('(?<![a-z])GATA' + minus_sign() + '3', text, 'GATA3')
+    return text
+
+#
+def _normalize_HER2(text):
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + slash() + ')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text,  'HER2')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER2' + minus_sign() + slash() + '(c' + minus_sign() + ')?neu( ' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text, 'HER2')
+    text = \
+        lambda_lib.initialism_lambda_conversion('C' + minus_sign() + 'ERB B2 ' + left_parenthesis() + 'HER2' + right_parenthesis(), text, 'HER2')
+    text = \
+        lambda_lib.initialism_lambda_conversion('(?<![a-z])HER 2', text, 'HER2')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?-', text, 'HER2 negative')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?neg(?![a-z])', text, 'HER2 negative')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?\+', text, 'HER2 positive')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER2(' + colon() + '|' + space() + ')?pos(?![a-z])', text, 'HER2 positive')
+    for _ in range(7):
+        search_str = '(?<![a-z])HER2 ([a-z]* for )?' + \
+                     _receptor_predicate() + s()
+        text = \
+            lambda_lib.space_correction_lambda_conversion(search_str, text, 'HER2')
+    for _ in range(7):
+        search_str = _receptor_predicate() + s() + '\s' + 'for HER2'
+        text = \
+            lambda_lib.space_correction_lambda_conversion(search_str, text, 'for HER2')
+    text = \
+        lambda_lib.space_correction_lambda_conversion(_receptor_predicate() + ' of HER2', text, 'HER2')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])HER2 ' + _receptor_predicate(), text, 'HER2')
+    return text
+
+#
+def _normalize_KI67(text):
+    text = \
+        lambda_lib.lambda_conversion('Ki' + minus_sign() + '67', text, 'KI67')
+    text = \
+        lambda_lib.initialism_lambda_conversion('proliferati(on|ve) (index|rate)', text, 'KI67')
+    text = \
+        lambda_lib.lambda_conversion('KI67( proliferati(on|ve))? (index|rate)', text, 'KI67')
+    text = \
+        lambda_lib.lambda_conversion('KI67( ' + left_parenthesis() + 'mm-1' + right_parenthesis() + ')?', text, 'KI67')
+    text = \
+        lambda_lib.initialism_lambda_conversion('KI67', text, 'KI67')
+    return text
+#
+def _normalize_PDL1(text):
+    text = \
+        lambda_lib.lambda_conversion('PD(( ?- ?)| )L1', text, 'PDL1')
+    return text
+
+#
+def _normalize_PR(text):
+    text = \
+        lambda_lib.initialism_lambda_conversion('progesterone receptor', text, 'PR')
+    text = \
+        lambda_lib.contextual_lambda_conversion('(?<![a-z])PR ' + left_parenthesis() + 'PR' + comma() + 'clone [A-Z0-9]+' + right_parenthesis(), 'PR' + comma() + 'clone', text, '')
+    text = \
+        lambda_lib.contextual_lambda_conversion('(?<![a-z])PR results' + comma() + 'clone [A-Z0-9]+', 'results' + comma() + 'clone', text, '')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])PRs', text, 'PR')
+    search_str = '(?<![a-z])PR ' + _receptor_predicate() + s()
+    for _ in range(3):
+        text = \
+            lambda_lib.space_correction_lambda_conversion('(?<![a-z])' + search_str, text, 'PR')
+    search_str = '(?<![a-z])PR(' + comma() + ')?' + _receptor_predicate() + s() + ' [a-zA-Z0-9]*'
+    text = \
+        lambda_lib.deletion_lambda_conversion(search_str, text)
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?-', text, 'PR negative')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?neg(?![a-z])', text, 'PR negative')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?\+', text, 'PR positive')
+    text = \
+        lambda_lib.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?pos(?![a-z])', text, 'PR positive')
+    return text
+
+#
+def _normalize_multiple_biomarkers(text):
+    text = \
+        lambda_lib.lambda_conversion('triple negative', text, 'ER negative, PR negative, HER2 negative')
+    text = \
+        lambda_lib.lambda_conversion('estrogen and progesterone( receptor' + s() + ')?', text, 'ER and PR')
+    text = \
+        lambda_lib.lambda_conversion('progesterone and estrogen( receptor' + s() + ')?', text, 'PR and ER')
+    return text
+
+#
+def _receptor_predicate():
+    return('(ampification|antigen|clone|(over)?expression|immunoreactivity|protein|receptor|status)')
+
+#
+def _remove_extraneous_text(text):
+    text = \
+        lambda_lib.deletion_lambda_conversion(left_parenthesis() + 'Hereceptest' + right_parenthesis(), text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('by IHC', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(article() + ' positive ER or PR result requires.*moderate to strong nuclear staining( \.)?', text)
+    text = \
+        lambda_lib.lambda_conversion('(, )?Pathway TM', text, ' ')
+    text = \
+        lambda_lib.deletion_lambda_conversion(left_parenthesis() + 'PATHWAYTMHER2 kit ?, ?4B5' + right_parenthesis(), text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(left_parenthesis() + 'PATHWAY(TMHER2| ' + left_parenthesis() + 'TM' + right_parenthesis() + ' HER2 ?) Kit( ?, clone [0-9A-Z]+)?' + right_parenthesis(), text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('\* ' + article() + ' asterisk indicates that ' + article() + ' IHC.*computer assisted quantitative image analysis( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(left_parenthesis() + 'analyte specific reagents.*clinical lab testing( \.)?' + right_parenthesis() + '( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(left_parenthesis() + 'analyte specific reagents.*FDA( \.)?' + right_parenthesis() + '( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('IHC stains are performed on formalin\-fixed(.*\n)*.*appropriate positive and negative controls( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('Scoring and interpretation are per(.*\n)*.*' + left_parenthesis() + 'interpretation : positive' + right_parenthesis() + '( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(article() + ' ER and PR stains are considered(.*\n)*.*Arch Pathol Lab Med 134\(6\) : 907 \- 22 \. 2010( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(article() + ' ER and PR stains are considered(.*\n)*.*Indeterminate recommend repeat on another specimen( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion(article() + ' ER and PR IHC stains are performed(.*\n)*.*10% of ' + article() + ' tumor cells( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('Brightfield Dual ISH analysis(.*\n)*.*positive and negative controls( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('HER2 IHC staining is performed with(.*\n)*.*Arch Pathol Lab Med 131:18 \- 43 \. 2007( \.)?', text)
+    text = \
+        lambda_lib.deletion_lambda_conversion('HER2 IHC staining is performed with(.*\n)*.*specimens[\- ]are fixed longer than 1 hour( \.)?', text)           
+    text = \
+        lambda_lib.deletion_lambda_conversion('HER2 scoring and interpretation are per(.*\n)*.*proficiency testing for ER , PR and HER2 IHC( \.)?', text)  
+    text = \
+        lambda_lib.deletion_lambda_conversion('HER2 (expression )?' + be() + ' expressed by ' + article() + ' ACIS score(.*\n)*.*confirm HER2 DNA amplification( \.)?', text)  
+    text = \
+        lambda_lib.deletion_lambda_conversion(article() + ' HER2 analysis is done(.*\n)*.*tissue sent for confirmation by FISH analysis( \.)?', text) 
+    text = \
+        lambda_lib.deletion_lambda_conversion(article() + ' ER , PR and HER2 IHC stains are performed(.*\n)*.*Inadequate specimens[\- ]are not reported \.', text) 
+    text = \
+        lambda_lib.deletion_lambda_conversion('; see ISH results below', text)
+    return text
+    
 #
 class Postprocessor(Postprocessor_base):
     
@@ -437,22 +448,20 @@ class Postprocessor(Postprocessor_base):
         match = re.search('[0-9]+%-[0-9]+%', percentage)
         if match is not None:
             percentage = \
-                self.lambda_object.lambda_conversion('(?<=%)-(?=[0-9])',
-                                                      match.group(0), ',')
+                lambda_lib.lambda_conversion('(?<=%)-(?=[0-9])',
+                                             match.group(0), ',')
             percentage = '(' + percentage + ')'
         return percentage
     
     #
     def _process_score(self, score):
-        score = self.lambda_object.lambda_conversion(' \+', score, '+')
+        score = lambda_lib.lambda_conversion(' \+', score, '+')
         score = \
-            self.lambda_object.lambda_conversion(' (/|(out )?of) [0-4](\+)?',
-                                                  score, '')
+            lambda_lib.lambda_conversion(' (/|(out )?of) [0-4](\+)?', score, '')
         match = re.search('[0-4](\+)? (\-|to) [0-4](\+)?', score)
         if match is not None:
             score = \
-                self.lambda_object.lambda_conversion(' (\-|to) ',
-                                                      match.group(0), ',')
+                lambda_lib.lambda_conversion(' (\-|to) ', match.group(0), ',')
             score = '(' + score +')'
         match = re.search('no staining', score)
         if match is not None:
@@ -473,3 +482,20 @@ class Postprocessor(Postprocessor_base):
                                      'reactive', 'strong', 'variable' ]:
                 status = 'positive'
         return status
+
+#
+class Preprocessor(Preprocessor_base):
+    
+    #
+    def run_preprocessor(self):
+        normalize_text = composite_function(_remove_extraneous_text,
+                                            _normalize_PR,
+                                            _normalize_PDL1,
+                                            _normalize_KI67,
+                                            _normalize_HER2,
+                                            _normalize_GATA3,
+                                            _normalize_ER,
+                                            _normalize_BCL2,
+                                            _normalize_AR,
+                                            _normalize_multiple_biomarkers)
+        self.text = normalize_text(self.text)

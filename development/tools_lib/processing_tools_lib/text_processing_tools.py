@@ -9,7 +9,7 @@ Created on Fri Apr  3 10:38:34 2020
 import re
 
 #
-from lambda_lib.object_lib.lambda_object_class import Lambda_object
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
 
 #
 def _valid_xml_char_ordinal(c):
@@ -73,12 +73,11 @@ def substitution(match_pattern, repl_dict, text_in):
 
 #
 def substitution_endings_list(text, search_str):
-    lambda_object = Lambda_object()
-    text = lambda_object.lambda_conversion(search_str + '\n', text, '\n')
-    text = lambda_object.lambda_conversion(search_str + '\t', text, '\t')
-    text = lambda_object.lambda_conversion(search_str + ' ', text, ' ')
-    text = lambda_object.lambda_conversion(search_str + ',', text, ',')
-    text = lambda_object.lambda_conversion(search_str + '\.', text, '.')
-    text = lambda_object.lambda_conversion(search_str + ';', text, ';')
-    text = lambda_object.lambda_conversion(search_str + '( )?-', text, '-')
+    text = lambda_lib.lambda_conversion(search_str + '\n', text, '\n')
+    text = lambda_lib.lambda_conversion(search_str + '\t', text, '\t')
+    text = lambda_lib.lambda_conversion(search_str + ' ', text, ' ')
+    text = lambda_lib.lambda_conversion(search_str + ',', text, ',')
+    text = lambda_lib.lambda_conversion(search_str + '\.', text, '.')
+    text = lambda_lib.lambda_conversion(search_str + ';', text, ';')
+    text = lambda_lib.lambda_conversion(search_str + '( )?-', text, '-')
     return text

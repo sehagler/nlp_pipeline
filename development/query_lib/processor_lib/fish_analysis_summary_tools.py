@@ -6,10 +6,9 @@ Created on Fri Feb 01 13:28:54 2019
 """
 
 #
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
+from base_lib.preprocessor_base_class import Preprocessor_base
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
 
 #
 class Postprocessor(Postprocessor_base):
@@ -24,19 +23,19 @@ class Postprocessor(Postprocessor_base):
                 fish_text_list.append(item[0])
             value_list = []
             for entry_text in fish_text_list:
-                entry_text = self.lambda_object.lambda_conversion('\( ', entry_text, '(')
+                entry_text = lambda_lib.lambda_conversion('\( ', entry_text, '(')
                 entry_text = \
-                    self.lambda_object.deletion_lambda_conversion(' (?=(:|,|\)))', entry_text)
+                    lambda_lib.deletion_lambda_conversion(' (?=(:|,|\)))', entry_text)
                 entry_text = \
-                    self.lambda_object.deletion_lambda_conversion('(?i)preliminary (report|results).*', entry_text)
+                    lambda_lib.deletion_lambda_conversion('(?i)preliminary (report|results).*', entry_text)
                 entry_text = \
-                    self.lambda_object.deletion_lambda_conversion('(?i)this test.*', entry_text)
+                    lambda_lib.deletion_lambda_conversion('(?i)this test.*', entry_text)
                 entry_text = \
-                    self.lambda_object.deletion_lambda_conversion('(?i)(\*\*)?amended (for|to).*', entry_text)
+                    lambda_lib.deletion_lambda_conversion('(?i)(\*\*)?amended (for|to).*', entry_text)
                 entry_text = \
-                    self.lambda_object.deletion_lambda_conversion(':[ \n\t]*$', entry_text)
+                    lambda_lib.deletion_lambda_conversion(':[ \n\t]*$', entry_text)
                 entry_text = \
-                    self.lambda_object.deletion_lambda_conversion('( \.)* ?$', entry_text)
+                    lambda_lib.deletion_lambda_conversion('( \.)* ?$', entry_text)
                 value_list.append(entry_text)
             value_dict_list = []
             for value in value_list:
@@ -52,7 +51,7 @@ class Preprocessor(Preprocessor_base):
     #
     def run_preprocessor(self):
         self.text = \
-            self.lambda_object.deletion_lambda_conversion('(?i)[\n\s]+by FISH', self.text)
+            lambda_lib.deletion_lambda_conversion('(?i)[\n\s]+by FISH', self.text)
             
 #
 class Section_header_structure():

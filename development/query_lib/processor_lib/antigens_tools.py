@@ -10,7 +10,11 @@ import re
 import traceback
 
 #
-from lambda_lib.object_lib.lambda_object_class import Lambda_object
+from base_lib.postprocessor_base_class \
+    import Postprocessor_base
+from base_lib.preprocessor_base_class \
+    import Preprocessor_base
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -20,118 +24,6 @@ from tools_lib.regex_lib.regex_tools \
 from tools_lib.processing_tools_lib.text_processing_tools import substitution
 from tools_lib.processing_tools_lib.variable_processing_tools \
     import trim_data_value
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
-    
-#
-def cleanup_antigens(text):
-    text = re.sub(',$', '', text)
-    text = re.sub('\.', '', text)
-    text = re.sub(':', ' : ', text)
-    text = re.sub(',', ' , ', text)
-    text = re.sub('\(', ' ( ', text)
-    text = re.sub('\)', ' ) ', text)
-    text = re.sub('\.', ' . ', text)
-    text = re.sub(';', ' ; ', text)
-    text = re.sub('/', ' / ', text)
-    text = re.sub('HLA ?DR', 'HLA-DR', text)
-    text = re.sub('(?i)dim(-| (/ )?)partial', 'dim/partial', text)
-    text = re.sub('(?i)dim (/ )?variable', 'dim/variable', text)
-    text = re.sub('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', ' CD', text)
-    text = re.sub('(?i)partial (/ )?dim', 'dim/partial', text)
-    text = re.sub('(?i)myeloperoxidase( \(MPO\))?', 'MPO', text)
-    text = substitution('([a-z]?CD[0-9]+|MPO|T[Dd]T) : ([a-z]?CD[0-9]+|MPO|T[Dd]T)',
-                        {' : ' : ':'}, text)
-    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) / ([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)',
-                        {' / ' : '/'}, text)
-    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-negative',
-                        {'-negative' : ' negative'}, text)
-    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-positive',
-                        {'-positive' : ' positive'}, text)
-    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-',
-                        {'-' : ' negative '}, text)
-    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)\+',
-                        {'\+' : ' positive'}, text)
-    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) \+',
-                        {'\+' : ' positive'}, text)
-    text = re.sub('(?<=HLA) (negative|positive)(?=DR)', '-', text)
-    text = re.sub(' +', ' ', text)
-    text = re.sub(' \n', '\n', text)
-    text = re.sub(' $', '', text)
-    return text
-
-#
-class Preprocessor(Preprocessor_base):
-    
-    #
-    def run_preprocessor(self):
-        antigens = antigens_list()
-        self.text = self.lambda_object.lambda_conversion('HLA ?DR', self.text, 'HLA-DR')
-        self.text = \
-            self.lambda_object.lambda_conversion('(?i)dim(-| (/ )?)partial', self.text, 'dim/partial')
-        self.text = \
-            self.lambda_object.lambda_conversion('(?i)dim (/ )?variable', self.text, 'dim/variable')
-        self.text = \
-            self.lambda_object.lambda_conversion('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', self.text, ' CD')
-        self.text = \
-            self.lambda_object.lambda_conversion('(?i)partial (/ )?dim', self.text, 'dim/partial')
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('(?<=CD) (?=[0-9])', self.text)
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + '\(', '\(', self.text, ' (')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + ' : ' + antigens, ' : ', self.text, ':')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + ' / ' + antigens, ' / ', self.text, '/')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + '-negative', '-negative', self.text, ' negative')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + '-positive', '-positive', self.text, ' positive')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + '-', '-', self.text, ' negative ')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + ' *\+', '\+', self.text, ' positive ')
-        self.text = \
-            self.lambda_object.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', self.text, ' positive')
-        self.text = \
-            self.lambda_object.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', self.text, '-')
-            
- #
-class Postprocessor(Postprocessor_base):
-
-    #
-    def _extract_data_value(self, value_list_dict):
-        extracted_data_dict = {}
-        for key in value_list_dict.keys():
-            text_list = value_list_dict[key]
-            value = []
-            for item in text_list[0]:
-                value.append(item[0])
-            value_dict_list = []
-            value_dict = {}
-            value_dict['ANTIBODIES_TESTED'] = value
-            value_dict_list.append(value_dict)
-            extracted_data_dict[key] = value_dict_list
-        return extracted_data_dict
-    
-#
-class Section_header_structure():
-    
-    #
-    def _post_punct(self):
-        return '(' + colon() + '|' + period() + '|\n)'
-    
-    #
-    def add_section_header(self, section_header_dict):
-        regex_dict = {}
-        regex_list = []
-        regex_list.append('anti(bodie|gen)s tested(?= CD)?')
-        #regex_list.append('(?i)please see below for (' + article() + ' list of )?antibodies tested' + self._post_punct() + '(?=CD)')
-        regex_dict['ADD POST_PUNCT'] = regex_list
-        section_header_dict['ANTIBODIES TESTED'] = regex_dict
-        return section_header_dict
     
 #
 def antibodies_tested_performance(validation_data_manager, evaluation_manager,
@@ -190,9 +82,45 @@ def antigens_list():
     return '([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T|Kappa|Lambda)'
 
 #
+def cleanup_antigens(text):
+    text = re.sub(',$', '', text)
+    text = re.sub('\.', '', text)
+    text = re.sub(':', ' : ', text)
+    text = re.sub(',', ' , ', text)
+    text = re.sub('\(', ' ( ', text)
+    text = re.sub('\)', ' ) ', text)
+    text = re.sub('\.', ' . ', text)
+    text = re.sub(';', ' ; ', text)
+    text = re.sub('/', ' / ', text)
+    text = re.sub('HLA ?DR', 'HLA-DR', text)
+    text = re.sub('(?i)dim(-| (/ )?)partial', 'dim/partial', text)
+    text = re.sub('(?i)dim (/ )?variable', 'dim/variable', text)
+    text = re.sub('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', ' CD', text)
+    text = re.sub('(?i)partial (/ )?dim', 'dim/partial', text)
+    text = re.sub('(?i)myeloperoxidase( \(MPO\))?', 'MPO', text)
+    text = substitution('([a-z]?CD[0-9]+|MPO|T[Dd]T) : ([a-z]?CD[0-9]+|MPO|T[Dd]T)',
+                        {' : ' : ':'}, text)
+    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) / ([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)',
+                        {' / ' : '/'}, text)
+    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-negative',
+                        {'-negative' : ' negative'}, text)
+    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-positive',
+                        {'-positive' : ' positive'}, text)
+    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)-',
+                        {'-' : ' negative '}, text)
+    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T)\+',
+                        {'\+' : ' positive'}, text)
+    text = substitution('([a-z]?CD[0-9]+|HLA-DR|MPO|T[Dd]T) \+',
+                        {'\+' : ' positive'}, text)
+    text = re.sub('(?<=HLA) (negative|positive)(?=DR)', '-', text)
+    text = re.sub(' +', ' ', text)
+    text = re.sub(' \n', '\n', text)
+    text = re.sub(' $', '', text)
+    return text
+
+#
 def correct_antibodies(text):
-    lambda_object = Lambda_object()
-    text = lambda_object.lambda_conversion('HLA *- *DR', text, 'HLA-DR')
+    text = lambda_lib.lambda_conversion('HLA *- *DR', text, 'HLA-DR')
     return text
 
 #                 
@@ -228,7 +156,7 @@ def evaluate_surface_antigens(entry_label, data_json):
                 try:
                     antigens = data_json_tmp[key0][key1][key2][entry_label]
                     antigens = trim_data_value(antigens)
-                    antigens = prune_surface_antigens(antigens)
+                    #antigens = prune_surface_antigens(antigens)
                     if len(antigens) == 1:
                         value = antigens[0]
                     elif len(antigens) > 1:
@@ -285,6 +213,7 @@ def is_antibody_value(text):
     else:
         return False
     
+'''
 #
 def prune_surface_antigens(antigens):
     if len(antigens) > 1:
@@ -320,6 +249,7 @@ def prune_surface_antigens(antigens):
             text_list = list(set(text_list) - set(drop_list))
         antigens = text_list
     return antigens
+'''
     
 #
 def simple_template():
@@ -333,3 +263,76 @@ def simple_template():
     template_dict['sections_list'] = sections_list
     template_dict['template_headers'] = [ 'Antigens' ]
     return template_dict
+
+#
+class Postprocessor(Postprocessor_base):
+
+    #
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            value = []
+            for item in text_list[0]:
+                value.append(item[0])
+            value_dict_list = []
+            value_dict = {}
+            value_dict['ANTIBODIES_TESTED'] = value
+            value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
+
+#
+class Preprocessor(Preprocessor_base):
+    
+    #
+    def run_preprocessor(self):
+        antigens = antigens_list()
+        text = self.text
+        text = lambda_lib.lambda_conversion('HLA ?DR', text, 'HLA-DR')
+        text = \
+            lambda_lib.lambda_conversion('(?i)dim(-| (/ )?)partial', text, 'dim/partial')
+        text = \
+            lambda_lib.lambda_conversion('(?i)dim (/ )?variable', text, 'dim/variable')
+        text = \
+            lambda_lib.lambda_conversion('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', text, ' CD')
+        text = \
+            lambda_lib.lambda_conversion('(?i)partial (/ )?dim', text, 'dim/partial')
+        text = \
+            lambda_lib.deletion_lambda_conversion('(?<=CD) (?=[0-9])', text)
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + '\(', '\(', text, ' (')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + ' : ' + antigens, ' : ', text, ':')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + ' / ' + antigens, ' / ', text, '/')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + '-negative', '-negative', text, ' negative')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + '-positive', '-positive', text, ' positive')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + '-', '-', text, ' negative ')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + ' *\+', '\+', text, ' positive ')
+        text = \
+            lambda_lib.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', text, ' positive')
+        text = \
+            lambda_lib.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', text, '-')
+        self.text = text
+    
+#
+class Section_header_structure():
+    
+    #
+    def _post_punct(self):
+        return '(' + colon() + '|' + period() + '|\n)'
+    
+    #
+    def add_section_header(self, section_header_dict):
+        regex_dict = {}
+        regex_list = []
+        regex_list.append('anti(bodie|gen)s tested(?= CD)?')
+        #regex_list.append('(?i)please see below for (' + article() + ' list of )?antibodies tested' + self._post_punct() + '(?=CD)')
+        regex_dict['ADD POST_PUNCT'] = regex_list
+        section_header_dict['ANTIBODIES TESTED'] = regex_dict
+        return section_header_dict

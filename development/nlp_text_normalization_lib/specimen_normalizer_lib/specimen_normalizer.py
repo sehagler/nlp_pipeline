@@ -6,15 +6,14 @@ Created on Wed Nov  4 15:49:43 2020
 """
 
 #
-from lambda_lib.object_lib.lambda_object_class import Lambda_object
-                
+import lambda_lib.object_lib.lambda_object_class as lambda_lib              
+
 #
 def specimen_normalizer(text):
-    lambda_object = Lambda_object()
     text = \
-        lambda_object.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '\.', text, ':')
+        lambda_lib.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '\.', text, ':')
     text = \
-        lambda_object.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '(?i)[ \t](?=[a-z])', text, '\n\n')
+        lambda_lib.contextual_lambda_conversion('[ \t][a-z]\.[ \t]', '(?i)[ \t](?=[a-z])', text, '\n\n')
     text = \
-        lambda_object.contextual_lambda_conversion('(\n[A-Z]\: +)(?=[A-Za-z])', '\n', text, '\nSPECIMEN ')
+        lambda_lib.contextual_lambda_conversion('(\n[A-Z]\: +)(?=[A-Za-z])', '\n', text, '\nSPECIMEN ')
     return text

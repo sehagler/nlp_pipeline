@@ -7,11 +7,10 @@ Created on Wed Jun  5 13:49:19 2019
 
 #
 import re
-import statistics
 
 #
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
 
 #
 class Postprocessor(Postprocessor_base):
@@ -53,19 +52,19 @@ class Postprocessor(Postprocessor_base):
                 match = re.search('(?i)(?<!e-)cigar(s)?(?!ette)', text)
                 value = match.group(0)
                 value = \
-                    self.lambda_object.lambda_conversion('(?i)cigar(s)?', value, 'cigars')
+                    lambda_lib.lambda_conversion('(?i)cigar(s)?', value, 'cigars')
                 value_sublist.append(value.lower())
             if re.search('(?i)(?<!e-)cigarette(s)?', text) is not None:
                 match = re.search('(?i)(?<!e-)cigarette(s)?', text)
                 value = match.group(0)
                 value = \
-                    self.lambda_object.lambda_conversion('(?i)cigarette(s)?', value, 'cigarettes')
+                    lambda_lib.lambda_conversion('(?i)cigarette(s)?', value, 'cigarettes')
                 value_sublist.append(value.lower())
             if re.search('(?i)e-cigarette(s)?', text) is not None:
                 match = re.search('(?i)e-cigarette(s)?', text)
                 value = match.group(0)
                 value = \
-                    self.lambda_object.lambda_conversion('(?i)e-cigarette(s)?', value, 'e-cigarettes')
+                    lambda_lib.lambda_conversion('(?i)e-cigarette(s)?', value, 'e-cigarettes')
                 value_sublist.append(value.lower())
             if re.search('(?i)(marijuana|pipe|thc)', text):
                 value = 'other'

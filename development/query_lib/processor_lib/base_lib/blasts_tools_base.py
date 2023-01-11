@@ -11,7 +11,7 @@ import statistics
 import traceback
 
 #
-from lambda_lib.object_lib.lambda_object_class import Lambda_object
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -23,21 +23,165 @@ from base_lib.postprocessor_base_class \
     import Postprocessor_base
 from base_lib.preprocessor_base_class \
     import Preprocessor_base
-    
+        
 #
-class Preprocessor(Preprocessor_base):
+def blast_performance(validation_data_manager, evaluation_manager, labId,
+                      nlp_values, nlp_datum_key, validation_datum_key):
+    validation_data = validation_data_manager.get_validation_data()
+    if labId in nlp_values.keys():
+        keys0 = list(nlp_values[labId])
+        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
+            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
+        else:
+            data_out = None
+    else:
+        data_out = None
+    if data_out is not None:
+        data_out = data_out.replace('~', '')
+        data_out = data_out.replace('>', '')
+        data_out = data_out.replace('<', '')
+        data_out = data_out.replace('.0', '')
+        
+    '''
+    if data_out is not None:
+        for i in range(len(data_out)):
+            data_list_tmp = []
+            for j in range(len(data_out[i])):
+                data_tmp = data_out[i][j]
+                data_tmp = data_tmp.replace('~', '')
+                data_tmp = data_tmp.replace('>', '')
+                data_tmp = data_tmp.replace('<', '')
+                data_tmp = data_tmp.replace('.0', '')
+                data_list_tmp.append(data_tmp)
+            print(data_list_tmp)
+            data_out[i] = tuple(data_list_tmp)
+    '''
     
-    #
-    def run_preprocessor(self):
-        self.text = \
-            self.lambda_object.lambda_conversion('(?i)immunohistochemi(cal|stry)',
-                                                  self.text, 'IHC')
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
-                                                           self.text)
-        self.text = \
-            self.lambda_object.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
-                                                           self.text)
+    '''
+    if data_out is not None:
+        nlp_value = []
+        nlp_value.append(data_out)
+    else:
+        nlp_value = None
+    nlp_value = nlp_to_tuple(data_out)
+    '''
+    nlp_value = data_out
+    labid_idx = validation_data[0].index('labId')
+    validation_datum_idx = validation_data[0].index(validation_datum_key)
+    validation_value = None
+    for item in validation_data:
+        if item[labid_idx] == labId:
+            validation_value = item[validation_datum_idx]
+    if validation_value is not None:
+        if validation_value == '':
+            validation_value = None
+    if validation_value is not None:
+        validation_value = validation_value.replace('~', '')
+        validation_value = validation_value.replace('>', '')
+        validation_value = validation_value.replace('<', '')
+        validation_value = validation_value.replace('.0', '')
+        validation_value = validation_value.replace('None', '0')
+    validation_value = validation_to_tuple(validation_value)
+    display_flg = True
+    #f nlp_value is not None:
+    #  nlp_value = nlp_value[0]
+    '''
+    try:
+        nlp_value = float(nlp_value)
+    except Exception:
+        traceback.print_exc()
+        nlp_value = None
+    try:
+        validation_value = float(validation_value[0])
+    except Exception:
+        traceback.print_exc()
+        validation_value = None
+    '''
+    if validation_value is not None:
+        validation_value = validation_value[0]
+    performance = evaluation_manager.evaluation(nlp_value, validation_value,
+                                                display_flg, value_range=5.0)
+    return performance
+
+#
+def get_blast_value(blast_value_list):
+    for i in range(len(blast_value_list)):
+        blast_value_list[i] = \
+            lambda_lib.lambda_conversion('(?<=(~|>|<))', blast_value_list[i], ' ')
+        blast_value_list[i] = \
+            lambda_lib.lambda_conversion(' +', blast_value_list[i], ' ')
+    approximately_list = []
+    exact_value_list = []
+    less_than_list = []
+    greater_than_list = []
+    range_list = []
+    for blast_value in blast_value_list:
+        if blast_value[:2] == '~ ':
+            if '-' in blast_value:
+                range_list.append(blast_value[2:])
+            else:
+                approximately_list.append(blast_value[2:])
+        elif blast_value[:2] == '< ':
+            less_than_list.append(blast_value[2:])
+        elif blast_value[:2] == '> ':
+            greater_than_list.append(blast_value[2:])
+        elif '-' in blast_value:
+            range_list.append(blast_value)
+        else:
+            exact_value_list.append(blast_value)
+    approximately_list = list(set(approximately_list))
+    exact_value_list = list(set(exact_value_list))
+    less_than_list = list(set(less_than_list))
+    greater_than_list = list(set(greater_than_list))
+    range_list = list(set(range_list))
+    if len(less_than_list) > 1:
+        for i in range(len(less_than_list)):
+            less_than_list[i] = float(less_than_list[i])
+        less_than_list = [ str(min(less_than_list)) ]
+    if len(greater_than_list) > 1:
+        for i in range(len(greater_than_list)):
+            greater_than_list[i] = float(greater_than_list[i])
+        greater_than_list = [ str(max(greater_than_list)) ]
+    for i in range(len(range_list)):
+        match = re.search('[0-9]+(?=-)', range_list[i])
+        lower_bound = float(match.group(0))
+        match = re.search('(?<=-)[0-9]+', range_list[i])
+        upper_bound = float(match.group(0))
+        range_list[i] = str(statistics.mean([lower_bound, upper_bound]))
+    blast_value = []
+    blast_value.extend(approximately_list)
+    blast_value.extend(exact_value_list)
+    blast_value.extend(range_list)
+    blast_value = list(set(blast_value))
+    if len(blast_value) > 0:
+        if len(less_than_list) > 0:
+            drop_less_than = True
+            for value in blast_value:
+                if float(value) > float(less_than_list[0]):
+                    drop_less_than = False
+            if drop_less_than:
+                less_than_list = []
+        if len(greater_than_list) > 0:
+            drop_greater_than = True
+            for value in blast_value:
+                if float(value) < float(greater_than_list[0]):
+                    drop_less_than = False
+            if drop_greater_than:
+                greater_than_list = []
+    try:
+        blast_value.append('< ' + less_than_list[0])
+    except Exception:
+        traceback.print_exc()
+    try:
+        blast_value.append('> ' + greater_than_list[0])
+    except Exception:
+        traceback.print_exc()
+    if len(blast_value) == 1:
+        return blast_value[0]
+    elif len(blast_value) > 1:
+        return 'MANUAL_REVIEW'
+    else:
+        return None
 
 #
 class Postprocessor(Postprocessor_base):
@@ -53,7 +197,7 @@ class Postprocessor(Postprocessor_base):
             value_flg = False
             value_list = []
             for blast_value in blast_values:
-                blast_value = self.lambda_object.lambda_conversion('%', blast_value, '')
+                blast_value = lambda_lib.lambda_conversion('%', blast_value, '')
                 if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value) is not None:
                     match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value)
                     value_list.append(match.group(0))
@@ -148,7 +292,7 @@ class Postprocessor(Postprocessor_base):
         value_list_in = list(set(value_list_in))
         for idx in range(len(value_list_in)):
             value_list_in[idx] = \
-                self.lambda_object.lambda_conversion('%', value_list_in[idx], '')
+                lambda_lib.lambda_conversion('%', value_list_in[idx], '')
         if len(value_list_in) > 1:
             approximately_list = []
             exact_list = []
@@ -200,6 +344,21 @@ class Postprocessor(Postprocessor_base):
         return value_dict_list
     
 #
+class Preprocessor(Preprocessor_base):
+    
+    #
+    def run_preprocessor(self):
+        self.text = \
+            lambda_lib.lambda_conversion('(?i)immunohistochemi(cal|stry)',
+                                                  self.text, 'IHC')
+        self.text = \
+            lambda_lib.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
+                                                           self.text)
+        self.text = \
+            lambda_lib.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
+                                                           self.text)
+    
+#
 class Section_header_structure():
     
     #
@@ -232,163 +391,3 @@ class Section_header_structure():
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         section_header_dict['PERIPHERAL BLOOD MORPHOLOGY'] = regex_dict
         return section_header_dict
-    
-#
-def blast_performance(validation_data_manager, evaluation_manager, labId,
-                      nlp_values, nlp_datum_key, validation_datum_key):
-    validation_data = validation_data_manager.get_validation_data()
-    if labId in nlp_values.keys():
-        keys0 = list(nlp_values[labId])
-        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
-        else:
-            data_out = None
-    else:
-        data_out = None
-    if data_out is not None:
-        data_out = data_out.replace('~', '')
-        data_out = data_out.replace('>', '')
-        data_out = data_out.replace('<', '')
-        data_out = data_out.replace('.0', '')
-        
-    '''
-    if data_out is not None:
-        for i in range(len(data_out)):
-            data_list_tmp = []
-            for j in range(len(data_out[i])):
-                data_tmp = data_out[i][j]
-                data_tmp = data_tmp.replace('~', '')
-                data_tmp = data_tmp.replace('>', '')
-                data_tmp = data_tmp.replace('<', '')
-                data_tmp = data_tmp.replace('.0', '')
-                data_list_tmp.append(data_tmp)
-            print(data_list_tmp)
-            data_out[i] = tuple(data_list_tmp)
-    '''
-    
-    '''
-    if data_out is not None:
-        nlp_value = []
-        nlp_value.append(data_out)
-    else:
-        nlp_value = None
-    nlp_value = nlp_to_tuple(data_out)
-    '''
-    nlp_value = data_out
-    labid_idx = validation_data[0].index('labId')
-    validation_datum_idx = validation_data[0].index(validation_datum_key)
-    validation_value = None
-    for item in validation_data:
-        if item[labid_idx] == labId:
-            validation_value = item[validation_datum_idx]
-    if validation_value is not None:
-        if validation_value == '':
-            validation_value = None
-    if validation_value is not None:
-        validation_value = validation_value.replace('~', '')
-        validation_value = validation_value.replace('>', '')
-        validation_value = validation_value.replace('<', '')
-        validation_value = validation_value.replace('.0', '')
-        validation_value = validation_value.replace('None', '0')
-    validation_value = validation_to_tuple(validation_value)
-    display_flg = True
-    #f nlp_value is not None:
-    #  nlp_value = nlp_value[0]
-    '''
-    try:
-        nlp_value = float(nlp_value)
-    except Exception:
-        traceback.print_exc()
-        nlp_value = None
-    try:
-        validation_value = float(validation_value[0])
-    except Exception:
-        traceback.print_exc()
-        validation_value = None
-    '''
-    if validation_value is not None:
-        validation_value = validation_value[0]
-    performance = evaluation_manager.evaluation(nlp_value, validation_value,
-                                                display_flg, value_range=5.0)
-    return performance
-
-#
-def get_blast_value(blast_value_list):
-    lambda_object = Lambda_object()
-    for i in range(len(blast_value_list)):
-        blast_value_list[i] = \
-            lambda_object.lambda_conversion('(?<=(~|>|<))', blast_value_list[i], ' ')
-        blast_value_list[i] = \
-            lambda_object.lambda_conversion(' +', blast_value_list[i], ' ')
-    approximately_list = []
-    exact_value_list = []
-    less_than_list = []
-    greater_than_list = []
-    range_list = []
-    for blast_value in blast_value_list:
-        if blast_value[:2] == '~ ':
-            if '-' in blast_value:
-                range_list.append(blast_value[2:])
-            else:
-                approximately_list.append(blast_value[2:])
-        elif blast_value[:2] == '< ':
-            less_than_list.append(blast_value[2:])
-        elif blast_value[:2] == '> ':
-            greater_than_list.append(blast_value[2:])
-        elif '-' in blast_value:
-            range_list.append(blast_value)
-        else:
-            exact_value_list.append(blast_value)
-    approximately_list = list(set(approximately_list))
-    exact_value_list = list(set(exact_value_list))
-    less_than_list = list(set(less_than_list))
-    greater_than_list = list(set(greater_than_list))
-    range_list = list(set(range_list))
-    if len(less_than_list) > 1:
-        for i in range(len(less_than_list)):
-            less_than_list[i] = float(less_than_list[i])
-        less_than_list = [ str(min(less_than_list)) ]
-    if len(greater_than_list) > 1:
-        for i in range(len(greater_than_list)):
-            greater_than_list[i] = float(greater_than_list[i])
-        greater_than_list = [ str(max(greater_than_list)) ]
-    for i in range(len(range_list)):
-        match = re.search('[0-9]+(?=-)', range_list[i])
-        lower_bound = float(match.group(0))
-        match = re.search('(?<=-)[0-9]+', range_list[i])
-        upper_bound = float(match.group(0))
-        range_list[i] = str(statistics.mean([lower_bound, upper_bound]))
-    blast_value = []
-    blast_value.extend(approximately_list)
-    blast_value.extend(exact_value_list)
-    blast_value.extend(range_list)
-    blast_value = list(set(blast_value))
-    if len(blast_value) > 0:
-        if len(less_than_list) > 0:
-            drop_less_than = True
-            for value in blast_value:
-                if float(value) > float(less_than_list[0]):
-                    drop_less_than = False
-            if drop_less_than:
-                less_than_list = []
-        if len(greater_than_list) > 0:
-            drop_greater_than = True
-            for value in blast_value:
-                if float(value) < float(greater_than_list[0]):
-                    drop_less_than = False
-            if drop_greater_than:
-                greater_than_list = []
-    try:
-        blast_value.append('< ' + less_than_list[0])
-    except Exception:
-        traceback.print_exc()
-    try:
-        blast_value.append('> ' + greater_than_list[0])
-    except Exception:
-        traceback.print_exc()
-    if len(blast_value) == 1:
-        return blast_value[0]
-    elif len(blast_value) > 1:
-        return 'MANUAL_REVIEW'
-    else:
-        return None

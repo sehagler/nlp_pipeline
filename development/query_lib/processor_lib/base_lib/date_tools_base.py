@@ -9,9 +9,10 @@ Created on Wed Jun  5 14:00:26 2019
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 import re
+import traceback
 
 #
-from lambda_lib.object_lib.lambda_object_class import Lambda_object
+import lambda_lib.object_lib.lambda_object_class as lambda_lib
 from base_lib.postprocessor_base_class \
     import Postprocessor_base
 from base_lib.preprocessor_base_class import Preprocessor_base
@@ -31,11 +32,11 @@ class Postprocessor(Postprocessor_base):
             for date_text in date_text_list:
                 date_text = normalize_month(date_text)
                 date_text = \
-                    self.lambda_object.lambda_conversion('[A-Za-z]+-?[0-9]+ - [0-9]{4}', date_text, '')
+                    lambda_lib.lambda_conversion('[A-Za-z]+-?[0-9]+ - [0-9]{4}', date_text, '')
                 date_text = \
-                    self.lambda_object.lambda_conversion('[,\-\.]', date_text, '/')
+                    lambda_lib.lambda_conversion('[,\-\.]', date_text, '/')
                 date_text = \
-                    self.lambda_object.lambda_conversion('(?<=[0-9]) of (?=[0-9])', date_text, ' / ')
+                    lambda_lib.lambda_conversion('(?<=[0-9]) of (?=[0-9])', date_text, ' / ')
                 match_str0 = '('
                 match_str0 += '(?<= )[0-9]{1,2} (/ [0-9]{1,2} )?/ [0-9]{2}([0-9]{2})?(?=( |$))'
                 match_str0 += ')'
@@ -47,9 +48,9 @@ class Postprocessor(Postprocessor_base):
                 if match0 is not None:
                     value_tmp = match0.group(0)
                     value_tmp = \
-                        self.lambda_object.lambda_conversion(' \- ', value_tmp, '-')
+                        lambda_lib.lambda_conversion(' \- ', value_tmp, '-')
                     value_tmp = \
-                        self.lambda_object.lambda_conversion(' / ', value_tmp, '/')
+                        lambda_lib.lambda_conversion(' / ', value_tmp, '/')
                     value_list.append(value_tmp)
                 elif match1 is not None:
                     value_tmp = match1.group(0)
@@ -66,16 +67,12 @@ class Postprocessor(Postprocessor_base):
 class Tokenizer(Preprocessor_base):
     
     #
-    def __init__(self):
-        self.lambda_object = Lambda_object()
-    
-    #
     def process_month(self):
         month_list = [ 'Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep',
                        'Oct', 'Nov', 'Dec' ]
         for month in month_list:  
             self.text = \
-                self.lambda_object.deletion_lambda_conversion('(?i)(?<=' + month + ')\.(?= [0-9])', self.text)
+                lambda_lib.deletion_lambda_conversion('(?i)(?<=' + month + ')\.(?= [0-9])', self.text)
 
 #
 def atomize_date(date_str):
@@ -153,7 +150,6 @@ def get_date_difference(date_str0, date_str1):
 
 #
 def normalize_month(text):
-    lambda_object = Lambda_object()
     month_dict = { 'Jan(uary)?' : 1,  'Feb(ruary)?' : 2, 'Mar(ch)?' : 3,
                    'Apr(il)?' : 4, 'May' : 5, 'Jun(e)?' : 6, 'Jul(y)?' : 7,
                    'Aug(ust)?' : 8, 'Sep(tember)?' : 9, 'Oct(ober)?' : 10,
@@ -162,7 +158,7 @@ def normalize_month(text):
         if re.search('(?i)' + month, text) is not None:
             match = re.search('(?i)' + month, text)
             text = \
-                lambda_object.lambda_conversion(match.group(0), text, str(month_dict[month]))
+                lambda_lib.lambda_conversion(match.group(0), text, str(month_dict[month]))
         text = \
-            lambda_object.lambda_conversion('(?i)(?<=[0-9]) (?=[0-9])', text, ' / ')
+            lambda_lib.lambda_conversion('(?i)(?<=[0-9]) (?=[0-9])', text, ' / ')
     return text
