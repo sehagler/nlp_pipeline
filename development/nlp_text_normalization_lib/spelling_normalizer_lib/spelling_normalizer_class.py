@@ -10,7 +10,7 @@ import inflect
 import re
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 
 #
 class Spelling_normalizer(object):
@@ -28,7 +28,7 @@ class Spelling_normalizer(object):
             corrections = [ w for w in corrections if w not in correct_word_list]
             for correction in corrections:
                 self.text = \
-                    lambda_lib.lambda_conversion(correction, self.text, correct_word)
+                    lambda_tools.lambda_conversion(correction, self.text, correct_word)
                 
     #
     def _correct_transpositions(self, words, correct_word_list):
@@ -50,7 +50,7 @@ class Spelling_normalizer(object):
                        (diffs[0][1] == diffs[1][2]) and \
                        (diffs[0][2] == diffs[1][1]):
                         self.text = \
-                            lambda_lib.lambda_conversion(correction, self.text, correct_word)
+                            lambda_tools.lambda_conversion(correction, self.text, correct_word)
     
     #
     def _correct_typos(self):
@@ -69,13 +69,13 @@ class Spelling_normalizer(object):
                                                         correct_word_list)
         self._correct_transpositions(words, correct_word_list)
         self.text = \
-            lambda_lib.lambda_conversion('(?<=a)denomcarcinoa', self.text, 'denocarcinoma')
+            lambda_tools.lambda_conversion('(?<=a)denomcarcinoa', self.text, 'denocarcinoma')
         self.text = \
-            lambda_lib.lambda_conversion('(?<=d)iagnosises', self.text, 'iagnoses')
+            lambda_tools.lambda_conversion('(?<=d)iagnosises', self.text, 'iagnoses')
         self.text = \
-            lambda_lib.lambda_conversion('(?<=f)lorescen', self.text, 'luorescen')
+            lambda_tools.lambda_conversion('(?<=f)lorescen', self.text, 'luorescen')
         self.text = \
-            lambda_lib.lambda_conversion('(?<=r)epector', self.text, 'eceptor')
+            lambda_tools.lambda_conversion('(?<=r)epector', self.text, 'eceptor')
     
     #
     def _generate_correct_word_list(self, correct_seed_list):

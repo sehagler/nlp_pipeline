@@ -9,7 +9,7 @@ Created on Tue May 12 17:04:28 2020
 import re
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
         amend,
@@ -134,11 +134,11 @@ class Section_header_normalizer(object):
                 match_strs.append(match_str)
             for match_str in match_strs:
                 self.text = \
-                    lambda_lib.lambda_conversion(match_str,
+                    lambda_tools.lambda_conversion(match_str,
                                                           self.text,
                                                           '\n\n' + section_lbl + ' N\n\n')
             self.text = \
-                lambda_lib.lambda_conversion(section_lbl + ' N(\n+' + section_lbl + ' N\n+)+',
+                lambda_tools.lambda_conversion(section_lbl + ' N(\n+' + section_lbl + ' N\n+)+',
                                                       self.text, section_lbl + ' N\n\n')
             self.text, num = self._number_section(section_lbl, self.text)
         return num
@@ -213,7 +213,7 @@ class Section_header_normalizer(object):
         self._append_keywords_text(self._tagged_section_header('AMENDMENT COMMENT'))
         
         self.text = \
-            lambda_lib.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
+            lambda_tools.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
                                                   self.text,
                                                   self._tagged_section_header('AMENDMENT_COMMENT'))
             
@@ -235,7 +235,7 @@ class Section_header_normalizer(object):
         self._append_keywords_text(self._tagged_section_header('AMENDMENT'))
         
         self.text = \
-            lambda_lib.lambda_conversion(self._tagged_section_header('AMENDMENT_COMMENT'),
+            lambda_tools.lambda_conversion(self._tagged_section_header('AMENDMENT_COMMENT'),
                                                   self.text,
                                                   self._tagged_section_header('AMENDMENT COMMENT'))
             
@@ -251,13 +251,13 @@ class Section_header_normalizer(object):
     def clear_section_header_tags(self, text):
         self.text = text
         self.text = \
-            lambda_lib.lambda_conversion(' > > >', self.text, self.section_header_post_tag)
+            lambda_tools.lambda_conversion(' > > >', self.text, self.section_header_post_tag)
         self.text = \
-            lambda_lib.lambda_conversion('< < < ', self.text, self.section_header_pre_tag)
+            lambda_tools.lambda_conversion('< < < ', self.text, self.section_header_pre_tag)
         self.text = \
-            lambda_lib.deletion_lambda_conversion(self.section_header_pre_tag, self.text)
+            lambda_tools.deletion_lambda_conversion(self.section_header_pre_tag, self.text)
         self.text = \
-            lambda_lib.deletion_lambda_conversion(self.section_header_post_tag, self.text)
+            lambda_tools.deletion_lambda_conversion(self.section_header_post_tag, self.text)
         return self.text
         
     #

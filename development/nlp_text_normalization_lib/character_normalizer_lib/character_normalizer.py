@@ -9,81 +9,81 @@ Created on Thu Jun 17 08:56:52 2021
 import re
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
     import composite_function
 
 #
 def _normalize_asterisk(text):
     text = \
-        lambda_lib.deletion_lambda_conversion('\*', text)
+        lambda_tools.deletion_lambda_conversion('\*', text)
     text = \
-        lambda_lib.lambda_conversion('(?<=[a-z0-9])\*', text,' *')
+        lambda_tools.lambda_conversion('(?<=[a-z0-9])\*', text,' *')
     return text
         
 #
 def _normalize_colon(text):
     text = \
-        lambda_lib.contextual_lambda_conversion('(\n)[A-Z]\.[ \t]', '\.', text, ':')
+        lambda_tools.contextual_lambda_conversion('(\n)[A-Z]\.[ \t]', '\.', text, ':')
     text = \
-        lambda_lib.contextual_lambda_conversion('(?<!(:|\d))\d+-\d+:00',
+        lambda_tools.contextual_lambda_conversion('(?<!(:|\d))\d+-\d+:00',
                                                          '-', text, ' : 00-')
     text = \
-        lambda_lib.lambda_conversion(':', text, ' : ')
+        lambda_tools.lambda_conversion(':', text, ' : ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9]) : (?=[0-9])', text, ':')
+        lambda_tools.lambda_conversion('(?<=[0-9]) : (?=[0-9])', text, ':')
     text = \
-        lambda_lib.lambda_conversion('(?<= [A-Za-z]) : (?=[A-Za-z] )', text, ':')
+        lambda_tools.lambda_conversion('(?<= [A-Za-z]) : (?=[A-Za-z] )', text, ':')
     return text
         
 #
 def _normalize_comma(text):
     text = \
-        lambda_lib.lambda_conversion(',', text, ' , ')
+        lambda_tools.lambda_conversion(',', text, ' , ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9]) , (?=[0-9])', text, ',')
+        lambda_tools.lambda_conversion('(?<=[0-9]) , (?=[0-9])', text, ',')
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9]),(?=[0-9]{4})', text, ' , ')
+        lambda_tools.lambda_conversion('(?<=[0-9]),(?=[0-9]{4})', text, ' , ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9]),(?=[0-9]+/)', text, ' , ')
+        lambda_tools.lambda_conversion('(?<=[0-9]),(?=[0-9]+/)', text, ' , ')
     return text
         
 #
 def _normalize_equals_sign(text):
     text = \
-        lambda_lib.lambda_conversion('=', text, ' = ')
+        lambda_tools.lambda_conversion('=', text, ' = ')
     return text
         
 #
 def _normalize_greater_than_sign(text):
     text = \
-        lambda_lib.lambda_conversion('>', text, ' > ')
+        lambda_tools.lambda_conversion('>', text, ' > ')
     return text
         
 #
 def _normalize_less_than_sign(text):
     text = \
-        lambda_lib.lambda_conversion('<', text, ' < ')
+        lambda_tools.lambda_conversion('<', text, ' < ')
     return text
         
 #
 def _normalize_minus_sign(text):
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9])-(?=[0-9])', text, ' - ')
+        lambda_tools.lambda_conversion('(?<=[0-9])-(?=[0-9])', text, ' - ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9] )-(?=[0-9]+%)', text, '- ')
+        lambda_tools.lambda_conversion('(?<=[0-9] )-(?=[0-9]+%)', text, '- ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9])-(?= [0-9]+%)', text, ' -')
+        lambda_tools.lambda_conversion('(?<=[0-9])-(?= [0-9]+%)', text, ' -')
     text = \
-        lambda_lib.lambda_conversion('(?<= )-(?=[A-Za-z])', text, '- ')
+        lambda_tools.lambda_conversion('(?<= )-(?=[A-Za-z])', text, '- ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[A-Za-z])-(?= )', text, ' -')
+        lambda_tools.lambda_conversion('(?<=[A-Za-z])-(?= )', text, ' -')
     return text
         
 #
 def _normalize_newline(text):
     text = \
-        lambda_lib.lambda_conversion('(\s)?\(\n', text, '\n')
+        lambda_tools.lambda_conversion('(\s)?\(\n', text, '\n')
     return text
         
 #
@@ -108,18 +108,18 @@ def _normalize_number(text):
     change_list.sort(key=lambda x: len(x[0]), reverse=True)
     for change in change_list:
         text = \
-            lambda_lib.contextual_lambda_conversion('[ \n\t]' + change[0] + '[ \n\t]',
+            lambda_tools.contextual_lambda_conversion('[ \n\t]' + change[0] + '[ \n\t]',
                                                              change[0], text, change[1])
     text = \
-        lambda_lib.contextual_lambda_conversion('\( [0-9]+ - [0-9]+ \)', ' \)', text, '.0 )')
+        lambda_tools.contextual_lambda_conversion('\( [0-9]+ - [0-9]+ \)', ' \)', text, '.0 )')
     text = \
-        lambda_lib.contextual_lambda_conversion('\( [0-9]+ - [0-9]+\.[0-9]+ \)', ' - ', text, '.0 - ')
+        lambda_tools.contextual_lambda_conversion('\( [0-9]+ - [0-9]+\.[0-9]+ \)', ' - ', text, '.0 - ')
     return text
             
 #
 def _normalize_number_sign(text):
     text = \
-        lambda_lib.lambda_conversion('#', text, ' # ')
+        lambda_tools.lambda_conversion('#', text, ' # ')
     return text
         
 #
@@ -128,83 +128,83 @@ def _normalize_parentheses(text):
     for text_str in text_list:
         regex_str = '(?<=' + text_str + ')\('
         text = \
-            lambda_lib.lambda_conversion(regex_str, text, ' (')
+            lambda_tools.lambda_conversion(regex_str, text, ' (')
     text = \
-        lambda_lib.lambda_conversion('\)\(', text, ') (')
+        lambda_tools.lambda_conversion('\)\(', text, ') (')
     text = \
-        lambda_lib.lambda_conversion('\(', text, '( ')
+        lambda_tools.lambda_conversion('\(', text, '( ')
     text = \
-        lambda_lib.lambda_conversion('\)', text, ' )')
+        lambda_tools.lambda_conversion('\)', text, ' )')
     text = \
-        lambda_lib.contextual_lambda_conversion('\( [0-9\.]+ ?\)', '\( ', text, '(')
+        lambda_tools.contextual_lambda_conversion('\( [0-9\.]+ ?\)', '\( ', text, '(')
     text = \
-        lambda_lib.contextual_lambda_conversion('\( ?[0-9\.]+ \)', ' \)', text, ')')
+        lambda_tools.contextual_lambda_conversion('\( ?[0-9\.]+ \)', ' \)', text, ')')
     text = \
-        lambda_lib.deletion_lambda_conversion('\( ! \)', text)
+        lambda_tools.deletion_lambda_conversion('\( ! \)', text)
     return text
         
 #
 def _normalize_percent_sign(text):
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9])%(?=[A-Za-z])', text, '% ')
+        lambda_tools.lambda_conversion('(?<=[0-9])%(?=[A-Za-z])', text, '% ')
     text = \
-        lambda_lib.lambda_conversion('(?<=\d) %', text, '%')
+        lambda_tools.lambda_conversion('(?<=\d) %', text, '%')
     text = \
-        lambda_lib.contextual_lambda_conversion('(?<!(:|\d))\d+ ?- ?\d+%',
+        lambda_tools.contextual_lambda_conversion('(?<!(:|\d))\d+ ?- ?\d+%',
                                                          ' ?- ?', text, '%-')
     text = \
-        lambda_lib.contextual_lambda_conversion('(?<!(:|\d))\d+ to \d+%',
+        lambda_tools.contextual_lambda_conversion('(?<!(:|\d))\d+ to \d+%',
                                                          ' to ', text, '%-')
     return text
         
 #
 def _normalize_period(text):
     text = \
-        lambda_lib.contextual_lambda_conversion('(\n)[A-Z] :[ \t]', ':', text, '.')
+        lambda_tools.contextual_lambda_conversion('(\n)[A-Z] :[ \t]', ':', text, '.')
     text = \
-        lambda_lib.lambda_conversion('\.(?![0-9])', text, ' . ')
+        lambda_tools.lambda_conversion('\.(?![0-9])', text, ' . ')
     text = \
-        lambda_lib.lambda_conversion('e \. g \.', text, 'e.g.')
+        lambda_tools.lambda_conversion('e \. g \.', text, 'e.g.')
     return text
         
 #
 def _normalize_plus_sign(text):
     text = \
-        lambda_lib.lambda_conversion('(?<=[0-9])\+(?=[A-Za-z])', text, '+ ')
+        lambda_tools.lambda_conversion('(?<=[0-9])\+(?=[A-Za-z])', text, '+ ')
     return text
         
 #
 def _normalize_question_mark(text):
     text = \
-        lambda_lib.deletion_lambda_conversion(' \?', text)
+        lambda_tools.deletion_lambda_conversion(' \?', text)
     return text
         
 #
 def _normalize_semicolon(text):
     text = \
-        lambda_lib.lambda_conversion(';', text, ' ; ')
+        lambda_tools.lambda_conversion(';', text, ' ; ')
     return text
         
 #
 def _normalize_slash(text):
     text = \
-        lambda_lib.lambda_conversion('\/', text, ' / ')
+        lambda_tools.lambda_conversion('\/', text, ' / ')
     text = \
-        lambda_lib.lambda_conversion('(?<=[\n ][A-Za-z]) / (?=[A-Za-z][\n ])', text, '/')
+        lambda_tools.lambda_conversion('(?<=[\n ][A-Za-z]) / (?=[A-Za-z][\n ])', text, '/')
     return text
         
 #
 def _normalize_tilde(text):
     text = \
-        lambda_lib.lambda_conversion('~', text, ' ~ ')
+        lambda_tools.lambda_conversion('~', text, ' ~ ')
     return text
     
 #
 def _normalize_underscore(text):
     text = \
-        lambda_lib.deletion_lambda_conversion('____+(\n_+)*', text)
+        lambda_tools.deletion_lambda_conversion('____+(\n_+)*', text)
     text = \
-        lambda_lib.contextual_lambda_conversion('_[A-Z][0-9]+_', '_', text, '')
+        lambda_tools.contextual_lambda_conversion('_[A-Z][0-9]+_', '_', text, '')
     return text
     
 #

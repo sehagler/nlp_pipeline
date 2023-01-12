@@ -9,7 +9,7 @@ Created on Wed Jun 16 12:58:14 2021
 import re
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from nlp_text_normalization_lib.layout_normalizer_lib.normalizers_lib.section_header_normalizer_class \
     import Section_header_normalizer
 
@@ -26,10 +26,10 @@ class Layout_normalizer(object):
     def _add_report_text_header(self):
         self.text = self.report_text_header + '\n' + self.text
         self.text = \
-            lambda_lib.lambda_conversion('^' + self.report_text_header + '\n' + self.report_text_header,
+            lambda_tools.lambda_conversion('^' + self.report_text_header + '\n' + self.report_text_header,
                                                   self.text, self.report_text_header + '\n')
         self.text = \
-            lambda_lib.lambda_conversion('^' + self.report_text_header + '[\n\s]*',
+            lambda_tools.lambda_conversion('^' + self.report_text_header + '[\n\s]*',
                                                   self.text, self.report_text_header + '\n\n')
             
     #

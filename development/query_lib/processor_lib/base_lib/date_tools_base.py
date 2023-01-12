@@ -12,7 +12,7 @@ import re
 import traceback
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from base_lib.postprocessor_base_class \
     import Postprocessor_base
 from base_lib.preprocessor_base_class import Preprocessor_base
@@ -32,11 +32,11 @@ class Postprocessor(Postprocessor_base):
             for date_text in date_text_list:
                 date_text = normalize_month(date_text)
                 date_text = \
-                    lambda_lib.lambda_conversion('[A-Za-z]+-?[0-9]+ - [0-9]{4}', date_text, '')
+                    lambda_tools.lambda_conversion('[A-Za-z]+-?[0-9]+ - [0-9]{4}', date_text, '')
                 date_text = \
-                    lambda_lib.lambda_conversion('[,\-\.]', date_text, '/')
+                    lambda_tools.lambda_conversion('[,\-\.]', date_text, '/')
                 date_text = \
-                    lambda_lib.lambda_conversion('(?<=[0-9]) of (?=[0-9])', date_text, ' / ')
+                    lambda_tools.lambda_conversion('(?<=[0-9]) of (?=[0-9])', date_text, ' / ')
                 match_str0 = '('
                 match_str0 += '(?<= )[0-9]{1,2} (/ [0-9]{1,2} )?/ [0-9]{2}([0-9]{2})?(?=( |$))'
                 match_str0 += ')'
@@ -48,9 +48,9 @@ class Postprocessor(Postprocessor_base):
                 if match0 is not None:
                     value_tmp = match0.group(0)
                     value_tmp = \
-                        lambda_lib.lambda_conversion(' \- ', value_tmp, '-')
+                        lambda_tools.lambda_conversion(' \- ', value_tmp, '-')
                     value_tmp = \
-                        lambda_lib.lambda_conversion(' / ', value_tmp, '/')
+                        lambda_tools.lambda_conversion(' / ', value_tmp, '/')
                     value_list.append(value_tmp)
                 elif match1 is not None:
                     value_tmp = match1.group(0)
@@ -72,7 +72,7 @@ class Tokenizer(Preprocessor_base):
                        'Oct', 'Nov', 'Dec' ]
         for month in month_list:  
             self.text = \
-                lambda_lib.deletion_lambda_conversion('(?i)(?<=' + month + ')\.(?= [0-9])', self.text)
+                lambda_tools.deletion_lambda_conversion('(?i)(?<=' + month + ')\.(?= [0-9])', self.text)
 
 #
 def atomize_date(date_str):
@@ -158,7 +158,7 @@ def normalize_month(text):
         if re.search('(?i)' + month, text) is not None:
             match = re.search('(?i)' + month, text)
             text = \
-                lambda_lib.lambda_conversion(match.group(0), text, str(month_dict[month]))
+                lambda_tools.lambda_conversion(match.group(0), text, str(month_dict[month]))
         text = \
-            lambda_lib.lambda_conversion('(?i)(?<=[0-9]) (?=[0-9])', text, ' / ')
+            lambda_tools.lambda_conversion('(?i)(?<=[0-9]) (?=[0-9])', text, ' / ')
     return text

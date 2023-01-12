@@ -15,7 +15,7 @@ from base_lib.postprocessor_base_class \
     import Postprocessor_base
 from base_lib.preprocessor_base_class \
     import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from query_lib.processor_lib.antigens_tools import correct_antibodies
 
 #
@@ -47,7 +47,7 @@ class Preprocessor(Preprocessor_base):
     #
     def run_preprocessor(self):
         self.text = \
-            lambda_lib.deletion_lambda_conversion('(?i)[\n\s]+(by)?(\( )?ARUP lab(s)?( \))?', self.text)
+            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+(by)?(\( )?ARUP lab(s)?( \))?', self.text)
             
 #
 def surface_antigens_performance(validation_data_manager, evaluation_manager,

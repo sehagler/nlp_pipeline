@@ -7,7 +7,7 @@ Created on Thu Jun 18 16:45:34 2020
 
 #
 from base_lib.preprocessor_base_class import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
     import composite_function
 from tools_lib.regex_lib.regex_tools \
@@ -19,25 +19,25 @@ from tools_lib.regex_lib.regex_tools \
 #
 def _cleanup_text(text):
     text = \
-        lambda_lib.lambda_conversion('Scarff ', text, 'Scarf ')
+        lambda_tools.lambda_conversion('Scarff ', text, 'Scarf ')
     return text
     
 #
 def _normalize_text(text):
     text = \
-        lambda_lib.lambda_conversion('leukaemia', text, 'leukemia')
+        lambda_tools.lambda_conversion('leukaemia', text, 'leukemia')
     text = \
-        lambda_lib.lambda_conversion('(?<=[Tt])umour', text, 'umor')
+        lambda_tools.lambda_conversion('(?<=[Tt])umour', text, 'umor')
     return text
 
 #
 def _setup_text(text):
     text = \
-        lambda_lib.contextual_lambda_conversion('Scharff(-| )', '(?i)Scharff', text, 'Scarff')
+        lambda_tools.contextual_lambda_conversion('Scharff(-| )', '(?i)Scharff', text, 'Scarff')
     text = \
-        lambda_lib.contextual_lambda_conversion('Scharf(-| )', '(?i)Scharf', text, 'Scarff')
+        lambda_tools.contextual_lambda_conversion('Scharf(-| )', '(?i)Scharf', text, 'Scarff')
     text = \
-        lambda_lib.contextual_lambda_conversion('Scarf(-| )', '(?i)Scarf', text, 'Scarff')
+        lambda_tools.contextual_lambda_conversion('Scarf(-| )', '(?i)Scarf', text, 'Scarff')
     return text
 
 #
@@ -45,9 +45,9 @@ def _process_irregular_initialisms(text):
     
     # breast cancer
     text = \
-        lambda_lib.lambda_conversion('(?i)in situ and invasive duct(al)? (cancer|carcinoma)', text, 'DCIS and IDC')
+        lambda_tools.lambda_conversion('(?i)in situ and invasive duct(al)? (cancer|carcinoma)', text, 'DCIS and IDC')
     text = \
-        lambda_lib.lambda_conversion('(?i)usual and atypical duct(al)? hyperplasia( \( UDH, ADH \))?', text, 'UDH and ADH')
+        lambda_tools.lambda_conversion('(?i)usual and atypical duct(al)? hyperplasia( \( UDH, ADH \))?', text, 'UDH and ADH')
     
     return text
     
@@ -56,7 +56,7 @@ def _process_regular_initialisms(text):
     
     # carcinoma
     text = \
-        lambda_lib.lambda_conversion('(?i)sqcc', text, 'SCC')
+        lambda_tools.lambda_conversion('(?i)sqcc', text, 'SCC')
     carcinoma_list = [ [ 'duct(al)? (cancer|carcinoma)', 'DC' ],
                        [ 'lobular (cancer|carcinoma)', 'LC' ],
                        [ 'renal cell (cancer|carcinoma)', 'RCC' ],
@@ -65,19 +65,19 @@ def _process_regular_initialisms(text):
                        [ 'transitional cell (cancer|carcinoma)', 'TCC' ] ]
     for carcinoma in carcinoma_list:
         text = \
-            lambda_lib.initialism_lambda_conversion('(infiltrating|invasive) ' + carcinoma[0], text, 'I' + carcinoma[1])
+            lambda_tools.initialism_lambda_conversion('(infiltrating|invasive) ' + carcinoma[0], text, 'I' + carcinoma[1])
         text = \
-            lambda_lib.initialism_lambda_conversion(carcinoma[0] + ' in situ', text, carcinoma[1] + 'IS')
+            lambda_tools.initialism_lambda_conversion(carcinoma[0] + ' in situ', text, carcinoma[1] + 'IS')
         text = \
-            lambda_lib.initialism_lambda_conversion(carcinoma[0], text, carcinoma[1])
+            lambda_tools.initialism_lambda_conversion(carcinoma[0], text, carcinoma[1])
         text = \
-            lambda_lib.initialism_lambda_conversion('(infiltrating|invasive) ' + carcinoma[1], text, 'I' + carcinoma[1])
+            lambda_tools.initialism_lambda_conversion('(infiltrating|invasive) ' + carcinoma[1], text, 'I' + carcinoma[1])
         text = \
-            lambda_lib.initialism_lambda_conversion(carcinoma[1] + ' in situ', text, carcinoma[1] + 'IS')
+            lambda_tools.initialism_lambda_conversion(carcinoma[1] + ' in situ', text, carcinoma[1] + 'IS')
             
     # glaucoma
     text = \
-        lambda_lib.initialism_lambda_conversion('primary open angle glaucoma', text, 'POAG')
+        lambda_tools.initialism_lambda_conversion('primary open angle glaucoma', text, 'POAG')
     
     # hyperplasia
     hyperplasia_list = [ [ 'duct(al)? hyperplasia', 'DH' ],
@@ -85,39 +85,39 @@ def _process_regular_initialisms(text):
                          [ 'columnar cell hyperplasia', 'CCH' ] ]
     for hyperplasia in hyperplasia_list:
         text = \
-            lambda_lib.initialism_lambda_conversion('atypical ' + hyperplasia[0], text, 'A' + hyperplasia[1])
+            lambda_tools.initialism_lambda_conversion('atypical ' + hyperplasia[0], text, 'A' + hyperplasia[1])
         text = \
-            lambda_lib.initialism_lambda_conversion('usual ' + hyperplasia[0], text, 'U' + hyperplasia[1])
+            lambda_tools.initialism_lambda_conversion('usual ' + hyperplasia[0], text, 'U' + hyperplasia[1])
         text = \
-            lambda_lib.initialism_lambda_conversion(hyperplasia[0], text, hyperplasia[1])
+            lambda_tools.initialism_lambda_conversion(hyperplasia[0], text, hyperplasia[1])
     
     # leukemia
     text = \
-        lambda_lib.initialism_lambda_conversion('acute myeloid leukemia', text, 'AML')
+        lambda_tools.initialism_lambda_conversion('acute myeloid leukemia', text, 'AML')
     text = \
-        lambda_lib.initialism_lambda_conversion('acute myelomonocytic leukemia', text, 'AMML')
+        lambda_tools.initialism_lambda_conversion('acute myelomonocytic leukemia', text, 'AMML')
     text = \
-        lambda_lib.initialism_lambda_conversion('chronic lymphocytic leukemia', text, 'CLL')
+        lambda_tools.initialism_lambda_conversion('chronic lymphocytic leukemia', text, 'CLL')
     
     # myeloma
     text = \
-        lambda_lib.initialism_lambda_conversion('multiple myeloma', text, 'MM')
+        lambda_tools.initialism_lambda_conversion('multiple myeloma', text, 'MM')
     
     # neoplasm
     text = \
-        lambda_lib.initialism_lambda_conversion('myelodysplastic / myeloproliferative (disease|neoplasm)', text, 'MDS/MPN')
+        lambda_tools.initialism_lambda_conversion('myelodysplastic / myeloproliferative (disease|neoplasm)', text, 'MDS/MPN')
     text = \
-        lambda_lib.initialism_lambda_conversion('myeloproliferative / myelodysplastic (disease|neoplasm)', text, 'MDS/MPN')
+        lambda_tools.initialism_lambda_conversion('myeloproliferative / myelodysplastic (disease|neoplasm)', text, 'MDS/MPN')
     text = \
-        lambda_lib.initialism_lambda_conversion('myeloproliferative neoplasm', text, 'MPN')
+        lambda_tools.initialism_lambda_conversion('myeloproliferative neoplasm', text, 'MPN')
     
     # sarcoma
     text = \
-        lambda_lib.initialism_lambda_conversion('undifferentiated pleomorphic sarcoma', text, 'UPS')
+        lambda_tools.initialism_lambda_conversion('undifferentiated pleomorphic sarcoma', text, 'UPS')
     
     # tumor
     text = \
-        lambda_lib.initialism_lambda_conversion('isolated tumor cell' + s(), text, 'ITC')
+        lambda_tools.initialism_lambda_conversion('isolated tumor cell' + s(), text, 'ITC')
     
     return text
     
@@ -150,7 +150,7 @@ class Preprocessor(Preprocessor_base):
     #
     def run_preprocessor(self):
         self.text = \
-            lambda_lib.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
+            lambda_tools.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
             
         normalize_text = composite_function(_cleanup_text,
                                             _normalize_text,

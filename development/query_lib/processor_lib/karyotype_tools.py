@@ -8,7 +8,7 @@ Created on Wed Jun  5 14:28:01 2019
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
 from base_lib.preprocessor_base_class import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
         comma,
@@ -23,29 +23,29 @@ class Preprocessor(Preprocessor_base):
     def run_preprocessor(self):
         text = self.text
         text = \
-            lambda_lib.lambda_conversion('\) \(', text, ')(')
+            lambda_tools.lambda_conversion('\) \(', text, ')(')
         text = \
-            lambda_lib.lambda_conversion('\) \[', text, ')[')
+            lambda_tools.lambda_conversion('\) \[', text, ')[')
         text = \
-            lambda_lib.lambda_conversion('\] \(', text, '](')
+            lambda_tools.lambda_conversion('\] \(', text, '](')
         text = \
-            lambda_lib.contextual_lambda_conversion('\( [pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ ?\)', '\( ', text, '(')
+            lambda_tools.contextual_lambda_conversion('\( [pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ ?\)', '\( ', text, '(')
         text = \
-            lambda_lib.contextual_lambda_conversion('\( ?[pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ \)', ' \)', text, ')')
+            lambda_tools.contextual_lambda_conversion('\( ?[pq]?[0-9\.]+[ ;]+[pq]?[0-9\.]+ \)', ' \)', text, ')')
         text = \
-            lambda_lib.lambda_conversion('(?<=[XY]) \[', text, '[')
+            lambda_tools.lambda_conversion('(?<=[XY]) \[', text, '[')
         text = \
-            lambda_lib.lambda_conversion('(?<=[0-9]) , (?=[XY])', text, ',')
+            lambda_tools.lambda_conversion('(?<=[0-9]) , (?=[XY])', text, ',')
         text = \
-            lambda_lib.contextual_lambda_conversion('\([pq]?[0-9\.]+ ; [pq]?[0-9\.]+\)', ' ; ', text, ';')
+            lambda_tools.contextual_lambda_conversion('\([pq]?[0-9\.]+ ; [pq]?[0-9\.]+\)', ' ; ', text, ';')
         text = \
-            lambda_lib.contextual_lambda_conversion('[0-9]{1,2},[XY]+(\S*(\(\S+\)|\-[0-9]+))? , (\+|\-)?((add|inv)\(|mar|[0-9])', ' , ', text, ',')
+            lambda_tools.contextual_lambda_conversion('[0-9]{1,2},[XY]+(\S*(\(\S+\)|\-[0-9]+))? , (\+|\-)?((add|inv)\(|mar|[0-9])', ' , ', text, ',')
         text = \
-            lambda_lib.contextual_lambda_conversion('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', ' / ', text, '/')
+            lambda_tools.contextual_lambda_conversion('[0-9]{1,2},[XY]+\S* / [0-9]{1,2},[XY]+', ' / ', text, '/')
         text = \
-            lambda_lib.contextual_lambda_conversion('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', ' ', text, '')
+            lambda_tools.contextual_lambda_conversion('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', ' ', text, '')
         text = \
-            lambda_lib.lambda_conversion('(?i)inversion \(', text, 'inv(')
+            lambda_tools.lambda_conversion('(?i)inversion \(', text, 'inv(')
         self.text = text
 
 #

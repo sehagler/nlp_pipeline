@@ -9,7 +9,7 @@ Created on Mon Mar 15 10:18:29 2021
 import copy
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from nlp_text_normalization_lib.artifact_normalizer_lib.artifact_normalizer \
     import artifact_normalizer
 from nlp_text_normalization_lib.character_normalizer_lib.character_normalizer \
@@ -36,42 +36,42 @@ def normalize_whitespace(text):
     
     #
     text = \
-        lambda_lib.lambda_conversion('\r', text, '\n')
+        lambda_tools.lambda_conversion('\r', text, '\n')
     
     #
     text = \
-        lambda_lib.lambda_conversion('\n+\n\n', text, '\n\n')
+        lambda_tools.lambda_conversion('\n+\n\n', text, '\n\n')
     
     #
     text = \
-        lambda_lib.lambda_conversion(' +', text, ' ')
+        lambda_tools.lambda_conversion(' +', text, ' ')
     text = \
-        lambda_lib.lambda_conversion(' \n', text, '\n')
+        lambda_tools.lambda_conversion(' \n', text, '\n')
     text = \
-        lambda_lib.lambda_conversion('\n ', text, '\n')
+        lambda_tools.lambda_conversion('\n ', text, '\n')
     
     #
     text = \
-        lambda_lib.lambda_conversion('\t+', text, '\t')
+        lambda_tools.lambda_conversion('\t+', text, '\t')
     text = \
-        lambda_lib.lambda_conversion(' \t', text, '\t')
+        lambda_tools.lambda_conversion(' \t', text, '\t')
     text = \
-        lambda_lib.lambda_conversion('\t ', text, '\t')
+        lambda_tools.lambda_conversion('\t ', text, '\t')
     text = \
-        lambda_lib.lambda_conversion('\t\n', text, '\n')
+        lambda_tools.lambda_conversion('\t\n', text, '\n')
     text = \
-        lambda_lib.lambda_conversion('\n\t', text, '\n')
+        lambda_tools.lambda_conversion('\n\t', text, '\n')
 
     #text = \
-    #    lambda_lib.lambda_conversion('[\n\s]*\n\s*\n', text, '\n\n')
+    #    lambda_tools.lambda_conversion('[\n\s]*\n\s*\n', text, '\n\n')
     text = \
-        lambda_lib.lambda_conversion('\n-', text, '\n\t-')
+        lambda_tools.lambda_conversion('\n-', text, '\n\t-')
     text = \
-        lambda_lib.deletion_lambda_conversion('^[\n\s]*', text)
+        lambda_tools.deletion_lambda_conversion('^[\n\s]*', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('[\n\s]*$', text)
+        lambda_tools.deletion_lambda_conversion('[\n\s]*$', text)
     text = \
-        lambda_lib.contextual_lambda_conversion('^ +[-]', ' ', text, '')
+        lambda_tools.contextual_lambda_conversion('^ +[-]', ' ', text, '')
 
     return text
 

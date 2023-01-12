@@ -14,7 +14,7 @@ import traceback
 from base_lib.preprocessor_base_class import Preprocessor_base
 from base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
     import composite_function
 from tools_lib.regex_lib.regex_tools \
@@ -25,21 +25,21 @@ from tools_lib.processing_tools_lib.text_processing_tools \
 #
 def _process_organizations(text):
     text = \
-        lambda_lib.initialism_lambda_conversion('eastern cooperative oncology group', text, 'ECOG')
+        lambda_tools.initialism_lambda_conversion('eastern cooperative oncology group', text, 'ECOG')
     text = \
-        lambda_lib.initialism_lambda_conversion('(u( \. )?s( \.)? ?)?food and drug administration', text, 'FDA')
+        lambda_tools.initialism_lambda_conversion('(u( \. )?s( \.)? ?)?food and drug administration', text, 'FDA')
     text = \
-        lambda_lib.initialism_lambda_conversion('world health organization', text, 'WHO')
+        lambda_tools.initialism_lambda_conversion('world health organization', text, 'WHO')
     return text
 
 #
 def _process_past_medical_history(text):
     text = \
-        lambda_lib.initialism_lambda_conversion('past medical hx', text, 'PMH')
+        lambda_tools.initialism_lambda_conversion('past medical hx', text, 'PMH')
     text = \
-        lambda_lib.lambda_conversion('PMHx', text, 'PMH')
+        lambda_tools.lambda_conversion('PMHx', text, 'PMH')
     text = \
-        lambda_lib.lambda_conversion('PMH / o', text, 'PMH')
+        lambda_tools.lambda_conversion('PMH / o', text, 'PMH')
     return text
     
 
@@ -48,75 +48,75 @@ def _process_regular_initialisms(text):
     
     #
     text = \
-        lambda_lib.initialism_lambda_conversion('cerebrospinal fluid', text, 'CSF')
+        lambda_tools.initialism_lambda_conversion('cerebrospinal fluid', text, 'CSF')
     text = \
-        lambda_lib.initialism_lambda_conversion('chronic kidney disease', text, 'CKD')
+        lambda_tools.initialism_lambda_conversion('chronic kidney disease', text, 'CKD')
     text = \
-        lambda_lib.initialism_lambda_conversion('chronic renal disease', text, 'CRD')
+        lambda_tools.initialism_lambda_conversion('chronic renal disease', text, 'CRD')
     text = \
-        lambda_lib.initialism_lambda_conversion('chronic renal failure', text, 'CRF')
+        lambda_tools.initialism_lambda_conversion('chronic renal failure', text, 'CRF')
     text = \
-        lambda_lib.initialism_lambda_conversion('fluorescen(ce|t) in situ hybridization', text, 'FISH')
+        lambda_tools.initialism_lambda_conversion('fluorescen(ce|t) in situ hybridization', text, 'FISH')
     text = \
-        lambda_lib.initialism_lambda_conversion('in situ hybridization', text, 'ISH')
+        lambda_tools.initialism_lambda_conversion('in situ hybridization', text, 'ISH')
     text = \
-        lambda_lib.initialism_lambda_conversion('red blood cell', text, 'RBC')
+        lambda_tools.initialism_lambda_conversion('red blood cell', text, 'RBC')
     text = \
-        lambda_lib.initialism_lambda_conversion('white blood cell', text, 'WBC')
+        lambda_tools.initialism_lambda_conversion('white blood cell', text, 'WBC')
     
     # miscellaneous
     text = \
-        lambda_lib.initialism_lambda_conversion('columnar cell change', text, 'CCC')
+        lambda_tools.initialism_lambda_conversion('columnar cell change', text, 'CCC')
     text = \
-        lambda_lib.initialism_lambda_conversion('flat epithelial atypia', text, 'FEA')
+        lambda_tools.initialism_lambda_conversion('flat epithelial atypia', text, 'FEA')
     text = \
-        lambda_lib.initialism_lambda_conversion('pathologic complete response', text, 'pCR')
+        lambda_tools.initialism_lambda_conversion('pathologic complete response', text, 'pCR')
     text = \
-        lambda_lib.initialism_lambda_conversion('residual ca(ncer)? burden', text, 'RCB')
+        lambda_tools.initialism_lambda_conversion('residual ca(ncer)? burden', text, 'RCB')
     text = \
-        lambda_lib.lambda_conversion('(?i)FAB (?=[0-9])', text, 'FAB M')
+        lambda_tools.lambda_conversion('(?i)FAB (?=[0-9])', text, 'FAB M')
     text = \
-        lambda_lib.lambda_conversion('(?i)HLA-Dr', text, 'HLA-DR')
+        lambda_tools.lambda_conversion('(?i)HLA-Dr', text, 'HLA-DR')
     text = \
-        lambda_lib.lambda_conversion('(?i)blasts ?(\+|and|plus) ?promonocytes', text, 'blasts/promonocytes')
+        lambda_tools.lambda_conversion('(?i)blasts ?(\+|and|plus) ?promonocytes', text, 'blasts/promonocytes')
     text = \
-        lambda_lib.initialism_lambda_conversion('(?i)minimal residual disease', text, 'MRD')
+        lambda_tools.initialism_lambda_conversion('(?i)minimal residual disease', text, 'MRD')
     text = \
-        lambda_lib.initialism_lambda_conversion('(?i)myelodysplastic syndrome', text, 'MDS')
+        lambda_tools.initialism_lambda_conversion('(?i)myelodysplastic syndrome', text, 'MDS')
     return text
         
 #
 def _remove_extraneous_text(text):
     text = \
-        lambda_lib.deletion_lambda_conversion('[\n\s]+based on pathologic finding' + s(), text)
+        lambda_tools.deletion_lambda_conversion('[\n\s]+based on pathologic finding' + s(), text)
     text = \
-        lambda_lib.deletion_lambda_conversion('(?<=Dr [A-Z])\.', text)
+        lambda_tools.deletion_lambda_conversion('(?<=Dr [A-Z])\.', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('my electronic signature.*' + article() + ' final diagnosis( \.)?', text)
+        lambda_tools.deletion_lambda_conversion('my electronic signature.*' + article() + ' final diagnosis( \.)?', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('i have reviewed.*and final diagnosis( \.)?', text)
+        lambda_tools.deletion_lambda_conversion('i have reviewed.*and final diagnosis( \.)?', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)inclu(des|sive of) all specimens', text)
+        lambda_tools.deletion_lambda_conversion('(?i)inclu(des|sive of) all specimens', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)pathologist interpretation ' + be() + ' based on ' + article() + ' review.*representative hematoxylin and eosin stains( \.)?', text)
+        lambda_tools.deletion_lambda_conversion('(?i)pathologist interpretation ' + be() + ' based on ' + article() + ' review.*representative hematoxylin and eosin stains( \.)?', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)' + article() + ' test ' + be() + ' developed.*FDA( \.)?', text)
+        lambda_tools.deletion_lambda_conversion('(?i)' + article() + ' test ' + be() + ' developed.*FDA( \.)?', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)' + article() + ' clinical interpretation ' + be() + ' made by ' + article() + ' clinical geneticist( \.)?', text)
+        lambda_tools.deletion_lambda_conversion('(?i)' + article() + ' clinical interpretation ' + be() + ' made by ' + article() + ' clinical geneticist( \.)?', text)
     return text
 
 #
 def _remove_mychart(text):
     text = \
-        lambda_lib.deletion_lambda_conversion('display progress note in mychart : (no|yes)', text)
+        lambda_tools.deletion_lambda_conversion('display progress note in mychart : (no|yes)', text)
     return text
     
 #
 def _remove_see(text):
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)(\n\s*)?\( (please )?see [^\n\)\]]* \)', text)
+        lambda_tools.deletion_lambda_conversion('(?i)(\n\s*)?\( (please )?see [^\n\)\]]* \)', text)
     text = \
-        lambda_lib.lambda_conversion('(?i)\s*see\n', text, '\n')
+        lambda_tools.lambda_conversion('(?i)\s*see\n', text, '\n')
     match_str = '(?i)((\n\s*)?-( )?)?(please[\n\s]+)?see[\n\s]+' + \
                 '(the )?(second )?(amendment|cancer|note|synoptic)?( )?' + \
                 '(below|comment|report|synops(e|i))' + s() + \
@@ -139,19 +139,19 @@ def _remove_see(text):
 #
 def _substitution_endings_list(text, search_str):
     text = \
-        lambda_lib.lambda_conversion(search_str + '\n', text, '\n')
+        lambda_tools.lambda_conversion(search_str + '\n', text, '\n')
     text = \
-        lambda_lib.lambda_conversion(search_str + '\t', text, '\t')
+        lambda_tools.lambda_conversion(search_str + '\t', text, '\t')
     text = \
-        lambda_lib.lambda_conversion(search_str + ' ', text, ' ')
+        lambda_tools.lambda_conversion(search_str + ' ', text, ' ')
     text = \
-        lambda_lib.lambda_conversion(search_str + ',', text, ',')
+        lambda_tools.lambda_conversion(search_str + ',', text, ',')
     text = \
-        lambda_lib.lambda_conversion(search_str + '\.', text, '.')
+        lambda_tools.lambda_conversion(search_str + '\.', text, '.')
     text = \
-        lambda_lib.lambda_conversion(search_str + ';', text, ';')
+        lambda_tools.lambda_conversion(search_str + ';', text, ';')
     text = \
-        lambda_lib.lambda_conversion(search_str + '( )?-', text, '-')
+        lambda_tools.lambda_conversion(search_str + '( )?-', text, '-')
     return text
 '''
     

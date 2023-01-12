@@ -7,11 +7,12 @@ Created on Wed Jun  5 14:55:53 2019
 
 #
 import re
+import itertools
 
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
 from base_lib.preprocessor_base_class import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
     import composite_function
 
@@ -27,11 +28,11 @@ def _create_template_list(prefix_list, base_list, suffix_list):
 #
 def _normalize_staging(staging):
     if staging is not None:
-        staging = lambda_lib.lambda_conversion('[Oo]', staging, '0')
-        staging = lambda_lib.lambda_conversion('x', staging, 'X')
-        staging = lambda_lib.lambda_conversion('n/a', staging, '(n/a)')
-        staging = lambda_lib.lambda_conversion('\(\(', staging, '(')
-        staging = lambda_lib.lambda_conversion('\)\)', staging, ')')
+        staging = lambda_tools.lambda_conversion('[Oo]', staging, '0')
+        staging = lambda_tools.lambda_conversion('x', staging, 'X')
+        staging = lambda_tools.lambda_conversion('n/a', staging, '(n/a)')
+        staging = lambda_tools.lambda_conversion('\(\(', staging, '(')
+        staging = lambda_tools.lambda_conversion('\)\)', staging, ')')
     return staging
 
 #
@@ -58,15 +59,15 @@ def _process_tnm_staging(text):
     text_list.append('(?i)(pathologic( tumor)?|TNM) stag(e|ing)')
     text_list.append('(?i)stage summary')
     for text_str in text_list:
-        text = lambda_lib.lambda_conversion(text_str, text, 'Stage')
+        text = lambda_tools.lambda_conversion(text_str, text, 'Stage')
     return text
 
 #
 def _remove_extraneous_text(text):
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', text)
+        lambda_tools.deletion_lambda_conversion('(?i)(\( )?(AJCC )?\d(\d)?th Ed(ition|.)( \))?', text)
     text = \
-        lambda_lib.deletion_lambda_conversion('(?i)(\( )?AJCC( \))?', text)
+        lambda_tools.deletion_lambda_conversion('(?i)(\( )?AJCC( \))?', text)
     return text
 
 #
@@ -261,9 +262,9 @@ class Postprocessor(Postprocessor_base):
     def _cleanup_data_table(self, data_table):
         for i in range(len(data_table)):
             data_table[i][1] = \
-                lambda_lib.lambda_conversion(',', data_table[i][1], '')
+                lambda_tools.lambda_conversion(',', data_table[i][1], '')
             data_table[i][1] = \
-                lambda_lib.lambda_conversion(' +', data_table[i][1], '')
+                lambda_tools.lambda_conversion(' +', data_table[i][1], '')
         return data_table
                                         
     #

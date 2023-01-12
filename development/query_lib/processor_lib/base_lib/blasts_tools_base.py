@@ -11,7 +11,7 @@ import statistics
 import traceback
 
 #
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -107,9 +107,9 @@ def blast_performance(validation_data_manager, evaluation_manager, labId,
 def get_blast_value(blast_value_list):
     for i in range(len(blast_value_list)):
         blast_value_list[i] = \
-            lambda_lib.lambda_conversion('(?<=(~|>|<))', blast_value_list[i], ' ')
+            lambda_tools.lambda_conversion('(?<=(~|>|<))', blast_value_list[i], ' ')
         blast_value_list[i] = \
-            lambda_lib.lambda_conversion(' +', blast_value_list[i], ' ')
+            lambda_tools.lambda_conversion(' +', blast_value_list[i], ' ')
     approximately_list = []
     exact_value_list = []
     less_than_list = []
@@ -197,7 +197,7 @@ class Postprocessor(Postprocessor_base):
             value_flg = False
             value_list = []
             for blast_value in blast_values:
-                blast_value = lambda_lib.lambda_conversion('%', blast_value, '')
+                blast_value = lambda_tools.lambda_conversion('%', blast_value, '')
                 if re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value) is not None:
                     match = re.search('((<|>|~) )?[0-9]+(\.[0-9]+)?(-[0-9]+(\.[0-9]+)?)?', blast_value)
                     value_list.append(match.group(0))
@@ -292,7 +292,7 @@ class Postprocessor(Postprocessor_base):
         value_list_in = list(set(value_list_in))
         for idx in range(len(value_list_in)):
             value_list_in[idx] = \
-                lambda_lib.lambda_conversion('%', value_list_in[idx], '')
+                lambda_tools.lambda_conversion('%', value_list_in[idx], '')
         if len(value_list_in) > 1:
             approximately_list = []
             exact_list = []
@@ -349,13 +349,13 @@ class Preprocessor(Preprocessor_base):
     #
     def run_preprocessor(self):
         self.text = \
-            lambda_lib.lambda_conversion('(?i)immunohistochemi(cal|stry)',
+            lambda_tools.lambda_conversion('(?i)immunohistochemi(cal|stry)',
                                                   self.text, 'IHC')
         self.text = \
-            lambda_lib.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
+            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
                                                            self.text)
         self.text = \
-            lambda_lib.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
+            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
                                                            self.text)
     
 #

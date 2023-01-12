@@ -7,22 +7,22 @@ Created on Thu Jun 18 16:45:34 2020
 
 #
 from base_lib.preprocessor_base_class import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
     
 #
 def _normalize_chemical_abbreviations(text):
     text = \
-        lambda_lib.contextual_lambda_conversion('alcohol(?!i)', 'alcohol', text, 'ETOH')
+        lambda_tools.contextual_lambda_conversion('alcohol(?!i)', 'alcohol', text, 'ETOH')
     text = \
-        lambda_lib.initialism_lambda_conversion('butyrate esterase', text, 'BE')
+        lambda_tools.initialism_lambda_conversion('butyrate esterase', text, 'BE')
     text = \
-        lambda_lib.lambda_conversion('(?i)immunohistochemi(cal|stry)', text, 'IHC')
+        lambda_tools.lambda_conversion('(?i)immunohistochemi(cal|stry)', text, 'IHC')
     text = \
-        lambda_lib.initialism_lambda_conversion('methotrexate', text, 'MTX')
+        lambda_tools.initialism_lambda_conversion('methotrexate', text, 'MTX')
     text = \
-        lambda_lib.initialism_lambda_conversion('myeloperoxidase', text, 'MPO')
+        lambda_tools.initialism_lambda_conversion('myeloperoxidase', text, 'MPO')
     text = \
-        lambda_lib.initialism_lambda_conversion('sudan black B', text, 'SBB')
+        lambda_tools.initialism_lambda_conversion('sudan black B', text, 'SBB')
     return text
 
 #

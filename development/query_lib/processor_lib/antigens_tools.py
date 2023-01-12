@@ -14,7 +14,7 @@ from base_lib.postprocessor_base_class \
     import Postprocessor_base
 from base_lib.preprocessor_base_class \
     import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -120,7 +120,7 @@ def cleanup_antigens(text):
 
 #
 def correct_antibodies(text):
-    text = lambda_lib.lambda_conversion('HLA *- *DR', text, 'HLA-DR')
+    text = lambda_tools.lambda_conversion('HLA *- *DR', text, 'HLA-DR')
     return text
 
 #                 
@@ -289,35 +289,35 @@ class Preprocessor(Preprocessor_base):
     def run_preprocessor(self):
         antigens = antigens_list()
         text = self.text
-        text = lambda_lib.lambda_conversion('HLA ?DR', text, 'HLA-DR')
+        text = lambda_tools.lambda_conversion('HLA ?DR', text, 'HLA-DR')
         text = \
-            lambda_lib.lambda_conversion('(?i)dim(-| (/ )?)partial', text, 'dim/partial')
+            lambda_tools.lambda_conversion('(?i)dim(-| (/ )?)partial', text, 'dim/partial')
         text = \
-            lambda_lib.lambda_conversion('(?i)dim (/ )?variable', text, 'dim/variable')
+            lambda_tools.lambda_conversion('(?i)dim (/ )?variable', text, 'dim/variable')
         text = \
-            lambda_lib.lambda_conversion('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', text, ' CD')
+            lambda_tools.lambda_conversion('(?i)(bright|dim|low|moderate|partial|subset|variable)CD', text, ' CD')
         text = \
-            lambda_lib.lambda_conversion('(?i)partial (/ )?dim', text, 'dim/partial')
+            lambda_tools.lambda_conversion('(?i)partial (/ )?dim', text, 'dim/partial')
         text = \
-            lambda_lib.deletion_lambda_conversion('(?<=CD) (?=[0-9])', text)
+            lambda_tools.deletion_lambda_conversion('(?<=CD) (?=[0-9])', text)
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + '\(', '\(', text, ' (')
+            lambda_tools.contextual_lambda_conversion(antigens + '\(', '\(', text, ' (')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + ' : ' + antigens, ' : ', text, ':')
+            lambda_tools.contextual_lambda_conversion(antigens + ' : ' + antigens, ' : ', text, ':')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + ' / ' + antigens, ' / ', text, '/')
+            lambda_tools.contextual_lambda_conversion(antigens + ' / ' + antigens, ' / ', text, '/')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + '-negative', '-negative', text, ' negative')
+            lambda_tools.contextual_lambda_conversion(antigens + '-negative', '-negative', text, ' negative')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + '-positive', '-positive', text, ' positive')
+            lambda_tools.contextual_lambda_conversion(antigens + '-positive', '-positive', text, ' positive')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + '-', '-', text, ' negative ')
+            lambda_tools.contextual_lambda_conversion(antigens + '-', '-', text, ' negative ')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + ' *\+', '\+', text, ' positive ')
+            lambda_tools.contextual_lambda_conversion(antigens + ' *\+', '\+', text, ' positive ')
         text = \
-            lambda_lib.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', text, ' positive')
+            lambda_tools.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', text, ' positive')
         text = \
-            lambda_lib.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', text, '-')
+            lambda_tools.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', text, '-')
         self.text = text
     
 #

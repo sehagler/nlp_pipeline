@@ -11,7 +11,7 @@ import traceback
 
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 
 #
 class Postprocessor(Postprocessor_base):
@@ -28,9 +28,9 @@ class Postprocessor(Postprocessor_base):
             value_list = []
             for entry_txt in dx_list:
                 entry_txt = \
-                    lambda_lib.lambda_conversion('\(.*?\)', entry_txt, '')
+                    lambda_tools.lambda_conversion('\(.*?\)', entry_txt, '')
                 entry_txt = \
-                    lambda_lib.lambda_conversion(' +', entry_txt, ' ')
+                    lambda_tools.lambda_conversion(' +', entry_txt, ' ')
                 del_key = True
                 for diagnosis_key in diagnosis_keys:
                     diagnosis_dict = self.diagnosis_reader.get_dict_by_key(diagnosis_key)

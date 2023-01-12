@@ -15,7 +15,7 @@ import traceback
 
 #
 from base_lib.manager_base_class import Manager_base#
-from lambda_lib.object_lib.lambda_object_class import Lambda_object
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 
 #
 class Server_manager(Manager_base):
@@ -28,7 +28,6 @@ class Server_manager(Manager_base):
             self.server = static_data['acc_server'][1]
         self.user = static_data['user']
         self.password = password
-        self.lambda_object = Lambda_object()
         
     #
     def _recursive_delete_directory(self, sftp, target_dir_in):
@@ -37,12 +36,12 @@ class Server_manager(Manager_base):
             if S_ISDIR(mode):
                 target_dir = os.path.join(target_dir_in, entry.filename)
                 target_dir = \
-                    self.lambda_object.lambda_conversion('\\\\', target_dir, '/')
+                    lambda_tools.lambda_conversion('\\\\', target_dir, '/')
                 self._recursive_delete_directory(sftp, target_dir)
             elif S_ISREG(mode):
                 target_file = os.path.join(target_dir_in, entry.filename)
                 target_file = \
-                    self.lambda_object.lambda_conversion('\\\\', target_file, '/')
+                    lambda_tools.lambda_conversion('\\\\', target_file, '/')
                 sftp.remove(target_file)
         sftp.rmdir(target_dir_in)
         
@@ -88,9 +87,9 @@ class Server_manager(Manager_base):
             for name in dirs:
                 dir_path = os.path.join(root, name)
                 dir_path = \
-                    self.lambda_object.lambda_conversion(source_dir, dir_path, target_dir)
+                    lambda_tools.lambda_conversion(source_dir, dir_path, target_dir)
                 dir_path = \
-                    self.lambda_object.lambda_conversion('\\\\', dir_path, '/')
+                    lambda_tools.lambda_conversion('\\\\', dir_path, '/')
                 try:
                     sftp.listdir(dir_path)
                 except Exception:
@@ -99,11 +98,11 @@ class Server_manager(Manager_base):
             for name in files:
                 source_file = os.path.join(root, name)
                 target_file = \
-                    self.lambda_object.lambda_conversion(source_dir, source_file, target_dir)
+                    lambda_tools.lambda_conversion(source_dir, source_file, target_dir)
                 source_file = \
-                    self.lambda_object.lambda_conversion('\\\\', source_file, '/')
+                    lambda_tools.lambda_conversion('\\\\', source_file, '/')
                 target_file = \
-                    self.lambda_object.lambda_conversion('\\\\', target_file, '/')
+                    lambda_tools.lambda_conversion('\\\\', target_file, '/')
                 sftp.put(source_file, target_file)
         sftp.close()
     

@@ -12,7 +12,7 @@ import re
 from base_lib.postprocessor_base_class \
     import Postprocessor_base
 from base_lib.preprocessor_base_class import Preprocessor_base
-import lambda_lib.object_lib.lambda_object_class as lambda_lib
+import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools import colon
 
 #
@@ -103,15 +103,15 @@ class Preprocessor(Preprocessor_base):
     def run_preprocessor(self):
         text = self.text
         text = \
-            lambda_lib.lambda_conversion('(?<!{ )ecog(' + colon() + '| )((performance )?(status|score)|ps)?',
+            lambda_tools.lambda_conversion('(?<!{ )ecog(' + colon() + '| )((performance )?(status|score)|ps)?',
                                                   text, 'ECOG (ZUBROD) ')
         text = \
-            lambda_lib.lambda_conversion('karnofsky ((performance )?(status|score)|ps)',
+            lambda_tools.lambda_conversion('karnofsky ((performance )?(status|score)|ps)',
                                                   text, 'ECOG (KARNOFSKY) ')
         text = \
-            lambda_lib.lambda_conversion('lansky ((play performance )?(status|score)|ps)',
+            lambda_tools.lambda_conversion('lansky ((play performance )?(status|score)|ps)',
                                                   text, 'ECOG (LANSKY) ')
         text = \
-            lambda_lib.lambda_conversion('(?<!{ )ecog (?!\()',
+            lambda_tools.lambda_conversion('(?<!{ )ecog (?!\()',
                                                   text, 'ECOG (ZUBROD) ')
         self.text = text
