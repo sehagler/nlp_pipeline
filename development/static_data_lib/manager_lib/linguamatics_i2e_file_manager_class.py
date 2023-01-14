@@ -6,9 +6,6 @@ Created on Fri Jan 18 08:18:53 2019
 """
 
 #
-import os
-
-#
 class Linguamatics_i2e_file_manager(object):
 
     #
@@ -26,7 +23,7 @@ class Linguamatics_i2e_file_manager(object):
             self.i2e_files_dict['xmlconf'] = None
         self.server_files_dict = {}
         self.server_files_dict['keywords'] = \
-            '/opt/linguamatics/i2e/bin/healthcare_preprocessing/keywords_default.txt'
+            '/opt/linguamatics/i2e/bin/python_preprocessing/i2e/preprocessors/healthcare/keywords_default.txt'
     
     #
     def filename(self, key):

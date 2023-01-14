@@ -256,7 +256,7 @@ class Linguamatics_i2e_object(object):
     def _xml_to_gold(self, xml, text_spans=True, old_format=False):
         logger.info('parsing XML')
         parsed = ET.parse(xml)
-        index_name = parsed.find('.//IndexName').text.replace('.i2etmp', '')
+        #index_name = parsed.find('.//IndexName').text.replace('.i2etmp', '')
         #outfile = '{}.csv'.format(index_name)
     
         col_to_id, query_cols = self._get_col_ids(parsed)
