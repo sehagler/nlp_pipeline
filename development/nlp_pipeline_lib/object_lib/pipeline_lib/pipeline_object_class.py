@@ -178,6 +178,6 @@ class Pipeline_object(object):
     def software_manager(self, root_dir, user, password):
         self.root_dir = root_dir
         self._create_managers(None, root_dir, None, user, password)
-        server_manager = self.remote_manager_registry.get_manager('update_manager')
+        server_manager = self.remote_registry.get_manager('update_manager')
         self.nlp_software = Software_manager(self.update_static_data_object,
                                              server_manager)
