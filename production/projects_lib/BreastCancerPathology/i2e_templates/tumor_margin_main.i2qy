@@ -1,10 +1,7 @@
 version: 6.3
 creationDate: '2018-07-09 14:02:37'
 multiquery:
-  Document Join:
-  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
-  - Union: [tumor_margin/tumor_margin_specimens_wrapper.i2qy, tumor_margin/tumor_margin_no_specimens_wrapper.i2qy]
+  Union: [/api;type=saved_query/__private__/haglers/General/queries/tumor_margin/tumor_margin_main.i2qy]
 output:
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
 creator: haglers

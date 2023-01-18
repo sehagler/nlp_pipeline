@@ -1,0 +1,19 @@
+version: 6.3
+creationDate: '2022-12-21 18:40:27'
+query:
+  document:
+  - link: {path: ../breast_cancer_biomarkers_score_phrase.i2qy, id: link1}
+output:
+  columns:
+  - id: link1.alternative2
+    itemOptions: {}
+    linkItemId: link1
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: value2
+    columnOptions: [Empty]
+    isValueColumn: true
+  columnLocations: [1, 0, 2]
+  useOutputEditor: true
+creator: haglers

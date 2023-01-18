@@ -9,28 +9,26 @@ Created on Mon Mar 04 12:29:38 2019
 import os
 
 #
-from nlp_pipeline_lib.performance_data_lib.performance_data_manager_class \
+from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from tool_lib.py.query_tools_lib.base_lib.date_tools_base import compare_dates
 
 #
 class CCC19_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager, evaluation_manager,
+    def __init__(self, static_data_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
-        Performance_data_manager.__init__(self, static_data_manager,
+        Performance_data_manager.__init__(self, static_data_object,
                                           evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)
-        static_data = self.static_data_manager.get_static_data()
+        static_data = self.static_data_object.get_static_data()
         if static_data['project_subdir'] == 'test':
             self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
             validation_filename = static_data['validation_file']
             directory_manager = static_data['directory_manager']
-            project_name = static_data['project_name']
             data_dir = directory_manager.pull_directory('raw_data_dir')
             filename = os.path.join(data_dir, validation_filename)
             self.xls_manager_registry[filename].read_validation_data()
@@ -113,6 +111,8 @@ class CCC19_performance_data_manager(Performance_data_manager):
         validation_datum_keys = [ 'CANCER_STAGE', 'NORMALIZED_ECOG_SCORE',
                                   'NORMALIZED_SMOKING_HISTORY',
                                   'NORMALIZED_SMOKING_STATUS' ]
+        self.validation_data_manager.column_to_int('CANCER_STAGE')
+        self.validation_data_manager.column_to_int('NORMALIZED_ECOG_SCORE')
         nlp_values = \
             self._identify_manual_review(nlp_values, validation_datum_keys)
         N_manual_review = {}

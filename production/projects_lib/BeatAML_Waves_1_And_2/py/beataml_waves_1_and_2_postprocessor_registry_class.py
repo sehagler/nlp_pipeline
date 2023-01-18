@@ -12,9 +12,9 @@ import os
 #
 from projects_lib.BeatAML_Waves_1_And_2.py.diagnosis_reader_class \
     import Diagnosis_reader
-from tool_lib.py.query_tools_lib.specific_diagnosis_tools \
+from query_lib.processor_lib.specific_diagnosis_tools \
     import Postprocessor as Postprocessor_specific_diagnosis
-from tool_lib.py.registry_lib.postprocessor_registry_class \
+from processor_lib.registry_lib.postprocessor_registry_class \
     import Postprocessor_registry
 
 #
@@ -25,11 +25,12 @@ class BeatAML_Waves_1_And_2_postprocessor_registry(Postprocessor_registry):
         Postprocessor_registry.create_postprocessor(self, filename)
         if filename in [ 'sections.csv' ]:
             self._register_postprocessor('postprocessor_specific_diagnosis',
-                                         Postprocessor_specific_diagnosis(self.static_data))
+                                         Postprocessor_specific_diagnosis(self.static_data_object))
 
     #
     def push_data_dict(self, filename, data_dict):
-        directory_manager = self.static_data['directory_manager']
+        static_data = self.static_data_object.get_static_data()
+        directory_manager = static_data['directory_manager']
         diagnosis_reader = \
             Diagnosis_reader(os.path.join(directory_manager.pull_directory('raw_data_dir'),'diagnoses.xlsx'))
         Postprocessor_registry.push_data_dict(self, filename, data_dict)

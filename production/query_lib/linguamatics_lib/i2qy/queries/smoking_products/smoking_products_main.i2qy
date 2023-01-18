@@ -1,0 +1,27 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - smoking_products_wrappers/smoking_products_specimens_wrapper.i2qy
+    - Subtraction: [smoking_products_wrappers/smoking_products_sections_wrapper.i2qy, smoking_products_wrappers/smoking_products_specimen_description_wrapper.i2qy]
+output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region2
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link2.link4.phrase1
+    itemOptions: {}
+    linkItemId: link4.link2
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+creator: haglers

@@ -1,0 +1,14 @@
+version: 6.3
+creationDate: '2022-11-09 17:33:24'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      of:
+      - link: {path: immunophenotype.i2qy}
+      - link: {path: immunophenotype_comment.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers

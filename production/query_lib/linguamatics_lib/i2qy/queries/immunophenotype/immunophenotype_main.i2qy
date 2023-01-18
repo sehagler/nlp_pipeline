@@ -1,0 +1,27 @@
+version: 6.3
+creationDate: '2018-10-26 16:08:10'
+multiquery:
+  Document Join:
+  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
+  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - Union:
+    - immunophenotype/immunophenotype_specimens_wrapper.i2qy
+    - Subtraction: [immunophenotype/immunophenotype_sections_wrapper.i2qy, immunophenotype/immunophenotype_specimen_description_wrapper.i2qy]
+output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link1.link6.alternative1
+    itemOptions: {}
+    linkItemId: link6.link1
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+creator: haglers

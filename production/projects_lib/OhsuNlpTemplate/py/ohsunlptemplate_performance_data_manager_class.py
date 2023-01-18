@@ -11,21 +11,21 @@ import os
 #
 from nlp_pipeline_lib.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from tool_lib.py.query_tools_lib.base_lib.date_tools_base import compare_dates
+from query_lib.processor_lib.base_lib.date_tools_base import compare_dates
 
 #
 class OhsuNlpTemplate_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_manager, evaluation_manager,
+    def __init__(self, static_data_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
-        Performance_data_manager.__init__(self, static_data_manager,
+        Performance_data_manager.__init__(self, static_data_object,
                                           evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)
-        static_data = self.static_data_manager.get_static_data()
+        static_data = self.static_data_object.get_static_data()
         if static_data['project_subdir'] == 'test':
             self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
             validation_filename = static_data['validation_file']
