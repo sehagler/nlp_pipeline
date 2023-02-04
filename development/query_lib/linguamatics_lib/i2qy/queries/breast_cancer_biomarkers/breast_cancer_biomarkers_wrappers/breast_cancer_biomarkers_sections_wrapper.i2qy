@@ -1,9 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-05-27 17:01:37'
 query:
   document:
   - region:
-      view: {height: 120, width: 355}
       snid: hc.titled_section
       pt: Titled Section
       where:
@@ -48,3 +47,4 @@ parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true
+queryID: de68c6a2

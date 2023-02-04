@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-30 00:13:24'
 query:
   document:
@@ -11,16 +11,13 @@ query:
           maxSentenceGap: -1
           maxWordGap: -1
           multiSentence: true
-          view: {height: 304, width: 750}
           wordGapRestricted: false
           of:
           - alternative:
               quantifier: {minimum: 0, maximum: 1}
-              view: {height: 266, width: 531}
               of:
               - phrase:
                   maxWordGap: -1
-                  view: {height: 119, width: 511}
                   wordGapRestricted: false
                   of:
                   - alternative:
@@ -30,7 +27,7 @@ query:
                       quantifier: {minimum: 0, maximum: 1}
                       of:
                       - of
-                      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy}
+                      - link: {path: ../../cancer/blast_%/blast_%_tools/blast_wrapped.i2qy}
                   - alternative:
                       quantifier: {minimum: 0, maximum: 0}
                       view: {layout: list}
@@ -45,9 +42,10 @@ query:
                       view: {layout: list}
                       of: [negative, positive]
                   - for
-          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy}
+          - link: {path: ../../cancer/immunophenotype/immunophenotype_query.i2qy}
 output:
   columns:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: 008517bd

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-06-23 23:16:00'
 query:
   document:
@@ -14,8 +14,9 @@ query:
     - )
 output:
   columns:
-  - id: link2.link4.phrase1
+  - id: link2.alternative1
     itemOptions: {}
-    linkItemId: link4.link2
+    linkItemId: link2
   useOutputEditor: true
 creator: haglers
+queryID: bd69d63b

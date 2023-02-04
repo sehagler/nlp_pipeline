@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:03:06'
 query:
   document:
@@ -32,3 +32,4 @@ output:
     linkItemId: link2
   useOutputEditor: true
 creator: haglers
+queryID: 1175bc7c

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-10-01 17:54:02'
 query:
   document:
@@ -38,9 +38,7 @@ query:
           - alternative:
               quantifier: {minimum: 0, maximum: 1}
               of: ['>', <, '~']
-          - alternative:
-              view: {height: 188, width: 106}
-              of: [advanced, early, end, extensive, mild, moderate, severe]
+          - alternative: [advanced, early, end, extensive, mild, moderate, severe]
           - alternative:
               quantifier: {minimum: 0, maximum: 1}
               of:
@@ -58,3 +56,4 @@ output:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: 99c8929f

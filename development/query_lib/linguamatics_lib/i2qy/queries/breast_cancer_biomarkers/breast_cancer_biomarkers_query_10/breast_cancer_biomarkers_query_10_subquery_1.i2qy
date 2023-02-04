@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-07-19 17:54:03'
 query:
   document:
@@ -6,25 +6,25 @@ query:
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:
-        - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link3}
+        - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link3}
         - link:
             path: ../breast_cancer_biomarkers_relation_verbal.i2qy
             quantifier: {minimum: 0, maximum: 1}
     - word:
         text: (
         quantifier: {minimum: 0, maximum: 1}
-    - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy, id: link4}
+    - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy, id: link5}
     - alternative:
         id: alternative1
         showMultipleColumns: true
         of:
-        - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+        - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
         - link: {path: ../breast_cancer_biomarkers_score_parenthetical.i2qy}
 output:
   columns:
-  - id: link4.alternative1
+  - id: link5.alternative1
     itemOptions: {}
-    linkItemId: link4
+    linkItemId: link5
   - id: alternative1.col0
     itemOptions: {}
   - id: link3.link2.phrase1
@@ -32,3 +32,4 @@ output:
     linkItemId: link2.link3
   useOutputEditor: true
 creator: haglers
+queryID: bc0c885d

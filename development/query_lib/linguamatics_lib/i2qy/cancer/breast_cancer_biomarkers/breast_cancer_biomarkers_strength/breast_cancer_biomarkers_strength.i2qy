@@ -1,0 +1,21 @@
+version: 6.8
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - link:
+          path: ../../../tools/inequality_modifier_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+        - word:
+            text: very
+            quantifier: {minimum: 0, maximum: 1}
+        - alternative: [intermediate, intermediate-strong, moderate, moderate-strong, strong, weak, weak-moderate, weak-strong]
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+queryID: 848e833d

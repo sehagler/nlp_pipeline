@@ -1,8 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-30 00:13:24'
 query:
   document:
-  - link: {path: /api;type=saved_query/__private__/haglers/General/date/diagnosis_date/diagnosis_date_query.i2qy, id: link1}
+  - link: {path: ../../date/diagnosis_date/diagnosis_date_query.i2qy, id: link1}
 output:
   columns:
   - id: link1.phrase1
@@ -11,3 +11,4 @@ output:
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
+queryID: 66f4b6d0

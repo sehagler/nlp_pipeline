@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-06-30 22:15:34'
 query:
   document:
@@ -130,9 +130,10 @@ query:
                     - with
                     - within
                     - without
-          - link: {path: /api;type=saved_query/__private__/haglers/General/tools/breast_cancer_biomarkers_names.i2qy}
+          - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
 output:
   columns:
+  - {id: phrase1}
   - id: alternative1.col0
     itemOptions: {}
   - id: alternative1.col1
@@ -140,10 +141,10 @@ output:
   - id: alternative1.col2
     itemOptions: {}
   - id: alternative1.col3
-    itemOptions: {}
-  - {id: phrase1}
-  columnLocations: [4, 0, 1, 2, 3]
+    itemOptions:
+      columnOptions: [Empty]
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers
+queryID: 9c343ad4

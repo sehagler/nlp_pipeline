@@ -1,16 +1,14 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-30 00:13:24'
 query:
   document:
   - alternative:
       id: alternative1
       label: Extract
-      view: {height: 934, width: 2064}
       of:
       - phrase:
           displayChildren: false
           findMatches: longestOnly
-          view: {height: 537, width: 2027}
           of:
           - phrase:
               quantifier: {minimum: 0, maximum: 1}
@@ -509,3 +507,4 @@ output:
     defaultColumnOptions: [Text]
   useOutputEditor: true
 creator: haglers
+queryID: c098ce94

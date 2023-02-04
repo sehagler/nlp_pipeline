@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-10-04 17:15:15'
 query:
   document:
@@ -6,6 +6,7 @@ query:
   - alternative:
       findMatches: longestOnly
       id: alternative1
+      label: Snippet
       prioritization: within
       of:
       - phrase:
@@ -54,16 +55,17 @@ query:
               quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - id: link1.alternative1.col0
+  - id: link1.phrase1
     itemOptions: {}
     linkItemId: link1
-  - id: link1.alternative1.col1
+  - id: link1.link4.class1
     itemOptions: {}
-    linkItemId: link1
-  - id: link1.alternative1.col2
+    linkItemId: link4.link1
+  - id: link1.link5.phrase1
     itemOptions: {}
-    linkItemId: link1
+    linkItemId: link5.link1
   - {id: alternative1}
   useOutputEditor: true
 parameters: {Biomarker: ''}
 creator: haglers
+queryID: 0099c10e

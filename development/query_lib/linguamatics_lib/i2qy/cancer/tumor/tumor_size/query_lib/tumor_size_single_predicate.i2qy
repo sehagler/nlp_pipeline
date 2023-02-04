@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-05-08 14:57:34'
 query:
   document:
@@ -351,3 +351,4 @@ output:
   - {title: tumor size phrase, id: phrase2}
   useOutputEditor: true
 creator: haglers
+queryID: cf2eb254

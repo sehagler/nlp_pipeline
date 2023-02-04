@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-06-16 19:40:40'
 query:
   document:
@@ -6,9 +6,9 @@ query:
   - phrase:
       findMatches: longestOnly
       id: phrase1
+      label: Snippet
       maxWordGap: -1
       multiSentence: true
-      view: {height: 336, width: 1043}
       wordGapRestricted: false
       of:
       - sentence:
@@ -49,3 +49,4 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
+queryID: a40d7c27

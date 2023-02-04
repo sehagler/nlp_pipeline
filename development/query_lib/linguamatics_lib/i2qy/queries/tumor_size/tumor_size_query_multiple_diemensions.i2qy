@@ -1,10 +1,10 @@
-version: 6.3
+version: 6.8
 creationDate: '2022-11-28 17:35:42'
 query:
   document:
   - alternative:
     - sentence:
-      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/tumor_size_query_multiple_dimensions.i2qy, id: link2}
+      - link: {path: ../../cancer/tumor/tumor_size/tumor_size_query_multiple_dimensions.i2qy, id: link2}
 output:
   columns:
   - id: link2.phrase1
@@ -12,3 +12,4 @@ output:
     linkItemId: link2
   useOutputEditor: true
 creator: haglers
+queryID: c87d24e4

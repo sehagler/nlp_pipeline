@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-05-27 17:07:22'
 query:
   document:
@@ -32,26 +32,23 @@ output:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - title: Excerpt
-    id: link1.link1.alternative1.col0
+  - id: link1.link1.alternative1.col0
     itemOptions: {}
     linkItemId: link1.link1
-  - title: Cancer Stage
-    id: link1.link1.alternative1.col1
+  - id: link1.link1.alternative1.col1
     itemOptions: {}
     linkItemId: link1.link1
-  - title: Histologic Type
-    id: link1.link1.alternative1.col2
+  - id: link1.link1.alternative1.col2
     itemOptions: {}
     linkItemId: link1.link1
-  - title: Tumor Site
-    id: link1.link1.alternative1.col3
+  - id: link1.link1.alternative1.col3
     itemOptions: {}
     linkItemId: link1.link1
   - title: Snippet
-    id: link1.value2
+    id: link1.value1
     columnOptions: [Empty]
     isValueColumn: true
     linkItemId: link1
   useOutputEditor: true
 creator: haglers
+queryID: 09486ab0

@@ -1,0 +1,18 @@
+version: 6.8
+creationDate: '2022-08-25 19:52:32'
+query:
+  document:
+  - phrase:
+      maxSentenceGap: -1
+      multiSentence: true
+      of:
+      - link: {path: ../breast_cancer_biomarkers_blocks_AB_fields/breast_cancer_biomarkers_blocks_AB_field.i2qy}
+      where:
+      - link:
+          path: constraint_query.i2qy
+          quantifier: {minimum: 0, maximum: 0}
+output: {useOutputEditor: true}
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
+creator: haglers
+queryID: 6d362d46

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-03-01 21:11:36'
 query:
   document:
@@ -8,3 +8,4 @@ output:
   - {id: And1}
   useOutputEditor: true
 creator: haglers
+queryID: debe06a3

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-05-27 17:07:22'
 query:
   document:
@@ -18,7 +18,7 @@ query:
               pt: Specimen Description
               where:
               - link: {path: ../tools_lib/body_site_query.i2qy}
-              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_grade/hist_grade_query.i2qy, id: link3}
+              - link: {path: ../../cancer/histology/histological_grade/hist_grade_query.i2qy, id: link3}
 output:
   columns:
   - {id: region1}
@@ -31,3 +31,4 @@ output:
   useOutputEditor: true
 creator: haglers
 useInSmartQuery: true
+queryID: eda3ebc9

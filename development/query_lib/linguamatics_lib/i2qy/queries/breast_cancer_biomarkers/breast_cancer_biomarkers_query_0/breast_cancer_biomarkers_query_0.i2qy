@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2015-12-14 15:22:31'
 query:
   document:
@@ -262,17 +262,12 @@ query:
           showMultipleColumns: true
           of:
           - link: {path: breast_cancer_biomarkers_query_0_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_0_subquery_1.i2qy}
           - link: {path: breast_cancer_biomarkers_query_0_subquery_2.i2qy}
           - link: {path: breast_cancer_biomarkers_query_0_subquery_3.i2qy}
           - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_1_subquery_1.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_1_subquery_2.i2qy}
           - link: {path: breast_cancer_biomarkers_query_2_subquery_0.i2qy}
           - link: {path: breast_cancer_biomarkers_query_2_subquery_1.i2qy}
           - link: {path: breast_cancer_biomarkers_query_9_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_9_subquery_1.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_14_subquery_0.i2qy}
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
           of:
@@ -390,7 +385,7 @@ query:
                     - with
                     - within
                     - without
-          - link: {path: /api;type=saved_query/__private__/haglers/General/tools/breast_cancer_biomarkers_names.i2qy}
+          - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
 output:
   columns:
   - {id: phrase1}
@@ -407,3 +402,4 @@ output:
   useOutputEditor: true
 parameters: {BIOMARKER: ''}
 creator: szhang
+queryID: bb1ac4cf

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2022-08-30 16:41:17'
 query:
   document:
@@ -13,7 +13,7 @@ query:
             - phrase:
                 unordered: true
                 of:
-                - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
+                - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
                 - phrase:
                     displayChildren: false
                     quantifier: {minimum: 0, maximum: 1}
@@ -21,7 +21,7 @@ query:
                     - phrase:
                         quantifier: {minimum: 0, maximum: 1}
                         of: [comment, ':']
-                    - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_history/smoking_rate.i2qy}
+                    - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_rate.i2qy}
                 - alternative:
                     quantifier: {minimum: 0, maximum: 1}
                     of: [h/o, hx]
@@ -37,9 +37,10 @@ query:
               - alternative:
                   quantifier: {minimum: 0, maximum: 1}
                   of: [date, in]
-              - link: {path: /api;type=saved_query/__private__/haglers/General/tools/date_query.i2qy}
+              - link: {path: ../../tools/date_query.i2qy}
 output:
   columns:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: 2894816b

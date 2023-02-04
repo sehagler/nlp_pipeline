@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2022-12-17 01:30:55'
 query:
   document:
@@ -8,22 +8,33 @@ query:
         of:
         - link: {path: ../breast_cancer_biomarkers_relation_verbal.i2qy}
         - alternative: [':', ;]
-    - link: {path: /api;type=saved_query/__private__/haglers/General/tools/percentage_query.i2qy, id: link1}
-    - word:
-        text: ','
+    - phrase:
+        maxWordGap: -1
         quantifier: {minimum: 0, maximum: 1}
-    - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy, id: link2}
+        wordGapRestricted: false
+        of:
+        - (
+        - word:
+            text: )
+            quantifier: {minimum: 0, maximum: 0}
+    - phrase:
+      - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link3}
+      - word:
+          text: ','
+          quantifier: {minimum: 0, maximum: 1}
+      - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy, id: link1}
 output:
   columns:
-  - id: link1.phrase1
-    itemOptions: {}
-    linkItemId: link1
-  - id: link2.alternative1
-    itemOptions: {}
-    linkItemId: link2
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  columnLocations: [1, 2, 0]
+  - id: link1.alternative1
+    itemOptions: {}
+    linkItemId: link1
+  - id: link3.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link3
+  columnLocations: [1, 0, 2]
   useOutputEditor: true
 creator: haglers
+queryID: 8df5b752

@@ -1,9 +1,9 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Document Join:
-  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
   - Union:
     - sections_wrappers/sections_specimens_wrapper.i2qy
     - Subtraction: [sections_wrappers/sections_section_wrapper.i2qy, sections_wrappers/sections_specimen_description_wrapper.i2qy]
@@ -22,3 +22,4 @@ output:
     linkItemId: link1
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers
+queryID: 1495b1b1

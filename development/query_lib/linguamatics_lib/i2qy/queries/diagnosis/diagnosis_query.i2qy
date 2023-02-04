@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-30 00:13:24'
 query:
   document:
@@ -6,7 +6,6 @@ query:
       findMatches: longestOnly
       id: phrase2
       label: Extract
-      view: {height: 640, width: 2046}
       of:
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
@@ -33,7 +32,6 @@ query:
           displayChildren: false
           findMatches: longestOnly
           maxWordGap: 1
-          view: {height: 593, width: 1789}
           of:
           - phrase:
               quantifier: {minimum: 0, maximum: 1}
@@ -498,3 +496,4 @@ output:
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
+queryID: 9bbe046f

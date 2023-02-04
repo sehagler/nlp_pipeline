@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-10-04 17:17:13'
 query:
   document:
@@ -8,3 +8,4 @@ output:
   - {id: word1}
   useOutputEditor: true
 creator: haglers
+queryID: 330a8509

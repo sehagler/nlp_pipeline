@@ -1,9 +1,9 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Document Join:
-  - /api;type=saved_query/__private__/haglers/General/tools/document_id_query.i2qy
-  - /api;type=saved_query/__private__/haglers/General/tools/run_datetime_query.i2qy
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
   - Union:
     - smoking_history_wrappers/smoking_history_specimens_wrapper.i2qy
     - Subtraction: [smoking_history_wrappers/smoking_history_sections_wrapper.i2qy, smoking_history_wrappers/smoking_history_specimen_description_wrapper.i2qy]
@@ -25,3 +25,4 @@ output:
     linkItemId: link2
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers
+queryID: 37213f30

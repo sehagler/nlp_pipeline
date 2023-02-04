@@ -1,11 +1,10 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-04-30 12:48:56'
 query:
   document:
   - phrase:
       id: phrase1
       maxWordGap: 2
-      view: {height: 392, width: 1016}
       of:
       - phrase:
           quantifier: {minimum: 0, maximum: none}
@@ -81,3 +80,4 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
+queryID: 0aaeda79

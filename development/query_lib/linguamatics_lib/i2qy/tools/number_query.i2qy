@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2022-08-29 22:38:06'
 query:
   document:
@@ -9,7 +9,7 @@ query:
           quantifier: {minimum: 0, maximum: 1}
           of: ['~', '>', <]
       - alternative:
-          view: {height: 63, layout: list, width: 71}
+          view: {layout: list}
           of:
           - class: {snid: numerics.decimals, pt: Decimal}
           - class:
@@ -28,3 +28,4 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
+queryID: 2c9595e3

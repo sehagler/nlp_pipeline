@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-04-10 18:20:03'
 query:
   document:
@@ -6,13 +6,11 @@ query:
       findMatches: longestOnly
       id: alternative1
       label: Extract
-      view: {height: 340, width: 548}
       of:
       - phrase:
           maxSentenceGap: -1
           maxWordGap: -1
           multiSentence: true
-          view: {height: 301, width: 530}
           wordGapRestricted: false
           of:
           - alternative:
@@ -37,9 +35,10 @@ query:
                     view: {layout: list}
                     of: [negative, positive]
                 - for
-          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy}
+          - link: {path: ../../cancer/immunophenotype/immunophenotype_query.i2qy}
 output:
   columns:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: e477fb0e

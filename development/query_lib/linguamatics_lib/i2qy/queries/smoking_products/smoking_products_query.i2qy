@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-06-03 19:35:37'
 query:
   document:
@@ -20,10 +20,9 @@ query:
           - word: {text: try, morphoVariants: true}
       - alternative:
           findMatches: longestOnly
-          view: {height: 1420, width: 969}
           of:
-          - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/smoking_frequency.i2qy}
-          - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy}
+          - link: {path: ../../tobacco_and_cannabis_use/smoking_status/smoking_frequency.i2qy}
+          - link: {path: ../../tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy}
           - phrase:
             - word: {text: pack, morphoVariants: true}
             - word: {text: yr, morphoVariants: true}
@@ -35,3 +34,4 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
+queryID: a60c79a2

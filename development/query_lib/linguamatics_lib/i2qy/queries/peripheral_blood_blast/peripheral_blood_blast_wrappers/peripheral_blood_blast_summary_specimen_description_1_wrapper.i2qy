@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-29 18:22:39'
 query:
   document:
@@ -27,7 +27,7 @@ query:
                   showMultipleColumns: true
                   of:
                   - link: {path: peripheral_blood_blast_summary.i2qy}
-                  - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/peripheral_blood_blast_summary_base_1.i2qy}
+                  - link: {path: ../peripheral_blood_blast_summary_base_1_snippet.i2qy}
 output:
   columns:
   - {id: region1}
@@ -36,5 +36,9 @@ output:
     isValueColumn: true
   - id: alternative1.col0
     itemOptions: {}
+  - id: alternative1.col1
+    itemOptions:
+      columnOptions: [Empty]
   useOutputEditor: true
 creator: haglers
+queryID: e87c9cc9

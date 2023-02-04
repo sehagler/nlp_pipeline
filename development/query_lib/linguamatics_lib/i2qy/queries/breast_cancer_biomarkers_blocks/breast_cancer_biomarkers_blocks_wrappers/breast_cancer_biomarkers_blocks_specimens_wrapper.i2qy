@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-05-27 17:10:02'
 query:
   document:
@@ -23,15 +23,15 @@ output:
   columns:
   - {id: region1}
   - {id: shadow region1}
-  - id: link2.link1.alternative1.col0
+  - id: link2.link1.phrase1
     itemOptions: {}
     linkItemId: link1.link2
-  - id: link2.link1.alternative1.col1
+  - id: link2.link1.link4.class1
     itemOptions: {}
-    linkItemId: link1.link2
-  - id: link2.link1.alternative1.col2
+    linkItemId: link4.link1.link2
+  - id: link2.link1.link5.phrase1
     itemOptions: {}
-    linkItemId: link1.link2
+    linkItemId: link5.link1.link2
   - id: link2.alternative1
     itemOptions: {}
     linkItemId: link2
@@ -40,3 +40,4 @@ parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true
+queryID: a30d58d5

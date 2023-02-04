@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-05-25 22:28:56'
 query:
   document:
@@ -34,11 +34,9 @@ query:
             - positive
           - positivity
           - reactive
-          - strong
           - unamplified
           - unfavorable
           - variable
-          - weak
           - phrase: [without, immunoreactivity]
       - alternative:
           quantifier: {minimum: 0, maximum: 1}
@@ -55,3 +53,4 @@ output:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: a9bf2589

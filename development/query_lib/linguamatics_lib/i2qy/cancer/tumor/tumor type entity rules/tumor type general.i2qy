@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-05-04 11:58:13'
 query:
   document:
@@ -45,3 +45,4 @@ output:
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
+queryID: 8b0615d1

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-09-27 21:28:56'
 query:
   document:
@@ -7,32 +7,14 @@ query:
       id: phrase2
       of:
       - alternative:
-          view: {height: 738, width: 684}
-          of:
-          - phrase:
-            - tubules
-            - =
-            - alternative:
-                quantifier: {minimum: 1, maximum: none}
-                of:
-                - phrase:
-                  - (
-                  - phrase:
-                    - word: {text: '[0-3]', matchType: Regexp}
-                    - word:
-                        text: point
-                        morphoVariants: true
-                        quantifier: {minimum: 0, maximum: 1}
-                    - phrase:
-                        quantifier: {minimum: 0, maximum: 1}
-                        of:
-                        - of
-                        - word: {text: '[0-3]', matchType: Regexp}
-                        - word:
-                            text: point
-                            morphoVariants: true
-                            quantifier: {minimum: 0, maximum: 1}
-                  - )
+        - phrase:
+          - tubules
+          - =
+          - alternative:
+              quantifier: {minimum: 1, maximum: none}
+              of:
+              - phrase:
+                - (
                 - phrase:
                   - word: {text: '[0-3]', matchType: Regexp}
                   - word:
@@ -48,48 +30,22 @@ query:
                           text: point
                           morphoVariants: true
                           quantifier: {minimum: 0, maximum: 1}
-                - phrase:
-                  - word: {text: '[0-3]', matchType: Regexp}
-                  - /
-                  - word: {text: '[0-3]', matchType: Regexp}
-                  - word:
-                      text: point
-                      morphoVariants: true
-                      quantifier: {minimum: 0, maximum: 1}
-                - macro:
-                    snid: ohsu_test_result.test_result
-                    pt: Test Result
-                    of:
-                    - alternative:
-                        macroPt: Test Result
-                        macroSnid: ohsu_test_result.test_result
-                        of:
-                        - absent
-                        - amplified
-                        - borderline
-                        - equivocal
-                        - high
-                        - low
-                        - marked
-                        - minimal
-                        - moderate
-                        - negative
-                        - non-amplified
-                        - phrase: [not, done]
-                        - positive
-                        - present
-                        - unamplified
-          - phrase:
-            - alternative:
+                - )
               - phrase:
-                - word:
-                    text: /
-                    quantifier: {minimum: 0, maximum: 0}
                 - word: {text: '[0-3]', matchType: Regexp}
                 - word:
                     text: point
                     morphoVariants: true
                     quantifier: {minimum: 0, maximum: 1}
+                - phrase:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of:
+                    - of
+                    - word: {text: '[0-3]', matchType: Regexp}
+                    - word:
+                        text: point
+                        morphoVariants: true
+                        quantifier: {minimum: 0, maximum: 1}
               - phrase:
                 - word: {text: '[0-3]', matchType: Regexp}
                 - /
@@ -98,8 +54,50 @@ query:
                     text: point
                     morphoVariants: true
                     quantifier: {minimum: 0, maximum: 1}
-            - for
-            - nuclei
+              - macro:
+                  snid: ohsu_test_result.test_result
+                  pt: Test Result
+                  of:
+                  - alternative:
+                      macroPt: Test Result
+                      macroSnid: ohsu_test_result.test_result
+                      of:
+                      - absent
+                      - amplified
+                      - borderline
+                      - equivocal
+                      - high
+                      - low
+                      - marked
+                      - minimal
+                      - moderate
+                      - negative
+                      - non-amplified
+                      - phrase: [not, done]
+                      - positive
+                      - present
+                      - unamplified
+        - phrase:
+          - alternative:
+            - phrase:
+              - word:
+                  text: /
+                  quantifier: {minimum: 0, maximum: 0}
+              - word: {text: '[0-3]', matchType: Regexp}
+              - word:
+                  text: point
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+            - phrase:
+              - word: {text: '[0-3]', matchType: Regexp}
+              - /
+              - word: {text: '[0-3]', matchType: Regexp}
+              - word:
+                  text: point
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+          - for
+          - nuclei
       - link:
           path: ../../../../tools/parenthetical_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
@@ -108,3 +106,4 @@ output:
   - {id: phrase2}
   useOutputEditor: true
 creator: haglers
+queryID: c76a747f

@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-04-24 20:28:59'
 query:
   document:
@@ -16,3 +16,4 @@ output:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
+queryID: 405ca8ab

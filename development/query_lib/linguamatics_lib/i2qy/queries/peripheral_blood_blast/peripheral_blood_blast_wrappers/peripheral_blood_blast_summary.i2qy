@@ -1,15 +1,13 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-30 17:42:24'
 query:
   document:
   - phrase:
       maxWordGap: -1
-      view: {height: 163, width: 1132}
       wordGapRestricted: false
       of:
       - phrase:
           maxWordGap: -1
-          view: {height: 124, width: 628}
           wordGapRestricted: false
           of:
           - phrase:
@@ -31,11 +29,17 @@ query:
           displayChildren: false
           quantifier: {minimum: 0, maximum: 0}
           of: [bone, marrow]
-      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/peripheral_blood_blast_summary_base_0.i2qy, id: link2}
+      - link: {path: ../peripheral_blood_blast_summary_base_0_snippet.i2qy, id: link1}
 output:
   columns:
-  - id: link2.alternative1
+  - id: link1.link1.alternative1
     itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1.link1
+  - title: Snippet
+    id: link1.value1
+    columnOptions: [Empty]
+    isValueColumn: true
+    linkItemId: link1
   useOutputEditor: true
 creator: haglers
+queryID: d0311e44

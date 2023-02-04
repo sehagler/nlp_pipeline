@@ -1,8 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-05-27 16:56:09'
 query:
   document:
-  - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/residual_disease/residual_disease_query.i2qy, id: link1}
+  - link: {path: ../../cancer/residual_disease/residual_disease_query.i2qy, id: link1}
 output:
   columns:
   - id: link1.alternative1
@@ -10,3 +10,4 @@ output:
     linkItemId: link1
   useOutputEditor: true
 creator: haglers
+queryID: bbb7a464

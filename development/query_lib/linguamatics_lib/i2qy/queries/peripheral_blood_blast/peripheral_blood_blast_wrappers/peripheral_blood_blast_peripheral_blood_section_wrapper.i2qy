@@ -1,9 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 15:56:12'
 query:
   document:
   - region:
-      view: {height: 210, width: 557}
       snid: hc.titled_section
       pt: Titled Section
       where:
@@ -19,23 +18,28 @@ query:
       - region:
           columnOptions: [Text]
           showWholeRegion: true
-          view: {height: 172, width: 325}
           snid: hc.section_body
           pt: Section Body
           where:
           - alternative:
               id: alternative1
+              showMultipleColumns: true
               of:
-              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/peripheral_blood_blast.i2qy}
-              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/query_lib/peripheral_blood_blast_peripheral_blood.i2qy}
+              - link: {path: ../peripheral_blood_blast_query_snippet.i2qy}
+              - link: {path: ../peripheral_blood_blast_peripheral_blood_query_snippet.i2qy}
 output:
   columns:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
   - {id: region1}
-  - {id: alternative1}
-  columnLocations: [1, 0, 2]
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions:
+      columnOptions: [Empty]
+  columnLocations: [1, 0, 2, 3]
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
+queryID: 2eb70b9c

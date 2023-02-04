@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-09-20 20:57:42'
 query:
   document:
@@ -7,3 +7,4 @@ query:
     - word: {text: appear, morphoVariants: true}
     - word: {text: be, morphoVariants: true}
 creator: haglers
+queryID: df3b00b3

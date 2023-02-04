@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-29 18:22:39'
 query:
   document:
@@ -22,15 +22,21 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/peripheral_blood_blast_%25/peripheral_blood_blast.i2qy, id: link2}
+              - link: {path: ../peripheral_blood_blast_query_snippet.i2qy, id: link1}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link2.phrase1
+  - id: link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1.link1
+  - title: Snippet
+    id: link1.value1
+    columnOptions: [Empty]
+    isValueColumn: true
+    linkItemId: link1
   useOutputEditor: true
 creator: haglers
+queryID: bc192082

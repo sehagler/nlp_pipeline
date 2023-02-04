@@ -1,9 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 15:56:12'
 query:
   document:
   - region:
-      view: {height: 121, width: 323}
       snid: hc.titled_section
       pt: Titled Section
       where:
@@ -31,3 +30,4 @@ output:
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
+queryID: 23dd6da0

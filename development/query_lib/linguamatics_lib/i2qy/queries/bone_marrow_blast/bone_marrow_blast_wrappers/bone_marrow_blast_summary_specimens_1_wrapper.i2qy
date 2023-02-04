@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-01-29 17:32:46'
 query:
   document:
@@ -30,8 +30,14 @@ output:
   columns:
   - {id: region1}
   - {id: shadow region1}
-  - id: link3.link2.phrase1
+  - id: link3.link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link2.link3
+    linkItemId: link1.link1.link3
+  - title: Snippet
+    id: link3.link1.value1
+    columnOptions: [Empty]
+    isValueColumn: true
+    linkItemId: link1.link3
   useOutputEditor: true
 creator: haglers
+queryID: aeb2eb7b

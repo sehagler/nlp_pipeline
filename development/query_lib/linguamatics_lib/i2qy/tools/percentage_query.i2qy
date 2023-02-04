@@ -1,10 +1,9 @@
-version: 6.3
+version: 6.8
 creationDate: '2019-02-26 17:24:53'
 query:
   document:
   - phrase:
       id: phrase1
-      view: {height: 138, width: 578}
       of:
       - word:
           text: '-'
@@ -21,12 +20,10 @@ query:
       - link:
           path: inequality_modifier_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
-      - word:
-          text: (([0-9]+(\.[0-9]+)?)%?\-)?[0-9]+(\.[0-9]+)?%
-          matchType: Regexp
-          view: {height: 55, width: 324}
+      - word: {text: '(([0-9]+(\.[0-9]+)?)%?\-)?[0-9]+(\.[0-9]+)?%', matchType: Regexp}
 output:
   columns:
   - {id: phrase1}
   useOutputEditor: true
 creator: haglers
+queryID: f41e52bf

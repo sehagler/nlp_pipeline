@@ -1,9 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 15:56:12'
 query:
   document:
   - region:
-      view: {height: 283, width: 547}
       snid: hc.titled_section
       pt: Titled Section
       where:
@@ -22,21 +21,26 @@ query:
       - region:
           columnOptions: [Text]
           showWholeRegion: true
-          view: {height: 85, width: 209}
           snid: hc.section_body
           pt: Section Body
           where:
-          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/bone_marrow_blast_%25/bone_marrow_blast_%25_query.i2qy, id: link3}
+          - link: {path: ../bone_marrow_blast_query_snippet.i2qy, id: link1}
 output:
   columns:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
   - {id: region1}
-  - id: link3.phrase1
+  - id: link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link3
-  columnLocations: [1, 0, 2]
+    linkItemId: link1.link1
+  - title: Snippet
+    id: link1.value1
+    columnOptions: [Empty]
+    isValueColumn: true
+    linkItemId: link1
+  columnLocations: [1, 0, 2, 3]
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers
+queryID: 2926de97

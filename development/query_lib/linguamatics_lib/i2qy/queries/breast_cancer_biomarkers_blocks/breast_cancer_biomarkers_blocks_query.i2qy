@@ -1,21 +1,26 @@
-version: 6.3
-creationDate: '2021-10-04 17:17:13'
+version: 6.8
+creationDate: '2022-08-25 19:52:32'
 query:
   document:
-  - alternative:
-      id: alternative1
-      showMultipleColumns: true
+  - phrase:
+      id: phrase1
+      maxSentenceGap: -1
+      multiSentence: true
       of:
-      - link: {path: breast_cancer_biomarkers_blocks_AB_query.i2qy}
+      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_blocks/breast_cancer_biomarkers_blocks.i2qy, id: link5}
+      - link: {path: breast_cancer_biomarkers_blocks_AB_queries/breast_cancer_biomarkers_blocks_AB_query.i2qy}
+      - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link4}
 output:
   columns:
-  - id: alternative1.col0
+  - {id: phrase1}
+  - id: link4.class1
     itemOptions: {}
-  - id: alternative1.col1
+    linkItemId: link4
+  - id: link5.phrase1
     itemOptions: {}
-  - id: alternative1.col2
-    itemOptions: {}
+    linkItemId: link5
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers
+queryID: 21bb5f15

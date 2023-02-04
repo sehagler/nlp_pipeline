@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2020-06-02 21:52:12'
 query:
   document:
@@ -6,17 +6,18 @@ query:
     - alternative:
         quantifier: {minimum: 0, maximum: 0}
         of:
-        - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/smoking_status.i2qy}
+        - link: {path: ../../tobacco_and_cannabis_use/smoking_status/smoking_status.i2qy}
     - alternative:
         findMatches: longestOnly
         id: alternative1
         of:
-        - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/smoking_status.i2qy}
-        - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/smoking_frequency.i2qy}
-        - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/smoking_negative.i2qy}
-        - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy}
+        - link: {path: ../../tobacco_and_cannabis_use/smoking_status/smoking_status.i2qy}
+        - link: {path: ../../tobacco_and_cannabis_use/smoking_status/smoking_frequency.i2qy}
+        - link: {path: ../../tobacco_and_cannabis_use/smoking_status/smoking_negative.i2qy}
+        - link: {path: ../../tobacco_and_cannabis_use/query_lib/quit_smoking.i2qy}
 output:
   columns:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: 8832e4c6

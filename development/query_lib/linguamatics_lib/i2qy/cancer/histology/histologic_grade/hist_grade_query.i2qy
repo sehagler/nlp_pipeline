@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 title: ''
 creationDate: '2015-10-07 16:40:22'
 query:
@@ -18,7 +18,7 @@ query:
               view: {layout: list}
               of:
               - link: {path: ../../../tools/parenthetical_query.i2qy}
-              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/histology/histological_differentiation/hist_diff_query.i2qy}
+              - link: {path: ../histological_differentiation/hist_diff_query.i2qy}
           - word:
               text: ':'
               quantifier: {minimum: 0, maximum: 1}
@@ -58,3 +58,4 @@ creator: Bubz
 description: ''
 summary: ''
 useInSmartQuery: true
+queryID: 45b8fa56

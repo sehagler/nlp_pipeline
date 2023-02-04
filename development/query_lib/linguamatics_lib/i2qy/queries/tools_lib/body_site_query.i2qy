@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-05-11 10:17:50'
 query:
   document:
@@ -14,3 +14,4 @@ output:
   - {id: alternative1}
   useOutputEditor: true
 creator: haglers
+queryID: 755fb65f

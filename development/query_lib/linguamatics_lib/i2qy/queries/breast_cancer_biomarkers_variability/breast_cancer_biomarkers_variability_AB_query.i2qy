@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2021-10-04 17:17:13'
 query:
   document:
@@ -7,7 +7,7 @@ query:
       maxSentenceGap: -1
       multiSentence: true
       of:
-      - link: {path: /api;type=saved_query/__private__/haglers/General/smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link1}
+      - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link1}
       - phrase:
           maxSentenceGap: -1
           multiSentence: true
@@ -17,13 +17,13 @@ query:
           - alternative:
               quantifier: {minimum: 0, maximum: 0}
               of:
-              - link: {path: /api;type=saved_query/__private__/haglers/General/tools/breast_cancer_biomarkers_names.i2qy}
+              - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
               where:
               - link:
-                  path: /api;type=saved_query/__private__/haglers/General/smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy
+                  path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy
                   quantifier: {minimum: 0, maximum: 0}
                   showInDefaultOutput: false
-      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_variability/breast_cancer_biomarkers_variability.i2qy, id: link4}
+      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_variability/breast_cancer_biomarkers_variability.i2qy, id: link4}
 output:
   columns:
   - {id: phrase1}
@@ -37,3 +37,4 @@ output:
 parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers
+queryID: 2990d8fe

@@ -1,9 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 15:56:12'
 query:
   document:
   - region:
-      view: {height: 119, width: 297}
       snid: hc.titled_section
       pt: Titled Section
       where:
@@ -27,3 +26,4 @@ output:
   columnLocations: [1, 0, 2]
   useOutputEditor: true
 creator: haglers
+queryID: 58e21fa5
