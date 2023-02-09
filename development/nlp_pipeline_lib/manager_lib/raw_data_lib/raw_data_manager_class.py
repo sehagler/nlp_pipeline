@@ -30,7 +30,8 @@ def _get_nlp_metadata(password, i2e_version, num_processes, process_idx):
     return nlp_metadata
 
 #
-def _partition_data_by_thread(data, multiprocessing_flg, num_processes):
+def _partition_data_by_thread(data, multiprocessing_flg, num_processes,
+                              doc_idx_offset):
     partitioned_data = {}
     if multiprocessing_flg:
         for i in range(num_processes):
@@ -42,7 +43,7 @@ def _partition_data_by_thread(data, multiprocessing_flg, num_processes):
                 for key in data[i].keys():
                     data_tmp[key] = []
                 partitioned_data[j].append(data_tmp)
-        doc_idx = 0
+        doc_idx = doc_idx_offset
         for i in range(len(data)):
             keys = list(data[i].keys())
             num_entries = len(data[i][keys[0]])
@@ -54,7 +55,7 @@ def _partition_data_by_thread(data, multiprocessing_flg, num_processes):
                 doc_idx += 1
     else:
         partitioned_data[0] = data
-    return partitioned_data
+    return partitioned_data, doc_idx
 
 #
 def _read_data(data_tmp, password, i2e_version, num_processes, process_idx):
@@ -118,7 +119,7 @@ class Raw_data_manager(Manager_base):
         Manager_base.__init__(self, static_data_object)
         static_data = self.static_data_object.get_static_data()
         self.multiprocessing_flg = multiprocessing_flg
-        self.raw_data = []
+        self.clear_raw_data()
         if self.multiprocessing_flg:
             self.num_processes = static_data['num_processes']
         else:
@@ -127,6 +128,10 @@ class Raw_data_manager(Manager_base):
     #
     def append_raw_data(self, raw_data):
         self.raw_data.append(raw_data)
+        
+    #
+    def clear_raw_data(self):
+        self.raw_data = []
     
     #
     def get_data_by_document_number(self, data_file, document_number,
@@ -189,10 +194,11 @@ class Raw_data_manager(Manager_base):
         return self.num_processes
     
     #
-    def partition_data(self):
-        self.partitioned_data = \
+    def partition_data(self, doc_idx_offset):
+        self.partitioned_data, doc_idx_offset = \
             _partition_data_by_thread(self.raw_data, self.multiprocessing_flg,
-                                      self.num_processes)
+                                      self.num_processes, doc_idx_offset)
+        return doc_idx_offset
     
     #
     def print_num_of_docs_in_preprocessing_set(self):

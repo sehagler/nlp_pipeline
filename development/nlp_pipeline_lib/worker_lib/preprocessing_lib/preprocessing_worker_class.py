@@ -8,7 +8,6 @@ Created on Fri Feb  5 13:07:13 2021
 #
 import datetime
 import numpy as np
-import pickle
     
 #
 class Preprocessing_worker(object):
@@ -132,32 +131,29 @@ class Preprocessing_worker(object):
         self.metadata_keys = tuple(np.unique(self.metadata_keys))
         
     #
-    def process_raw_data(self, queue, dynamic_data_manager, metadata_manager,
-                         num_processes, process_idx, start_idx, i2e_version,
-                         password):
-        self.i2e_version = i2e_version
-        self.dynamic_data_manager = dynamic_data_manager
-        self.metadata_manager = metadata_manager
-        self.num_processes = num_processes
-        self.process_idx = process_idx
-        
-        #
-        static_data = self.static_data_object.get_static_data()
-        
-        # Read data kludge to be done properly later
-        operation_mode = static_data['operation_mode']
-        pkl_file = 'raw_data_' + operation_mode + '.pkl'
-        self.raw_data_manager = pickle.load(open(pkl_file, 'rb'))
-        self.raw_data_manager.select_process(process_idx)
-        # Read data kludge to be done properly later
-        
-        print('Process ' + str(process_idx) + ' starting')
-        document_ctr = 0
-        fail_ctr = 0
-        document_ctr, fail_ctr = self._preprocess_documents(self.raw_data_manager,
-                                                            start_idx, document_ctr,
-                                                            fail_ctr, password)
-        queue.put([self.dynamic_data_manager, self.metadata_manager, document_ctr])
-        print('Process ' + str(process_idx) + ' finished')
-        print(' Number documents processed: %d' % document_ctr)
-        print(' Number of failed documents: %d' % fail_ctr)
+    def process_raw_data(self, argument_queue, return_queue):
+        run_flg = True
+        while run_flg:
+            argument_dict = argument_queue.get()
+            if 'command' in argument_dict:
+                if argument_dict['command'] == 'stop':
+                    run_flg = False
+            else:
+                self.i2e_version = argument_dict['i2e_version'] 
+                self.dynamic_data_manager = argument_dict['dynamic_data_manager']
+                self.metadata_manager = argument_dict['metadata_manager'] 
+                self.num_processes = argument_dict['num_processes']
+                self.process_idx = argument_dict['process_idx']
+                self.raw_data_manager = argument_dict['raw_data_manager']
+                password = argument_dict['password']
+                start_idx = argument_dict['start_idx']
+                print('Process ' + str(self.process_idx) + ' starting')
+                doc_ctr = 0
+                fail_ctr = 0
+                doc_ctr, fail_ctr = self._preprocess_documents(self.raw_data_manager,
+                                                               start_idx, doc_ctr,
+                                                               fail_ctr, password)
+                print('Process ' + str(self.process_idx) + ' finished')
+                print(' Number documents processed: %d' % doc_ctr)
+                print(' Number of failed documents: %d' % fail_ctr)
+                return_queue.put([self.dynamic_data_manager, self.metadata_manager, doc_ctr])
