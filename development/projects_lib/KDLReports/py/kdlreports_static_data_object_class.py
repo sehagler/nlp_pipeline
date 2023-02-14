@@ -25,36 +25,27 @@ class KDLReports_static_data_object(Static_data_object):
         self.project_subdir = project_subdir
         
         self.static_data['document_identifiers'] = \
-            [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
+            [ 'SOURCE_SYSTEM_UNIQUE_ID' ]
         if 'performance_data_files' in self.static_data.keys():
             self.static_data['performance_data_files'].append('CCC19/test/CCC19.performance.json')
         self.static_data['queries_list'] = \
-            [ ('ER_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_BLOCK', 'single_value', True), 
-              ('ER_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
-              ('ER_SCORE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
-              ('ER_STATUS', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
-              ('ER_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_VARIABILITY', 'single_value', True),
-              ('GATA3_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_BLOCK', 'single_value', True),
-              ('GATA3_STATUS', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
-              ('GATA3_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_VARIABILITY', 'single_value', True),
-              ('HER2_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_BLOCK', 'single_value', True),
-              #('HER2_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
-              ('HER2_SCORE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True), 
-              ('HER2_STATUS', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True), 
-              ('HER2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_VARIABILITY', 'single_value', True),
-              ('KI67_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_BLOCK', 'single_value', True),
-              ('KI67_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_PERCENTAGE', 'single_value', True),
-              #('KI67_STATUS', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_STATUS', 'single_value', True),
-              ('KI67_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_VARIABILITY', 'single_value', True),
-              ('PR_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_BLOCK', 'single_value', True), 
-              ('PR_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
-              ('PR_SCORE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True), 
-              ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
-              ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ,
-              ('TNM_STAGING', None, 'TNM_STAGING', 'TNM_STAGING', 'single_value', True), 
-              ('TUMOR_SIZE', None, 'TUMOR_SIZE', 'TUMOR_SIZE', 'single_value', True), ]
+            [ ('ER Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
+              ('ER Percent', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
+              ('ER Stain Score', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
+              ('Gata3 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
+              ('Gata3 Percent', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_PERCENTAGE', 'single_value', True),
+              ('Gata3 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_SCORE', 'single_value', True),
+              ('Her2 IHC Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True),
+              ('Her2 IHC Percent', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
+              ('Her2 IHC Stain Score', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True),
+              ('Ki67 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_STATUS', 'single_value', True),
+              ('Ki67 Percent', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_PERCENTAGE', 'single_value', True),
+              ('Ki67 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_SCORE', 'single_value', True),
+              ('PR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
+              ('PR Percent', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
+              ('PR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True) ]
         self.static_data['validation_file'] = \
-            'breastcancerpathology_testing.xlsx'
+            'smmart_nlp_comparison.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML'] = {}
@@ -67,8 +58,8 @@ class KDLReports_static_data_object(Static_data_object):
             self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML' ]
             
             #
-            data_set_flgs = [ 'testing', 'training' ]
-            data_set_flg = data_set_flgs[0]
+            #data_set_flgs = [ 'testing', 'training' ]
+            #data_set_flg = data_set_flgs[0]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':
@@ -84,24 +75,30 @@ class KDLReports_static_data_object(Static_data_object):
             groups_files = []
             groups_files.append(os.path.join(training_data_dir, 'training_groups.pkl'))
                 
+            '''
             if data_set_flg == 'training':
                 self._include_lists(docs_files, groups_files, [0])
             elif data_set_flg == 'testing':
                 self._include_lists(docs_files, groups_files, [1])
+            '''
+            self._include_lists(docs_files, groups_files, [0, 1])
             
             raw_data_dir = \
                 self.static_data['directory_manager'].pull_directory('raw_data_dir')
-            raw_data_file = os.path.join(raw_data_dir, 'breastcancerpathology_testing.xlsx')
+            raw_data_file = os.path.join(raw_data_dir, 'smmart_nlp_comparison.xlsx')
             book = read_xlsx_file(raw_data_file)
             sheet = book.sheet_by_index(0)
-            patient_list = list(set(sheet.col_values(1)[1:]))
+            patient_list = list(set(sheet.col_values(0)[1:]))
             document_list = list(set(sheet.col_values(2)[1:]))
-
+            
             self._trim_lists(document_list, patient_list)
         
     #
     def _trim_lists(self, document_list, patient_list):
+        remove_document_list = self.static_data['document_list']
         self.static_data['document_list'] = \
-            list(set(self.static_data['document_list']).intersection(document_list))
-        self.static_data['patient_list'] = \
-            list(set(self.static_data['patient_list']).intersection(patient_list))
+            list(set(document_list) - set(remove_document_list))
+        del self.static_data['patient_list']
+        #remove_patient_list = self.static_data['patient_list']
+        #self.static_data['patient_list'] = \
+        #    list(set(patient_list) - set(remove_patient_list))

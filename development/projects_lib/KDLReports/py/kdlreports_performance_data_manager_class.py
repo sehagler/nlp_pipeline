@@ -72,37 +72,39 @@ class KDLReports_performance_data_manager(Performance_data_manager):
         for csn in document_csn_list:
             print(csn)
             for i in range(len(self.queries)):
+                validation_datum_key = self.queries[i][0]
                 nlp_datum_key = self.queries[i][3]
                 if nlp_datum_key not in N_manual_review.keys():
-                    N_manual_review[nlp_datum_key] = 0
+                    N_manual_review[validation_datum_key] = 0
                 if nlp_datum_key not in hit_documents_dict.keys():
-                    hit_documents_dict[nlp_datum_key] = []
+                    hit_documents_dict[validation_datum_key] = []
                 if nlp_datum_key not in hit_manual_review_dict.keys():
-                    hit_manual_review_dict[nlp_datum_key] = []
-                validation_datum_key = self.queries[i][0]
+                    hit_manual_review_dict[validation_datum_key] = []
                 column_labels = self.validation_data_manager.column_labels()
+                validation_value = None
                 for j in range(1, self.validation_data_manager.length()):
                     row = self.validation_data_manager.row(j)
                     validation_idx = \
                         [k for k in range(len(column_labels)) \
-                         if column_labels[k] == validation_datum_key][0]
-                    if row[2] == csn:
-                        validation_value = \
-                            self._process_validation_item(row[validation_idx])
+                         if column_labels[k] == validation_datum_key]
+                    if len(validation_idx) > 0:
+                        if row[2] == csn:
+                            validation_value = \
+                                self._process_validation_item(row[validation_idx[0]])
                 if validation_value is not None and self.manual_review in validation_value:
-                        N_manual_review[nlp_datum_key] += 1
+                        N_manual_review[validation_datum_key] += 1
                 if csn in nlp_values.keys() and nlp_values[csn] is not None:
                     if csn in nlp_values.keys():
-                        if nlp_datum_key in nlp_values[csn].keys():
-                            nlp_value = nlp_values[csn][nlp_datum_key]
+                        if validation_datum_key in nlp_values[csn].keys():
+                            nlp_value = nlp_values[csn][validation_datum_key]
                         else:
                             nlp_value = None
                     else:
                         nlp_value = None
                     if nlp_value is not None:
-                        hit_documents_dict[nlp_datum_key].append(csn)
+                        hit_documents_dict[validation_datum_key].append(csn)
                         if validation_value is not None and self.manual_review in validation_value:
-                            hit_manual_review_dict[nlp_datum_key].append(csn)
+                            hit_manual_review_dict[validation_datum_key].append(csn)
                     if csn in validation_csn_list:
                         if not ( validation_value is not None and self.manual_review in validation_value ):
                             nlp_performance_wo_validation_manual_review_dict = \
@@ -116,15 +118,15 @@ class KDLReports_performance_data_manager(Performance_data_manager):
                                                                validation_datum_key)
                 else:
                     if validation_value == None:
-                        nlp_performance_wo_validation_manual_review_dict[nlp_datum_key].append('true negative')
+                        nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append('true negative')
                     elif self.manual_review in validation_value:
-                        nlp_performance_w_validation_manual_review_dict[nlp_datum_key].append('false negative')
+                        nlp_performance_w_validation_manual_review_dict[validation_datum_key].append('false negative')
                         print('false negative')
                         print(None)
                         print(validation_value)
                         print('')
                     else:
-                        nlp_performance_wo_validation_manual_review_dict[nlp_datum_key].append('false negative')
+                        nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append('false negative')
                         print('false negative')
                         print(None)
                         print(validation_value)

@@ -138,14 +138,23 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
     return nlp_values
 
 #
-def _intersection(self, x, y):
+def _intersection(x, y):
     return list(set(x) & set(y))
+
+#
+def _normalize_percentage_range(text):
+    if re.match("[0-9]+%?\-[0-9]+%", text):
+        text = re.sub('-', '%-', text)
+        text = re.sub('%+', '%', text)
+    return text
 
 #
 def _nlp_to_tuple(value):
     if value is not None:
         value = list(value)
         for i in range(len(value)):
+            if value[i] != 'MANUAL_REVIEW':
+                value[i] = value[i].lower()
             value[i] = value[i].replace(' ', '')
         value_tuple = tuple(value)
     else:
@@ -245,6 +254,9 @@ def _read_metadata(nlp_data):
 #
 def _validation_to_tuple(text):
     if text is not None:
+        if text != 'MANUAL_REVIEW':
+            text = text.lower()
+        text = _normalize_percentage_range(text)
         text = text.replace(' ', '')
         text = text.replace(',', '\',\'')
         text = text.replace('(', '(\'')
@@ -380,22 +392,24 @@ class Performance_data_manager(Manager_base):
                          validation_datum_key, display_flg):
         if csn in nlp_values.keys():
             data_out = nlp_values[csn]
-            if nlp_datum_key in data_out.keys():
-                nlp_value = data_out[nlp_datum_key]
+            if validation_datum_key in data_out.keys():
+                nlp_value = data_out[validation_datum_key]
             else:
                 nlp_value = None
         else:
             nlp_value = None
         nlp_value = _nlp_to_tuple(nlp_value)
         column_labels = self.validation_data_manager.column_labels()
+        validation_value = None
         for i in range(1, self.validation_data_manager.length()):
             row = self.validation_data_manager.row(i)
             validation_idx = \
                 [j for j in range(len(column_labels)) \
-                 if column_labels[j] == validation_datum_key][0]
-            if row[2] == csn:
-                validation_value = \
-                    self._process_validation_item(row[validation_idx])
+                 if column_labels[j] == validation_datum_key]
+            if len(validation_idx) > 0:
+                if row[2] == csn:
+                    validation_value = \
+                        self._process_validation_item(row[validation_idx[0]])
         validation_value = _validation_to_tuple(validation_value)
         performance = \
             self.evaluation_manager.evaluation(nlp_value, validation_value,
@@ -467,7 +481,7 @@ class Performance_data_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         validation_filename = static_data['validation_file']
         directory_manager = static_data['directory_manager']
-        project_name = static_data['project_name']
+        #project_name = static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         filename = os.path.join(data_dir, validation_filename)
         self.validation_data_manager = self.xls_manager_registry[filename]

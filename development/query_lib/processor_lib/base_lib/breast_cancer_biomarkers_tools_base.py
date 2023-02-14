@@ -445,12 +445,14 @@ class Postprocessor(Postprocessor_base):
     
     #
     def _process_percentage(self, percentage):
+        '''
         match = re.search('[0-9]+%-[0-9]+%', percentage)
         if match is not None:
             percentage = \
                 lambda_tools.lambda_conversion('(?<=%)-(?=[0-9])',
                                              match.group(0), ',')
             percentage = '(' + percentage + ')'
+        '''
         return percentage
     
     #
