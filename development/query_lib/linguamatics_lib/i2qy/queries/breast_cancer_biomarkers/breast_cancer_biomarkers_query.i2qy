@@ -17,11 +17,17 @@ output:
     itemOptions: {}
   - id: alternative1.col1
     itemOptions: {}
-  - id: alternative1.col2
+  - title: STATUS
+    id: alternative1.col2
     itemOptions: {}
-  - id: alternative1.col3
+  - title: STRENGTH ..
+    id: alternative1.col3
     itemOptions: {}
-  - id: alternative1.col4
+  - title: SCORE
+    id: alternative1.col4
+    itemOptions: {}
+  - title: PERCENTAGE
+    id: alternative1.col5
     itemOptions: {}
   outputSettings: {maxResults: 10000}
   useOutputEditor: true

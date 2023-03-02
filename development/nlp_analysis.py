@@ -20,7 +20,7 @@ z_root_base = 'Z:/NLP'
 #
 project_names = [ 'AdverseEvents', 'BeatAML_Waves_1_And_2',
                   'BeatAML_Waves_3_And_4', 'BreastCancerPathology', 'CCC19',
-                  'KDLReports', 'OhsuNlpTemplate' ]
+                  'KDLReports', 'NewBiomarkers', 'OhsuNlpTemplate' ]
 project_subdirs = [ 'production', 'test' ]
 servers = [ 'development', 'production' ]
 
@@ -33,9 +33,9 @@ pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[4]
-project_subdir = project_subdirs[0]
-server = servers[1]
+project_name = project_names[6]
+project_subdir = project_subdirs[1]
+server = servers[0]
 
 #
 pipeline_mode_flg = pipeline_mode_flgs[1]

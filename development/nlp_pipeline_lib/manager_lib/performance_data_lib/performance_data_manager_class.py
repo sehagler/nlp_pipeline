@@ -399,6 +399,8 @@ class Performance_data_manager(Manager_base):
         else:
             nlp_value = None
         nlp_value = _nlp_to_tuple(nlp_value)
+        validation_csn_list = \
+            self.validation_data_manager.get_validation_csn_list()
         column_labels = self.validation_data_manager.column_labels()
         validation_value = None
         for i in range(1, self.validation_data_manager.length()):
@@ -407,9 +409,13 @@ class Performance_data_manager(Manager_base):
                 [j for j in range(len(column_labels)) \
                  if column_labels[j] == validation_datum_key]
             if len(validation_idx) > 0:
-                if row[2] == csn:
-                    validation_value = \
-                        self._process_validation_item(row[validation_idx[0]])
+                idxs = [i for i in range(len(validation_csn_list)) if validation_csn_list[i] == csn]
+                if len(idxs) == 1:
+                    if row[2] == csn:
+                        validation_value = \
+                            self._process_validation_item(row[validation_idx[0]])
+                else:
+                    validation_value = 'MANUAL_REVIEW'
         validation_value = _validation_to_tuple(validation_value)
         performance = \
             self.evaluation_manager.evaluation(nlp_value, validation_value,

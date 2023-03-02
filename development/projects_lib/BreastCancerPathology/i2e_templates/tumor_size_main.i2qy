@@ -1,7 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-05-10 08:49:25'
 multiquery:
   Union: [/api;type=saved_query/__private__/haglers/General/queries/tumor_size/tumor_size_main.i2qy]
 output:
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers
+queryID: 6d198b2d

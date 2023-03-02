@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Document Join:
@@ -26,3 +26,4 @@ output:
     linkItemId: link1
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers
+queryID: 189ba50e

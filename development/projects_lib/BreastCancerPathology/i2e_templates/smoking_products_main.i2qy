@@ -1,7 +1,8 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Union: [/api;type=saved_query/__private__/haglers/General/queries/smoking_products/smoking_products_main.i2qy]
 output:
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
 creator: haglers
+queryID: 1cdc1914

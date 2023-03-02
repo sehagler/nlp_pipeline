@@ -3,32 +3,81 @@ creationDate: '2021-06-07 17:36:39'
 query:
   document:
   - phrase:
-    - phrase:
-        quantifier: {minimum: 0, maximum: 1}
-        of:
-        - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link3}
-        - link:
-            path: ../breast_cancer_biomarkers_relation_verbal.i2qy
-            quantifier: {minimum: 0, maximum: 1}
-    - word:
-        text: (
-        quantifier: {minimum: 0, maximum: 1}
-    - link:
-        path: ../breast_cancer_biomarkers_score_list.i2qy
-        id: link4
-        quantifier: {minimum: 0, maximum: 1}
-    - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy, id: link2}
+      of:
+      - alternative:
+        - phrase:
+          - phrase:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+              - link:
+                  path: ../breast_cancer_biomarkers_relation_verbal.i2qy
+                  quantifier: {minimum: 0, maximum: 1}
+          - word:
+              text: (
+              quantifier: {minimum: 0, maximum: 1}
+          - link:
+              path: ../breast_cancer_biomarkers_score_list.i2qy
+              quantifier: {minimum: 0, maximum: 1}
+          - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+        - phrase:
+          - phrase:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+              - link:
+                  path: ../breast_cancer_biomarkers_relation_verbal.i2qy
+                  quantifier: {minimum: 0, maximum: 1}
+          - word:
+              text: (
+              quantifier: {minimum: 0, maximum: 1}
+          - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+          - alternative:
+              showMultipleColumns: true
+              of:
+              - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
+              - link: {path: ../breast_cancer_biomarkers_score_parenthetical.i2qy}
+        - phrase:
+            unordered: true
+            of:
+            - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
+            - ','
+            - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+            - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+      where:
+      - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy, id: link1}
+      - phrase:
+          id: phrase2
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
+          where:
+          - link:
+              path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
+              quantifier: {minimum: 0, maximum: 0}
+      - phrase:
+          id: phrase1
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
+          where:
+          - link:
+              path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
+              quantifier: {minimum: 0, maximum: 0}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
+          id: link6
+          quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - id: link2.alternative1
+  - id: link1.alternative1
     itemOptions: {}
-    linkItemId: link2
-  - id: link4.alternative1
+    linkItemId: link1
+  - {id: phrase2}
+  - {id: phrase1}
+  - id: link6.link2.phrase1
     itemOptions: {}
-    linkItemId: link4
-  - id: link3.link2.phrase1
-    itemOptions: {}
-    linkItemId: link2.link3
+    linkItemId: link2.link6
   useOutputEditor: true
 creator: haglers
 queryID: 21f0b427

@@ -74,11 +74,11 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
             for i in range(len(self.queries)):
                 validation_datum_key = self.queries[i][0]
                 nlp_datum_key = self.queries[i][3]
-                if nlp_datum_key not in N_manual_review.keys():
+                if validation_datum_key not in N_manual_review.keys():
                     N_manual_review[validation_datum_key] = 0
-                if nlp_datum_key not in hit_documents_dict.keys():
+                if validation_datum_key not in hit_documents_dict.keys():
                     hit_documents_dict[validation_datum_key] = []
-                if nlp_datum_key not in hit_manual_review_dict.keys():
+                if validation_datum_key not in hit_manual_review_dict.keys():
                     hit_manual_review_dict[validation_datum_key] = []
                 column_labels = self.validation_data_manager.column_labels()
                 for j in range(1, self.validation_data_manager.length()):

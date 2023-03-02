@@ -22,7 +22,6 @@ query:
           id: alternative1
           of:
           - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy}
-          - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
 output:
   columns:
   - {id: alternative1}

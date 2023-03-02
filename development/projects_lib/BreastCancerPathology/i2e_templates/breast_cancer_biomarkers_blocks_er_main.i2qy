@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Union: [/api;type=saved_query/__private__/haglers/General/queries/breast_cancer_biomarkers_blocks/breast_cancer_biomarkers_blocks_main.i2qy]
@@ -35,3 +35,4 @@ parameters: {Biomarker: ER}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true
+queryID: a2696355

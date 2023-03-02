@@ -262,10 +262,8 @@ query:
           showMultipleColumns: true
           of:
           - link: {path: breast_cancer_biomarkers_query_0_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_0_subquery_2.i2qy}
           - link: {path: breast_cancer_biomarkers_query_0_subquery_3.i2qy}
           - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_2_subquery_0.i2qy}
           - link: {path: breast_cancer_biomarkers_query_2_subquery_1.i2qy}
           - link: {path: breast_cancer_biomarkers_query_9_subquery_0.i2qy}
       - phrase:
@@ -398,8 +396,11 @@ output:
     itemOptions: {}
   - id: alternative1.col2
     itemOptions: {}
+  - id: alternative1.col3
+    itemOptions: {}
   outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
   useOutputEditor: true
 parameters: {BIOMARKER: ''}
+runAsSmartQuery: true
 creator: szhang
 queryID: bb1ac4cf

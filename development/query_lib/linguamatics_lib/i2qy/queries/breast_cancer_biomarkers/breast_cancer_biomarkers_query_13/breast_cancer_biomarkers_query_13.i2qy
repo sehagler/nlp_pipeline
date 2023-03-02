@@ -17,24 +17,25 @@ query:
               path: ../../../tools/breast_cancer_biomarkers_names.i2qy
               quantifier: {minimum: 0, maximum: 0}
           - word: {text: ':', showInDefaultOutput: false}
-      - alternative:
-          id: alternative1
-          showMultipleColumns: true
-          of:
-          - link: {path: breast_cancer_biomarkers_query_13_subquery_0.i2qy}
-          - link: {path: breast_cancer_biomarkers_query_11_subquery_0.i2qy}
+      - link: {path: breast_cancer_biomarkers_query_13_subquery_0.i2qy, id: link3}
 output:
   columns:
   - {id: phrase1}
   - id: link2.link2.class1
     itemOptions: {}
     linkItemId: link2.link2
-  - id: alternative1.col0
+  - id: link3.link3.alternative1
     itemOptions: {}
-  - id: alternative1.col1
+    linkItemId: link3.link3
+  - id: link3.phrase2
     itemOptions: {}
-  - id: alternative1.col2
+    linkItemId: link3
+  - id: link3.phrase1
     itemOptions: {}
+    linkItemId: link3
+  - id: link3.link1.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link1.link3
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true

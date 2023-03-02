@@ -13,8 +13,6 @@ query:
             showMultipleColumns: true
             of:
             - link: {path: breast_cancer_biomarkers_query_10_subquery_0.i2qy}
-            - link: {path: breast_cancer_biomarkers_query_10_subquery_1.i2qy}
-            - link: {path: breast_cancer_biomarkers_query_10_subquery_2.i2qy}
       - phrase:
         - alternative:
             quantifier: {minimum: 0, maximum: 1}
@@ -264,6 +262,8 @@ output:
   - id: alternative1.col1
     itemOptions: {}
   - id: alternative1.col2
+    itemOptions: {}
+  - id: alternative1.col3
     itemOptions: {}
   useOutputEditor: true
 parameters: {BIOMARKER: ''}

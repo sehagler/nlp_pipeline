@@ -235,6 +235,7 @@ class Postprocessor(Postprocessor_base):
             consolidated_biomarker_dict[biomarker_name]['PERCENTAGE'] = []
             consolidated_biomarker_dict[biomarker_name]['SCORE'] = []
             consolidated_biomarker_dict[biomarker_name]['STATUS'] = []
+            consolidated_biomarker_dict[biomarker_name]['STRENGTH'] = []
             consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = []
             consolidated_biomarker_dict[biomarker_name]['SNIPPET'] = []
         for biomarker_dict in biomarker_dict_list:
@@ -249,6 +250,7 @@ class Postprocessor(Postprocessor_base):
                len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 1 or \
                len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 1 or \
                len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 1 or \
+               len(consolidated_biomarker_dict[biomarker_name]['STRENGTH']) > 1 or \
                len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 1:
                    consolidated_biomarker_dict[biomarker_name]['BLOCK'] = \
                        self.manual_review
@@ -257,6 +259,8 @@ class Postprocessor(Postprocessor_base):
                    consolidated_biomarker_dict[biomarker_name]['SCORE'] = \
                        self.manual_review
                    consolidated_biomarker_dict[biomarker_name]['STATUS'] = \
+                       self.manual_review
+                   consolidated_biomarker_dict[biomarker_name]['STRENGTH'] = \
                        self.manual_review
                    consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = \
                        self.manual_review
@@ -273,6 +277,7 @@ class Postprocessor(Postprocessor_base):
                len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0 or \
+               len(consolidated_biomarker_dict[biomarker_name]['STRENGTH']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 0:
                 if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 0:
                     value_dict[biomarker_name + '_BLOCK'] = \
@@ -284,6 +289,10 @@ class Postprocessor(Postprocessor_base):
                    len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0:
                     value_dict[biomarker_name + '_SCORE'] = \
                         consolidated_biomarker_dict[biomarker_name]['SCORE']
+                if biomarker_name != 'KI67' and \
+                   len(consolidated_biomarker_dict[biomarker_name]['STRENGTH']) > 0:
+                    value_dict[biomarker_name + '_STRENGTH'] = \
+                        consolidated_biomarker_dict[biomarker_name]['STRENGTH']
                 if len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0:
                     value_dict[biomarker_name + '_STATUS'] = \
                         consolidated_biomarker_dict[biomarker_name]['STATUS']
@@ -303,6 +312,7 @@ class Postprocessor(Postprocessor_base):
             biomarker_name_list = [ 'ER', 'GATA3', 'HER2', 'KI67', 'PR' ]
             biomarker_name_text_list = []
             biomarker_status_text_list = []
+            biomarker_strength_text_list = []
             biomarker_score_text_list = []
             biomarker_percentage_text_list = []
             snippet_text_list = []
@@ -310,10 +320,11 @@ class Postprocessor(Postprocessor_base):
             for item in text_list[0]:
                 biomarker_name_text_list.append(item[1].upper())
                 biomarker_status_text_list.append(item[2])
-                biomarker_score_text_list.append(item[3])
-                biomarker_percentage_text_list.append(item[4])
-                snippet_text_list.append(item[5])
-                biomarker_name_offset_list.append(item[6])
+                biomarker_strength_text_list.append(item[3])
+                biomarker_score_text_list.append(item[4])
+                biomarker_percentage_text_list.append(item[5])
+                snippet_text_list.append(item[6])
+                biomarker_name_offset_list.append(item[7])
             blocks_biomarker_name_text_list = []
             blocks_biomarker_block_text_list = []
             blocks_snippet_text_list = []
@@ -350,6 +361,7 @@ class Postprocessor(Postprocessor_base):
                 for biomarker_name in biomarker_name_list:
                     biomarker_dict[biomarker_name] = {}
                     biomarker_dict[biomarker_name]['STATUS'] = []
+                    biomarker_dict[biomarker_name]['STRENGTH'] = []
                     biomarker_dict[biomarker_name]['SCORE'] = []
                     biomarker_dict[biomarker_name]['PERCENTAGE'] = []
                     biomarker_dict[biomarker_name]['BLOCK'] = []
@@ -362,6 +374,8 @@ class Postprocessor(Postprocessor_base):
                         biomarker_status = \
                             self._process_status(biomarker_name,
                                                  biomarker_status_text_list[i])
+                        biomarker_strength = \
+                            self._process_score(biomarker_strength_text_list[i])
                         biomarker_score = \
                             self._process_score(biomarker_score_text_list[i])
                         biomarker_percentage = \
@@ -388,11 +402,15 @@ class Postprocessor(Postprocessor_base):
                             biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
                         if len(biomarker_status) > 0:
                             biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                        if len(biomarker_strength) > 0:
+                            biomarker_dict[biomarker_name]['STRENGTH'].append(biomarker_strength.lower())
                         if len(biomarker_variability) > 0:
                             biomarker_dict[biomarker_name]['VARIABILITY'].append(biomarker_variability.lower())
                     for biomarker_name in biomarker_name_list:
                         biomarker_dict[biomarker_name]['STATUS'] = \
                             list(set(biomarker_dict[biomarker_name]['STATUS']))
+                        biomarker_dict[biomarker_name]['STRENGTH'] = \
+                            list(set(biomarker_dict[biomarker_name]['STRENGTH']))
                         biomarker_dict[biomarker_name]['SCORE'] = \
                             list(set(biomarker_dict[biomarker_name]['SCORE']))
                         biomarker_dict[biomarker_name]['PERCENTAGE'] = \
@@ -407,6 +425,7 @@ class Postprocessor(Postprocessor_base):
                         if variability_snippet_text_list[i] == snippet:
                             biomarker_name = variability_biomarker_name_text_list[i]
                             biomarker_status = ''
+                            biomarker_strength = ''
                             biomarker_score = ''
                             biomarker_percentage = ''
                             biomarker_block = ''
@@ -420,11 +439,15 @@ class Postprocessor(Postprocessor_base):
                                 biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
                             if len(biomarker_status) > 0:
                                 biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                            if len(biomarker_strength) > 0:
+                                biomarker_dict[biomarker_name]['STRENGTH'].append(biomarker_strength.lower())
                             if len(biomarker_variability) > 0:
                                 biomarker_dict[biomarker_name]['VARIABILITY'].append(biomarker_variability.lower())
                     for biomarker_name in biomarker_name_list:
                         biomarker_dict[biomarker_name]['STATUS'] = \
                             list(set(biomarker_dict[biomarker_name]['STATUS']))
+                        biomarker_dict[biomarker_name]['STRENGTH'] = \
+                            list(set(biomarker_dict[biomarker_name]['STRENGTH']))
                         biomarker_dict[biomarker_name]['SCORE'] = \
                             list(set(biomarker_dict[biomarker_name]['SCORE']))
                         biomarker_dict[biomarker_name]['PERCENTAGE'] = \

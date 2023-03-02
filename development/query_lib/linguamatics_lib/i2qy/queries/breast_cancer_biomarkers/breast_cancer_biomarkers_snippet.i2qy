@@ -5,10 +5,6 @@ query:
   - link: {path: breast_cancer_biomarkers_query.i2qy, id: link1}
 output:
   columns:
-  - title: Snippet
-    id: value2
-    columnOptions: [Empty]
-    isValueColumn: true
   - id: link1.alternative1.col0
     itemOptions: {}
     linkItemId: link1
@@ -24,7 +20,13 @@ output:
   - id: link1.alternative1.col4
     itemOptions: {}
     linkItemId: link1
-  columnLocations: [1, 2, 3, 4, 5, 0]
+  - id: link1.alternative1.col5
+    itemOptions: {}
+    linkItemId: link1
+  - title: SNIPPET
+    id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true

@@ -33,6 +33,7 @@ class BreastCancerPathology_static_data_object(Static_data_object):
               ('ER_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
               ('ER_SCORE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
               ('ER_STATUS', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
+              ('ER_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STRENGTH', 'single_value', True),
               ('ER_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_VARIABILITY', 'single_value', True),
               ('GATA3_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_BLOCK', 'single_value', True),
               ('GATA3_STATUS', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
@@ -50,6 +51,7 @@ class BreastCancerPathology_static_data_object(Static_data_object):
               ('PR_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
               ('PR_SCORE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True), 
               ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
+              ('PR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STRENGTH', 'single_value', True),
               ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ,
               ('TNM_STAGING', None, 'TNM_STAGING', 'TNM_STAGING', 'single_value', True), 
               ('TUMOR_SIZE', None, 'TUMOR_SIZE', 'TUMOR_SIZE', 'single_value', True), ]
