@@ -1,0 +1,40 @@
+version: 6.8
+creationDate: '2020-03-06 17:21:41'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      prioritization: within
+      showMultipleColumns: true
+      of:
+      - link: {path: ../breast_cancer_biomarkers_query_3/breast_cancer_biomarkers_query_3.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_13/breast_cancer_biomarkers_query_13.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_0/breast_cancer_biomarkers_query_0.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_4/breast_cancer_biomarkers_query_4.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_10/breast_cancer_biomarkers_query_10.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_5/breast_cancer_biomarkers_query_5.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_1/breast_cancer_biomarkers_query_1.i2qy}
+output:
+  columns:
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  - title: STATUS
+    id: alternative1.col2
+    itemOptions: {}
+  - title: STRENGTH ..
+    id: alternative1.col3
+    itemOptions: {}
+  - title: SCORE
+    id: alternative1.col4
+    itemOptions: {}
+  - title: PERCENTAGE
+    id: alternative1.col5
+    itemOptions: {}
+  outputSettings: {maxResults: 10000}
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
+creator: haglers
+queryID: 7b69fdbb

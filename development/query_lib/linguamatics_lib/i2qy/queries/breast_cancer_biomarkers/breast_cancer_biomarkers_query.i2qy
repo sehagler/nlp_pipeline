@@ -4,13 +4,10 @@ query:
   document:
   - alternative:
       id: alternative1
-      prioritization: within
       showMultipleColumns: true
       of:
-      - link: {path: breast_cancer_biomarkers_query_13/breast_cancer_biomarkers_query_13.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_4/breast_cancer_biomarkers_query_4.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_0/breast_cancer_biomarkers_query_0.i2qy}
-      - link: {path: breast_cancer_biomarkers_query_10/breast_cancer_biomarkers_query_10.i2qy}
+      - link: {path: breast_cancer_biomarkers_query_subqueries/breast_cancer_biomarkers_subquery.i2qy}
+      - link: {path: breast_cancer_biomarkers_query_2/breast_cancer_biomarkers_query_2.i2qy}
 output:
   columns:
   - id: alternative1.col0

@@ -6,47 +6,226 @@ query:
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:
-        - word:
-            text: and
-            quantifier: {minimum: 0, maximum: 1}
         - phrase:
             boundaries: Exact
             findMatches: longestOnly
             of:
-            - word:
-                text: intensity
-                quantifier: {minimum: 0, maximum: 1}
             - alternative:
               - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
-            - alternative:
-                quantifier: {minimum: 0, maximum: 1}
-                of: [intensity, positivity, staining]
-            - word:
-                text: ratio
-                quantifier: {minimum: 0, maximum: 0}
+              - phrase:
+                  unordered: true
+                  of:
+                  - phrase:
+                    - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
+                    - macro:
+                        quantifier: {minimum: 0, maximum: 1}
+                        snid: linguamatics_wc.WC_Punctuation
+                        pt: punctuation
+                        of:
+                        - alternative:
+                            macroPt: punctuation
+                            macroSnid: linguamatics_wc.WC_Punctuation
+                            of:
+                            - '!'
+                            - ''''
+                            - ''''''
+                            - (
+                            - )
+                            - '***'
+                            - ','
+                            - word: {text: '-'}
+                            - .
+                            - '...'
+                            - /
+                            - ':'
+                            - ;
+                            - '?'
+                            - '['
+                            - '"'
+                            - \
+                            - ']'
+                            - _
+                            - '{'
+                            - '}'
+                            - '~'
+                            - «
+                            - »
+                            - ‘
+                            - ’
+                            - ‚
+                            - ‛
+                            - “
+                            - ”
+                            - „
+                            - ‟
+                            - ‹
+                            - ›
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - word:
+                          text: (
+                          quantifier: {minimum: 0, maximum: 1}
+                      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+                      - word:
+                          text: )
+                          quantifier: {minimum: 0, maximum: 1}
+                      - macro:
+                          quantifier: {minimum: 0, maximum: 1}
+                          snid: linguamatics_wc.WC_Punctuation
+                          pt: punctuation
+                          of:
+                          - alternative:
+                              macroPt: punctuation
+                              macroSnid: linguamatics_wc.WC_Punctuation
+                              of:
+                              - '!'
+                              - ''''
+                              - ''''''
+                              - (
+                              - )
+                              - '***'
+                              - ','
+                              - word: {text: '-'}
+                              - .
+                              - '...'
+                              - /
+                              - ':'
+                              - ;
+                              - '?'
+                              - '['
+                              - '"'
+                              - \
+                              - ']'
+                              - _
+                              - '{'
+                              - '}'
+                              - '~'
+                              - «
+                              - »
+                              - ‘
+                              - ’
+                              - ‚
+                              - ‛
+                              - “
+                              - ”
+                              - „
+                              - ‟
+                              - ‹
+                              - ›
+        - word:
+            text: and
+            quantifier: {minimum: 0, maximum: 1}
     - phrase:
-      - word:
-          text: and
-          quantifier: {minimum: 0, maximum: 1}
       - phrase:
           boundaries: Exact
           findMatches: longestOnly
           of:
-          - word:
-              text: intensity
-              quantifier: {minimum: 0, maximum: 1}
           - alternative:
               id: alternative1
               of:
               - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
-          - alternative:
-              quantifier: {minimum: 0, maximum: 1}
-              of: [intensity, positivity, staining]
-          - word:
-              text: ratio
-              quantifier: {minimum: 0, maximum: 0}
+              - phrase:
+                  unordered: true
+                  of:
+                  - phrase:
+                    - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
+                    - macro:
+                        quantifier: {minimum: 0, maximum: 1}
+                        snid: linguamatics_wc.WC_Punctuation
+                        pt: punctuation
+                        of:
+                        - alternative:
+                            macroPt: punctuation
+                            macroSnid: linguamatics_wc.WC_Punctuation
+                            of:
+                            - '!'
+                            - ''''
+                            - ''''''
+                            - (
+                            - )
+                            - '***'
+                            - ','
+                            - word: {text: '-'}
+                            - .
+                            - '...'
+                            - /
+                            - ':'
+                            - ;
+                            - '?'
+                            - '['
+                            - '"'
+                            - \
+                            - ']'
+                            - _
+                            - '{'
+                            - '}'
+                            - '~'
+                            - «
+                            - »
+                            - ‘
+                            - ’
+                            - ‚
+                            - ‛
+                            - “
+                            - ”
+                            - „
+                            - ‟
+                            - ‹
+                            - ›
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - word:
+                          text: (
+                          quantifier: {minimum: 0, maximum: 1}
+                      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+                      - word:
+                          text: )
+                          quantifier: {minimum: 0, maximum: 1}
+                      - macro:
+                          quantifier: {minimum: 0, maximum: 1}
+                          snid: linguamatics_wc.WC_Punctuation
+                          pt: punctuation
+                          of:
+                          - alternative:
+                              macroPt: punctuation
+                              macroSnid: linguamatics_wc.WC_Punctuation
+                              of:
+                              - '!'
+                              - ''''
+                              - ''''''
+                              - (
+                              - )
+                              - '***'
+                              - ','
+                              - word: {text: '-'}
+                              - .
+                              - '...'
+                              - /
+                              - ':'
+                              - ;
+                              - '?'
+                              - '['
+                              - '"'
+                              - \
+                              - ']'
+                              - _
+                              - '{'
+                              - '}'
+                              - '~'
+                              - «
+                              - »
+                              - ‘
+                              - ’
+                              - ‚
+                              - ‛
+                              - “
+                              - ”
+                              - „
+                              - ‟
+                              - ‹
+                              - ›
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:
@@ -57,22 +236,109 @@ query:
             boundaries: Exact
             findMatches: longestOnly
             of:
-            - word:
-                text: intensity
-                quantifier: {minimum: 0, maximum: 1}
             - alternative:
               - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
-            - alternative:
-                quantifier: {minimum: 0, maximum: 1}
-                of: [intensity, positivity, staining]
-            - word:
-                text: ratio
-                quantifier: {minimum: 0, maximum: 0}
-    - word:
-        text: respectively
-        includeInQuery: false
-        quantifier: {minimum: 0, maximum: 1}
+              - phrase:
+                  unordered: true
+                  of:
+                  - phrase:
+                    - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
+                    - macro:
+                        quantifier: {minimum: 0, maximum: 1}
+                        snid: linguamatics_wc.WC_Punctuation
+                        pt: punctuation
+                        of:
+                        - alternative:
+                            macroPt: punctuation
+                            macroSnid: linguamatics_wc.WC_Punctuation
+                            of:
+                            - '!'
+                            - ''''
+                            - ''''''
+                            - (
+                            - )
+                            - '***'
+                            - ','
+                            - word: {text: '-'}
+                            - .
+                            - '...'
+                            - /
+                            - ':'
+                            - ;
+                            - '?'
+                            - '['
+                            - '"'
+                            - \
+                            - ']'
+                            - _
+                            - '{'
+                            - '}'
+                            - '~'
+                            - «
+                            - »
+                            - ‘
+                            - ’
+                            - ‚
+                            - ‛
+                            - “
+                            - ”
+                            - „
+                            - ‟
+                            - ‹
+                            - ›
+                  - phrase:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of:
+                      - word:
+                          text: (
+                          quantifier: {minimum: 0, maximum: 1}
+                      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+                      - word:
+                          text: )
+                          quantifier: {minimum: 0, maximum: 1}
+                      - macro:
+                          quantifier: {minimum: 0, maximum: 1}
+                          snid: linguamatics_wc.WC_Punctuation
+                          pt: punctuation
+                          of:
+                          - alternative:
+                              macroPt: punctuation
+                              macroSnid: linguamatics_wc.WC_Punctuation
+                              of:
+                              - '!'
+                              - ''''
+                              - ''''''
+                              - (
+                              - )
+                              - '***'
+                              - ','
+                              - word: {text: '-'}
+                              - .
+                              - '...'
+                              - /
+                              - ':'
+                              - ;
+                              - '?'
+                              - '['
+                              - '"'
+                              - \
+                              - ']'
+                              - _
+                              - '{'
+                              - '}'
+                              - '~'
+                              - «
+                              - »
+                              - ‘
+                              - ’
+                              - ‚
+                              - ‛
+                              - “
+                              - ”
+                              - „
+                              - ‟
+                              - ‹
+                              - ›
 output:
   columns:
   - {id: alternative1}

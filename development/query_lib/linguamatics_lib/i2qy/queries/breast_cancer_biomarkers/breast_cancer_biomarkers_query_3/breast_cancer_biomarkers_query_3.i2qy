@@ -1,33 +1,16 @@
 version: 6.8
-creationDate: '2021-08-11 21:32:49'
+creationDate: '2023-03-24 19:53:13'
 query:
   document:
   - phrase:
+      id: phrase1
       maxWordGap: -1
       wordGapRestricted: false
       of:
       - phrase:
-          maxWordGap: -1
-          quantifier: {minimum: 0, maximum: 1}
-          wordGapRestricted: false
           of:
-          - phrase:
-            - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
-            - link: {path: ../breast_cancer_biomarkers_percentage_parenthetical.i2qy}
-          - link:
-              path: ../breast_cancer_biomarkers_constraint.i2qy
-              quantifier: {minimum: 0, maximum: 0}
-      - link: {path: ../breast_cancer_biomarkers_names_list.i2qy}
-      - link:
-          path: ../breast_cancer_biomarkers_constraint.i2qy
-          quantifier: {minimum: 0, maximum: 0}
-      - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
-      - link:
-          path: ../breast_cancer_biomarkers_constraint.i2qy
-          quantifier: {minimum: 0, maximum: 0}
-      - phrase:
-        - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link11}
-        - word: {text: '%', showInDefaultOutput: false}
+          - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link1}
+          where: [KI67]
       - link:
           path: ../breast_cancer_biomarkers_constraint.i2qy
           quantifier: {minimum: 0, maximum: 0}
@@ -35,39 +18,40 @@ query:
       where:
       - link:
           path: ../breast_cancer_biomarkers_status_phrase.i2qy
-          id: link2
-          quantifier: {minimum: 0, maximum: 1}
-      - link:
-          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
-          id: link5
-          quantifier: {minimum: 0, maximum: 1}
-      - link:
-          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
           id: link3
           quantifier: {minimum: 0, maximum: 1}
       - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
+          id: link4
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
+          id: link5
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
           path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
-          id: link1
+          id: link6
           quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
-  - id: link11.link2.class1
+  - {id: phrase1}
+  - id: link1.link2.class1
     itemOptions: {}
-    linkItemId: link2.link11
-  - id: link2.phrase1
-    itemOptions: {}
-    linkItemId: link2
-  - id: link5.phrase1
-    itemOptions: {}
-    linkItemId: link5
+    linkItemId: link2.link1
   - id: link3.phrase1
     itemOptions: {}
     linkItemId: link3
-  - id: link1.link2.phrase1
+  - id: link4.phrase1
     itemOptions: {}
-    linkItemId: link2.link1
+    linkItemId: link4
+  - id: link5.phrase1
+    itemOptions: {}
+    linkItemId: link5
+  - id: link6.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link6
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers
-queryID: eb368e05
+queryID: 59527adb

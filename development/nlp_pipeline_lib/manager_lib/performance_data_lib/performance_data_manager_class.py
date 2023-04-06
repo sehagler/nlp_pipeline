@@ -105,7 +105,6 @@ def _get_data_value(section_data_list, section_key_list, mode_flg):
     if len(data_value) > 0:
         if len(data_value[0]) > 1:
             data_tmp = list(data_value[0])
-            data_tmp = [ x for x in data_tmp if x != ('equivocal',) ]
             data_tmp = tuple(data_tmp)
             data_value[0] = data_tmp
     if mode_flg == 'single_value':
@@ -132,6 +131,14 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
     for validation_datum_key in validation_datum_keys:
         for key in nlp_values.keys():
             if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
+                
+                ### Kludge to handle HER2 biomarker
+                if len(nlp_values[key][validation_datum_key]) > 1:
+                    data_tmp = \
+                        [ x for x in nlp_values[key][validation_datum_key] if x != 'equivocal' ]
+                    nlp_values[key][validation_datum_key] = tuple(data_tmp)
+                ### Kludge to handle HER2 biomarker
+                    
                 if len(nlp_values[key][validation_datum_key]) > 1:
                     nlp_values[key][validation_datum_key] = \
                         manual_review,
@@ -347,10 +354,8 @@ class Performance_data_manager(Manager_base):
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
                                 mode_flg='multiple_values'):
-        self.section_data_list = []
-        self._walk(node, target_key, data_key, [], section_key_list)
-        section_data_list = self.section_data_list
-        del self.section_data_list
+        section_data_list = \
+            self._walk(node, target_key, data_key, [], section_key_list)
         data_value, section_data_list = _get_data_value(section_data_list,
                                                         section_key_list,
                                                         mode_flg)
@@ -455,7 +460,7 @@ class Performance_data_manager(Manager_base):
         return _validation_to_tuple(text)
     
     #
-    def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
+    def _walker(self, node, target_key, data_key, key_list_in, section_key_list):
         for k, v in node.items():
             key_list = deepcopy(key_list_in)
             key_list.append(k)
@@ -472,7 +477,15 @@ class Performance_data_manager(Manager_base):
                         if data_key in v_item.keys():
                             self.section_data_list.append(tuple([section_key, v_item[data_key]]))
             elif isinstance(v, dict):
-                self._walk(v, target_key, data_key, key_list, section_key_list)
+                self._walker(v, target_key, data_key, key_list, section_key_list)
+                
+    #
+    def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
+        self.section_data_list = []
+        self._walker(node, target_key, data_key, key_list_in, section_key_list)
+        section_data_list = self.section_data_list
+        del self.section_data_list
+        return section_data_list
                 
     #
     def calculate_performance(self):

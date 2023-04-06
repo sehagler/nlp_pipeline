@@ -8,11 +8,53 @@ query:
       - link:
           path: ../../../tools/inequality_modifier_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
-      - phrase:
-        - word:
-            text: very
-            quantifier: {minimum: 0, maximum: 1}
-        - alternative: [intermediate, intermediate-strong, moderate, moderate-strong, strong, weak, weak-moderate, weak-strong]
+      - alternative:
+        - phrase:
+          - word:
+              text: very
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+            - word: {text: favorable, morphoVariants: true}
+            - word: {text: intermediate, morphoVariants: true}
+            - word: {text: intermediate-strong, morphoVariants: true}
+            - word: {text: moderate, morphoVariants: true}
+            - word: {text: moderate-strong, morphoVariants: true}
+            - word: {text: strong, morphoVariants: true}
+            - trace
+            - word: {text: unfavorable, morphoVariants: true}
+            - word: {text: weak, morphoVariants: true}
+            - word: {text: weak-moderate, morphoVariants: true}
+            - word: {text: weak-strong, morphoVariants: true}
+            - zero
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - expression
+              - immunoreactive
+              - immunoreactivity
+              - phrase:
+                - word:
+                    text: nuclear
+                    quantifier: {minimum: 0, maximum: 1}
+                - alternative: [intensity, staining]
+        - phrase:
+          - alternative:
+            - word: {text: lack, morphoVariants: true}
+            - 'no'
+          - alternative:
+            - expression
+            - immunoreactive
+            - immunoreactivity
+            - phrase:
+              - word:
+                  text: nuclear
+                  quantifier: {minimum: 0, maximum: 1}
+              - alternative: [intensity, staining]
+        - reactive
+        - nonreactive
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of: [grade, negative, positive]
 output:
   columns:
   - {id: phrase1}

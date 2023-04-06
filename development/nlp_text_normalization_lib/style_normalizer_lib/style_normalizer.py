@@ -231,7 +231,13 @@ def _normalize_units(text):
     text = \
         lambda_tools.lambda_conversion('(?<=[0-9])cm', text, ' cm ')
     text = \
+        lambda_tools.lambda_conversion('(?<=[0-9] )hour', text, 'hr')
+    text = \
+        lambda_tools.lambda_conversion('(?<=[0-9] )minute', text, 'min')
+    text = \
         lambda_tools.lambda_conversion('(?<=[0-9])mm', text, ' mm ')
+    text = \
+        lambda_tools.lambda_conversion('(?<=[0-9] )second', text, 'sec')
     text = \
         lambda_tools.deletion_lambda_conversion('(?<=(cm|mm))\.', text)
     return text

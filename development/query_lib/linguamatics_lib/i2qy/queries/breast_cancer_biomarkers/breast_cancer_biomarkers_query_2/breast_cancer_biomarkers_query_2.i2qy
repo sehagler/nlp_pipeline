@@ -5,7 +5,7 @@ query:
   - phrase:
       boundaries: Exact
       findMatches: longestOnly
-      id: phrase1
+      id: phrase2
       of:
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
@@ -132,11 +132,26 @@ query:
           maxWordGap: -1
           wordGapRestricted: false
           of:
-          - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link10}
+          - phrase:
+              of:
+              - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link1}
+              where: [HER2]
           - link:
               path: ../breast_cancer_biomarkers_constraint.i2qy
               quantifier: {minimum: 0, maximum: 0}
-          - link: {path: breast_cancer_biomarkers_query_0_subquery_0.i2qy, id: link1}
+          - phrase:
+            - phrase:
+                maxWordGap: -1
+                wordGapRestricted: false
+                of:
+                - alternative:
+                  - phrase:
+                    - interpretation
+                    - word:
+                        text: ':'
+                        quantifier: {minimum: 0, maximum: 1}
+                  - ':'
+            - link: {path: breast_cancer_biomarkers_query_2_subquery_0.i2qy, id: link2}
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
           of:
@@ -257,25 +272,25 @@ query:
           - link: {path: ../breast_cancer_biomarkers_names_list.i2qy}
 output:
   columns:
-  - {id: phrase1}
-  - id: link10.link2.class1
-    itemOptions: {}
-    linkItemId: link2.link10
-  - id: link1.link12.phrase1
-    itemOptions: {}
-    linkItemId: link12.link1
-  - id: link1.link3.phrase1
-    itemOptions: {}
-    linkItemId: link3.link1
-  - id: link1.link2.phrase1
+  - {id: phrase2}
+  - id: link1.link2.class1
     itemOptions: {}
     linkItemId: link2.link1
-  - id: link1.link5.link2.phrase1
+  - id: link2.link1.phrase1
     itemOptions: {}
-    linkItemId: link2.link5.link1
+    linkItemId: link1.link2
+  - id: link2.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link2
+  - id: link2.link3.phrase1
+    itemOptions: {}
+    linkItemId: link3.link2
+  - id: link2.link4.link2.phrase1
+    itemOptions: {}
+    linkItemId: link2.link4.link2
   outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
   useOutputEditor: true
-parameters: {BIOMARKER: ''}
+parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: szhang
-queryID: bb1ac4cf
+queryID: ea5e2bd0

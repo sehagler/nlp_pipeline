@@ -3,39 +3,30 @@ creationDate: '2021-08-11 21:32:49'
 query:
   document:
   - phrase:
-      findMatches: shortestOnly
+      findMatches: longestOnly
       id: phrase1
       maxWordGap: -1
       wordGapRestricted: false
       of:
-      - phrase:
-          maxWordGap: -1
-          wordGapRestricted: false
+      - alternative:
+          id: alternative1
+          showMultipleColumns: true
           of:
-          - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link2}
-          - link:
-              path: ../../../tools/breast_cancer_biomarkers_names.i2qy
-              quantifier: {minimum: 0, maximum: 0}
-          - word: {text: ':', showInDefaultOutput: false}
-      - link: {path: breast_cancer_biomarkers_query_13_subquery_0.i2qy, id: link3}
+          - link: {path: breast_cancer_biomarkers_query_13_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_13_subquery_1.i2qy}
 output:
   columns:
   - {id: phrase1}
-  - id: link2.link2.class1
+  - id: alternative1.col0
     itemOptions: {}
-    linkItemId: link2.link2
-  - id: link3.link3.alternative1
+  - id: alternative1.col1
     itemOptions: {}
-    linkItemId: link3.link3
-  - id: link3.phrase2
+  - id: alternative1.col2
     itemOptions: {}
-    linkItemId: link3
-  - id: link3.phrase1
+  - id: alternative1.col3
     itemOptions: {}
-    linkItemId: link3
-  - id: link3.link1.link2.phrase1
+  - id: alternative1.col4
     itemOptions: {}
-    linkItemId: link2.link1.link3
   useOutputEditor: true
 parameters: {Biomarker: ''}
 runAsSmartQuery: true

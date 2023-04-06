@@ -5,35 +5,67 @@ query:
   - phrase:
       id: phrase1
       of:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - phrase:
+            - alternative: [grade, ratio, stage]
+            - word:
+                text: of
+                quantifier: {minimum: 0, maximum: 1}
+          - phrase:
+            - word: {text: '[0-4](\.[0-9])?(( )?(\+))?', matchType: Regexp}
+            - alternative:
+              - word: {text: '-'}
+              - /
+              - to
+              - phrase:
+                - word:
+                    text: out
+                    quantifier: {minimum: 0, maximum: 1}
+                - of
       - link:
           path: ../../../tools/inequality_modifier_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
-      - alternative:
-          showInDefaultOutput: false
-          of:
-          - phrase:
+      - phrase:
+        - word: {text: '[0-4](\.[0-9])?(( )?(\+))?', matchType: Regexp}
+        - phrase:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - alternative:
+              - word: {text: '-'}
+              - to
+            - word: {text: '[0-4](\.[0-9])?(( )?(\+))?', matchType: Regexp}
+        - phrase:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - alternative:
+              - /
+              - phrase:
+                - word:
+                    text: out
+                    quantifier: {minimum: 0, maximum: 1}
+                - of
             - word: {text: '[0-4](( )?(\+))?', matchType: Regexp}
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - alternative:
-                  - word: {text: '-'}
-                  - to
-                - word: {text: '[0-4](( )?(\+))?', matchType: Regexp}
-            - phrase:
-                quantifier: {minimum: 0, maximum: 1}
-                of:
-                - alternative:
-                  - /
-                  - phrase:
-                    - word:
-                        text: out
-                        quantifier: {minimum: 0, maximum: 1}
-                    - of
-                - word: {text: '[0-4](( )?(\+))?', matchType: Regexp}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 1}
+          of:
+          - word:
+              text: nuclear
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative: [intensity, staining]
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - link: {path: ../../../tools/measurement_units_query.i2qy}
+          - /
           - phrase:
-            - word: {text: '[0-9]\.[0-9]', matchType: Regexp}
-          - phrase: ['no', staining]
+            - word:
+                text: out
+                quantifier: {minimum: 0, maximum: 1}
+            - of
+          - ratio
+          - x
 output:
   columns:
   - {id: phrase1}

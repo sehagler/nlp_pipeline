@@ -1,0 +1,12 @@
+processors:
+  - name: hc_reports_no_specimens
+    label: Healthcare Reports (no specimens)
+    input: (?i)(.*)\.(txt|xml)
+    output: \0_preprocessed.xml
+    base: xml
+    manual_selection: true
+    commands:
+    - platforms: [linux]
+      command: python3 "%BINDIR/python_preprocessing/run_healthcare.py" %INPUTFILE %OUTPUTFILE -t sections first_and_last_word -s keyword-based -k "%BINDIR/python_preprocessing/i2e/preprocessors/healthcare/keywords_default.txt" -x rpt_text
+    - platforms: [windows]
+      command: python  "%BINDIR\python_preprocessing\run_healthcare.py" %INPUTFILE %OUTPUTFILE -t sections first_and_last_word -s keyword-based -k "%BINDIR\python_preprocessing\i2e/preprocessors/healthcare/keywords_default.txt" -x rpt_text

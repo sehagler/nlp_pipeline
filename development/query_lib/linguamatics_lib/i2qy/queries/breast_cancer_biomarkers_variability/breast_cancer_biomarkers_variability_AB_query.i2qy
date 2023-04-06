@@ -11,6 +11,7 @@ query:
       - phrase:
           maxSentenceGap: -1
           multiSentence: true
+          quantifier: {minimum: 0, maximum: 1}
           of:
           - link: {path: breast_cancer_biomarkers_variability_AB_fields/breast_cancer_biomarkers_variability_AB_field.i2qy}
           where:

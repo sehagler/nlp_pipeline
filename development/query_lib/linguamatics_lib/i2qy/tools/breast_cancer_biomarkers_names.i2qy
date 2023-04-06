@@ -5,7 +5,21 @@ query:
   - phrase:
     - alternative:
         id: alternative1
-        of: [CK5/6, ER, GATA3, HER2, Ki67, PR]
+        of:
+        - word: {text: 'CK ?[0-9]+(/[0-9]+)?', matchType: Raw regexp}
+        - CKCKT
+        - ER
+        - GATA3
+        - HER2
+        - KI67
+        - PAX8
+        - P63
+        - PR
+        - SATB2
+        - WT-1
+        - E-cadherin
+        - mammaglobin
+        - pancytokeratin
     - phrase:
         quantifier: {minimum: 0, maximum: 1}
         of:
@@ -24,10 +38,6 @@ query:
         - word:
             text: )
             quantifier: {minimum: 0, maximum: 1}
-    - word:
-        text: stain
-        morphoVariants: true
-        quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - {id: alternative1}

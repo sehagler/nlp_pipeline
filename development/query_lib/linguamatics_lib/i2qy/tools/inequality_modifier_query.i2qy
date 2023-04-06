@@ -5,7 +5,14 @@ query:
   - alternative:
       id: alternative1
       view: {layout: list}
-      of: ['~', '>', '>=', <, <=]
+      of:
+      - '~'
+      - '>'
+      - '>='
+      - phrase: ['>', =]
+      - <
+      - <=
+      - phrase: [<, =]
 output:
   columns:
   - {id: alternative1}

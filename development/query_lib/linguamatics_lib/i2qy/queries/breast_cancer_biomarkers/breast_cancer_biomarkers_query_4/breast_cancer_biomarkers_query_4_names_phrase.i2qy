@@ -117,6 +117,52 @@ query:
               - with
               - within
               - without
+    - alternative:
+        quantifier: {minimum: 0, maximum: 1}
+        of:
+        - amplification
+        - macro:
+            snid: linguamatics_wc.WC_Punctuation
+            pt: punctuation
+            of:
+            - alternative:
+                macroPt: punctuation
+                macroSnid: linguamatics_wc.WC_Punctuation
+                of:
+                - '!'
+                - ''''
+                - ''''''
+                - (
+                - )
+                - '***'
+                - ','
+                - word: {text: '-'}
+                - .
+                - '...'
+                - /
+                - ':'
+                - ;
+                - '?'
+                - '['
+                - '"'
+                - \
+                - ']'
+                - _
+                - '{'
+                - '}'
+                - '~'
+                - «
+                - »
+                - ‘
+                - ’
+                - ‚
+                - ‛
+                - “
+                - ”
+                - „
+                - ‟
+                - ‹
+                - ›
     - link: {path: ../breast_cancer_biomarkers_names_list.i2qy, id: link1}
 output:
   columns:

@@ -9,6 +9,9 @@ query:
         quantifier: {minimum: 0, maximum: 0}
     - link: {path: breast_cancer_biomarkers_score_list.i2qy, id: link2}
     - word:
+        text: IHC
+        quantifier: {minimum: 0, maximum: 1}
+    - word:
         text: (
         quantifier: {minimum: 0, maximum: 0}
     - )

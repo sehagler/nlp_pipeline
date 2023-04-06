@@ -19,18 +19,110 @@ query:
         - alternative:
             quantifier: {minimum: 1, maximum: none}
             view: {layout: list}
-            of: [and, or, ',', /]
-    - macro:
-        quantifier: {minimum: 0, maximum: 1}
-        snid: linguamatics_wc.WC_Determiner
-        pt: determiner
-        of:
-        - alternative:
-            macroPt: determiner
-            macroSnid: linguamatics_wc.WC_Determiner
-            of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
+            of:
+            - macro:
+                snid: linguamatics_wc.WC_Conjunction
+                pt: conjunction
+                of:
+                - alternative:
+                    macroPt: conjunction
+                    macroSnid: linguamatics_wc.WC_Conjunction
+                    of:
+                    - '&'
+                    - after
+                    - albeit
+                    - also
+                    - although
+                    - and
+                    - phrase: [as, far, as]
+                    - as
+                    - because
+                    - before
+                    - but
+                    - either
+                    - if
+                    - moreover
+                    - neither
+                    - nor
+                    - once
+                    - or
+                    - so
+                    - than
+                    - though
+                    - unless
+                    - versus
+                    - vs
+                    - vs.
+                    - when
+                    - whereas
+                    - whereby
+                    - whether
+                    - while
+                    - whilst
+                    - yet
+            - macro:
+                snid: linguamatics_wc.WC_Punctuation
+                pt: punctuation
+                of:
+                - alternative:
+                    macroPt: punctuation
+                    macroSnid: linguamatics_wc.WC_Punctuation
+                    of:
+                    - '!'
+                    - ''''
+                    - ''''''
+                    - (
+                    - )
+                    - '***'
+                    - ','
+                    - word: {text: '-'}
+                    - .
+                    - '...'
+                    - /
+                    - ':'
+                    - ;
+                    - '?'
+                    - '['
+                    - '"'
+                    - \
+                    - ']'
+                    - _
+                    - '{'
+                    - '}'
+                    - '~'
+                    - «
+                    - »
+                    - ‘
+                    - ’
+                    - ‚
+                    - ‛
+                    - “
+                    - ”
+                    - „
+                    - ‟
+                    - ‹
+                    - ›
+        - macro:
+            quantifier: {minimum: 0, maximum: 1}
+            snid: linguamatics_wc.WC_Determiner
+            pt: determiner
+            of:
+            - alternative:
+                macroPt: determiner
+                macroSnid: linguamatics_wc.WC_Determiner
+                of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
     - phrase:
       - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link2}
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - phrase:
+            - alternative: [':', /]
+            - alternative: [CEP17, cell]
+          - phrase:
+            - signals
+            - /
+            - alternative: [cell, nucleus]
       - phrase:
           quantifier: {minimum: 0, maximum: 1}
           of:
@@ -54,19 +146,94 @@ query:
           morphoVariants: true
           quantifier: {minimum: 0, maximum: 1}
     - phrase:
-        quantifier: {minimum: 0, maximum: 1}
-        of:
-        - alternative:
-          - phrase: [in, situ]
-          - invasive
-        - carcinoma
-    - phrase:
         quantifier: {minimum: 0, maximum: none}
         of:
         - alternative:
             quantifier: {minimum: 1, maximum: none}
             view: {layout: list}
-            of: [and, or, ',', /]
+            of:
+            - macro:
+                snid: linguamatics_wc.WC_Conjunction
+                pt: conjunction
+                of:
+                - alternative:
+                    macroPt: conjunction
+                    macroSnid: linguamatics_wc.WC_Conjunction
+                    of:
+                    - '&'
+                    - after
+                    - albeit
+                    - also
+                    - although
+                    - and
+                    - phrase: [as, far, as]
+                    - as
+                    - because
+                    - before
+                    - but
+                    - either
+                    - if
+                    - moreover
+                    - neither
+                    - nor
+                    - once
+                    - or
+                    - so
+                    - than
+                    - though
+                    - unless
+                    - versus
+                    - vs
+                    - vs.
+                    - when
+                    - whereas
+                    - whereby
+                    - whether
+                    - while
+                    - whilst
+                    - yet
+            - macro:
+                snid: linguamatics_wc.WC_Punctuation
+                pt: punctuation
+                of:
+                - alternative:
+                    macroPt: punctuation
+                    macroSnid: linguamatics_wc.WC_Punctuation
+                    of:
+                    - '!'
+                    - ''''
+                    - ''''''
+                    - (
+                    - )
+                    - '***'
+                    - ','
+                    - word: {text: '-'}
+                    - .
+                    - '...'
+                    - /
+                    - ':'
+                    - ;
+                    - '?'
+                    - '['
+                    - '"'
+                    - \
+                    - ']'
+                    - _
+                    - '{'
+                    - '}'
+                    - '~'
+                    - «
+                    - »
+                    - ‘
+                    - ’
+                    - ‚
+                    - ‛
+                    - “
+                    - ”
+                    - „
+                    - ‟
+                    - ‹
+                    - ›
         - macro:
             quantifier: {minimum: 0, maximum: 1}
             snid: linguamatics_wc.WC_Determiner
@@ -77,16 +244,6 @@ query:
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
         - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
-    - phrase:
-        quantifier: {minimum: 0, maximum: 1}
-        of:
-        - IHC
-        - alternative:
-          - word: {text: stain, morphoVariants: true}
-          - staining
-    - word:
-        text: result
-        quantifier: {minimum: 0, maximum: 1}
 output:
   columns:
   - id: link2.class1

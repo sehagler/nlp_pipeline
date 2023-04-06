@@ -80,7 +80,7 @@ def _normalize_GATA3(text):
 #
 def _normalize_HER2(text):
     text = \
-        lambda_tools.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + slash() + ')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text,  'HER2')
+        lambda_tools.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + minus_sign() + '|' + slash() +')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text,  'HER2')
     text = \
         lambda_tools.space_correction_lambda_conversion('(?<![a-z])HER2' + minus_sign() + slash() + '(c' + minus_sign() + ')?neu( ' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text, 'HER2')
     text = \
@@ -157,6 +157,26 @@ def _normalize_PR(text):
     return text
 
 #
+def _normalize_biomarker_strength(text):
+    text = \
+        lambda_tools.initialism_lambda_conversion('intermediate - strong', text, 'intermediate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?intermediate', text, 'intermediate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('moderate - strong', text, 'moderate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?moderate', text, 'moderate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('weak - moderate', text, 'weak-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('moderate ?- ?weak', text, 'weak-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('weak - strong', text, 'weak-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?weak', text, 'weak-strong')
+    return text
+
+#
 def _normalize_multiple_biomarkers(text):
     text = \
         lambda_tools.lambda_conversion('triple negative', text, 'ER negative, PR negative, HER2 negative')
@@ -200,8 +220,8 @@ def _remove_extraneous_text(text):
         lambda_tools.deletion_lambda_conversion(article() + ' ER and PR stains are considered(.*\n)*.*Indeterminate recommend repeat on another specimen( \.)?', text)
     text = \
         lambda_tools.deletion_lambda_conversion(article() + ' ER and PR IHC stains are performed(.*\n)*.*10% of ' + article() + ' tumor cells( \.)?', text)
-    text = \
-        lambda_tools.deletion_lambda_conversion('Brightfield Dual ISH analysis(.*\n)*.*positive and negative controls( \.)?', text)
+    #text = \
+    #    lambda_tools.deletion_lambda_conversion('Brightfield Dual ISH analysis(.*\n)*.*positive and negative controls( \.)?', text)
     text = \
         lambda_tools.deletion_lambda_conversion('HER2 IHC staining is performed with(.*\n)*.*Arch Pathol Lab Med 131:18 \- 43 \. 2007( \.)?', text)
     text = \
@@ -245,27 +265,6 @@ class Postprocessor(Postprocessor_base):
                         consolidated_biomarker_dict[biomarker_name][key].extend(biomarker_dict[biomarker_name][key])
                     else:
                         consolidated_biomarker_dict[biomarker_name][key].append(biomarker_dict[biomarker_name][key])
-        for biomarker_name in consolidated_biomarker_dict.keys():
-            if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['STRENGTH']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 1:
-                   consolidated_biomarker_dict[biomarker_name]['BLOCK'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['PERCENTAGE'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['SCORE'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['STATUS'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['STRENGTH'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['SNIPPET'] = \
-                       self.manual_review
         return consolidated_biomarker_dict
     
     #
@@ -375,7 +374,7 @@ class Postprocessor(Postprocessor_base):
                             self._process_status(biomarker_name,
                                                  biomarker_status_text_list[i])
                         biomarker_strength = \
-                            self._process_score(biomarker_strength_text_list[i])
+                            self._process_strength(biomarker_strength_text_list[i])
                         biomarker_score = \
                             self._process_score(biomarker_score_text_list[i])
                         biomarker_percentage = \
@@ -468,14 +467,13 @@ class Postprocessor(Postprocessor_base):
     
     #
     def _process_percentage(self, percentage):
-        '''
+        if percentage == '0':
+            percentage += '%'
+        percentage = re.sub('> ?=', '>', percentage)
+        percentage = re.sub('< ?=', '<', percentage)
         match = re.search('[0-9]+%-[0-9]+%', percentage)
         if match is not None:
-            percentage = \
-                lambda_tools.lambda_conversion('(?<=%)-(?=[0-9])',
-                                             match.group(0), ',')
-            percentage = '(' + percentage + ')'
-        '''
+            percentage = match.group(0)
         return percentage
     
     #
@@ -486,27 +484,38 @@ class Postprocessor(Postprocessor_base):
         match = re.search('[0-4](\+)? (\-|to) [0-4](\+)?', score)
         if match is not None:
             score = \
-                lambda_tools.lambda_conversion(' (\-|to) ', match.group(0), ',')
-            score = '(' + score +')'
-        match = re.search('no staining', score)
-        if match is not None:
-            score = '0'
+                lambda_tools.lambda_conversion(' (\-|to) ', match.group(0), '-')
+        score = re.sub(' (nuclear )?intensity', '', score)
+        score = re.sub(' (nuclear )?staining', '', score)
         return score
         
     #
     def _process_status(self, biomarker_name, status):
+        status = status.lower()
+        status = re.sub(',', '', status)
+        status = re.sub('( nuclear)? staining', '', status)
+        status = re.sub('focal ', 'focally ', status)
         if biomarker_name in [ 'ER', 'GATA3', 'HER2', 'PR' ]:
-            if status.lower() in [ 'borderline' ]:
-                status = 'equivocal'
-            elif status.lower() in [ 'negativity', 'no', 'non-amplified', 
-                                     'nonreactive', 'not amplified', 'unamplified',
-                                     'unfavorable', 'without immunoreactivity']:
-                status = 'negative'
-            elif status.lower() in [ 'amplified', 'favorable', 'immunoreactive',
-                                     'immunoreactivity', 'positivity', 'present',
-                                     'reactive', 'strong', 'variable' ]:
-                status = 'positive'
+            for term in [ 'borderline' ]:
+                status = re.sub(term, 'equivocal', status)
+            for term in [ 'negativity', 'lack expression', 'non-amplified',
+                          'nonreactive', 'not amplified', 'unamplified',
+                          'without immunoreactivity' ]:
+                status = re.sub(term, 'negative', status)
+            for term in [ 'amplified', 'expression', 'immunoreactive',
+                          'immunoreactivity', 'positivity', 'reactive',
+                          'stains' ]:
+                status = re.sub(term, 'positive', status)
         return status
+    
+    #
+    def _process_strength(self, strength):
+        strength = strength.lower()
+        strength = re.sub('(no|zero) (nuclear )?staining', 'none', strength)
+        strength = re.sub(' immunoreactivity', '', strength)
+        strength = re.sub(' (nuclear )?intensity', '', strength)
+        strength = re.sub(' (nuclear )?staining', '', strength)
+        return strength
 
 #
 class Preprocessor(Preprocessor_base):
@@ -522,5 +531,6 @@ class Preprocessor(Preprocessor_base):
                                             _normalize_ER,
                                             _normalize_BCL2,
                                             _normalize_AR,
-                                            _normalize_multiple_biomarkers)
+                                            _normalize_multiple_biomarkers,
+                                            _normalize_biomarker_strength)
         self.text = normalize_text(self.text)
