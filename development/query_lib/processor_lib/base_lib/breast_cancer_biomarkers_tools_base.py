@@ -159,21 +159,37 @@ def _normalize_PR(text):
 #
 def _normalize_biomarker_strength(text):
     text = \
+        lambda_tools.initialism_lambda_conversion('dim - intermediate', text, 'dim-intermediate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('dim - moderate', text, 'dim-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('dim - strong', text, 'dim-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('intermediate ?- ?dim', text, 'dim-intermediate')
+    text = \
         lambda_tools.initialism_lambda_conversion('intermediate - strong', text, 'intermediate-strong')
     text = \
-        lambda_tools.initialism_lambda_conversion('strong ?- ?intermediate', text, 'intermediate-strong')
+        lambda_tools.initialism_lambda_conversion('intermediate ?- ?weak', text, 'weak-intermediate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('moderate - dim', text, 'dim-moderate')
     text = \
         lambda_tools.initialism_lambda_conversion('moderate - strong', text, 'moderate-strong')
     text = \
+        lambda_tools.initialism_lambda_conversion('moderate ?- ?weak', text, 'weak-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?dim', text, 'dim-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?intermediate', text, 'intermediate-strong')
+    text = \
         lambda_tools.initialism_lambda_conversion('strong ?- ?moderate', text, 'moderate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?weak', text, 'weak-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('weak - intermediate', text, 'weak-intermediate')
     text = \
         lambda_tools.initialism_lambda_conversion('weak - moderate', text, 'weak-moderate')
     text = \
-        lambda_tools.initialism_lambda_conversion('moderate ?- ?weak', text, 'weak-moderate')
-    text = \
         lambda_tools.initialism_lambda_conversion('weak - strong', text, 'weak-strong')
-    text = \
-        lambda_tools.initialism_lambda_conversion('strong ?- ?weak', text, 'weak-strong')
     return text
 
 #
@@ -500,18 +516,19 @@ class Postprocessor(Postprocessor_base):
                 status = re.sub(term, 'equivocal', status)
             for term in [ 'negativity', 'lack expression', 'non-amplified',
                           'nonreactive', 'not amplified', 'unamplified',
-                          'without immunoreactivity' ]:
+                          'unfavorable', 'without immunoreactivity' ]:
                 status = re.sub(term, 'negative', status)
-            for term in [ 'amplified', 'expression', 'immunoreactive',
-                          'immunoreactivity', 'positivity', 'reactive',
-                          'stains' ]:
+            for term in [ 'amplified', 'expression', 'favorable',
+                          'immunoreactive', 'immunoreactivity', 'positivity',
+                          'reactive', 'stains' ]:
                 status = re.sub(term, 'positive', status)
         return status
     
     #
     def _process_strength(self, strength):
         strength = strength.lower()
-        strength = re.sub('(no|zero) (nuclear )?staining', 'none', strength)
+        strength = re.sub('no (nuclear )?staining', 'none', strength)
+        strength = re.sub('zero( (nuclear )?staining)?', 'none', strength)
         strength = re.sub(' immunoreactivity', '', strength)
         strength = re.sub(' (nuclear )?intensity', '', strength)
         strength = re.sub(' (nuclear )?staining', '', strength)

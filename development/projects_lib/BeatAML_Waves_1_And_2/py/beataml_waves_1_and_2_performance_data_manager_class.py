@@ -135,6 +135,32 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         if performance is not None:
             nlp_performance_dict[validation_datum_key].append(performance)
         return nlp_performance_dict
+    
+    #
+    def _get_nlp_data(self, data_in, queries):
+        data_out = {}
+        for query in queries:
+            key = query[0]
+            sections = query[1]
+            query_name = query[2]
+            data_key = query[3]
+            mode_flg = query[4]
+            strip_flg = query[5]
+            data_out[key] = \
+                self._get_data_value(data_in, sections,
+                                     query_name + '_' + self.nlp_value_key,
+                                     data_key, mode_flg=mode_flg)
+            if strip_flg and data_out[key] is not None:
+                data_out[key] = data_out[key][0]
+        del_keys = []
+        for key in data_out:
+            if data_out[key] is None:
+                del_keys.append(key)
+        for key in del_keys:
+            del data_out[key]  
+        if not data_out:
+            data_out = None
+        return data_out
             
     #
     def _get_nlp_values(self, nlp_data, data_json):
@@ -159,7 +185,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         return validation_idx
     
     #
-    def _process_performance(self, nlp_values_in):
+    def _process_performance(self, nlp_values_in, validation_datum_keys):
         #document_csn_list = \
         #    self.metadata_manager.pull_document_identifier_list('SOURCE_SYSTEM_DOCUMENT_ID')
         nlp_performance_wo_validation_manual_review_dict = {}
@@ -272,6 +298,22 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         else:
             x = None
         return x
+    
+    #
+    def _read_metadata(self, nlp_data):
+        metadata_keys = []
+        metadata_dict_dict = {}
+        for key in nlp_data.keys():
+            metadata_dict_dict[key] = {}
+            metadata_dict_dict[key]['METADATA'] = \
+                nlp_data[key]['METADATA']
+            metadata_dict_dict[key]['NLP_METADATA'] = \
+                nlp_data[key]['NLP_METADATA']
+        for metadata_key in metadata_dict_dict.keys():
+            for key in metadata_dict_dict[metadata_key].keys():
+                if key not in metadata_keys:
+                    metadata_keys.append(key)
+        return metadata_keys, metadata_dict_dict
             
     #
     def _read_nlp_value(self, nlp_data, data_json, key, identifier):

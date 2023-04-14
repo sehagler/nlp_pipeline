@@ -1,5 +1,5 @@
 version: 6.8
-creationDate: '2023-04-12 11:05:02'
+creationDate: '2023-04-07 09:33:59'
 query:
   document:
   - alternative:
@@ -316,6 +316,15 @@ query:
         multiSentence: true
         of:
         - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*now([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
@@ -327,14 +336,5 @@ query:
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
-        - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
-            matchType: Raw regexp
-    - phrase:
-        multiSentence: true
-        of:
-        - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
-            matchType: Raw regexp
 creator: haglers
-queryID: '69227437'
+queryID: 4d7f0a3b

@@ -45,7 +45,7 @@ class KDLReports_static_data_object(Static_data_object):
               ('PR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
               ('PR Percent', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
               ('PR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True),
-              ('PR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STRENGTH', 'single_value', True) ]
+              ('PR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STRENGTH', 'single_value', True) ] 
         self.static_data['validation_file'] = \
             'smmart_nlp_comparison.xlsx'
         if self.project_subdir == 'test':

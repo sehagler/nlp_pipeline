@@ -120,6 +120,7 @@ query:
             - unamplified
           - borderline
           - equivocal
+          - favorable
           - negative
           - negativity
           - phrase:
@@ -128,6 +129,7 @@ query:
                 of: [present, and]
             - positive
           - positivity
+          - unfavorable
       - phrase:
           quantifier: {minimum: 0, maximum: 1}
           of:
