@@ -16,7 +16,7 @@ from base_lib.preprocessor_registry_base_class \
     import Preprocessor_registry_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from tools_lib.regex_lib.regex_tools \
     import article, be, note_label, s, specimen_label
 from tools_lib.processing_tools_lib.text_processing_tools \
@@ -160,7 +160,7 @@ class Preprocessor_base(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        normalize_text = composite_function(_remove_extraneous_text,
+        normalize_text = sequential_composition(_remove_extraneous_text,
                                             _remove_see,
                                             _remove_mychart,
                                             _process_organizations,

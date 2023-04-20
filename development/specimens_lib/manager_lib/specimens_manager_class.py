@@ -17,7 +17,7 @@ import traceback
 from base_lib.manager_base_class import Manager_base
 from logger_lib.object_lib.logger_object_class import Logger_object
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from tools_lib.processing_tools_lib.variable_processing_tools \
     import trim_data_value
     
@@ -259,12 +259,12 @@ class Specimens_manager(Manager_base):
         deidentifier_key_dict = \
             self._get_deidentifier_keys(self.deidentifier_xlsx)
         generate_specimen_tree = \
-            composite_function(_identify_documents_for_same_specimen,
+            sequential_composition(_identify_documents_for_same_specimen,
                                _identify_documents_with_same_proc_nm)
         specimen_tree = generate_specimen_tree(deepcopy(data_json))
         specimen_dict = self._cluster_specimens(specimen_tree,
                                                 deidentifier_key_dict)
-        get_document_map = composite_function(_get_document_map,
+        get_document_map = sequential_composition(_get_document_map,
                                               _trim_specimen_tree,
                                               _trim_documents_wrapper)
         argument_dict = {}

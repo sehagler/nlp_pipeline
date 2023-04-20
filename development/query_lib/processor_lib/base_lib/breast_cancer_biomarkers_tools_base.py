@@ -15,7 +15,7 @@ from base_lib.preprocessor_base_class \
     import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition_new as sequential_composition
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -539,15 +539,14 @@ class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        normalize_text = composite_function(_remove_extraneous_text,
-                                            _normalize_PR,
-                                            _normalize_PDL1,
-                                            _normalize_KI67,
-                                            _normalize_HER2,
-                                            _normalize_GATA3,
-                                            _normalize_ER,
-                                            _normalize_BCL2,
+        self.text = sequential_composition([_normalize_multiple_biomarkers,
                                             _normalize_AR,
-                                            _normalize_multiple_biomarkers,
-                                            _normalize_biomarker_strength)
-        self.text = normalize_text(self.text)
+                                            _normalize_BCL2,
+                                            _normalize_ER,
+                                            _normalize_GATA3,
+                                            _normalize_HER2,
+                                            _normalize_KI67,
+                                            _normalize_PDL1,
+                                            _normalize_PR,
+                                            _normalize_biomarker_strength,
+                                            _remove_extraneous_text], self.text)

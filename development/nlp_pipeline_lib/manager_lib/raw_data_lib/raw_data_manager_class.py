@@ -135,8 +135,7 @@ class Raw_data_manager(Manager_base):
     
     #
     def get_data_by_document_number(self, data_file, document_number,
-                                    document_ctr, i2e_version, process_idx,
-                                    password):
+                                    i2e_version, process_idx, password):
         document_data = {}
         for i in range(len(self.data)):
             if len(self.data[i]['FILENAME']) > 0 and self.data[i]['FILENAME'][0] == data_file:

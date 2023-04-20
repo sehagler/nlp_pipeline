@@ -275,7 +275,7 @@ class Process_manager(Manager_base):
     #
     def _collect_performance_statistics_dict(self):
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
+        #directory_manager = static_data['directory_manager']
         performance_data_files = static_data['performance_data_files']
         #processing_base_dir = \
         #    directory_manager.pull_directory('processing_base_dir')
@@ -292,7 +292,7 @@ class Process_manager(Manager_base):
     #
     def _documents_by_year(self):
         static_data = self.static_data_object.get_static_data()
-        datetime_keys = {}
+        #datetime_keys = {}
         metadata_json_file = self.metadata_manager.get_metadata_json_file()
         metadata = read_json_file(metadata_json_file)
         year_list = []
@@ -444,8 +444,8 @@ class Process_manager(Manager_base):
             
     #
     def _total_documents(self):
-        static_data = self.static_data_object.get_static_data()
-        datetime_keys = {}
+        #static_data = self.static_data_object.get_static_data()
+        #datetime_keys = {}
         metadata_json_file = self.metadata_manager.get_metadata_json_file()
         metadata = read_json_file(metadata_json_file)
         num_documents = str(len(metadata.keys()))
@@ -471,10 +471,12 @@ class Process_manager(Manager_base):
             
     #
     def calculate_performance(self):
+        display_flg = True
         if self.performance_data_manager is not None:
-            self.performance_data_manager.get_performance_data()
+            self.performance_data_manager.get_performance_data(display_flg)
             self.performance_data_manager.display_performance_statistics()
             self.performance_data_manager.write_performance_data()
+            self.performance_data_manager.generate_csv_file()
             
     #
     def data_set_summary_info(self):
@@ -645,7 +647,7 @@ class Process_manager(Manager_base):
                     if self.nlp_query_key in nlp_datum[self.nlp_datum_key].keys():
                         query_list.append(nlp_datum[self.nlp_datum_key][self.nlp_query_key])
                 query_list = list(set(query_list))
-                performance_statistics_dict_tmp = []
+                #performance_statistics_dict_tmp = []
                 tmp_dict = {}
                 for key in performance_statistics_dict.keys():
                     if key in query_list:
@@ -667,6 +669,10 @@ class Process_manager(Manager_base):
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
         filelist = os.listdir(data_dir)
+        linguamatics_i2e_object = \
+            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+        sections_data_dict = \
+            linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
         if static_data['project_subdir'] == 'test' and \
            'test_postprocessing_data_in_files' in static_data.keys():
             filelist = \
@@ -678,11 +684,10 @@ class Process_manager(Manager_base):
         for filename in filelist:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
-                linguamatics_i2e_object = \
-                    self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
                 data_dict = \
                     linguamatics_i2e_object.generate_data_dict(data_dir, filename)
-                self.postprocessor_registry.push_data_dict(filename, data_dict)
+                self.postprocessor_registry.push_data_dict(filename, data_dict,
+                                                           sections_data_dict)
         self.postprocessor_registry.run_registry()
         postprocessor_registry = \
             self.postprocessor_registry.pull_postprocessor_registry()
@@ -745,7 +750,7 @@ class Process_manager(Manager_base):
         for i in range(len(raw_data_files_seq)):
             raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))
-        document_identifier_list = []
+        #document_identifier_list = []
         num_docs_preprocessed = 0
         processes = []
         argument_queues = []

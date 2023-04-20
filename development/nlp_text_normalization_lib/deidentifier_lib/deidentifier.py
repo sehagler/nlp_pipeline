@@ -8,7 +8,7 @@ Created on Mon Mar 16 13:28:29 2020
 #
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 
 #
 def _deidentify_age(text):
@@ -61,7 +61,7 @@ def _deidentify_telephone_number(text):
     
 #
 def deidentifier(text):
-    deidentify_text = composite_function(_deidentify_telephone_number,
+    deidentify_text = sequential_composition(_deidentify_telephone_number,
                                          _deidentify_pronouns,
                                          _deidentify_personal_name,
                                          _deidentify_mrn,

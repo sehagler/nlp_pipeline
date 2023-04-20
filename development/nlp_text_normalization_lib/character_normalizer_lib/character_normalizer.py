@@ -11,7 +11,7 @@ import re
 #
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 
 #
 def _normalize_asterisk(text):
@@ -209,7 +209,7 @@ def _normalize_underscore(text):
     
 #
 def character_normalizer(text):
-    normalize_text = composite_function(_normalize_underscore,
+    normalize_text = sequential_composition(_normalize_underscore,
                                         _normalize_tilde,
                                         _normalize_slash,
                                         _normalize_semicolon,

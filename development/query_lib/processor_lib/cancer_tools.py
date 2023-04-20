@@ -9,7 +9,7 @@ Created on Thu Jun 18 16:45:34 2020
 from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from tools_lib.regex_lib.regex_tools \
     import (
         regex_from_list,
@@ -152,7 +152,7 @@ class Preprocessor(Preprocessor_base):
         self.text = \
             lambda_tools.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
             
-        normalize_text = composite_function(_cleanup_text,
+        normalize_text = sequential_composition(_cleanup_text,
                                             _normalize_text,
                                             _setup_text,
                                             _process_regular_initialisms,

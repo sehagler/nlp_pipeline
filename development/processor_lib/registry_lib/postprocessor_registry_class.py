@@ -43,29 +43,40 @@ class Postprocessor_registry(Postprocessor_registry_base):
                 print(filename + ' registration failed')
      
     #
-    def push_data_dict(self, filename, data_dict):
+    def push_data_dict(self, filename, data_dict, sections_data_dict):
         print(filename)
         if filename in [ 'breast_cancer_biomarkers_blocks_er.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', data_dict, idx=1)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', 
+                                 data_dict, sections_data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_blocks_gata3.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3', data_dict, idx=1)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3',
+                                 data_dict, sections_data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_blocks_her2.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2', data_dict, idx=1)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2',
+                                 data_dict, sections_data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_blocks_ki67.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_ki67', data_dict, idx=1)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_ki67',
+                                 data_dict, sections_data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_blocks_pr.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr', data_dict, idx=1)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr',
+                                 data_dict, sections_data_dict, idx=1)
         elif filename in [ 'breast_cancer_biomarkers_variability_er.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', data_dict, idx=2)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_er',
+                                 data_dict, sections_data_dict, idx=2)
         elif filename in [ 'breast_cancer_biomarkers_variability_gata3.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3', data_dict, idx=2)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3',
+                                 data_dict, sections_data_dict, idx=2)
         elif filename in [ 'breast_cancer_biomarkers_variability_her2.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2', data_dict, idx=2)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2',
+                                 data_dict, sections_data_dict, idx=2)
         elif filename in [ 'breast_cancer_biomarkers_variability_ki67.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_ki67', data_dict, idx=2)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_ki67',
+                                 data_dict, sections_data_dict, idx=2)
         elif filename in [ 'breast_cancer_biomarkers_variability_pr.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr', data_dict, idx=2)
+            self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr',
+                                 data_dict, sections_data_dict, idx=2)
         else:
             filename_base, extension = os.path.splitext(filename)
             if extension == '.csv' and filename_base != 'sections':
-                self._push_data_dict('postprocessor_' + filename_base, data_dict, filename=filename)
+                self._push_data_dict('postprocessor_' + filename_base, data_dict, 
+                                     sections_data_dict, filename=filename)

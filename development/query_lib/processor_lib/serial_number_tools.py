@@ -65,7 +65,7 @@ class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        normalize_text = composite_function(_remove_test,
+        normalize_text = sequential_composition(_remove_test,
                                             _remove_slide,
                                             _remove_slice,
                                             _remove_part,

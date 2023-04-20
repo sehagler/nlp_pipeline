@@ -9,7 +9,7 @@ Created on Wed Apr  1 11:45:17 2020
 from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
        
 #
 def _process_mitotic_rate(text):
@@ -134,7 +134,7 @@ class Preprocessor(Preprocessor_base):
                 lambda_tools.lambda_conversion(item, text, 'mSBR')
         self.text = text
         
-        normalize_text = composite_function(_process_tubule_formation,
+        normalize_text = sequential_composition(_process_tubule_formation,
                                             _process_nuclear_pleomorphism,
                                             _process_mitotic_rate)
         self.text = normalize_text(self.text)

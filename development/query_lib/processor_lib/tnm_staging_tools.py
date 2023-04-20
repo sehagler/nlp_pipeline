@@ -14,7 +14,7 @@ from base_lib.postprocessor_base_class import Postprocessor_base
 from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 
 #
 def _create_template_list(prefix_list, base_list, suffix_list):
@@ -456,6 +456,6 @@ class Preprocessor(Preprocessor_base):
     
     #
     def run_preprocessor(self):
-        normalize_text = composite_function(_remove_extraneous_text,
+        normalize_text = sequential_composition(_remove_extraneous_text,
                                             _process_tnm_staging)
         self.text = normalize_text(self.text)

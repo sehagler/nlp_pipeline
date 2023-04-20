@@ -27,7 +27,7 @@ from nlp_text_normalization_lib.style_normalizer_lib.style_normalizer \
 from nlp_text_normalization_lib.table_normalizer_lib.table_normalizer \
     import table_normalizer
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from tools_lib.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible
     
@@ -101,7 +101,7 @@ class Text_normalization_object(object):
         dynamic_data_manager, rpt_text = \
             self.layout_normalizer.format_text(dynamic_data_manager, rpt_text,
                                                source_system)
-        normalize_text = composite_function(normalize_whitespace,
+        normalize_text = sequential_composition(normalize_whitespace,
                                             table_normalizer,
                                             normalize_whitespace,
                                             specimen_normalizer,

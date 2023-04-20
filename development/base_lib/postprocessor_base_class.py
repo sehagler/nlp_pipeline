@@ -14,76 +14,7 @@ import traceback
 from base_lib.manager_base_class \
     import Manager_base
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
-    
-#
-def _append_data(idx, key, data_dict_list, value_list, query_name, 
-                 json_structure_tools):
-    nlp_data_key = json_structure_tools.pull_key('nlp_data_key')
-    nlp_query_key = json_structure_tools.pull_key('nlp_query_key')
-    nlp_section_key = json_structure_tools.pull_key('nlp_section_key')
-    nlp_specimen_key = json_structure_tools.pull_key('nlp_specimen_key')
-    nlp_value_key = json_structure_tools.pull_key('nlp_value_key')
-    if len(value_list) > 0:
-        data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_value_key] \
-            = value_list
-        data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_query_key] \
-            = query_name
-        data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_section_key] \
-            = key[0]
-        if key[1]:
-            data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_specimen_key] \
-                = key[1]
-    return data_dict_list
-
-#
-def _build_json_structure(data_dict_list, query_name, json_structure_tools):
-    nlp_data_key = json_structure_tools.pull_key('nlp_data_key')
-    nlp_datetime_key = json_structure_tools.pull_key('nlp_datetime_key')
-    nlp_text_element_key = json_structure_tools.pull_key('nlp_text_element_key')
-    nlp_tool_output_key = json_structure_tools.pull_key('nlp_tool_output_key')
-    for i in range(len(data_dict_list)):
-        data_dict_list[i][nlp_data_key] = {}
-        for j in range(len(data_dict_list[i]['DOCUMENT_FRAME'])):
-            key = data_dict_list[i]['DOCUMENT_FRAME'][j][0]
-            datetime = data_dict_list[i]['DOCUMENT_FRAME'][j][1]
-            text = data_dict_list[i]['DOCUMENT_FRAME'][j][2]
-            if len(data_dict_list[i]['DOCUMENT_FRAME'][j]) > 3:
-                elements = data_dict_list[i]['DOCUMENT_FRAME'][j][3:]
-            else:
-                elements = []
-            if key not in data_dict_list[i][nlp_data_key].keys():
-                data_dict_list[i][nlp_data_key][key] = {}
-            if query_name not in data_dict_list[i][nlp_data_key][key]:
-                data_dict_list[i][nlp_data_key][key][query_name] = {}
-            if nlp_tool_output_key not in data_dict_list[i][nlp_data_key][key][query_name]:
-                data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key] = {}
-            if nlp_datetime_key not in data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key].keys():
-                data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_datetime_key] = []
-                data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key + str(0)] = []
-            data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_datetime_key].append(datetime)
-            data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key + str(0)].append(text)
-            for j in range(len(elements)):
-                if nlp_text_element_key+str(j+1) not in data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key].keys():
-                    data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key+str(j+1)] = []
-                data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key+str(j+1)].append(elements[j])
-    return data_dict_list
-
-#
-def _build_json_structures(argument_dict):
-    data_dict_list = argument_dict['data_dict_list']
-    json_structure_tools = argument_dict['json_structure_tools']
-    query_name = argument_dict['query_name']
-    num_components = len(data_dict_list)
-    for idx in range(num_components):
-        data_dict_list[idx] = \
-            _build_json_structure(data_dict_list[idx], query_name,
-                                  json_structure_tools)
-    return_dict = {}
-    return_dict['data_dict_list'] = data_dict_list
-    return_dict['json_structure_tools'] = argument_dict['json_structure_tools']
-    return_dict['query_name'] = argument_dict['query_name']
-    return return_dict
+    import sequential_composition_new as sequential_composition
     
 #
 def _extract_value(context_regex, regex, map_func, text):
@@ -141,50 +72,7 @@ def _get_query_name(argument_dict):
         query_name = os.path.splitext(base)[0]
         query_name = query_name.upper()
     return_dict = {}
-    return_dict['data_dict_list'] = argument_dict['data_dict_list']
-    return_dict['json_structure_tools'] = argument_dict['json_structure_tools']
     return_dict['query_name'] = query_name
-    return return_dict
-
-#
-def _merge_data_dicts(argument_dict):
-    data_dict_list = argument_dict['data_dict_list']
-    json_structure_tools = argument_dict['json_structure_tools']
-    nlp_data_key = json_structure_tools.pull_key('nlp_data_key')
-    num_components = len(data_dict_list)
-    doc_ids = []
-    for idx in range(num_components):
-        for i in range(len(data_dict_list[idx])):
-            doc_ids.append(data_dict_list[idx][i]['DOCUMENT_ID'])
-    doc_ids = sorted(list(set(doc_ids)))
-    data_dict_list_out = []
-    for doc_id in doc_ids:
-        document_frame = {}
-        nlp_data = {}
-        for idx in range(num_components):
-            document_frame[idx] = None
-            nlp_data[idx] = None
-            for i in range(len(data_dict_list[idx])):
-                if data_dict_list[idx][i]['DOCUMENT_ID'] == doc_id:
-                    document_frame[idx] = data_dict_list[idx][i]['DOCUMENT_FRAME']
-                    nlp_data[idx] = data_dict_list[idx][i][nlp_data_key]
-                    break
-            if document_frame[idx] is None:
-                document_frame[idx] = []
-            if nlp_data[idx] is None:
-                nlp_data[idx] = []
-        data_dict = {}
-        data_dict['DOCUMENT_ID'] = doc_id
-        data_dict['DOCUMENT_FRAME'] = []
-        data_dict[nlp_data_key] = []
-        for idx in range(num_components):
-            data_dict['DOCUMENT_FRAME'].append(document_frame[idx])
-            data_dict[nlp_data_key].append(nlp_data[idx])
-        data_dict_list_out.append(data_dict)
-    return_dict = {}
-    return_dict['data_dict_list'] = data_dict_list_out
-    return_dict['json_structure_tools'] = argument_dict['json_structure_tools']
-    return_dict['query_name'] = argument_dict['query_name']
     return return_dict
 
 #
@@ -226,6 +114,73 @@ class Postprocessor_base(Manager_base):
         Manager_base.__init__(self, static_data_object)
         self.data_dict_list = {}
         self.filename = None
+        self.sections_data_dict_list = {}
+        self.sections_filename = None
+        
+    #
+    def _append_data(self, idx, key, data_dict_list, value_list, query_name):
+        nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
+        nlp_query_key = self.json_structure_tools.pull_key('nlp_query_key')
+        nlp_section_key = self.json_structure_tools.pull_key('nlp_section_key')
+        nlp_specimen_key = self.json_structure_tools.pull_key('nlp_specimen_key')
+        nlp_value_key = self.json_structure_tools.pull_key('nlp_value_key')
+        if len(value_list) > 0:
+            data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_value_key] \
+                = value_list
+            data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_query_key] \
+                = query_name
+            data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_section_key] \
+                = key[0]
+            if key[1]:
+                data_dict_list[idx][nlp_data_key][0][key][query_name][nlp_specimen_key] \
+                    = key[1]
+        return data_dict_list
+        
+    #
+    def _build_json_structure(self, data_dict_list, query_name):
+        nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
+        nlp_datetime_key = self.json_structure_tools.pull_key('nlp_datetime_key')
+        nlp_text_element_key = self.json_structure_tools.pull_key('nlp_text_element_key')
+        nlp_tool_output_key = self.json_structure_tools.pull_key('nlp_tool_output_key')
+        for i in range(len(data_dict_list)):
+            data_dict_list[i][nlp_data_key] = {}
+            for j in range(len(data_dict_list[i]['DOCUMENT_FRAME'])):
+                key = data_dict_list[i]['DOCUMENT_FRAME'][j][0]
+                datetime = data_dict_list[i]['DOCUMENT_FRAME'][j][1]
+                text = data_dict_list[i]['DOCUMENT_FRAME'][j][2]
+                if len(data_dict_list[i]['DOCUMENT_FRAME'][j]) > 3:
+                    elements = data_dict_list[i]['DOCUMENT_FRAME'][j][3:]
+                else:
+                    elements = []
+                if key not in data_dict_list[i][nlp_data_key].keys():
+                    data_dict_list[i][nlp_data_key][key] = {}
+                if query_name not in data_dict_list[i][nlp_data_key][key]:
+                    data_dict_list[i][nlp_data_key][key][query_name] = {}
+                if nlp_tool_output_key not in data_dict_list[i][nlp_data_key][key][query_name]:
+                    data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key] = {}
+                if nlp_datetime_key not in data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key].keys():
+                    data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_datetime_key] = []
+                    data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key + str(0)] = []
+                data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_datetime_key].append(datetime)
+                data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key + str(0)].append(text)
+                for j in range(len(elements)):
+                    if nlp_text_element_key+str(j+1) not in data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key].keys():
+                        data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key+str(j+1)] = []
+                    data_dict_list[i][nlp_data_key][key][query_name][nlp_tool_output_key][nlp_text_element_key+str(j+1)].append(elements[j])
+        return data_dict_list
+        
+    #
+    def _build_json_structures(self, argument_dict):
+        query_name = argument_dict['query_name']
+        num_components = len(self.data_dict_list)
+        data_dict_list_out = {}
+        for idx in range(num_components):
+            data_dict_list_out[idx] = \
+                self._build_json_structure(self.data_dict_list[idx], query_name)
+        return_dict = {}
+        return_dict['data_dict_list'] = data_dict_list_out
+        return_dict['query_name'] = argument_dict['query_name']
+        return return_dict
     
     #
     def _extract_data_value(self, text_list):
@@ -234,9 +189,8 @@ class Postprocessor_base(Manager_base):
     #
     def _extract_data_values(self, argument_dict):
         data_dict_list = argument_dict['data_dict_list']
-        json_structure_tools = argument_dict['json_structure_tools']
         query_name = argument_dict['query_name']
-        nlp_data_key = json_structure_tools.pull_key('nlp_data_key')
+        nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
         for i in range(len(data_dict_list)):
             document_frames = data_dict_list[i]['DOCUMENT_FRAME']
             keys = []
@@ -257,9 +211,8 @@ class Postprocessor_base(Manager_base):
             extracted_data_dict = self._extract_data_value(value_list_dict)
             for key in extracted_data_dict.keys():
                 data_dict_list =\
-                    _append_data(i, key, data_dict_list,
-                                 extracted_data_dict[key], query_name,
-                                 json_structure_tools)
+                    self._append_data(i, key, data_dict_list,
+                                      extracted_data_dict[key], query_name)
         for i in range(len(data_dict_list)):
             try:
                 data_dict_list[i][nlp_data_key] = \
@@ -285,16 +238,77 @@ class Postprocessor_base(Manager_base):
         return _get_data_table_keys(data_table)
     
     #
+    def _merge_data_dicts(self, argument_dict):
+        data_dict_list = argument_dict['data_dict_list']
+        nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
+        num_components = len(self.data_dict_list)
+        doc_ids = []
+        for idx in range(num_components):
+            for i in range(len(data_dict_list[idx])):
+                doc_ids.append(data_dict_list[idx][i]['DOCUMENT_ID'])
+        doc_ids = sorted(list(set(doc_ids)))
+        document_frame_dict = {}
+        nlp_data_dict = {}
+        for doc_id in doc_ids:
+            document_frame = {}
+            nlp_data = {}
+            for idx in range(num_components):
+                document_frame[idx] = None
+                nlp_data[idx] = None
+                for i in range(len(data_dict_list[idx])):
+                    if data_dict_list[idx][i]['DOCUMENT_ID'] == doc_id:
+                        document_frame[idx] = data_dict_list[idx][i]['DOCUMENT_FRAME']
+                        nlp_data[idx] = data_dict_list[idx][i][nlp_data_key]
+                        break
+                if document_frame[idx] is None:
+                    document_frame[idx] = []
+                if nlp_data[idx] is None:
+                    nlp_data[idx] = []
+            document_frame_dict[doc_id] = document_frame
+            nlp_data_dict[doc_id] = nlp_data
+        return_dict = {}
+        return_dict['document_frame_dict'] = document_frame_dict
+        return_dict['nlp_data_dict'] = nlp_data_dict
+        return_dict['query_name'] = argument_dict['query_name']
+        return return_dict
+    
+    #
+    def _package_merged_dicts(self, argument_dict):
+        document_frame_dict = argument_dict['document_frame_dict']
+        nlp_data_dict = argument_dict['nlp_data_dict']
+        nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
+        num_components = len(self.data_dict_list)
+        data_dict_list = []
+        for doc_id in document_frame_dict.keys():  
+            document_frame = document_frame_dict[doc_id]
+            nlp_data = nlp_data_dict[doc_id]
+            data_dict = {}
+            data_dict['DOCUMENT_ID'] = doc_id
+            data_dict['DOCUMENT_FRAME'] = []
+            data_dict[nlp_data_key] = []
+            for idx in range(num_components):
+                data_dict['DOCUMENT_FRAME'].append(document_frame[idx])
+                data_dict[nlp_data_key].append(nlp_data[idx])
+            data_dict_list.append(data_dict)
+        return_dict = {}
+        return_dict['data_dict_list'] = data_dict_list
+        return_dict['query_name'] = argument_dict['query_name']
+        return return_dict
+    
+    #
     def pull_data_dict_base_keys_list(self):
         return [ 'DOCUMENT_ID', 'DOCUMENT_FRAME' ]
     
     #
     def pull_data_dict_list(self):
-        return self.data_dict_list     
+        return self.merged_data_dict_list     
     
     #
-    def push_data_dict(self, data_dict_list, idx=0, filename=None):
-        self.data_dict_list[idx] = data_dict_list
+    def push_data_dict(self, data_dict, sections_data_dict, idx=0, 
+                       filename=None):
+        self.data_dict_list[idx] = data_dict
+        if sections_data_dict is not None:
+            self.sections_data_dict = sections_data_dict
         if idx == 0:
             self.filename = filename
         
@@ -305,12 +319,11 @@ class Postprocessor_base(Manager_base):
     #
     def run_postprocessor(self, query_name=None, section_name=None):
         argument_dict = {}
-        argument_dict['data_dict_list'] = self.data_dict_list
         argument_dict['filename'] = self.filename
-        argument_dict['json_structure_tools'] = self.json_structure_tools
         argument_dict['query_name'] = query_name
-        process_data_dict_list = composite_function(_merge_data_dicts,
-                                                    _build_json_structures,
-                                                    _get_query_name)
-        argument_dict = process_data_dict_list(argument_dict)
-        self.data_dict_list = self._extract_data_values(argument_dict)
+        self.merged_data_dict_list = sequential_composition([_get_query_name,
+                                                             self._build_json_structures,
+                                                             self._merge_data_dicts,
+                                                             self._package_merged_dicts,
+                                                             self._extract_data_values],
+                                                            argument_dict)

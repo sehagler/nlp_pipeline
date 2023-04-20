@@ -15,7 +15,7 @@ from tools_lib.regex_lib.regex_tools \
         space
     )
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from query_lib.processor_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_date
     
@@ -231,13 +231,7 @@ def _normalize_units(text):
     text = \
         lambda_tools.lambda_conversion('(?<=[0-9])cm', text, ' cm ')
     text = \
-        lambda_tools.lambda_conversion('(?<=[0-9] )hour', text, 'hr')
-    text = \
-        lambda_tools.lambda_conversion('(?<=[0-9] )minute', text, 'min')
-    text = \
         lambda_tools.lambda_conversion('(?<=[0-9])mm', text, ' mm ')
-    text = \
-        lambda_tools.lambda_conversion('(?<=[0-9] )second', text, 'sec')
     text = \
         lambda_tools.deletion_lambda_conversion('(?<=(cm|mm))\.', text)
     return text
@@ -259,7 +253,7 @@ def _remove_superfluous_text(text):
         
 #
 def style_normalizer(text):
-    normalize_text = composite_function(_remove_superfluous_text,
+    normalize_text = sequential_composition(_remove_superfluous_text,
                                         _normalize_with,
                                         _normalize_units,
                                         _normalize_plural,

@@ -391,8 +391,11 @@ class Linguamatics_i2e_object(object):
                                           "text/plain", source_data)
             
     #
-    def create_source_data_file(self, outdir, ctr, metadata,  raw_text,
-                                rpt_text):
+    def create_source_data_file(self, outdir, document_idx, document_dict):
+        ctr = document_idx
+        metadata = document_dict[document_idx]['xml_metadata']
+        raw_text = document_dict[document_idx]['processed_raw_text']
+        rpt_text = document_dict[document_idx]['processed_report_text']
         raw_text = make_ascii(raw_text)
         raw_text = make_xml_compatible(raw_text)
         keys = metadata.keys()

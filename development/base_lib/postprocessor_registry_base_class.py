@@ -20,12 +20,15 @@ class Postprocessor_registry_base(object):
         print('_import_postprocessors() not defined')
         
     #
-    def _push_data_dict(self, postprocessor_name, data_dict, idx=0, filename=None):
+    def _push_data_dict(self, postprocessor_name, data_dict, sections_data_dict,
+                        idx=0, filename=None):
         if idx == 0:
             self.postprocessor_registry[postprocessor_name].push_data_dict(data_dict, 
+                                                                           sections_data_dict,
                                                                            filename=filename)
         else:
-            self.postprocessor_registry[postprocessor_name].push_data_dict(data_dict, 
+            self.postprocessor_registry[postprocessor_name].push_data_dict(data_dict,
+                                                                           None,
                                                                            idx=idx)
     
     #

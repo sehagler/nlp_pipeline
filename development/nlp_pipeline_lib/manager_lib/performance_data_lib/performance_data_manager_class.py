@@ -12,11 +12,12 @@ import os
 import re
 import traceback
 
+#
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import tensor_function
+    import parallel_composition
 
 #
-from base_lib.manager_base_class  import Manager_base
+from base_lib.manager_base_class import Manager_base
 
 #
 def _difference(x, y):
@@ -130,8 +131,11 @@ def _get_nlp_value(arg_dict):
     nlp_values = arg_dict['nlp_values']
     validation_datum_key = arg_dict['validation_datum_key']
     if csn in nlp_values.keys():
-        if validation_datum_key in nlp_values[csn].keys():
-            nlp_value = nlp_values[csn][validation_datum_key]
+        if nlp_values[csn] is not None:
+            if validation_datum_key in nlp_values[csn].keys():
+                nlp_value = nlp_values[csn][validation_datum_key]
+            else:
+                nlp_value = None
         else:
             nlp_value = None
     else:
@@ -149,6 +153,7 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
     for validation_datum_key in validation_datum_keys:
         for key in nlp_values.keys():
             if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
+                print(nlp_values[key])
                 
                 ### Kludge to handle HER2 biomarker
                 if len(nlp_values[key][validation_datum_key]) > 1:
@@ -158,8 +163,7 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
                 ### Kludge to handle HER2 biomarker
                     
                 if len(nlp_values[key][validation_datum_key]) > 1:
-                    nlp_values[key][validation_datum_key] = \
-                        manual_review,
+                    nlp_values[key][validation_datum_key] = manual_review,
     return nlp_values
 
 #
@@ -318,6 +322,8 @@ class Performance_data_manager(Manager_base):
         self.save_dir = \
             self.directory_manager.pull_directory('processing_data_dir')
         self.log_dir = self.directory_manager.pull_directory('log_dir')
+        self.csv_body = ''
+        self.csv_header = ''
     
     #
     def _difference(self, x, y):
@@ -338,6 +344,22 @@ class Performance_data_manager(Manager_base):
                                               N_documents, self.N_manual_review,
                                               N_hit_documents_wo_validation_manual_review_dict,
                                               N_hit_documents_w_validation_manual_review_dict)
+        
+    #
+    def _append_csv_body(self, value, newline_flg):
+        if value == None: value = ''
+        if type(value) is tuple:
+            value_tmp = ''
+            for item in value: value_tmp += str(item) + '; '
+            value = value_tmp[:-2]
+        if newline_flg:
+            self.csv_body += '\n' + str(value) + ', '
+        else:
+            self.csv_body += str(value) + ', '
+        
+    #
+    def _append_csv_header(self, text):
+        self.csv_header += text
     
     #
     def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
@@ -437,8 +459,7 @@ class Performance_data_manager(Manager_base):
         return _nlp_to_tuple(value)
     
     #
-    def _process_performance(self, nlp_values, validation_datum_keys):
-        display_flg = True
+    def _process_performance(self, nlp_values, validation_datum_keys, display_flg):
         self._initialize_performance_dicts()
         self.validation_data_manager.trim_validation_data()
         self._validation_data_manager_column_to_int()
@@ -448,23 +469,31 @@ class Performance_data_manager(Manager_base):
             self._identify_manual_review(nlp_values, validation_datum_keys)
         for csn in document_csn_list:
             print(csn)
+            self._append_csv_header('\n' + 'DOCUMENT_IDENTIFIER' + ', ')
+            self._append_csv_body(csn, newline_flg=True)
             for i in range(len(self.queries)):
                 validation_datum_key = self.queries[i][0]
                 arg_dict = {}
                 arg_dict['csn'] = csn
                 arg_dict['nlp_values'] = nlp_values
                 arg_dict['validation_datum_key'] = validation_datum_key
-                values = tensor_function([self._get_validation_value,
-                                          _get_nlp_value], arg_dict)
-                validation_value = values[0]
-                nlp_value = values[1]
+                return_dict = parallel_composition([self._get_validation_value,
+                                                    _get_nlp_value], arg_dict)
+                validation_value = \
+                    return_dict[self._get_validation_value.__name__]
+                nlp_value =  return_dict[_get_nlp_value.__name__]
                 performance = \
-                    self.evaluation_manager.evaluation(nlp_value, validation_value, display_flg)
+                    self.evaluation_manager.evaluation(nlp_value,
+                                                       validation_value,
+                                                       display_flg)
                 self._update_performance_dicts(csn, validation_datum_key,
                                                nlp_value, validation_value,
                                                performance)
+                self._append_csv_header(validation_datum_key + ', ')
+                self._append_csv_body(nlp_value, newline_flg=False)
         N_documents = len(document_csn_list)
         self._evaluate_performance(N_documents)
+        self.generate_csv_file()
     
     #
     def _process_validation_item(self, x):
@@ -537,15 +566,17 @@ class Performance_data_manager(Manager_base):
                 print('')
         if validation_value is not None and self.manual_review in validation_value:
             self.N_manual_review[validation_datum_key] += 1
-    
-    #
-    def _validation_datum_keys(self):
-        validation_datum_keys = [ ]
-        return validation_datum_keys
-    
+            
     #
     def _validation_data_manager_column_to_int(self):
         pass
+    
+    #
+    def _validation_datum_keys(self):
+        validation_datum_keys = []
+        for query in self.queries:
+            validation_datum_keys.append(query[0])
+        return validation_datum_keys
     
     #
     def _validation_to_tuple(self, value):
@@ -580,7 +611,7 @@ class Performance_data_manager(Manager_base):
         return section_data_list
                 
     #
-    def calculate_performance(self):
+    def calculate_performance(self, display_flg):
         data_json = {}
         for key in self.nlp_data.keys():
             identifier = \
@@ -598,16 +629,29 @@ class Performance_data_manager(Manager_base):
         self.validation_data_manager = self.xls_manager_registry[filename]
         self.validation_data_manager.read_validation_data()
         validation_datum_keys = self._validation_datum_keys()
-        self._process_performance(nlp_values, validation_datum_keys)
+        self._process_performance(nlp_values, validation_datum_keys,
+                                  display_flg)
         
     #
     def display_performance_statistics(self):
         _display_performance_statistics(self.performance_statistics_overall_dict)
         
     #
-    def get_performance_data(self):
+    def generate_csv_file(self):
+        self.csv_header = re.sub('^\n', '', self.csv_header)
+        self.csv_header = re.sub('\n.*', '', self.csv_header)
+        self.csv_header = re.sub(', $', '', self.csv_header)
+        self.csv_body = re.sub('^\n', '', self.csv_body)
+        self.csv_body = re.sub(', \n', '\n', self.csv_body)
+        self.csv_body = re.sub(', $', '', self.csv_body)
+        csv_text = self.csv_header + '\n' + self.csv_body
+        with open('nlp_output.csv', 'w') as f:
+            f.write(csv_text)
+        
+    #
+    def get_performance_data(self, display_flg):
         self.read_nlp_data()
-        self.calculate_performance()
+        self.calculate_performance(display_flg)
             
     #
     def read_nlp_data(self):
