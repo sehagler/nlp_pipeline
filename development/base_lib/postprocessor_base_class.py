@@ -304,12 +304,12 @@ class Postprocessor_base(Manager_base):
         return self.merged_data_dict_list     
     
     #
-    def push_data_dict(self, data_dict, sections_data_dict, idx=0, 
-                       filename=None):
-        self.data_dict_list[idx] = data_dict
-        if sections_data_dict is not None:
+    def push_data_dict(self, postprocessor_name, filename, data_dict,
+                       sections_data_dict):
+        postprocessor_name = re.sub('postprocessor_', '', postprocessor_name)
+        if postprocessor_name == filename:
+            self.data_dict_list[0] = data_dict
             self.sections_data_dict = sections_data_dict
-        if idx == 0:
             self.filename = filename
         
     #

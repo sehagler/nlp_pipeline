@@ -6,6 +6,7 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
+import os
 import re
 
 #
@@ -324,7 +325,8 @@ class Postprocessor(Postprocessor_base):
         extracted_data_dict = {}
         for key in value_list_dict.keys():
             text_list = value_list_dict[key]
-            biomarker_name_list = [ 'ER', 'GATA3', 'HER2', 'KI67', 'PR' ]
+            biomarker_name_list = [ 'AR', 'BCL2', 'CD4', 'CD8', 'ER', 'GATA3',
+                                    'HER2', 'KI67', 'PDL1', 'PR' ]
             biomarker_name_text_list = []
             biomarker_status_text_list = []
             biomarker_strength_text_list = []
@@ -367,10 +369,6 @@ class Postprocessor(Postprocessor_base):
             for i in range(len(unique_snippets)):
                 unique_snippets[i] = ''.join(unique_snippets[i])
             biomarker_dict_list = []
-            er_value_list = []
-            her2_value_list = []
-            ki67_value_list = []
-            pr_value_list = []
             for snippet in unique_snippets:
                 biomarker_dict = {}
                 for biomarker_name in biomarker_name_list:
@@ -511,7 +509,8 @@ class Postprocessor(Postprocessor_base):
         status = re.sub(',', '', status)
         status = re.sub('( nuclear)? staining', '', status)
         status = re.sub('focal ', 'focally ', status)
-        if biomarker_name in [ 'ER', 'GATA3', 'HER2', 'PR' ]:
+        if biomarker_name in [ 'AR', 'BCL2', 'CD4', 'CD8', 'ER', 'GATA3',
+                               'HER2', 'PDL1', 'PR' ]:
             for term in [ 'borderline' ]:
                 status = re.sub(term, 'equivocal', status)
             for term in [ 'negativity', 'lack expression', 'non-amplified',
@@ -533,6 +532,29 @@ class Postprocessor(Postprocessor_base):
         strength = re.sub(' (nuclear )?intensity', '', strength)
         strength = re.sub(' (nuclear )?staining', '', strength)
         return strength
+    
+    #
+    def push_data_dict(self, postprocessor_name, filename, data_dict,
+                       sections_data_dict):
+        postprocessor_name = re.sub('postprocessor_', '', postprocessor_name)
+        if postprocessor_name == filename:
+            self.data_dict_list[0] = data_dict
+            self.sections_data_dict = sections_data_dict
+            self.filename = filename
+        postprocessor_name_split = postprocessor_name.split('_')
+        postprocessor_blocks_name = postprocessor_name_split[:-1]
+        postprocessor_blocks_name.append('blocks')
+        postprocessor_blocks_name.append(postprocessor_name_split[-1])
+        postprocessor_blocks_name = '_'.join(postprocessor_blocks_name)
+        if postprocessor_blocks_name == filename:
+            self.data_dict_list[1] = data_dict
+        postprocessor_name_split = postprocessor_name.split('_')
+        postprocessor_variability_name = postprocessor_name_split[:-1]
+        postprocessor_variability_name.append('variability')
+        postprocessor_variability_name.append(postprocessor_name_split[-1])
+        postprocessor_variability_name = '_'.join(postprocessor_variability_name)
+        if postprocessor_variability_name == filename:
+            self.data_dict_list[2] = data_dict
 
 #
 class Preprocessor(Preprocessor_base):
