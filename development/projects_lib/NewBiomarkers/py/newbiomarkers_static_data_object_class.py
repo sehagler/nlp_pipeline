@@ -29,12 +29,27 @@ class NewBiomarkers_static_data_object(Static_data_object):
         if 'performance_data_files' in self.static_data.keys():
             self.static_data['performance_data_files'].append('CCC19/test/CCC19.performance.json')
         self.static_data['queries_list'] = \
-            [ ('ER Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
-              ('ER Percent', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
-              ('ER Stain Score', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
-              ('Gata3 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
-              ('Gata3 Percent', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_PERCENTAGE', 'single_value', True),
-              ('Gata3 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_SCORE', 'single_value', True),
+            [ ('AR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_STATUS', 'single_value', True),
+              ('AR Percent', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_PERCENTAGE', 'single_value', True),
+              ('AR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_SCORE', 'single_value', True),
+              ('AR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_STRENGTH', 'single_value', True),
+              ('AR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_VARIABILITY', 'single_value', True),
+              ('BCL2 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STATUS', 'single_value', True),
+              ('BCL2 Percent', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_PERCENTAGE', 'single_value', True),
+              ('BCL2 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_SCORE', 'single_value', True),
+              ('BCL2_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STRENGTH', 'single_value', True),
+              ('BCL2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_VARIABILITY', 'single_value', True),
+              ('CD4 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_STATUS', 'single_value', True),
+              ('CD4 Percent', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_PERCENTAGE', 'single_value', True),
+              ('CD4 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_SCORE', 'single_value', True),
+              ('CD4_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_STRENGTH', 'single_value', True),
+              ('CD4_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_VARIABILITY', 'single_value', True),
+              ('CD8 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_STATUS', 'single_value', True),
+              ('CD8 Percent', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_PERCENTAGE', 'single_value', True),
+              ('CD8 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_SCORE', 'single_value', True),
+              ('CD8_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_STRENGTH', 'single_value', True),
+              ('CD8_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_VARIABILITY', 'single_value', True) ]
+        '''
               ('Her2 IHC Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True),
               ('Her2 IHC Percent', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
               ('Her2 IHC Stain Score', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True),
@@ -44,6 +59,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('PR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
               ('PR Percent', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
               ('PR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True) ]
+        '''
         self.static_data['validation_file'] = \
             'smmart_nlp_new_markers.xlsx'
         if self.project_subdir == 'test':
