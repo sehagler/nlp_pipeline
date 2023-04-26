@@ -215,11 +215,9 @@ def normalize_whitespace(text):
 class Text_normalization_object(object):
     
     #
-    def __init__(self, preprocessor_registry, section_header_structure, 
-                 remove_date_flg):
+    def __init__(self, section_header_structure, remove_date_flg):
         self.remove_date_flg = remove_date_flg
         self.layout_normalizer = Layout_normalizer(section_header_structure)
-        self.preprocessor_registry = preprocessor_registry
         self.spelling_normalizer = Spelling_normalizer()
         
     #
@@ -259,8 +257,6 @@ class Text_normalization_object(object):
                                            _remove_mychart,
                                            normalize_whitespace,
                                            _remove_extraneous_text], rpt_text)
-        rpt_text = self.preprocessor_registry.run_registry(rpt_text)
-        rpt_text = normalize_whitespace(rpt_text)  
         if self.remove_date_flg:
             rpt_text = deidentify_date(rpt_text)
         rpt_text = normalize_whitespace(rpt_text)  

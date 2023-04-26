@@ -17,14 +17,13 @@ from tools_lib.processing_tools_lib.function_processing_tools \
 class Preprocessing_worker(object):
     
     #
-    def __init__(self, static_data_object, text_normalization_object,
-                 nlp_tool_manager_registry, preprocess_files_flg):
+    def __init__(self, static_data_object, preprocessor_registry,
+                 nlp_tool_manager_registry):
         self.static_data_object = static_data_object
-        self.text_normalization_object = text_normalization_object
+        self.preprocessor_registry = preprocessor_registry
         self.nlp_tool_manager_registry = nlp_tool_manager_registry
         static_data = self.static_data_object.get_static_data()
         self.directory_manager = static_data['directory_manager']
-        self.preprocess_files_flg = preprocess_files_flg
         self.server = static_data['acc_server'][2]
         self.user = static_data['user']
         
@@ -78,8 +77,8 @@ class Preprocessing_worker(object):
             now.strftime("%d-%b-%y %H:%M:%S.%f") [:-3]
         dynamic_data_manager, processed_raw_text, \
         processed_report_text = \
-            self.text_normalization_object.process_document(dynamic_data_manager,
-                                                             text_item, source_system)
+            self.preprocessor_registry.run_registry(dynamic_data_manager,
+                                                    text_item, source_system)
         now = datetime.datetime.now()
         document_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         nlp_metadata['DOCUMENT_PREPROCESSING_START_DATETIME'] = \
@@ -110,7 +109,7 @@ class Preprocessing_worker(object):
                 nlp_metadata = nlp_metadata_list[0]
                 source_metadata = source_metadata_list[0]
                 xml_metadata = xml_metadata_list[0]
-                if self.preprocess_files_flg and bool(data_tmp) and \
+                if bool(data_tmp) and \
                    document_idx >= start_idx:
                     if 'RAW_TEXT' in data_tmp.keys() and \
                        not (len(data_tmp['RAW_TEXT']) == 1 and data_tmp['RAW_TEXT'][0] is None):

@@ -48,20 +48,13 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('CD8 Percent', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_PERCENTAGE', 'single_value', True),
               ('CD8 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_SCORE', 'single_value', True),
               ('CD8_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_STRENGTH', 'single_value', True),
-              ('CD8_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_VARIABILITY', 'single_value', True) ]
-        '''
-              ('Her2 IHC Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True),
-              ('Her2 IHC Percent', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
-              ('Her2 IHC Stain Score', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True),
-              ('Ki67 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_STATUS', 'single_value', True),
-              ('Ki67 Percent', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_PERCENTAGE', 'single_value', True),
-              ('Ki67 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_KI67', 'KI67_SCORE', 'single_value', True),
-              ('PR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
-              ('PR Percent', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
-              ('PR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True) ]
-        '''
-        self.static_data['validation_file'] = \
-            'smmart_nlp_new_markers.xlsx'
+              ('CD8_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_VARIABILITY', 'single_value', True),
+              ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
+              ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
+              ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
+              ('PDL1_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STRENGTH', 'single_value', True),
+              ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
+        self.static_data['validation_file'] = 'smmart_nlp_new_markers.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML'] = {}
@@ -74,8 +67,8 @@ class NewBiomarkers_static_data_object(Static_data_object):
             self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML' ]
             
             #
-            #data_set_flgs = [ 'testing', 'training' ]
-            #data_set_flg = data_set_flgs[0]
+            data_set_flgs = [ 'testing', 'training' ]
+            data_set_flg = data_set_flgs[0]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':
@@ -84,20 +77,18 @@ class NewBiomarkers_static_data_object(Static_data_object):
                 base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
             elif self.static_data['root_dir_flg'] == 'prod_server':
                 base_dir = '/home/groups/hopper2/RDW_NLP_WORKSPACE'
-            source_dir = base_dir + '/NLP/NLP_Source_Data/BreastCancerPathology'
+            source_dir = base_dir + '/NLP/NLP_Source_Data/NewBiomarkers'
             training_data_dir = source_dir + '/test/pkl'
             docs_files = []
             docs_files.append(os.path.join(training_data_dir, 'training_docs.pkl'))
             groups_files = []
             groups_files.append(os.path.join(training_data_dir, 'training_groups.pkl'))
                 
-            '''
             if data_set_flg == 'training':
                 self._include_lists(docs_files, groups_files, [0])
             elif data_set_flg == 'testing':
                 self._include_lists(docs_files, groups_files, [1])
-            '''
-            self._include_lists(docs_files, groups_files, [0, 1])
+            #self._include_lists(docs_files, groups_files, [0, 1])
             
             raw_data_dir = \
                 self.static_data['directory_manager'].pull_directory('raw_data_dir')
@@ -106,15 +97,14 @@ class NewBiomarkers_static_data_object(Static_data_object):
             sheet = book.sheet_by_index(0)
             patient_list = list(set(sheet.col_values(0)[1:]))
             document_list = list(set(sheet.col_values(2)[1:]))
-            
             self._trim_lists(document_list, patient_list)
+            
+            #del self.static_data['document_list']
+            del self.static_data['patient_list']
         
     #
     def _trim_lists(self, document_list, patient_list):
-        remove_document_list = self.static_data['document_list']
         self.static_data['document_list'] = \
-            list(set(document_list) - set(remove_document_list))
-        del self.static_data['patient_list']
-        #remove_patient_list = self.static_data['patient_list']
-        #self.static_data['patient_list'] = \
-        #    list(set(patient_list) - set(remove_patient_list))
+            list(set(self.static_data['document_list']).intersection(document_list))
+        self.static_data['patient_list'] = \
+            list(set(self.static_data['patient_list']).intersection(patient_list))

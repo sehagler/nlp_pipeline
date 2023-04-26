@@ -44,7 +44,7 @@ class Metadata_manager(Manager_base):
                     source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
                         str(int(float(source_metadata_dict[id_key])))
                 except Exception:
-                    traceback.print_exc()
+                    #traceback.print_exc()
                     source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
                         source_metadata_dict[id_key]
         self.metadata_dict_dict[metadata_dict_key] = {}
