@@ -67,12 +67,9 @@ class Pipeline_object(object):
         else:
             print('Multiple document fractions detected!')
         num_groups = 4
-        self.process_manager.preprocessor(password, 0, False)
+        self.process_manager.preprocessor_metadata(password, 0)
         document_values, patient_values, date_values = \
             self.process_manager.get_metadata_values()
-        document_values = list(set(document_values))
-        patient_values = list(set(patient_values))
-        date_values = list(set(patient_values))
         num_documents = len(document_values)
         random.shuffle(document_values)
         number_training_docs = math.floor(doc_fraction * len(document_values))
@@ -112,7 +109,7 @@ class Pipeline_object(object):
                 cleanup_flg = False
             if cleanup_flg:
                 static_data['directory_manager'].cleanup_directory('linguamatics_i2e_preprocessing_data_out')
-            self.process_manager.preprocessor(password, start_idx, True)
+            self.process_manager.preprocessor_full(password, start_idx)
         self.process_manager.data_set_summary_info()
         self.process_manager.linguamatics_i2e_push_resources()
         self.process_manager.linguamatics_i2e_indexer()
@@ -155,7 +152,7 @@ class Pipeline_object(object):
             if cleanup_flg:
                 pass
                 static_data['directory_manager'].cleanup_directory('preprocessing_data_out')
-            self.process_manager.preprocessor(password, start_idx, True)
+            self.process_manager.preprocessor_full(password, start_idx)
             '''
             self.process_manager.ohsu_nlp_templates_setup()
             self.process_manager.ohsu_nlp_templates_run_simple_templates()

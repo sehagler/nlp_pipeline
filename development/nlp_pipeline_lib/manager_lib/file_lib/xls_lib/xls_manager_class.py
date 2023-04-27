@@ -216,6 +216,7 @@ class Xls_manager(Manager_base):
                 cell_value = sheet.cell_value(row_idx, col_idx)
                 cell_value = str(cell_value)
                 validation_data_tmp.append(cell_value)
+            validation_data_tmp[1] = re.sub(' ', '', validation_data_tmp[1])
             validation_data.append(validation_data_tmp)
         self.validation_data = validation_data
     

@@ -522,6 +522,9 @@ class Process_manager(Manager_base):
             document_values.append(metadata_dict_dict[key]['METADATA']['SOURCE_SYSTEM_DOCUMENT_ID'])
             patient_values.append(metadata_dict_dict[key]['METADATA']['MRN_CD'])
             date_values.append(metadata_dict_dict[key]['METADATA']['SPECIMEN_COLLECTED_DATE'])
+        document_values = list(set(document_values))
+        patient_values = list(set(patient_values))
+        date_values = list(set(patient_values))
         return document_values, patient_values, date_values
         
     #
@@ -771,7 +774,7 @@ class Process_manager(Manager_base):
         self.json_manager_registry[filename].write_performance_data_to_package_json_file(data)
     
     #
-    def preprocessor(self, password, start_idx, preprocess_files_flg):
+    def preprocessor_full(self, password, start_idx):
         static_data = self.static_data_object.get_static_data()
         num_processes = self.raw_data_manager.get_number_of_processes()
         
@@ -789,26 +792,23 @@ class Process_manager(Manager_base):
         raw_data_files = []
         for i in range(len(raw_data_files_seq)):
             raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
-                                               raw_data_files_seq[i]))
-        
-        if preprocess_files_flg:            
-            num_docs_preprocessed = 0
-            processes = []
-            argument_queues = []
-            return_queues = []
-            for process_idx in range(num_processes):
-                aq = multiprocessing.Queue()
-                rq = multiprocessing.Queue()
-                w = Preprocessing_worker(self.static_data_object,
-                                         self.preprocessor_registry,
-                                         self.nlp_tool_registry)
-                p = multiprocessing.Process(target=w.process_raw_data, args=(aq, rq,))
-                processes.append(p)
-                argument_queues.append(aq)
-                return_queues.append(rq)
-            for process_idx in range(num_processes):
-                processes[process_idx].start()
-                
+                                               raw_data_files_seq[i]))            
+        num_docs_preprocessed = 0
+        processes = []
+        argument_queues = []
+        return_queues = []
+        for process_idx in range(num_processes):
+            aq = multiprocessing.Queue()
+            rq = multiprocessing.Queue()
+            w = Preprocessing_worker(self.static_data_object,
+                                     self.preprocessor_registry,
+                                     self.nlp_tool_registry)
+            p = multiprocessing.Process(target=w.process_raw_data, args=(aq, rq,))
+            processes.append(p)
+            argument_queues.append(aq)
+            return_queues.append(rq)
+        for process_idx in range(num_processes):
+            processes[process_idx].start()
         doc_idx_offset = 0
         for i in range(len(raw_data_files)):
             filename, extension = os.path.splitext(raw_data_files[i])
@@ -839,58 +839,98 @@ class Process_manager(Manager_base):
             doc_idx_offset = \
                 self.raw_data_manager.partition_data(doc_idx_offset)
             self.raw_data_manager.print_num_of_docs_in_preprocessing_set()
-                
-            if preprocess_files_flg:
-                for process_idx in range(num_processes):
-                    dynamic_data_manager_copy = deepcopy(self.dynamic_data_manager)
-                    raw_data_manager_copy = deepcopy(self.raw_data_manager)
-                    raw_data_manager_copy.select_process(process_idx)
-                    metadata_manager_copy = deepcopy(self.metadata_manager)
-                    argument_dict = {}
-                    argument_dict['dynamic_data_manager'] = \
-                        dynamic_data_manager_copy
-                    argument_dict['metadata_manager'] = metadata_manager_copy
-                    argument_dict['num_processes'] = num_processes
-                    argument_dict['process_idx'] = process_idx
-                    argument_dict['raw_data_manager'] = raw_data_manager_copy
-                    argument_dict['start_idx'] = start_idx
-                    argument_dict['i2e_version'] = i2e_version
-                    argument_dict['password'] = password
-                    argument_queues[process_idx].put(argument_dict)
-                for process_idx in range(num_processes):
-                    ret = return_queues[process_idx].get()
-                    if preprocess_files_flg:
-                        if ret[2] > 0:
-                            self.dynamic_data_manager.merge_copy(ret[0])
-                            self.metadata_manager.merge_copy(ret[1])
-                            num_docs_preprocessed += ret[2]
-                    else:
-                        self.dynamic_data_manager.merge_copy(ret[0])
-                        self.metadata_manager.merge_copy(ret[1])
-                        num_docs_preprocessed += ret[2]
-                        
-            else:
-                for process_idx in range(num_processes):
-                    raw_data_manager_copy = deepcopy(self.raw_data_manager)
-                    raw_data_manager_copy.select_process(process_idx)
-                    metadata = \
-                        self._get_document_metadata(raw_data_manager_copy,
-                                                    i2e_version, process_idx,
-                                                    start_idx, password)
-                    for document_idx in metadata.keys():
-                        self.metadata_manager.append_metadata_dicts(str(document_idx),
-                                                                    metadata[document_idx]['source_metadata'],
-                                                                    metadata[document_idx]['nlp_metadata'])
-                    num_docs_preprocessed = 0
-            
-            if preprocess_files_flg:
-                for process_idx in range(num_processes):
-                    argument_dict = {}
-                    argument_dict['command'] = 'stop'
-                    argument_queues[process_idx].put(argument_dict)
-                    processes[process_idx].join()
-
+            for process_idx in range(num_processes):
+                dynamic_data_manager_copy = deepcopy(self.dynamic_data_manager)
+                raw_data_manager_copy = deepcopy(self.raw_data_manager)
+                raw_data_manager_copy.select_process(process_idx)
+                metadata_manager_copy = deepcopy(self.metadata_manager)
+                argument_dict = {}
+                argument_dict['dynamic_data_manager'] = \
+                    dynamic_data_manager_copy
+                argument_dict['metadata_manager'] = metadata_manager_copy
+                argument_dict['num_processes'] = num_processes
+                argument_dict['process_idx'] = process_idx
+                argument_dict['raw_data_manager'] = raw_data_manager_copy
+                argument_dict['start_idx'] = start_idx
+                argument_dict['i2e_version'] = i2e_version
+                argument_dict['password'] = password
+                argument_queues[process_idx].put(argument_dict)
+            for process_idx in range(num_processes):
+                ret = return_queues[process_idx].get()
+                if ret[2] > 0:
+                    self.dynamic_data_manager.merge_copy(ret[0])
+                    self.metadata_manager.merge_copy(ret[1])
+                    num_docs_preprocessed += ret[2]
+            for process_idx in range(num_processes):
+                argument_dict = {}
+                argument_dict['command'] = 'stop'
+                argument_queues[process_idx].put(argument_dict)
+                processes[process_idx].join()
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
-        if preprocess_files_flg:
-            self.dynamic_data_manager.generate_keywords_file()
+        self.dynamic_data_manager.generate_keywords_file()
+        self.metadata_manager.save_metadata()
+        
+    #
+    def preprocessor_metadata(self, password, start_idx):
+        static_data = self.static_data_object.get_static_data()
+        num_processes = self.raw_data_manager.get_number_of_processes()
+        
+        # Kludge to get around memory issue in processor
+        i2e_version = self.i2e_version
+        # Kludge to get around memory issue in processor
+        
+        raw_data_files_dict = static_data['raw_data_files']
+        if 'raw_data_files_sequence' in static_data.keys():
+            raw_data_files_seq = static_data['raw_data_files_sequence']
+        else:
+            raw_data_files_seq = None
+        if raw_data_files_seq is None:
+            raw_data_files_seq = list(raw_data_files_dict.keys())
+        raw_data_files = []
+        for i in range(len(raw_data_files_seq)):
+            raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
+                                               raw_data_files_seq[i]))
+        doc_idx_offset = 0
+        for i in range(len(raw_data_files)):
+            filename, extension = os.path.splitext(raw_data_files[i])
+            if extension.lower() in [ '.xls', '.xlsx' ]:
+                xls_manager = \
+                    self.xls_manager_registry[raw_data_files[i]]
+                raw_data = xls_manager.read_file()
+            elif extension.lower() in [ '.xml' ]:
+                xml_manager = \
+                    self.xml_manager_registry[raw_data_files[i]]
+                raw_data = xml_manager.read_file()
+            else:
+                print('invalid file extension: ' + extension)  
+            if 'document_list' in static_data:
+                document_list = static_data['document_list']
+                document_identifiers = static_data['document_identifiers']
+                raw_data = _trim_data_by_document_list(raw_data,
+                                                       document_identifiers,
+                                                       document_list)
+            if 'patient_list' in static_data:
+                patient_list = static_data['patient_list']
+                patient_identifiers = static_data['patient_identifiers']
+                raw_data = _trim_data_by_patient_list(raw_data, 
+                                                      patient_identifiers,
+                                                      patient_list)
+            self.raw_data_manager.clear_raw_data()
+            self.raw_data_manager.append_raw_data(raw_data) 
+            doc_idx_offset = \
+                self.raw_data_manager.partition_data(doc_idx_offset)
+            self.raw_data_manager.print_num_of_docs_in_preprocessing_set()
+            for process_idx in range(num_processes):
+                raw_data_manager_copy = deepcopy(self.raw_data_manager)
+                raw_data_manager_copy.select_process(process_idx)
+                metadata = \
+                    self._get_document_metadata(raw_data_manager_copy,
+                                                i2e_version, process_idx,
+                                                start_idx, password)
+                for document_idx in metadata.keys():
+                    self.metadata_manager.append_metadata_dicts(str(document_idx),
+                                                                metadata[document_idx]['source_metadata'],
+                                                                metadata[document_idx]['nlp_metadata'])
+                num_docs_preprocessed = 0
+        print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
         self.metadata_manager.save_metadata()

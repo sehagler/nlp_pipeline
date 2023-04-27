@@ -89,17 +89,16 @@ class NewBiomarkers_static_data_object(Static_data_object):
                 self._include_lists(docs_files, groups_files, [0])
             elif data_set_flg == 'testing':
                 self._include_lists(docs_files, groups_files, [1])
-            #self._include_lists(docs_files, groups_files, [0, 1])
             
             raw_data_dir = \
                 self.static_data['directory_manager'].pull_directory('raw_data_dir')
             raw_data_file = os.path.join(raw_data_dir, 'smmart_nlp_new_markers.xlsx')
+            document_list = list(set(sheet.col_values(0)[1:]))
             book = read_xlsx_file(raw_data_file)
             sheet = book.sheet_by_index(0)
-            patient_list = list(set(sheet.col_values(0)[1:]))
+            patient_list = list(set(sheet.col_values(1)[1:]))
             for i in range(len(patient_list)):
                 patient_list[i] = re.sub(' ', '', patient_list[i])
-            document_list = list(set(sheet.col_values(2)[1:]))
             self._trim_lists(document_list, patient_list)
             
             #self.static_data['document_list'] = document_list
