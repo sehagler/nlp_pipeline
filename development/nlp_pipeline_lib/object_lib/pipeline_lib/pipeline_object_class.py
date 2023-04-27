@@ -70,6 +70,9 @@ class Pipeline_object(object):
         self.process_manager.preprocessor(password, 0, False)
         document_values, patient_values, date_values = \
             self.process_manager.get_metadata_values()
+        document_values = list(set(document_values))
+        patient_values = list(set(patient_values))
+        date_values = list(set(patient_values))
         num_documents = len(document_values)
         random.shuffle(document_values)
         number_training_docs = math.floor(doc_fraction * len(document_values))

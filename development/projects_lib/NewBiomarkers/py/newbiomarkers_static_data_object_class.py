@@ -7,6 +7,7 @@ Created on Fri Jan 10 09:57:35 2020
 
 #
 import os
+import re
 
 #
 from static_data_lib.object_lib.static_data_object_class import Static_data_object
@@ -68,7 +69,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
             
             #
             data_set_flgs = [ 'testing', 'training' ]
-            data_set_flg = data_set_flgs[0]
+            data_set_flg = data_set_flgs[1]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':
@@ -96,11 +97,13 @@ class NewBiomarkers_static_data_object(Static_data_object):
             book = read_xlsx_file(raw_data_file)
             sheet = book.sheet_by_index(0)
             patient_list = list(set(sheet.col_values(0)[1:]))
+            for i in range(len(patient_list)):
+                patient_list[i] = re.sub(' ', '', patient_list[i])
             document_list = list(set(sheet.col_values(2)[1:]))
             self._trim_lists(document_list, patient_list)
             
-            #del self.static_data['document_list']
-            del self.static_data['patient_list']
+            #self.static_data['document_list'] = document_list
+            #self.static_data['patient_list'] = patient_list
         
     #
     def _trim_lists(self, document_list, patient_list):
