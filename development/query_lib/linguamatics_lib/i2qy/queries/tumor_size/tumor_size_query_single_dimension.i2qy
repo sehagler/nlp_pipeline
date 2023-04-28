@@ -5,7 +5,7 @@ query:
   - alternative:
       of:
       - sentence:
-        - link: {path: ../../cancer/tumor/tumor_size/tumor_size_query_single_dimension.i2qy, id: link1}
+        - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_size/tumor_size_query_single_dimension.i2qy, id: link1}
       where:
       - alternative:
           quantifier: {minimum: 0, maximum: 0}

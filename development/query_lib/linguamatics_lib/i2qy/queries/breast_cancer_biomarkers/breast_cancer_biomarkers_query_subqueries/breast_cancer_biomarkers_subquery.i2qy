@@ -13,6 +13,7 @@ query:
       - link: {path: ../breast_cancer_biomarkers_query_4/breast_cancer_biomarkers_query_4.i2qy}
       - link: {path: ../breast_cancer_biomarkers_query_10/breast_cancer_biomarkers_query_10.i2qy}
       - link: {path: ../breast_cancer_biomarkers_query_5/breast_cancer_biomarkers_query_5.i2qy}
+      - link: {path: ../breast_cancer_biomarkers_query_6/breast_cancer_biomarkers_query_6.i2qy}
       - link: {path: ../breast_cancer_biomarkers_query_1/breast_cancer_biomarkers_query_1.i2qy}
 output:
   columns:

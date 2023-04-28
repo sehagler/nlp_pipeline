@@ -3,8 +3,8 @@ creationDate: '2023-01-31 01:32:14'
 query:
   document:
   - alternative:
-    - link: {path: ../../../tools/block_query.i2qy}
-    - link: {path: ../../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy}
+    - link: {path: /api;type=saved_query/__private__/haglers/General/tools/block_query.i2qy}
+    - link: {path: /api;type=saved_query/__private__/haglers/General/smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy}
 parameters: {Biomarker: ''}
 runAsSmartQuery: true
 creator: haglers

@@ -17,8 +17,8 @@ query:
               quantifier: {minimum: 0, maximum: 0}
               of:
               - link: {path: ../tools_lib/body_site_query.i2qy, showInDefaultOutput: false}
-              - link: {path: ../../cancer/tumor/tumor_margin/tumor_margin_query.i2qy, includeInQuery: false, showInDefaultOutput: false}
-      - link: {path: ../../cancer/tumor/tumor_margin/tumor_margin_query.i2qy, id: link2}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_margin/tumor_margin_query.i2qy, includeInQuery: false, showInDefaultOutput: false}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/tumor/tumor_margin/tumor_margin_query.i2qy, id: link2}
 output:
   columns:
   - id: link1.alternative1

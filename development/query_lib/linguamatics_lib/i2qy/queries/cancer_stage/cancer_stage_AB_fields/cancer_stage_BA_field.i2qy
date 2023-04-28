@@ -1,5 +1,5 @@
 version: 6.8
-creationDate: '2023-04-12 11:05:02'
+creationDate: '2023-04-27 09:57:09'
 query:
   document:
   - alternative:
@@ -85,7 +85,7 @@ query:
         multiSentence: true
         of:
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*EBV\\+([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
@@ -130,7 +130,7 @@ query:
         multiSentence: true
         of:
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*EBV\\+([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"

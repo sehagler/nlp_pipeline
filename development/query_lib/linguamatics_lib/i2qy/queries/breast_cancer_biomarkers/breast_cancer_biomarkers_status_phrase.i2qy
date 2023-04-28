@@ -6,7 +6,7 @@ query:
       id: phrase1
       unordered: true
       of:
-      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_status/breast_cancer_biomarkers_status.i2qy}
 output:
   columns:
   - {id: phrase1}

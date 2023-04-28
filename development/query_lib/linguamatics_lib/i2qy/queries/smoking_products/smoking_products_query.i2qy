@@ -21,8 +21,8 @@ query:
       - alternative:
           findMatches: longestOnly
           of:
-          - link: {path: ../../tobacco_and_cannabis_use/smoking_status/smoking_frequency.i2qy}
-          - link: {path: ../../tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_status/smoking_frequency.i2qy}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/query_lib/tobacco_products_smoking.i2qy}
           - phrase:
             - word: {text: pack, morphoVariants: true}
             - word: {text: yr, morphoVariants: true}

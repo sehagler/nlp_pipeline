@@ -12,7 +12,7 @@ query:
             maxWordGap: -1
             wordGapRestricted: false
             of:
-            - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+            - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
             - link:
                 path: ../breast_cancer_biomarkers_constraint.i2qy
                 quantifier: {minimum: 0, maximum: 0}
@@ -30,7 +30,7 @@ query:
                   maxWordGap: -1
                   wordGapRestricted: false
                   of:
-                  - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+                  - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
                   - phrase:
                       maxWordGap: -1
                       quantifier: {minimum: 0, maximum: 1}
@@ -61,7 +61,7 @@ query:
                       - link:
                           path: ../breast_cancer_biomarkers_constraint.i2qy
                           quantifier: {minimum: 0, maximum: 0}
-                      - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+                      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
         - phrase:
             maxWordGap: -1
             wordGapRestricted: false
@@ -75,7 +75,7 @@ query:
                   maxWordGap: -1
                   wordGapRestricted: false
                   of:
-                  - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+                  - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
                   - phrase:
                       maxWordGap: -1
                       quantifier: {minimum: 0, maximum: 1}
@@ -106,22 +106,22 @@ query:
                       - link:
                           path: ../breast_cancer_biomarkers_constraint.i2qy
                           quantifier: {minimum: 0, maximum: 0}
-                      - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+                      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
       where:
       - link:
           path: ../breast_cancer_biomarkers_status_phrase.i2qy
           id: link12
           quantifier: {minimum: 0, maximum: 1}
       - link:
-          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
+          path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
           id: link3
           quantifier: {minimum: 0, maximum: 1}
       - link:
-          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
+          path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
           id: link2
           quantifier: {minimum: 0, maximum: 1}
       - link:
-          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
+          path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
           id: link5
           quantifier: {minimum: 0, maximum: 1}
 output:

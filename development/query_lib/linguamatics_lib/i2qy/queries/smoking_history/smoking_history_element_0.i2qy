@@ -14,7 +14,7 @@ query:
               - phrase:
                   unordered: true
                   of:
-                  - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
+                  - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
                   - phrase:
                       displayChildren: false
                       quantifier: {minimum: 0, maximum: 1}
@@ -22,7 +22,7 @@ query:
                       - phrase:
                           quantifier: {minimum: 0, maximum: 1}
                           of: [comment, ':']
-                      - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_rate.i2qy}
+                      - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_history/smoking_rate.i2qy}
                   - alternative:
                       quantifier: {minimum: 0, maximum: 1}
                       of: [h/o, hx]
@@ -45,10 +45,10 @@ query:
                   - alternative:
                       quantifier: {minimum: 0, maximum: 0}
                       of: [':', (, ready]
-              - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
           - phrase:
             - phrase:
-              - link: {path: ../../tools/number_query.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/tools/number_query.i2qy}
               - alternative:
                 - word: {text: mo, morphoVariants: true}
                 - word: {text: yr, morphoVariants: true}
@@ -64,7 +64,7 @@ query:
               - word: {text: yr, morphoVariants: true}
             - phrase: [since, quitting]
             - ':'
-            - link: {path: ../../tools/number_query.i2qy}
+            - link: {path: /api;type=saved_query/__private__/haglers/General/tools/number_query.i2qy}
 output:
   columns:
   - {id: alternative1}

@@ -6,11 +6,11 @@ query:
       findMatches: shortestOnly
       id: phrase1
       of:
-      - link: {path: ../../cancer/ecog_status/ecog_test_name_query.i2qy, id: link1}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_test_name_query.i2qy, id: link1}
       - link:
           path: ecog_status_AB_queries/ecog_status_AB_query.i2qy
           quantifier: {minimum: 0, maximum: 1}
-      - link: {path: ../../cancer/ecog_status/ecog_score_query.i2qy, id: link2}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_score_query.i2qy, id: link2}
 output:
   columns:
   - {id: phrase1}

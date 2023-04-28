@@ -27,7 +27,7 @@ query:
                       quantifier: {minimum: 0, maximum: 1}
                       of:
                       - of
-                      - link: {path: ../../cancer/blast_%/blast_%_tools/blast_wrapped.i2qy}
+                      - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/blast_%25/blast_%25_tools/blast_wrapped.i2qy}
                   - alternative:
                       quantifier: {minimum: 0, maximum: 0}
                       view: {layout: list}
@@ -42,7 +42,7 @@ query:
                       view: {layout: list}
                       of: [negative, positive]
                   - for
-          - link: {path: ../../cancer/immunophenotype/immunophenotype_query.i2qy}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/immunophenotype/immunophenotype_query.i2qy}
 output:
   columns:
   - {id: alternative1}

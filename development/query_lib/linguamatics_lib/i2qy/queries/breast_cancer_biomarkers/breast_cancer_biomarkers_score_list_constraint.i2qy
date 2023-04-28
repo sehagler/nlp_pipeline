@@ -14,8 +14,8 @@ query:
                 text: intensity
                 quantifier: {minimum: 0, maximum: 1}
             - alternative:
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
             - alternative:
                 quantifier: {minimum: 0, maximum: 1}
                 of: [intensity, staining]
@@ -36,8 +36,8 @@ query:
           - alternative:
               id: alternative1
               of:
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
           - alternative:
               quantifier: {minimum: 0, maximum: 1}
               of: [intensity, staining]
@@ -58,8 +58,8 @@ query:
                 text: intensity
                 quantifier: {minimum: 0, maximum: 1}
             - alternative:
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
-              - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy}
+              - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy}
             - alternative:
                 quantifier: {minimum: 0, maximum: 1}
                 of: [intensity, staining]

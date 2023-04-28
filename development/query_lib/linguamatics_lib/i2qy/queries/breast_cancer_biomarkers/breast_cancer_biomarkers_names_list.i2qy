@@ -15,7 +15,7 @@ query:
                 macroPt: determiner
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
-        - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
+        - link: {path: /api;type=saved_query/__private__/haglers/General/tools/breast_cancer_biomarkers_names.i2qy}
         - alternative:
             quantifier: {minimum: 1, maximum: none}
             view: {layout: list}
@@ -112,7 +112,7 @@ query:
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
     - phrase:
-      - link: {path: ../../smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link2}
+      - link: {path: /api;type=saved_query/__private__/haglers/General/smart_queries/breast_cancer_biomarkers_biomarker_smart_query.i2qy, id: link2}
       - alternative:
           quantifier: {minimum: 0, maximum: 0}
           of:
@@ -243,7 +243,7 @@ query:
                 macroPt: determiner
                 macroSnid: linguamatics_wc.WC_Determiner
                 of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
-        - link: {path: ../../tools/breast_cancer_biomarkers_names.i2qy}
+        - link: {path: /api;type=saved_query/__private__/haglers/General/tools/breast_cancer_biomarkers_names.i2qy}
 output:
   columns:
   - id: link2.class1

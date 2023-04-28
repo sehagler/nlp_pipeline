@@ -1330,7 +1330,7 @@ query:
           showMultipleColumns: true
           of:
           - link: {path: cancer_stage_combined_query.i2qy}
-          - link: {path: ../../cancer/cancer_stage/cancer_stage_in_situ_query.i2qy}
+          - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/cancer_stage/cancer_stage_in_situ_query.i2qy}
           where:
           - alternative:
               quantifier: {minimum: 0, maximum: 0}
