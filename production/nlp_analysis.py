@@ -20,12 +20,13 @@ z_root_base = 'Z:/NLP'
 #
 project_names = [ 'AdverseEvents', 'BeatAML_Waves_1_And_2',
                   'BeatAML_Waves_3_And_4', 'BreastCancerPathology', 'CCC19',
-                  'OhsuNlpTemplate' ]
+                  'KDLReports', 'NewBiomarkers', 'OhsuNlpTemplate' ]
 project_subdirs = [ 'production', 'test' ]
 servers = [ 'development', 'production' ]
 
 #
 pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
+                       'linguamatics_i2e_indexer',
                        'linguamatics_i2e_postqueries',
                        'linguamatics_i2e_push_queries' ]
 
@@ -33,12 +34,12 @@ pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[2]
-project_subdir = project_subdirs[1]
-server = servers[0]
+project_name = project_names[3]
+project_subdir = project_subdirs[0]
+server = servers[1]
 
 #
-pipeline_mode_flg = pipeline_mode_flgs[1]
+pipeline_mode_flg = pipeline_mode_flgs[3]
 
 #
 mode_flg = mode_flgs[1]
@@ -97,6 +98,8 @@ elif mode_flg == 'run':
         pipeline_object.generate_training_data_sets(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_prequeries':
         pipeline_object.linguamatics_i2e_prequeries(password)
+    elif pipeline_mode_flg == 'linguamatics_i2e_indexer':
+        pipeline_object.linguamatics_i2e_indexer()
     elif pipeline_mode_flg == 'linguamatics_i2e_postqueries':
         pipeline_object.linguamatics_i2e_postqueries(project_subdir)
     elif pipeline_mode_flg == 'linguamatics_i2e_push_queries':

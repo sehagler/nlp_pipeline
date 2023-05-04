@@ -85,6 +85,13 @@ class Pipeline_object(object):
         training_groups.append(patient_values)
         with open('training_groups.pkl', 'wb') as f:
             pickle.dump(training_groups, f)
+            
+    #
+    def linguamatics_i2e_indexer(self):
+        self.process_manager.linguamatics_i2e_push_resources()
+        self.process_manager.linguamatics_i2e_indexer()
+        self.process_manager.linguamatics_i2e_postindexer()
+        self.process_manager.linguamatics_i2e_push_queries()
         
     #
     def linguamatics_i2e_postqueries(self, project_subdir):
@@ -109,12 +116,9 @@ class Pipeline_object(object):
                 cleanup_flg = False
             if cleanup_flg:
                 static_data['directory_manager'].cleanup_directory('linguamatics_i2e_preprocessing_data_out')
-            self.process_manager.preprocessor(password, start_idx, True)
+            self.process_manager.preprocessor_full(password, start_idx)
         self.process_manager.data_set_summary_info()
-        self.process_manager.linguamatics_i2e_push_resources()
-        self.process_manager.linguamatics_i2e_indexer()
-        self.process_manager.linguamatics_i2e_postindexer()
-        self.process_manager.linguamatics_i2e_push_queries()
+        self.linguamatics_i2e_indexer()
         
     #
     def linguamatics_i2e_push_queries(self):
