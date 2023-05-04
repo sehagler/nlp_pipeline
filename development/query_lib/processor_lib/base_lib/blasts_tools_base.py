@@ -21,8 +21,6 @@ from tools_lib.processing_tools_lib.variable_processing_tools \
     import nlp_to_tuple, validation_to_tuple
 from base_lib.postprocessor_base_class \
     import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
         
 #
 def blast_performance(validation_data_manager, evaluation_manager, labId,
@@ -344,19 +342,19 @@ class Postprocessor(Postprocessor_base):
         return value_dict_list
     
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        self.text = \
+    def run_preprocessor(self, text):
+        text = \
             lambda_tools.lambda_conversion('(?i)immunohistochemi(cal|stry)',
-                                                  self.text, 'IHC')
-        self.text = \
-            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
-                                                           self.text)
-        self.text = \
+                                           text, 'IHC')
+        text = \
+            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by IHC', text)
+        text = \
             lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
-                                                           self.text)
+                                                    text)
+        return text
     
 #
 class Section_header_structure():

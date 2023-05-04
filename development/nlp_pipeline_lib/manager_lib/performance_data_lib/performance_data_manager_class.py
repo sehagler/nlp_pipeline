@@ -153,7 +153,6 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
     for validation_datum_key in validation_datum_keys:
         for key in nlp_values.keys():
             if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
-                print(nlp_values[key])
                 
                 ### Kludge to handle HER2 biomarker
                 if len(nlp_values[key][validation_datum_key]) > 1:

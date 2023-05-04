@@ -1,0 +1,13 @@
+version: 6.8
+creationDate: '2018-07-09 14:02:37'
+multiquery:
+  Document Join:
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
+  - Union:
+    - tumor_margin_wrappers/tumor_margin_specimens_wrapper.i2qy
+    - Subtraction: [tumor_margin_wrappers/tumor_margin_sections_wrapper.i2qy, tumor_margin_wrappers/tumor_margin_specimen_description_wrapper.i2qy]
+output:
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha}
+creator: haglers
+queryID: 4567590c

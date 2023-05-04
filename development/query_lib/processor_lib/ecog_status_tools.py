@@ -9,9 +9,7 @@ Created on Wed Jun  5 13:49:19 2019
 import re
 
 #
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class import Preprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools import colon
 
@@ -97,21 +95,20 @@ class Postprocessor(Postprocessor_base):
         
     
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        text = self.text
+    def run_preprocessor(self, text):
         text = \
             lambda_tools.lambda_conversion('(?<!{ )ecog(' + colon() + '| )((performance )?(status|score)|ps)?',
-                                                  text, 'ECOG (ZUBROD) ')
+                                           text, 'ECOG (ZUBROD) ')
         text = \
             lambda_tools.lambda_conversion('karnofsky ((performance )?(status|score)|ps)',
-                                                  text, 'ECOG (KARNOFSKY) ')
+                                           text, 'ECOG (KARNOFSKY) ')
         text = \
             lambda_tools.lambda_conversion('lansky ((play performance )?(status|score)|ps)',
-                                                  text, 'ECOG (LANSKY) ')
+                                           text, 'ECOG (LANSKY) ')
         text = \
             lambda_tools.lambda_conversion('(?<!{ )ecog (?!\()',
-                                                  text, 'ECOG (ZUBROD) ')
-        self.text = text
+                                           text, 'ECOG (ZUBROD) ')
+        return text

@@ -6,7 +6,6 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
     
 #
@@ -26,8 +25,9 @@ def _normalize_chemical_abbreviations(text):
     return text
 
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
         
     #
-    def run_preprocessor(self):
-        self.text = _normalize_chemical_abbreviations(self.text)
+    def run_preprocessor(self, text):
+        text = _normalize_chemical_abbreviations(text)
+        return text

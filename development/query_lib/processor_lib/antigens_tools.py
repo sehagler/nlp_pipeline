@@ -10,10 +10,7 @@ import re
 import traceback
 
 #
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
@@ -283,12 +280,11 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
 
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
+    def run_preprocessor(self, text):
         antigens = antigens_list()
-        text = self.text
         text = lambda_tools.lambda_conversion('HLA ?DR', text, 'HLA-DR')
         text = \
             lambda_tools.lambda_conversion('(?i)dim(-| (/ )?)partial', text, 'dim/partial')
@@ -318,7 +314,7 @@ class Preprocessor(Preprocessor_base):
             lambda_tools.contextual_lambda_conversion(antigens + ' *\( \+ \)', '\( \+ \)', text, ' positive')
         text = \
             lambda_tools.lambda_conversion('(?<=HLA) (negative|positive)(?=DR)', text, '-')
-        self.text = text
+        return text
     
 #
 class Section_header_structure():

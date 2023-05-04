@@ -1,0 +1,159 @@
+version: 6.8
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      boundaries: Exact
+      findMatches: longestOnly
+      showInDefaultOutput: false
+      of:
+      - phrase:
+          quantifier: {minimum: 0, maximum: none}
+          of:
+          - alternative:
+              view: {layout: list}
+              of:
+              - word: {text: diffuse, morphoVariants: true}
+              - diffusely
+              - word: {text: focal, morphoVariants: true}
+              - focally
+              - word: {text: minimal, morphoVariants: true}
+              - minimally
+              - patchy
+              - word: {text: strong, morphoVariants: true}
+              - strongly
+              - very
+              - word: {text: weak, morphoVariants: true}
+              - weakly
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - macro:
+                  snid: linguamatics_wc.WC_Conjunction
+                  pt: conjunction
+                  of:
+                  - alternative:
+                      macroPt: conjunction
+                      macroSnid: linguamatics_wc.WC_Conjunction
+                      of:
+                      - '&'
+                      - after
+                      - albeit
+                      - also
+                      - although
+                      - and
+                      - phrase: [as, far, as]
+                      - as
+                      - because
+                      - before
+                      - but
+                      - either
+                      - if
+                      - moreover
+                      - neither
+                      - nor
+                      - once
+                      - or
+                      - so
+                      - than
+                      - though
+                      - unless
+                      - versus
+                      - vs
+                      - vs.
+                      - when
+                      - whereas
+                      - whereby
+                      - whether
+                      - while
+                      - whilst
+                      - yet
+              - macro:
+                  snid: linguamatics_wc.WC_Punctuation
+                  pt: punctuation
+                  of:
+                  - alternative:
+                      macroPt: punctuation
+                      macroSnid: linguamatics_wc.WC_Punctuation
+                      of:
+                      - '!'
+                      - ''''
+                      - ''''''
+                      - (
+                      - )
+                      - '***'
+                      - ','
+                      - word: {text: '-'}
+                      - .
+                      - '...'
+                      - /
+                      - ':'
+                      - ;
+                      - '?'
+                      - '['
+                      - '"'
+                      - \
+                      - ']'
+                      - _
+                      - '{'
+                      - '}'
+                      - '~'
+                      - «
+                      - »
+                      - ‘
+                      - ’
+                      - ‚
+                      - ‛
+                      - “
+                      - ”
+                      - „
+                      - ‟
+                      - ‹
+                      - ›
+      - alternative:
+          id: alternative1
+          of:
+          - phrase:
+            - alternative:
+              - alternative:
+                - amplified
+                - phrase: [not, amplified]
+                - non-amplified
+                - unamplified
+              - borderline
+              - equivocal
+              - favorable
+              - high
+              - insufficient
+              - low
+              - negative
+              - phrase: [negative, /, positive]
+              - negativity
+              - positivity
+              - unfavorable
+            - alternative:
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - phrase:
+                  - word:
+                      text: nuclear
+                      quantifier: {minimum: 0, maximum: 1}
+                  - staining
+                - phrase:
+                  - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
+                  - expression
+          - phrase:
+            - 'no'
+            - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
+            - expression
+          - phrase:
+            - phrase:
+                quantifier: {minimum: 0, maximum: 0}
+                of: [present, and]
+            - positive
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: a9bf2589

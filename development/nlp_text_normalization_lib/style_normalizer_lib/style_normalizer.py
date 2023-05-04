@@ -106,9 +106,7 @@ def _normalize_datetime(text):
         lambda_tools.lambda_conversion('a(\. )?m\.', text, 'AM')
     text = \
         lambda_tools.lambda_conversion('p(\. )?m\.', text, 'PM')
-    tokenizer_date.push_text(text)
-    tokenizer_date.process_month()
-    text = tokenizer_date.pull_text()
+    text = tokenizer_date.process_month(text)
     return text
     
 #
@@ -231,7 +229,13 @@ def _normalize_units(text):
     text = \
         lambda_tools.lambda_conversion('(?<=[0-9])cm', text, ' cm ')
     text = \
+        lambda_tools.lambda_conversion('(?<=[0-9] )hour', text, 'hr')
+    text = \
+        lambda_tools.lambda_conversion('(?<=[0-9] )minute', text, 'min')
+    text = \
         lambda_tools.lambda_conversion('(?<=[0-9])mm', text, ' mm ')
+    text = \
+        lambda_tools.lambda_conversion('(?<=[0-9] )second', text, 'sec')
     text = \
         lambda_tools.deletion_lambda_conversion('(?<=(cm|mm))\.', text)
     return text

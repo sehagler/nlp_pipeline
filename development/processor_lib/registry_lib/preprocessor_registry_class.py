@@ -52,12 +52,11 @@ class Preprocessor_registry(object):
     #
     def run_registry(self, dynamic_data_manager, text, source_system):
         dynamic_data_manager, raw_text, rpt_text = \
-            self.preprocessor_registry['text_normalization_object'].process_document(dynamic_data_manager,
+            self.preprocessor_registry['text_normalization_object'].run_preprocessor(dynamic_data_manager,
                                                                                      text,
                                                                                      source_system)
         for key in self.preprocessor_registry.keys():
-            if key is not 'text_normalization_object':
-                self.preprocessor_registry[key].push_text(rpt_text)
-                self.preprocessor_registry[key].run_preprocessor()
-                rpt_text = self.preprocessor_registry[key].pull_text()
+            if key != 'text_normalization_object':
+                rpt_text = \
+                    self.preprocessor_registry[key].run_preprocessor(rpt_text)
         return dynamic_data_manager, raw_text, rpt_text

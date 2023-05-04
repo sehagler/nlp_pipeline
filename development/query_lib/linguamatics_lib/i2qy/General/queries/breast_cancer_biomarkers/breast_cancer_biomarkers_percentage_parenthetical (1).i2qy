@@ -1,0 +1,25 @@
+version: 6.8
+creationDate: '2022-12-19 18:50:13'
+query:
+  document:
+  - phrase:
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - (
+      - word:
+          text: )
+          quantifier: {minimum: 0, maximum: 0}
+      - link: {path: ../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy, id: link1}
+      - word:
+          text: (
+          quantifier: {minimum: 0, maximum: 0}
+      - )
+output:
+  columns:
+  - id: link1.alternative1.col0
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers
+queryID: 5c546c5c

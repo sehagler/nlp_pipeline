@@ -10,10 +10,7 @@ import os
 import re
 
 #
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
     import sequential_composition_new as sequential_composition
@@ -116,13 +113,11 @@ def _normalize_KI67(text):
     text = \
         lambda_tools.lambda_conversion('Ki' + minus_sign() + '67', text, 'KI67')
     text = \
-        lambda_tools.initialism_lambda_conversion('proliferati(on|ve) (index|rate)', text, 'KI67')
-    text = \
-        lambda_tools.lambda_conversion('KI67( proliferati(on|ve))? (index|rate)', text, 'KI67')
-    text = \
         lambda_tools.lambda_conversion('KI67( ' + left_parenthesis() + 'mm-1' + right_parenthesis() + ')?', text, 'KI67')
     text = \
         lambda_tools.initialism_lambda_conversion('KI67', text, 'KI67')
+    text = \
+        lambda_tools.lambda_conversion('(KI67 )?(proliferati(on|ve))? (index|rate)', text, 'KI67')
     return text
 #
 def _normalize_PDL1(text):
@@ -481,8 +476,9 @@ class Postprocessor(Postprocessor_base):
     
     #
     def _process_percentage(self, percentage):
-        if percentage == '0':
+        if len(percentage) > 0:
             percentage += '%'
+            percentage = re.sub('%+', '%', percentage)
         percentage = re.sub('> ?=', '>', percentage)
         percentage = re.sub('< ?=', '<', percentage)
         match = re.search('[0-9]+%-[0-9]+%', percentage)
@@ -494,7 +490,7 @@ class Postprocessor(Postprocessor_base):
     def _process_score(self, score):
         score = lambda_tools.lambda_conversion(' \+', score, '+')
         score = \
-            lambda_tools.lambda_conversion(' (/|(out )?of) [0-4](\+)?', score, '')
+            lambda_tools.lambda_conversion(' (/|(\( )?(out )?of) [0-4](\+)?( \))?', score, '')
         match = re.search('[0-4](\+)? (\-|to) [0-4](\+)?', score)
         if match is not None:
             score = \
@@ -509,17 +505,19 @@ class Postprocessor(Postprocessor_base):
         status = re.sub(',', '', status)
         status = re.sub('( nuclear)? staining', '', status)
         status = re.sub('focal ', 'focally ', status)
+        status = re.sub('no [a-z0-9]+ expression', 'negative', status)
+        status = re.sub(' [a-z0-9]+ expression', '', status)
         if biomarker_name in [ 'AR', 'BCL2', 'CD4', 'CD8', 'ER', 'GATA3',
                                'HER2', 'PDL1', 'PR' ]:
-            for term in [ 'borderline' ]:
+            for term in [ 'borderline', 'negative / positive' ]:
                 status = re.sub(term, 'equivocal', status)
             for term in [ 'negativity', 'lack expression', 'non-amplified',
                           'nonreactive', 'not amplified', 'unamplified',
                           'unfavorable', 'without immunoreactivity' ]:
                 status = re.sub(term, 'negative', status)
-            for term in [ 'amplified', 'expression', 'favorable',
-                          'immunoreactive', 'immunoreactivity', 'positivity',
-                          'reactive', 'stains' ]:
+            for term in [ 'amplified', 'favorable', 'immunoreactive',
+                          'immunoreactivity', 'positivity', 'reactive',
+                          'stains' ]:
                 status = re.sub(term, 'positive', status)
         return status
     
@@ -557,18 +555,19 @@ class Postprocessor(Postprocessor_base):
             self.data_dict_list[2] = data_dict
 
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        self.text = sequential_composition([_normalize_multiple_biomarkers,
-                                            _normalize_AR,
-                                            _normalize_BCL2,
-                                            _normalize_ER,
-                                            _normalize_GATA3,
-                                            _normalize_HER2,
-                                            _normalize_KI67,
-                                            _normalize_PDL1,
-                                            _normalize_PR,
-                                            _normalize_biomarker_strength,
-                                            _remove_extraneous_text], self.text)
+    def run_preprocessor(self, text):
+        text = sequential_composition([_normalize_multiple_biomarkers,
+                                       _normalize_AR,
+                                       _normalize_BCL2,
+                                       _normalize_ER,
+                                       _normalize_GATA3,
+                                       _normalize_HER2,
+                                       _normalize_KI67,
+                                       _normalize_PDL1,
+                                       _normalize_PR,
+                                       _normalize_biomarker_strength,
+                                       _remove_extraneous_text], text)
+        return text

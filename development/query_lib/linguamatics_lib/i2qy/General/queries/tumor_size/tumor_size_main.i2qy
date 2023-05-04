@@ -1,0 +1,25 @@
+version: 6.8
+creationDate: '2018-05-10 08:49:25'
+multiquery:
+  Document Join:
+  - ../../tools/document_id_query.i2qy
+  - ../../tools/run_datetime_query.i2qy
+  - Union:
+    - tumor_size_wrappers/tumor_size_specimens_wrapper.i2qy
+    - Subtraction: [tumor_size_wrappers/tumor_size_sections_wrapper.i2qy, tumor_size_wrappers/tumor_size_specimen_description_wrapper.i2qy]
+output:
+  columns:
+  - id: region1
+    itemOptions: {}
+  - id: And1
+    itemOptions: {distinguishColumns: false, distinguishHits: false, showInHitColumn: false}
+  - id: region1
+    itemOptions: {}
+  - id: shadow region1
+    itemOptions: {}
+  - id: link1.link1.alternative1.col0
+    itemOptions: {}
+    linkItemId: link1.link1
+  outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
+creator: haglers
+queryID: '95373283'

@@ -12,18 +12,18 @@ import traceback
 from tools_lib.processing_tools_lib.variable_processing_tools \
     import trim_data_value
 from query_lib.processor_lib.base_lib.blasts_tools_base \
-    import Preprocessor as Preprocessor_base
-from query_lib.processor_lib.base_lib.blasts_tools_base \
     import Postprocessor as Postprocessor_base
+from query_lib.processor_lib.base_lib.blasts_tools_base \
+    import Preprocessor as Preprocessor_base
 from query_lib.processor_lib.base_lib.blasts_tools_base \
     import get_blast_value
     
 #
-class Preprocessor(Preprocessor_base):
-    pass
-
-#
 class Postprocessor(Postprocessor_base):
+    pass
+    
+#
+class Preprocessor(Preprocessor_base):
     pass
 
 #                 

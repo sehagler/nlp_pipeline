@@ -14,6 +14,8 @@ import traceback
 from base_lib.manager_base_class \
     import Manager_base
 from tools_lib.processing_tools_lib.function_processing_tools \
+    import parallel_composition
+from tools_lib.processing_tools_lib.function_processing_tools \
     import sequential_composition_new as sequential_composition
     
 #
@@ -71,9 +73,7 @@ def _get_query_name(argument_dict):
         base = os.path.basename(filename)
         query_name = os.path.splitext(base)[0]
         query_name = query_name.upper()
-    return_dict = {}
-    return_dict['query_name'] = query_name
-    return return_dict
+    return query_name
 
 #
 def _trim_snippet(data_row):
@@ -171,12 +171,12 @@ class Postprocessor_base(Manager_base):
         
     #
     def _build_json_structures(self, argument_dict):
+        data_dict_list = argument_dict['data_dict_list']
         query_name = argument_dict['query_name']
-        num_components = len(self.data_dict_list)
         data_dict_list_out = {}
-        for idx in range(num_components):
+        for idx in range(len(data_dict_list)):
             data_dict_list_out[idx] = \
-                self._build_json_structure(self.data_dict_list[idx], query_name)
+                self._build_json_structure(data_dict_list[idx], query_name)
         return_dict = {}
         return_dict['data_dict_list'] = data_dict_list_out
         return_dict['query_name'] = argument_dict['query_name']
@@ -236,6 +236,31 @@ class Postprocessor_base(Manager_base):
     #
     def _get_data_table_keys(self, data_table):
         return _get_data_table_keys(data_table)
+    
+    #
+    def _include_snippets(self, argument_dict):
+        data_dict_list_out = self.data_dict_list
+        for idx in range(len(data_dict_list_out)):
+            for i in range(len(data_dict_list_out[idx])):
+                document_id = data_dict_list_out[idx][i]['DOCUMENT_ID']
+                for j in range(len(self.sections_data_dict)):
+                    if self.sections_data_dict[j]['DOCUMENT_ID'] == document_id:
+                        sections = self.sections_data_dict[j]['DOCUMENT_FRAME']
+                for j in range(len(data_dict_list_out[idx][i]['DOCUMENT_FRAME'])):
+                    offsets = data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1]
+                    offsets.append('NONE')
+                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j] = \
+                        data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][:-1]
+                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j].append('NONE')
+                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j].append(offsets)
+                    section = data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][0]
+                    for k in range(len(sections)):
+                        if sections[k][0] == section:
+                            data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-2] = \
+                                sections[k][-2]
+                            data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1][-1] = \
+                                'UNKNOWN'
+        return data_dict_list_out
     
     #
     def _merge_data_dicts(self, argument_dict):
@@ -321,8 +346,14 @@ class Postprocessor_base(Manager_base):
         argument_dict = {}
         argument_dict['filename'] = self.filename
         argument_dict['query_name'] = query_name
-        self.merged_data_dict_list = sequential_composition([_get_query_name,
-                                                             self._build_json_structures,
+        return_dict = parallel_composition([_get_query_name,
+                                              self._include_snippets],
+                                             argument_dict)
+        argument_dict = {}
+        argument_dict['data_dict_list'] = \
+            return_dict[self._include_snippets.__name__]
+        argument_dict['query_name'] = return_dict[_get_query_name.__name__]
+        self.merged_data_dict_list = sequential_composition([self._build_json_structures,
                                                              self._merge_data_dicts,
                                                              self._package_merged_dicts,
                                                              self._extract_data_values],

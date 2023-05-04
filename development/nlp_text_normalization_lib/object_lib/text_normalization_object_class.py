@@ -264,7 +264,7 @@ class Text_normalization_object(object):
         return dynamic_data_manager, rpt_text
             
     #
-    def process_document(self, dynamic_data_manager, text, source_system):
+    def run_preprocessor(self, dynamic_data_manager, text, source_system):
         raw_text = self._normalize_raw_text(text)
         dynamic_data_manager, rpt_text = \
             self._normalize_rpt_text(dynamic_data_manager, copy.copy(text),

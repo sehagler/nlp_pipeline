@@ -6,10 +6,9 @@ Created on Thu Jun 18 16:45:34 2020
 """
 
 #
-from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import sequential_composition
+    import sequential_composition_new as sequential_composition
 from tools_lib.regex_lib.regex_tools \
     import (
         regex_from_list,
@@ -141,20 +140,19 @@ def numeric_stage():
     return numeric_stage
 
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
         
     #
     def process_abbreviations(self):
         pass
         
     #
-    def run_preprocessor(self):
-        self.text = \
-            lambda_tools.lambda_conversion('MDS / MPN', self.text, 'MDS/MPN')
-            
-        normalize_text = sequential_composition(_cleanup_text,
-                                            _normalize_text,
-                                            _setup_text,
-                                            _process_regular_initialisms,
-                                            _process_irregular_initialisms)
-        self.text = normalize_text(self.text)
+    def run_preprocessor(self, text):
+        text = \
+            lambda_tools.lambda_conversion('MDS / MPN', text, 'MDS/MPN')
+        text = sequential_composition([_process_irregular_initialisms,
+                                       _process_regular_initialisms,
+                                       _setup_text,
+                                       _normalize_text,
+                                       _cleanup_text], text)
+        return text

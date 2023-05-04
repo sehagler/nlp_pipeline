@@ -1,0 +1,43 @@
+version: 6.8
+creationDate: '2021-06-29 22:50:58'
+query:
+  document:
+  - phrase:
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+      where:
+      - link:
+          path: ../breast_cancer_biomarkers_status_phrase.i2qy
+          id: link1
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
+          id: link2
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
+          id: link3
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
+          id: link4
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  - id: link2.phrase1
+    itemOptions: {}
+    linkItemId: link2
+  - id: link3.phrase1
+    itemOptions: {}
+    linkItemId: link3
+  - id: link4.alternative1.col0
+    itemOptions: {}
+    linkItemId: link4
+  useOutputEditor: true
+creator: haglers
+queryID: 2ab0a67c

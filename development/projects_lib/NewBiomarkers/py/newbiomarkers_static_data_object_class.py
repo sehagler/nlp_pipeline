@@ -53,7 +53,6 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
               ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
               ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
-              ('PDL1_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STRENGTH', 'single_value', True),
               ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
         self.static_data['validation_file'] = 'smmart_nlp_new_markers.xlsx'
         if self.project_subdir == 'test':

@@ -1,0 +1,14 @@
+version: 6.8
+creationDate: '2023-05-03 19:38:46'
+query:
+  document:
+  - phrase:
+    - link: {path: ../../../tools/percentage_query.i2qy, id: link1}
+output:
+  columns:
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers
+queryID: ab0964d7

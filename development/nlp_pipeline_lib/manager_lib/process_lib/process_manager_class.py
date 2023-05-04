@@ -593,18 +593,22 @@ class Process_manager(Manager_base):
         directory_manager = static_data['directory_manager']
         max_files_per_zip = static_data['max_files_per_zip']
         project_name = static_data['project_name']
-        general_queries_dir = \
-            directory_manager.pull_directory('linguamatics_i2e_general_queries_dir')
         processing_data_dir = \
             directory_manager.pull_directory('processing_data_dir')
+        common_queries_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_common_queries_dir')
+        general_queries_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_general_queries_dir')
         project_queries_dir = \
             directory_manager.pull_directory('linguamatics_i2e_project_queries_dir')
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        linguamatics_i2e_object.generate_query_bundle_file(project_name, general_queries_dir,
-                                                            processing_data_dir, 
-                                                            project_queries_dir, 
-                                                            max_files_per_zip)
+        linguamatics_i2e_object.generate_query_bundle_file(project_name,
+                                                           processing_data_dir,
+                                                           common_queries_dir,
+                                                           general_queries_dir, 
+                                                           project_queries_dir, 
+                                                           max_files_per_zip)
         linguamatics_i2e_object.fix_queries(general_queries_dir)
         linguamatics_i2e_object.fix_queries(project_queries_dir)
         self._ohsu_nlp_templates_setup()
@@ -861,11 +865,11 @@ class Process_manager(Manager_base):
                     self.dynamic_data_manager.merge_copy(ret[0])
                     self.metadata_manager.merge_copy(ret[1])
                     num_docs_preprocessed += ret[2]
-            for process_idx in range(num_processes):
-                argument_dict = {}
-                argument_dict['command'] = 'stop'
-                argument_queues[process_idx].put(argument_dict)
-                processes[process_idx].join()
+        for process_idx in range(num_processes):
+            argument_dict = {}
+            argument_dict['command'] = 'stop'
+            argument_queues[process_idx].put(argument_dict)
+            processes[process_idx].join()
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
         self.dynamic_data_manager.generate_keywords_file()
         self.metadata_manager.save_metadata()

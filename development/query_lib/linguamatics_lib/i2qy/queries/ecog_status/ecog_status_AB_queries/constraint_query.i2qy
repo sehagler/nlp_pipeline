@@ -1,9 +1,0 @@
-version: 6.8
-creationDate: '2023-01-30 22:12:49'
-query:
-  document:
-  - alternative:
-    - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_score_query.i2qy}
-    - link: {path: /api;type=saved_query/__private__/haglers/General/cancer/ecog_status/ecog_test_name_query.i2qy}
-creator: haglers
-queryID: ebc3e000

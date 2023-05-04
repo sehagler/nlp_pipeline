@@ -468,15 +468,21 @@ class Linguamatics_i2e_object(object):
         return self.data_dict_list
     
     #
-    def generate_query_bundle_file(self, project_name, 
-                                   general_queries_source_dir,
+    def generate_query_bundle_file(self, project_name,
                                    processing_data_dir,
+                                   common_queries_source_dir,
+                                   general_queries_source_dir,
                                    project_queries_source_dir,
                                    max_files_per_zip):
         dest_path_base = self.query_bundle_path
         filename = os.path.join(processing_data_dir,
                                 self.linguamatics_i2e_file_manager.query_bundle_filename())
         remove_file(filename)
+        common_dest_path_base = dest_path_base + 'Common'
+        self._generate_query_bundle_file_component(filename,
+                                                   common_queries_source_dir,
+                                                   common_dest_path_base,
+                                                   max_files_per_zip)
         general_dest_path_base = dest_path_base + 'General'
         self._generate_query_bundle_file_component(filename,
                                                    general_queries_source_dir,

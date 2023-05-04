@@ -1,0 +1,41 @@
+version: 6.8
+creationDate: '2020-05-27 17:07:22'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - link: {path: ../breast_cancer_biomarkers_variability_query.i2qy, id: link1}
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link1.alternative1.col0
+    itemOptions: {}
+    linkItemId: link1
+  - id: link1.alternative1.col1
+    itemOptions: {}
+    linkItemId: link1
+  - id: link1.alternative1.col2
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
+creator: haglers
+useInSmartQuery: true
+queryID: '69109522'

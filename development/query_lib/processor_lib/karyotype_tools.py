@@ -7,7 +7,6 @@ Created on Wed Jun  5 14:28:01 2019
 
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
-from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
@@ -17,11 +16,10 @@ from tools_lib.regex_lib.regex_tools \
     )
 
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        text = self.text
+    def run_preprocessor(self, text):
         text = \
             lambda_tools.lambda_conversion('\) \(', text, ')(')
         text = \
@@ -46,7 +44,7 @@ class Preprocessor(Preprocessor_base):
             lambda_tools.contextual_lambda_conversion('([0-9]{1,2}~)?[0-9]{1,2},[XY]+.*\[.+]', ' ', text, '')
         text = \
             lambda_tools.lambda_conversion('(?i)inversion \(', text, 'inv(')
-        self.text = text
+        return text
 
 #
 class Postprocessor(Postprocessor_base):

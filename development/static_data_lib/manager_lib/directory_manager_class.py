@@ -142,9 +142,12 @@ class Directory_manager(object):
     def _linguamatics_i2e_directories(self, nlp_software_root_dir, server,
                                       project_dir):
         if server is not None:
+            self.directory_dict['linguamatics_i2e_common_queries_dir'] = \
+                nlp_software_root_dir + '/' + server + '/query_lib/linguamatics_lib/i2qy/Common'
             self.directory_dict['linguamatics_i2e_general_queries_dir'] = \
-                nlp_software_root_dir + '/' + server + '/query_lib/linguamatics_lib/i2qy'
+                nlp_software_root_dir + '/' + server + '/query_lib/linguamatics_lib/i2qy/General'
         else:
+            self.directory_dict['linguamatics_i2e_common_queries_dir'] = None
             self.directory_dict['linguamatics_i2e_general_queries_dir'] = None
         if project_dir is not None:
             self.directory_dict['linguamatics_i2e_project_queries_dir'] = \
