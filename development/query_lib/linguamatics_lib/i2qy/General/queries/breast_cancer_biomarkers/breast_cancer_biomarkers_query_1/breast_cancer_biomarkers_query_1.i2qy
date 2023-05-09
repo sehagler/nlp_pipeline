@@ -135,10 +135,10 @@ query:
             - link:
                 path: ../breast_cancer_biomarkers_constraint.i2qy
                 quantifier: {minimum: 0, maximum: 0}
-            - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+            - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
         - phrase:
           - link: {path: ../breast_cancer_biomarkers_names_list.i2qy}
-          - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
       - phrase:
           quantifier: {minimum: 0, maximum: 0}
           of:

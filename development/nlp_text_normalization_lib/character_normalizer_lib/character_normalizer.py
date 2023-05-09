@@ -209,24 +209,23 @@ def _normalize_underscore(text):
     
 #
 def character_normalizer(text):
-    normalize_text = sequential_composition(_normalize_underscore,
-                                        _normalize_tilde,
-                                        _normalize_slash,
-                                        _normalize_semicolon,
-                                        _normalize_question_mark,
-                                        _normalize_plus_sign,
-                                        _normalize_period,
-                                        _normalize_percent_sign,
-                                        _normalize_parentheses,
-                                        _normalize_newline,
-                                        _normalize_number_sign,
-                                        _normalize_number,
-                                        _normalize_minus_sign,
-                                        _normalize_less_than_sign,
-                                        _normalize_greater_than_sign,
-                                        _normalize_equals_sign,
-                                        _normalize_comma,
-                                        _normalize_colon,
-                                        _normalize_asterisk)
-    text = normalize_text(text)
+    text = sequential_composition([_normalize_asterisk,
+                                   _normalize_colon,
+                                   _normalize_comma,
+                                   _normalize_equals_sign,
+                                   _normalize_greater_than_sign,
+                                   _normalize_less_than_sign,
+                                   _normalize_minus_sign,
+                                   _normalize_number,
+                                   _normalize_number_sign,
+                                   _normalize_newline,
+                                   _normalize_parentheses,
+                                   _normalize_percent_sign,
+                                   _normalize_period,
+                                   _normalize_plus_sign,
+                                   _normalize_question_mark,
+                                   _normalize_semicolon,
+                                   _normalize_slash,
+                                   _normalize_tilde,
+                                   _normalize_underscore], text)
     return text

@@ -29,8 +29,8 @@ query:
                   id: alternative1
                   showMultipleColumns: true
                   of:
-                  - link: {path: ../peripheral_blood_blast_query_snippet.i2qy}
-                  - link: {path: ../peripheral_blood_blast_peripheral_blood_query_snippet.i2qy}
+                  - link: {path: ../peripheral_blood_blast_query.i2qy}
+                  - link: {path: ../peripheral_blood_blast_peripheral_blood_query.i2qy}
 output:
   columns:
   - {id: region1}
@@ -39,9 +39,6 @@ output:
     isValueColumn: true
   - id: alternative1.col0
     itemOptions: {}
-  - id: alternative1.col1
-    itemOptions:
-      columnOptions: [Empty]
   useOutputEditor: true
 creator: haglers
 queryID: 7726c4f7

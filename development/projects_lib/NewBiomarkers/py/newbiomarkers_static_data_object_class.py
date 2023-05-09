@@ -54,6 +54,23 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
               ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
               ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
+            
+        self.static_data['queries_list'] = \
+            [ ('AR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_STATUS', 'single_value', True),
+              ('AR Percent', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_PERCENTAGE', 'single_value', True),
+              ('AR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_SCORE', 'single_value', True),
+              ('AR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_STRENGTH', 'single_value', True),
+              ('AR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_VARIABILITY', 'single_value', True),
+              ('BCL2 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STATUS', 'single_value', True),
+              ('BCL2 Percent', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_PERCENTAGE', 'single_value', True),
+              ('BCL2 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_SCORE', 'single_value', True),
+              ('BCL2_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STRENGTH', 'single_value', True),
+              ('BCL2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_VARIABILITY', 'single_value', True),
+              ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
+              ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
+              ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
+              ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
+            
         self.static_data['validation_file'] = 'smmart_nlp_new_markers.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}

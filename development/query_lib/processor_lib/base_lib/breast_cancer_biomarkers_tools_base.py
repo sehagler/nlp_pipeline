@@ -13,7 +13,7 @@ import re
 from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import sequential_composition_new as sequential_composition
+    import sequential_composition
 from tools_lib.regex_lib.regex_tools \
     import (
         article,

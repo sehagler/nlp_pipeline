@@ -23,36 +23,19 @@ from tools_lib.processing_tools_lib.variable_processing_tools \
     import trim_data_value
     
 #
-def antibodies_tested_performance(validation_data_manager, evaluation_manager,
-                                  labId, nlp_values, nlp_datum_key,
-                                  validation_datum_key):
-    validation_data = validation_data_manager.get_validation_data()
-    if labId in nlp_values.keys():
-        keys0 = list(nlp_values[labId])
-        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
-        else:
-            data_out = None
-    else:
-        data_out = None
-    if data_out is not None:
-        if data_out == '':
-            data_out = None
-        data_out = re.sub('dim', 'dim ', data_out)
-        data_out = re.sub('\+', ' +', data_out)
-        data_out = re.sub('(?i)(-)?positive', ' +', data_out)
-        data_out = extract_antigens(data_out)
-        data_out = list(set(data_out))
-    if data_out is not None:
-        nlp_value = tuple(data_out)
+def antibodies_tested_performance(evaluation_manager, nlp_value,
+                                  validation_value, display_flg):
+    if nlp_value is not None:
+        if nlp_value == '': nlp_value = None
+        nlp_value = re.sub('dim', 'dim ', nlp_value)
+        nlp_value = re.sub('\+', ' +', nlp_value)
+        nlp_value = re.sub('(?i)(-)?positive', ' +', nlp_value)
+        nlp_value = extract_antigens(nlp_value)
+        nlp_value = list(set(nlp_value))
+    if nlp_value is not None:
+        nlp_value = tuple(nlp_value)
     else:
         nlp_value = None
-    labid_idx = validation_data[0].index('labId')
-    validation_datum_idx = validation_data[0].index(validation_datum_key)
-    validation_value = None
-    for item in validation_data:
-        if item[labid_idx] == labId:
-            validation_value = item[validation_datum_idx]
     if validation_value is not None:
         validation_value = cleanup_antigens(validation_value)
         validation_value = re.sub('(?i)n/a', '', validation_value)
@@ -69,10 +52,12 @@ def antibodies_tested_performance(validation_data_manager, evaluation_manager,
         validation_value = tuple(validation_value)
     else:
         validation_value = None
-    display_flg = True
-    performance = evaluation_manager.evaluation(nlp_value, validation_value,
-                                                display_flg)
-    return performance
+    arg_dict = {}
+    arg_dict['display_flg'] = display_flg
+    arg_dict['nlp_value'] = nlp_value
+    arg_dict['validation_value'] = validation_value
+    ret_dict = evaluation_manager.evaluation(arg_dict)
+    return ret_dict['performance']
 
 #
 def antigens_list():

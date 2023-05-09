@@ -18,17 +18,14 @@ query:
               pt: Specimen Description
               where:
               - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
-              - link: {path: ../diagnosis_query_snippet.i2qy, id: link1}
+              - link: {path: ../diagnosis_query.i2qy, id: link2}
 output:
   columns:
   - {id: region1}
   - {id: shadow region1}
-  - id: link1.link1.phrase2
+  - id: link2.phrase2
     itemOptions: {}
-    linkItemId: link1.link1
-  - id: link1.phrase1
-    itemOptions: {}
-    linkItemId: link1
+    linkItemId: link2
   useOutputEditor: true
 creator: haglers
 queryID: 74617c05

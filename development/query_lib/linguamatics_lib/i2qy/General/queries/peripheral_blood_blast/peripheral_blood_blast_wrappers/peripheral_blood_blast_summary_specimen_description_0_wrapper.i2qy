@@ -22,21 +22,16 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: ../peripheral_blood_blast_query_snippet.i2qy, id: link1}
+              - link: {path: ../peripheral_blood_blast_query.i2qy, id: link2}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link1.link1.phrase1
+  - id: link2.link1.phrase1
     itemOptions: {}
-    linkItemId: link1.link1
-  - title: Snippet
-    id: link1.value1
-    columnOptions: [Empty]
-    isValueColumn: true
-    linkItemId: link1
+    linkItemId: link1.link2
   useOutputEditor: true
 creator: haglers
 queryID: bc192082

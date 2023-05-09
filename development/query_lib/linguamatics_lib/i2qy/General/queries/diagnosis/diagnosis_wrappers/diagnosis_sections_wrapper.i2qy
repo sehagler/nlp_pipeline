@@ -13,19 +13,16 @@ query:
           snid: hc.section_body
           pt: Section Body
           where:
-          - link: {path: ../diagnosis_query_snippet.i2qy, id: link2}
+          - link: {path: ../diagnosis_query.i2qy, id: link1}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link2.link1.phrase2
+  - id: link1.phrase2
     itemOptions: {}
-    linkItemId: link1.link2
-  - id: link2.phrase1
-    itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1
   useOutputEditor: true
 creator: haglers
 queryID: 6ef7c884

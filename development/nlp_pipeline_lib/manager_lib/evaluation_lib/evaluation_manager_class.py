@@ -121,13 +121,21 @@ class Evaluation_manager(Manager_base):
         Manager_base.__init__(self, static_data_object)
         
     #
-    def evaluation(self, x, y, display_flg, value_range=None):
+    def evaluation(self, arg_dict, value_range=None):
+        display_flg = arg_dict['display_flg']
+        x = arg_dict['nlp_value']
+        y = arg_dict['validation_value']
         if value_range is None:
             if (isinstance(x, list) or isinstance(x, tuple) or x is None) and \
                (isinstance(y, list) or isinstance(y, tuple) or y is None):
-                result = _compare_lists(x, y, display_flg, self.manual_review)
+                performance = \
+                    _compare_lists(x, y, display_flg, self.manual_review)
             else:
-                result = _compare_values(x, y, display_flg, self.manual_review)
+                performance = \
+                    _compare_values(x, y, display_flg, self.manual_review)
         else:
-            result = _compare_values_range(x, y, display_flg, value_range, self.manual_review)
-        return result
+            performance = \
+                _compare_values_range(x, y, display_flg, value_range,
+                                      self.manual_review)
+        arg_dict['performance'] = performance
+        return arg_dict

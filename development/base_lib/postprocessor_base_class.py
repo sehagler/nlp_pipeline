@@ -14,9 +14,7 @@ import traceback
 from base_lib.manager_base_class \
     import Manager_base
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import parallel_composition
-from tools_lib.processing_tools_lib.function_processing_tools \
-    import sequential_composition_new as sequential_composition
+    import parallel_composition, sequential_composition
     
 #
 def _extract_value(context_regex, regex, map_func, text):
@@ -259,7 +257,7 @@ class Postprocessor_base(Manager_base):
                             data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-2] = \
                                 sections[k][-2]
                             data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1][-1] = \
-                                'UNKNOWN'
+                                sections[k][-1][0]
         return data_dict_list_out
     
     #

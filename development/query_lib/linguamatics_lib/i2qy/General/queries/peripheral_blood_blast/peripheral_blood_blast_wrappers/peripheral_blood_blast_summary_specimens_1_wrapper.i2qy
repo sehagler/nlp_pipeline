@@ -34,16 +34,13 @@ query:
                   showMultipleColumns: true
                   of:
                   - link: {path: peripheral_blood_blast_summary.i2qy}
-                  - link: {path: ../peripheral_blood_blast_summary_base_1_snippet.i2qy}
+                  - link: {path: ../peripheral_blood_blast_summary_base_1.i2qy}
 output:
   columns:
   - {id: region1}
   - {id: shadow region1}
   - id: alternative1.col0
     itemOptions: {}
-  - id: alternative1.col1
-    itemOptions:
-      columnOptions: [Empty]
   useOutputEditor: true
 creator: haglers
 queryID: 84b600e6

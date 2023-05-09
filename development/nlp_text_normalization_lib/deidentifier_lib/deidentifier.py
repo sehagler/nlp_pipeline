@@ -61,13 +61,12 @@ def _deidentify_telephone_number(text):
     
 #
 def deidentifier(text):
-    deidentify_text = sequential_composition(_deidentify_telephone_number,
-                                         _deidentify_pronouns,
-                                         _deidentify_personal_name,
-                                         _deidentify_mrn,
-                                         _deidentify_gender,
-                                         _deidentify_age)
-    text = deidentify_text(text)
+    text = sequential_composition([_deidentify_age,
+                                   _deidentify_gender,
+                                   _deidentify_mrn,
+                                   _deidentify_personal_name,
+                                   _deidentify_pronouns,
+                                   _deidentify_telephone_number], text)
     return text
 
 #

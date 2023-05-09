@@ -22,19 +22,16 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: ../residual_disease_query_snippet.i2qy, id: link2}
+              - link: {path: ../residual_disease_query.i2qy, id: link1}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link2.link1.link1.alternative1
+  - id: link1.link1.alternative1
     itemOptions: {}
-    linkItemId: link1.link1.link2
-  - id: link2.phrase1
-    itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1.link1
   useOutputEditor: true
 creator: haglers
 queryID: 3fca47b7

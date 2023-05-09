@@ -1,5 +1,5 @@
 version: 6.8
-creationDate: '2023-05-04 09:32:32'
+creationDate: '2023-05-05 13:50:14'
 query:
   document:
   - alternative:
@@ -316,19 +316,19 @@ query:
         multiSentence: true
         of:
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*now([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
     - phrase:
         multiSentence: true
         of:
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*now([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
     - phrase:
         multiSentence: true

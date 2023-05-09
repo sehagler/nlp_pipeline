@@ -13,20 +13,17 @@ query:
           snid: hc.section_body
           pt: Section Body
           where:
-          - link: {path: ../extramedullary_disease_query_snippet.i2qy, id: link1}
+          - link: {path: ../extramedullary_disease_query.i2qy, id: link2}
 output:
   columns:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
   - {id: region1}
-  - id: link1.link5.link1.phrase1
+  - id: link2.link1.phrase1
     itemOptions: {}
-    linkItemId: link1.link5.link1
-  - id: link1.phrase1
-    itemOptions: {}
-    linkItemId: link1
-  columnLocations: [1, 0, 2, 3]
+    linkItemId: link1.link2
+  columnLocations: [1, 0, 2]
   outputSettings: {allResults: true, allRows: true, allTime: true}
   useOutputEditor: true
 creator: haglers

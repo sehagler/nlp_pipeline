@@ -317,12 +317,13 @@ class Linguamatics_i2e_object(object):
                             if hit_spans:
                                 hit_spans = set(
                                     [ET.tostring(h).strip() for h in hit_spans])
-                                htext = cell.find('.//Text').text
+                                offsets = list()
                                 targets = list()
                                 #targets_in_hit = list()
                                 #targets_in_text = list()
                                 for hit_span in hit_spans:
                                     hit_span = ET.fromstring(hit_span)
+                                    htext = cell.find('.//Text').text
                                     is_sent = hit_span.find('.//IsSentence')
                                     if is_sent is None:
                                         url = hit_span.find('.//URL').text
@@ -339,12 +340,14 @@ class Linguamatics_i2e_object(object):
                                         targets_in_text = (start, stop)
                                         targets.append(tuple([ targets_in_hit,
                                                                targets_in_text ]))
+                                        offsets.append(tuple([ start, start + len(htext) ]))
                                 #targets = remove_overlaps(sorted(targets))
                                 #targets_in_hit = remove_overlaps(sorted(targets_in_hit))
                                 #highlighted_span = get_hit_highlights(htext,
                                 #                                      targets_in_hit)
                                 highlighted_spans = self._get_hit_highlights(htext,
                                                                              targets)
+                                targets_bak = targets[0][1]
                                 targets = []
                                 for i in range(len(extractions)):
                                     extraction = extractions[i]
@@ -357,6 +360,8 @@ class Linguamatics_i2e_object(object):
                                     if not highlighted_span_found_flg:
                                         targets.append('')
                                 targets = targets[1:-1]
+                                if len(targets) == 0:
+                                    targets.append(offsets[0])
                                 #row_text = '{}'.format(highlighted_spans)
                                 #row[cell_to_colix['hit']] = row_text
                                 if text_spans:

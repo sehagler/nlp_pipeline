@@ -126,16 +126,15 @@ def _normalize_poc(text):
    
 #
 def table_normalizer(text):
-    normalize_text = sequential_composition(_normalize_poc,
-                                        _normalize_nrbc,
-                                        _normalize_neutrophil,
-                                        _normalize_myelocyte,
-                                        _normalize_monocyte,
-                                        _normalize_lymphocyte,
-                                        _normalize_ig,
-                                        _normalize_eosinophil,
-                                        _normalize_blood,
-                                        _normalize_basophil,
-                                        _normalize_atypical_cell)
-    text = normalize_text(text)  
+    text = sequential_composition([_normalize_atypical_cell,
+                                   _normalize_basophil,
+                                   _normalize_blood,
+                                   _normalize_eosinophil,
+                                   _normalize_ig,
+                                   _normalize_lymphocyte,
+                                   _normalize_monocyte,
+                                   _normalize_myelocyte,
+                                   _normalize_neutrophil,
+                                   _normalize_nrbc,
+                                   _normalize_poc], text)
     return text

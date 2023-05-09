@@ -8,7 +8,7 @@ Created on Wed Apr  1 11:45:17 2020
 #
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import sequential_composition_new as sequential_composition
+    import sequential_composition
        
 #
 def _process_mitotic_rate(text):

@@ -10,6 +10,46 @@ from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 
 #
+def fish_analysis_summary_performance(evaluation_manager, nlp_value,
+                                      validation_value, display_flg):
+    if nlp_value is not None:
+        nlp_value_tmp = nlp_value
+        nlp_value_tmp = nlp_value_tmp.replace(' ', '')
+        nlp_value = []
+        nlp_value.append(nlp_value_tmp)
+    if nlp_value is not None:
+        nlp_value = tuple(nlp_value)
+    else:
+        nlp_value = None
+    if validation_value is not None:
+        if validation_value == '':
+            validation_value = None
+    if validation_value is not None:
+        validation_value_tmp = validation_value
+        validation_value_tmp = validation_value_tmp.replace(' ', '')
+        validation_value = []
+        validation_value.append(validation_value_tmp)
+    if validation_value is not None:
+        validation_value = tuple(validation_value)
+    arg_dict = {}
+    arg_dict['display_flg'] = display_flg
+    arg_dict['nlp_value'] = nlp_value
+    arg_dict['validation_value'] = validation_value
+    performance = \
+        evaluation_manager.evaluation(arg_dict)
+    return performance
+        
+#
+def simple_template():
+    template_list = None
+    sections_list = [ 'FISH ANALYSIS SUMMARY' ]
+    template_dict = {}
+    template_dict['primary_template_list'] = template_list
+    template_dict['sections_list'] = sections_list
+    template_dict['template_headers'] = [ 'FISH Analysis Summary' ]
+    return template_dict
+
+#
 class Postprocessor(Postprocessor_base):
  
     #
@@ -64,58 +104,3 @@ class Section_header_structure():
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         section_header_dict['FISH ANALYSIS SUMMARY'] = regex_dict
         return section_header_dict
-            
-#
-def fish_analysis_summary_performance(validation_data_manager,
-                                      evaluation_manager,labId, nlp_values,
-                                      nlp_datum_key, validation_datum_key):
-    validation_data = validation_data_manager.get_validation_data()
-    if labId in nlp_values.keys():
-        keys0 = list(nlp_values[labId])
-        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
-        else:
-            data_out = None
-    else:
-        data_out = None
-    if data_out is not None:
-        data_out_tmp = data_out
-        data_out_tmp = \
-            data_out_tmp.replace(' ', '')
-        data_out = []
-        data_out.append(data_out_tmp)
-    if data_out is not None:
-        nlp_value = tuple(data_out)
-    else:
-        nlp_value = None
-    labid_idx = validation_data[0].index('labId')
-    validation_datum_idx = validation_data[0].index(validation_datum_key)
-    validation_value = None
-    for item in validation_data:
-        if item[labid_idx] == labId:
-            validation_value = item[validation_datum_idx]
-    if validation_value is not None:
-        if validation_value == '':
-            validation_value = None
-    if validation_value is not None:
-        validation_value_tmp = validation_value
-        validation_value_tmp = \
-            validation_value_tmp.replace(' ', '')
-        validation_value = []
-        validation_value.append(validation_value_tmp)
-    if validation_value is not None:
-        validation_value = tuple(validation_value)
-    display_flg = True
-    performance = \
-        evaluation_manager.evaluation(nlp_value, validation_value, display_flg)
-    return performance
-        
-#
-def simple_template():
-    template_list = None
-    sections_list = [ 'FISH ANALYSIS SUMMARY' ]
-    template_dict = {}
-    template_dict['primary_template_list'] = template_list
-    template_dict['sections_list'] = sections_list
-    template_dict['template_headers'] = [ 'FISH Analysis Summary' ]
-    return template_dict

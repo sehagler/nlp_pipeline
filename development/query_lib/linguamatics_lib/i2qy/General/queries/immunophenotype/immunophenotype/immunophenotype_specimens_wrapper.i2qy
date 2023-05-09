@@ -18,18 +18,15 @@ query:
               pt: Specimen Description
               where:
               - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
-              - link: {path: ../immunophenotype_query_snippet.i2qy, id: link1}
+              - link: {path: ../immunophenotype_query.i2qy, id: link2}
 output:
   columns:
   - {id: shadow region1}
   - {id: region1}
-  - id: link1.link6.alternative1
+  - id: link2.alternative1
     itemOptions: {}
-    linkItemId: link6.link1
-  - id: link1.phrase1
-    itemOptions: {}
-    linkItemId: link1
-  columnLocations: [1, 0, 2, 3]
+    linkItemId: link2
+  columnLocations: [1, 0, 2]
   useOutputEditor: true
 creator: haglers
 queryID: f2b0576d

@@ -8,10 +8,6 @@ output:
   - id: link1.phrase1
     itemOptions: {}
     linkItemId: link1
-  - title: Snippet
-    id: value1
-    columnOptions: [Empty]
-    isValueColumn: true
   useOutputEditor: true
 creator: haglers
-queryID: bb161fed
+queryID: d28b67cc

@@ -29,17 +29,12 @@ query:
           displayChildren: false
           quantifier: {minimum: 0, maximum: 0}
           of: [bone, marrow]
-      - link: {path: ../peripheral_blood_blast_summary_base_0_snippet.i2qy, id: link1}
+      - link: {path: ../peripheral_blood_blast_summary_base_0.i2qy, id: link2}
 output:
   columns:
-  - id: link1.link1.alternative1
+  - id: link2.link1.alternative1
     itemOptions: {}
-    linkItemId: link1.link1
-  - title: Snippet
-    id: link1.value1
-    columnOptions: [Empty]
-    isValueColumn: true
-    linkItemId: link1
+    linkItemId: link1.link2
   useOutputEditor: true
 creator: haglers
 queryID: d0311e44

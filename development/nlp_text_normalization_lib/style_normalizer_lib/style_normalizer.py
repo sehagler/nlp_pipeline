@@ -257,23 +257,22 @@ def _remove_superfluous_text(text):
         
 #
 def style_normalizer(text):
-    normalize_text = sequential_composition(_remove_superfluous_text,
-                                        _normalize_with,
-                                        _normalize_units,
-                                        _normalize_plural,
-                                        _normalize_per,
-                                        _normalize_of,
-                                        _normalize_datetime,
-                                        _normalize_credentials,
-                                        _normalize_abbreviation,
-                                        _normalize_tilde,
-                                        _normalize_slash,
-                                        _normalize_number_sign,
-                                        _normalize_newline,
-                                        _normalize_minus_sign,
-                                        _normalize_less_than_sign,
-                                        _normalize_greater_than_sign,
-                                        _normalize_equals_sign,
-                                        _normalize_colon)
-    text = normalize_text(text)
+    text = sequential_composition([_normalize_colon,
+                                   _normalize_equals_sign,
+                                   _normalize_greater_than_sign,
+                                   _normalize_less_than_sign,
+                                   _normalize_minus_sign,
+                                   _normalize_newline,
+                                   _normalize_number_sign,
+                                   _normalize_slash,
+                                   _normalize_tilde,
+                                   _normalize_abbreviation,
+                                   _normalize_credentials,
+                                   _normalize_datetime,
+                                   _normalize_of,
+                                   _normalize_per,
+                                   _normalize_plural,
+                                   _normalize_units,
+                                   _normalize_with,
+                                   _remove_superfluous_text], text)
     return text

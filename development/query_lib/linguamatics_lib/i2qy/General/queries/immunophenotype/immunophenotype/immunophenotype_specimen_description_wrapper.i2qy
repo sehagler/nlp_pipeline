@@ -16,19 +16,16 @@ query:
               showWholeRegion: true
               snid: hc.specimen
               pt: Specimen Description
-          - link: {path: ../immunophenotype_query_snippet.i2qy, id: link1}
+          - link: {path: ../immunophenotype_query.i2qy, id: link2}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link1.link6.alternative1
+  - id: link2.alternative1
     itemOptions: {}
-    linkItemId: link6.link1
-  - id: link1.phrase1
-    itemOptions: {}
-    linkItemId: link1
+    linkItemId: link2
   useOutputEditor: true
 creator: haglers
 queryID: 62b8a04f

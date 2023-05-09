@@ -27,7 +27,7 @@ from nlp_text_normalization_lib.style_normalizer_lib.style_normalizer \
 from nlp_text_normalization_lib.table_normalizer_lib.table_normalizer \
     import table_normalizer
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import sequential_composition_new as sequential_composition
+    import sequential_composition
 from tools_lib.processing_tools_lib.text_processing_tools \
     import make_ascii, make_xml_compatible
 from tools_lib.regex_lib.regex_tools \

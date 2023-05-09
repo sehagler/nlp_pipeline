@@ -27,14 +27,9 @@ output:
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link2.link1.link1.phrase1
+  - id: link2.link2.link1.phrase1
     itemOptions: {}
-    linkItemId: link1.link1.link2
-  - title: Snippet
-    id: link2.link1.value1
-    columnOptions: [Empty]
-    isValueColumn: true
-    linkItemId: link1.link2
+    linkItemId: link1.link2.link2
   useOutputEditor: true
 creator: haglers
 queryID: 58022d9d

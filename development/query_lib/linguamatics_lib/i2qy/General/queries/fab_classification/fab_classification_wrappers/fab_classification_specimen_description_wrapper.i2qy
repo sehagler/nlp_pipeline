@@ -17,19 +17,16 @@ query:
               snid: hc.specimen
               pt: Specimen Description
               where:
-              - link: {path: ../fab_classification_query_snippet.i2qy, id: link2}
+              - link: {path: ../fab_classification_query.i2qy, id: link1}
 output:
   columns:
   - {id: region1}
   - id: value1
     columnOptions: [Empty]
     isValueColumn: true
-  - id: link2.link5.link1.phrase1
+  - id: link1.link1.phrase1
     itemOptions: {}
-    linkItemId: link1.link5.link2
-  - id: link2.phrase1
-    itemOptions: {}
-    linkItemId: link2
+    linkItemId: link1.link1
   useOutputEditor: true
 creator: haglers
 queryID: 1175bc7c

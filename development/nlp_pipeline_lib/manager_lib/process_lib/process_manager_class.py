@@ -450,6 +450,14 @@ class Process_manager(Manager_base):
         project_name = static_data['project_name']
         import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                      project_name.lower() + \
+                     '_evaluation_manager_class import ' + project_name + \
+                     '_evaluation_manager as Evaluation_manager'
+        try:
+            exec(import_cmd, globals())
+        except Exception:
+            traceback.print_exc()
+        import_cmd = 'from projects_lib.' + project_name + '.py.' + \
+                     project_name.lower() + \
                      '_performance_data_manager_class import ' + project_name + \
                      '_performance_data_manager as Performance_data_manager'
         try:
