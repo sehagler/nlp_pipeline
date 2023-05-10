@@ -117,7 +117,7 @@ def _compare_values_range(x, y, display_flg, value_range,
 class Evaluation_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object):
+    def __init__(self, static_data_object, evaluator_registry):
         Manager_base.__init__(self, static_data_object)
         
     #

@@ -15,8 +15,7 @@ from base_lib.postprocessor_base_class \
     import Postprocessor_base
     
 #
-def extramedullary_disease_performance(evaluation_manager, nlp_value,
-                                       validation_value, display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         nlp_value = re.sub('SYNDROME', 'SYNDROMES', nlp_value)
         nlp_value_tmp = nlp_value
@@ -33,6 +32,15 @@ def extramedullary_disease_performance(evaluation_manager, nlp_value,
     arg_dict['validation_value'] = validation_value
     ret_dict = evaluation_manager.evaluation(arg_dict)
     return ret_dict['performance']
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
 
 #
 class Postprocessor(Postprocessor_base):

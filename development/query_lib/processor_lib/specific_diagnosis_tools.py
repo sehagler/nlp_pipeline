@@ -12,38 +12,9 @@ import traceback
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
-
-#                 
-def evaluate_specific_diagnosis(data_json):
-    data_json_tmp = data_json
-    for key0 in data_json_tmp.keys():
-        for key1 in data_json_tmp[key0].keys():
-            for key2 in data_json_tmp[key0][key1].keys():
-                try:
-                    values = data_json_tmp[key0][key1][key2]['specificDxAtAcquisition']
-                    values = values[0]
-                    #values = trim_data_value(values)
-                    #values = list(set(values))
-                    specific_diagnoses = []
-                    specific_diagnoses.append(''.join(values[1]))
-                    specific_diagnoses = list(set(specific_diagnoses))
-                    if len(specific_diagnoses) == 1:
-                        value = specific_diagnoses[0]
-                    elif len(specific_diagnoses) > 1:
-                        value = 'MANUAL_REVIEW'
-                    else:
-                        value = None
-                    if value is not None:
-                        data_json[key0][key1][key2]['specificDxAtAcquisition'] = value
-                    else:
-                        del data_json[key0][key1][key2]['specificDxAtAcquisition']
-                except Exception:
-                    traceback.print_exc()
-    return data_json
         
 #
-def specific_diagnosis_performance(evaluation_manager, nlp_value,
-                                   validation_value, display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         nlp_value = re.sub('/', 'and', nlp_value)
         nlp_value = \
@@ -86,6 +57,43 @@ def specific_diagnosis_performance(evaluation_manager, nlp_value,
     arg_dict['validation_value'] = validation_value
     ret_dict = evaluation_manager.evaluation(arg_dict)
     return ret_dict['performance']
+
+#                 
+def evaluate_specific_diagnosis(data_json):
+    data_json_tmp = data_json
+    for key0 in data_json_tmp.keys():
+        for key1 in data_json_tmp[key0].keys():
+            for key2 in data_json_tmp[key0][key1].keys():
+                try:
+                    values = data_json_tmp[key0][key1][key2]['specificDxAtAcquisition']
+                    values = values[0]
+                    #values = trim_data_value(values)
+                    #values = list(set(values))
+                    specific_diagnoses = []
+                    specific_diagnoses.append(''.join(values[1]))
+                    specific_diagnoses = list(set(specific_diagnoses))
+                    if len(specific_diagnoses) == 1:
+                        value = specific_diagnoses[0]
+                    elif len(specific_diagnoses) > 1:
+                        value = 'MANUAL_REVIEW'
+                    else:
+                        value = None
+                    if value is not None:
+                        data_json[key0][key1][key2]['specificDxAtAcquisition'] = value
+                    else:
+                        del data_json[key0][key1][key2]['specificDxAtAcquisition']
+                except Exception:
+                    traceback.print_exc()
+    return data_json
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
 
 #
 class Postprocessor(Postprocessor_base):

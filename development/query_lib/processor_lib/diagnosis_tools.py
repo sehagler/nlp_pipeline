@@ -19,8 +19,7 @@ class Postprocessor(Postprocessor_base):
     pass
 
 #
-def diagnosis_performance(evaluation_manager, nlp_value, validation_value,
-                          display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         nlp_value = nlp_value[0][0]
         nlp_value = re.sub('SYNDROME(?!S)', 'SYNDROMES', nlp_value)
@@ -92,3 +91,12 @@ def evaluate_diagnosis(data_json):
                 else:
                     pass
     return data_json
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)

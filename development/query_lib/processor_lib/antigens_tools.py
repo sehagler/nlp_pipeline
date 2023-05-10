@@ -23,8 +23,7 @@ from tools_lib.processing_tools_lib.variable_processing_tools \
     import trim_data_value
     
 #
-def antibodies_tested_performance(evaluation_manager, nlp_value,
-                                  validation_value, display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         if nlp_value == '': nlp_value = None
         nlp_value = re.sub('dim', 'dim ', nlp_value)
@@ -245,6 +244,15 @@ def simple_template():
     template_dict['sections_list'] = sections_list
     template_dict['template_headers'] = [ 'Antigens' ]
     return template_dict
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
 
 #
 class Postprocessor(Postprocessor_base):

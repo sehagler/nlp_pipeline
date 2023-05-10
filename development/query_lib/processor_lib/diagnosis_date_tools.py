@@ -17,16 +17,7 @@ from query_lib.processor_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_base
 
 #
-class Postprocessor(Postprocessor_base):
-    pass
-
-#
-class Tokenizer(Tokenizer_base):
-    pass
-
-#
-def diagnosis_date_performance(evaluation_manager, nlp_value, validation_value,
-                               display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         nlp_value = re.sub('(?<=/)20(?=[0-9][0-9])', '', nlp_value)
         nlp_value = re.sub('(?<=/)0(?=[0-9]/)', '', nlp_value)
@@ -48,3 +39,20 @@ def diagnosis_date_performance(evaluation_manager, nlp_value, validation_value,
     arg_dict['validation_value'] = validation_value
     ret_dict = evaluation_manager.evaluation(arg_dict)
     return ret_dict['performance']
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
+
+#
+class Postprocessor(Postprocessor_base):
+    pass
+
+#
+class Tokenizer(Tokenizer_base):
+    pass

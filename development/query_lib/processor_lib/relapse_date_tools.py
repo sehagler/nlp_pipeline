@@ -17,8 +17,7 @@ from query_lib.processor_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_base
     
 #
-def relapse_date_performance(evaluation_manager, nlp_value, validation_value,
-                             display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         nlp_value = re.sub('(?<=/)20(?=[0-9][0-9])', '', nlp_value)
         nlp_value_tmp = nlp_value
@@ -37,6 +36,15 @@ def relapse_date_performance(evaluation_manager, nlp_value, validation_value,
     arg_dict['validation_value'] = validation_value
     ret_dict = evaluation_manager.evaluation(arg_dict)
     return ret_dict['performance']
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
 
 #
 class Postprocessor(Postprocessor_base):

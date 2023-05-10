@@ -10,8 +10,7 @@ from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 
 #
-def fish_analysis_summary_performance(evaluation_manager, nlp_value,
-                                      validation_value, display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         nlp_value_tmp = nlp_value
         nlp_value_tmp = nlp_value_tmp.replace(' ', '')
@@ -48,6 +47,15 @@ def simple_template():
     template_dict['sections_list'] = sections_list
     template_dict['template_headers'] = [ 'FISH Analysis Summary' ]
     return template_dict
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
 
 #
 class Postprocessor(Postprocessor_base):

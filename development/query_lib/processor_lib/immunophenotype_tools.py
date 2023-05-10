@@ -16,8 +16,7 @@ import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from query_lib.processor_lib.antigens_tools import correct_antibodies
 
 #
-def surface_antigens_performance(evaluation_manager, nlp_value,
-                                 validation_value, display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         if isinstance(nlp_value, list):
             nlp_value = 'MANUAL_REVIEW'
@@ -55,6 +54,15 @@ def surface_antigens_performance(evaluation_manager, nlp_value,
     arg_dict['validation_value'] = validation_value
     ret_dict = evaluation_manager.evaluation(arg_dict)
     return ret_dict['performance']
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
 
 #
 class Postprocessor(Postprocessor_base):

@@ -19,6 +19,8 @@ import xml.etree.ElementTree as ET
 
 #
 from base_lib.manager_base_class import Manager_base
+from evaluator_lib.registry_lib.evaluator_registry_class \
+    import Evaluator_registry
 from nlp_pipeline_lib.manager_lib.dynamic_data_lib.dynamic_data_manager_class \
     import Dynamic_data_manager
 from nlp_pipeline_lib.manager_lib.evaluation_lib.evaluation_manager_class \
@@ -230,12 +232,14 @@ class Process_manager(Manager_base):
                 Xls_manager(self.static_data_object, file, password)
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_object)
-        evaluation_manager = \
-            Evaluation_manager(self.static_data_object)
         self.metadata_manager = Metadata_manager(self.static_data_object)
         self.nlp_tool_registry = \
             Nlp_tool_registry(self.static_data_object, remote_registry,
                               password)
+        evaluator_registry = Evaluator_registry(static_data)
+        evaluator_registry.create_evaluators()
+        evaluation_manager = \
+            Evaluation_manager(self.static_data_object, evaluator_registry)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,

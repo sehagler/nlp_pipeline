@@ -21,10 +21,10 @@ from tools_lib.processing_tools_lib.variable_processing_tools \
     import nlp_to_tuple, validation_to_tuple
 from base_lib.postprocessor_base_class \
     import Postprocessor_base
-        
+    
 #
-def blast_performance(evaluation_manager, nlp_value, validation_value,
-                      display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg,
+              value_range):
     if nlp_value is not None:
         nlp_value = nlp_value.replace('~', '')
         nlp_value = nlp_value.replace('>', '')
@@ -46,7 +46,7 @@ def blast_performance(evaluation_manager, nlp_value, validation_value,
     arg_dict['display_flg'] = display_flg
     arg_dict['nlp_value'] = nlp_value
     arg_dict['validation_value'] = validation_value
-    ret_dict = evaluation_manager.evaluation(arg_dict, value_range=5.0)
+    ret_dict = evaluation_manager.evaluation(arg_dict, value_range=value_range)
     return ret_dict['performance']
 
 #
@@ -128,6 +128,15 @@ def get_blast_value(blast_value_list):
         return 'MANUAL_REVIEW'
     else:
         return None
+    
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg, value_range):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg, value_range)
 
 #
 class Postprocessor(Postprocessor_base):

@@ -16,8 +16,7 @@ from tools_lib.regex_lib.regex_tools \
     )
     
 #
-def karyotype_performance(evaluation_manager, nlp_value, validation_value,
-                          display_flg):
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
         
         # kludge to get BeatAML projects working
@@ -64,6 +63,35 @@ def karyotype_performance(evaluation_manager, nlp_value, validation_value,
     return ret_dict['performance']
 
 #
+def atomize_karyotype(full_karyotype):
+    karyotype_atoms = {}
+    karyotypes_0 = full_karyotype.split('//')
+    for karyotype_0 in karyotypes_0:
+        karyotypes_1 = karyotype_0.split('/')
+        for karyotype_1 in karyotypes_1:
+            karyotype_1 = karyotype_1.split('[')
+            if len(karyotype_1) == 2:
+                count = '[' + karyotype_1[1]
+            else:
+                count = ''
+            karyotype_1 = karyotype_1[0]
+            karyotype_1_atoms = karyotype_1.split(',')
+            if 'chromosome count' not in karyotype_atoms.keys():
+                karyotype_atoms['chromosome count'] = karyotype_1_atoms[0] + count
+            else:
+                karyotype_atoms['chromosome count'] += '/' + karyotype_1_atoms[0] + count
+            if 'sex chromosomes' not in karyotype_atoms.keys():
+                karyotype_atoms['sex chromosomes'] = karyotype_1_atoms[1] + count
+            else:
+                karyotype_atoms['sex chromosomes'] += '/' + karyotype_1_atoms[1] + count
+            for i in range(len(karyotype_1_atoms)-2):
+                if karyotype_1_atoms[i+2] not in karyotype_atoms.keys():
+                    karyotype_atoms[karyotype_1_atoms[i+2]] = count
+                else:
+                    karyotype_atoms[karyotype_1_atoms[i+2]] += '/' + count
+    return karyotype_atoms
+
+#
 def simple_template():
     template = '([0-9]{1,2}' + tilde() + ')?[0-9]{1,2}' + comma() + '[XY]+.*\[[0-9]+\]'
     template_list = []
@@ -74,6 +102,37 @@ def simple_template():
     template_dict['sections_list'] = sections_list
     template_dict['template_headers'] = [ 'Karyotype' ]
     return template_dict
+
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg)
+    
+#
+class Postprocessor(Postprocessor_base):
+        
+    #
+    def _extract_data_value(self, value_list_dict):
+        extracted_data_dict = {}
+        for key in value_list_dict.keys():
+            text_list = value_list_dict[key]
+            karyotype = []
+            snippet = []
+            for item in text_list[0]:
+                karyotype.append(item[0])
+                snippet.append(item[1])
+            value_dict_list = []
+            for i in range(len(karyotype)):
+                value_dict = {}
+                value_dict['KARYOTYPE'] = karyotype[i].replace(' ', '')
+                value_dict['SNIPPET'] = snippet[i]
+                value_dict_list.append(value_dict)
+            extracted_data_dict[key] = value_dict_list
+        return extracted_data_dict
 
 #
 class Preprocessor(object):
@@ -105,28 +164,6 @@ class Preprocessor(object):
         text = \
             lambda_tools.lambda_conversion('(?i)inversion \(', text, 'inv(')
         return text
-
-#
-class Postprocessor(Postprocessor_base):
-        
-    #
-    def _extract_data_value(self, value_list_dict):
-        extracted_data_dict = {}
-        for key in value_list_dict.keys():
-            text_list = value_list_dict[key]
-            karyotype = []
-            snippet = []
-            for item in text_list[0]:
-                karyotype.append(item[0])
-                snippet.append(item[1])
-            value_dict_list = []
-            for i in range(len(karyotype)):
-                value_dict = {}
-                value_dict['KARYOTYPE'] = karyotype[i].replace(' ', '')
-                value_dict['SNIPPET'] = snippet[i]
-                value_dict_list.append(value_dict)
-            extracted_data_dict[key] = value_dict_list
-        return extracted_data_dict
     
 #
 class Section_header_structure():
@@ -140,32 +177,3 @@ class Section_header_structure():
         regex_dict['ADD PRE_PUNCT AND POST_PUNCT'] = regex_list
         section_header_dict['KARYOTYPE'] = regex_dict
         return section_header_dict
-        
-#
-def atomize_karyotype(full_karyotype):
-    karyotype_atoms = {}
-    karyotypes_0 = full_karyotype.split('//')
-    for karyotype_0 in karyotypes_0:
-        karyotypes_1 = karyotype_0.split('/')
-        for karyotype_1 in karyotypes_1:
-            karyotype_1 = karyotype_1.split('[')
-            if len(karyotype_1) == 2:
-                count = '[' + karyotype_1[1]
-            else:
-                count = ''
-            karyotype_1 = karyotype_1[0]
-            karyotype_1_atoms = karyotype_1.split(',')
-            if 'chromosome count' not in karyotype_atoms.keys():
-                karyotype_atoms['chromosome count'] = karyotype_1_atoms[0] + count
-            else:
-                karyotype_atoms['chromosome count'] += '/' + karyotype_1_atoms[0] + count
-            if 'sex chromosomes' not in karyotype_atoms.keys():
-                karyotype_atoms['sex chromosomes'] = karyotype_1_atoms[1] + count
-            else:
-                karyotype_atoms['sex chromosomes'] += '/' + karyotype_1_atoms[1] + count
-            for i in range(len(karyotype_1_atoms)-2):
-                if karyotype_1_atoms[i+2] not in karyotype_atoms.keys():
-                    karyotype_atoms[karyotype_1_atoms[i+2]] = count
-                else:
-                    karyotype_atoms[karyotype_1_atoms[i+2]] += '/' + count
-    return karyotype_atoms
