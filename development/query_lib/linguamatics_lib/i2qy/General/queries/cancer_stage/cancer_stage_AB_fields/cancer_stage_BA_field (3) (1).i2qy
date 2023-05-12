@@ -1,5 +1,5 @@
 version: 6.8
-creationDate: '2023-05-11 14:02:39'
+creationDate: '2023-05-01 11:27:29'
 query:
   document:
   - alternative:
@@ -100,13 +100,13 @@ query:
         multiSentence: true
         of:
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*EBV\\+([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
@@ -115,13 +115,13 @@ query:
         multiSentence: true
         of:
         - word:
-            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*EBV\\+([ \n\r][^A-Za-z0-9 ]+)*"
-            matchType: Raw regexp
-        - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
         - word:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
@@ -169,4 +169,4 @@ query:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
 creator: haglers
-queryID: b7c76328
+queryID: 5fea41e7

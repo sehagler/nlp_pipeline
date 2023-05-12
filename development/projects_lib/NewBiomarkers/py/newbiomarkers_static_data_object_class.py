@@ -53,6 +53,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
               ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
               ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
+              ('PDL1_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STRENGTH', 'single_value', True),
               ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
             
         self.static_data['queries_list'] = \
@@ -69,6 +70,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
               ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
               ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
+              ('PDL1_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STRENGTH', 'single_value', True),
               ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
             
         self.static_data['validation_file'] = 'smmart_nlp_new_markers.xlsx'
@@ -85,7 +87,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
             
             #
             data_set_flgs = [ 'testing', 'training' ]
-            data_set_flg = data_set_flgs[1]
+            data_set_flg = data_set_flgs[0]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':

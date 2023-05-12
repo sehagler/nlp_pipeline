@@ -41,7 +41,9 @@ query:
                 - alternative: [intensity, staining]
         - phrase:
           - alternative:
+            - high
             - word: {text: lack, morphoVariants: true}
+            - low
             - 'no'
             - zero
           - alternative:
@@ -53,6 +55,10 @@ query:
                   text: nuclear
                   quantifier: {minimum: 0, maximum: 1}
               - alternative: [intensity, staining]
+        - phrase:
+          - 'no'
+          - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
+          - expression
       - alternative:
           quantifier: {minimum: 0, maximum: 0}
           of: [grade, negative, positive]

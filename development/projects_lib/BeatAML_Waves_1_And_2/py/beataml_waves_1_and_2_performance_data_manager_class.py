@@ -116,8 +116,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         for query in self.queries:
             validation_datum_keys.append(query[0])
         labId_list = None
-        patientIds = nlp_values.keys()
-        patientIds = list(set(patientIds))
+        patientIds = list(set(nlp_values.keys()))
         N_documents = 0
         for patientId in patientIds:
             if patientId in nlp_values_in:
@@ -131,7 +130,6 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
                 N_documents += 1
                 for i in range(len(self.queries)):
                     validation_datum_key = self.queries[i][0]
-                    self._extend_performance_dicts(validation_datum_key)
                     arg_dict = {}
                     arg_dict['identifier'] = labId
                     arg_dict['nlp_values'] = nlp_values

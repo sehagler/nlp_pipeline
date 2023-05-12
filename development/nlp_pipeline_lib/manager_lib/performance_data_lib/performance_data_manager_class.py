@@ -20,11 +20,6 @@ from tools_lib.processing_tools_lib.function_processing_tools \
 from base_lib.manager_base_class import Manager_base
 
 #
-def _difference(x, y):
-    z = list(set(x) - set(y))
-    return z
-
-#
 def _display_performance_statistics(performance_statistics_overall_dict):
     for key in performance_statistics_overall_dict.keys():
         print(key)
@@ -164,10 +159,6 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
                 if len(nlp_values[key][validation_datum_key]) > 1:
                     nlp_values[key][validation_datum_key] = manual_review,
     return nlp_values
-
-#
-def _intersection(x, y):
-    return list(set(x) & set(y))
 
 #
 def _normalize_percentage_range(text):
@@ -315,7 +306,6 @@ class Performance_data_manager(Manager_base):
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
         self.xls_manager_registry = xls_manager_registry
-        
         static_data = self.static_data_object.get_static_data()
         self.directory_manager = static_data['directory_manager']
         self.save_dir = \
@@ -341,10 +331,6 @@ class Performance_data_manager(Manager_base):
         self.csv_header += text
     
     #
-    def _difference(self, x, y):
-        return _difference(x, y)
-    
-    #
     def _evaluate_performance(self, N_documents):
         N_hit_documents_wo_validation_manual_review_dict = {}
         for key in self.hit_documents_dict.keys():
@@ -360,15 +346,6 @@ class Performance_data_manager(Manager_base):
                                               N_hit_documents_wo_validation_manual_review_dict,
                                               N_hit_documents_w_validation_manual_review_dict)
         
-    #
-    def _extend_performance_dicts(self, validation_datum_key):
-        if validation_datum_key not in self.N_manual_review.keys():
-            self.N_manual_review[validation_datum_key] = 0
-        if validation_datum_key not in self.hit_documents_dict.keys():
-            self.hit_documents_dict[validation_datum_key] = []
-        if validation_datum_key not in self.hit_manual_review_dict.keys():
-            self.hit_manual_review_dict[validation_datum_key] = []
-    
     #
     def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
                                          nlp_performance_nlp_manual_review_dict, 
@@ -459,14 +436,6 @@ class Performance_data_manager(Manager_base):
         self.hit_manual_review_dict = {}
     
     #
-    def _intersection(self, x, y):
-        return _intersection(x, y)
-    
-    #
-    def _nlp_to_tuple(self, value):
-        return _nlp_to_tuple(value)
-    
-    #
     def _process_performance(self, nlp_values, validation_datum_keys,
                              display_flg):
         self._initialize_performance_dicts()
@@ -484,7 +453,6 @@ class Performance_data_manager(Manager_base):
             self._append_csv_body(csn, newline_flg=True)
             for i in range(len(self.queries)):
                 validation_datum_key = self.queries[i][0]
-                self._extend_performance_dicts(validation_datum_key)
                 arg_dict = {}
                 arg_dict['identifier'] = csn
                 arg_dict['nlp_values'] = nlp_values
@@ -550,6 +518,12 @@ class Performance_data_manager(Manager_base):
         performance = arg_dict['performance']
         validation_datum_key = arg_dict['validation_datum_key']
         validation_value = arg_dict['validation_value']
+        if validation_datum_key not in self.N_manual_review.keys():
+            self.N_manual_review[validation_datum_key] = 0
+        if validation_datum_key not in self.hit_documents_dict.keys():
+            self.hit_documents_dict[validation_datum_key] = []
+        if validation_datum_key not in self.hit_manual_review_dict.keys():
+            self.hit_manual_review_dict[validation_datum_key] = []
         if nlp_value is not None:
             if identifier_list is None or identifier in identifier_list:
                 if not ( validation_value is not None and self.manual_review in validation_value ):
@@ -633,7 +607,6 @@ class Performance_data_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         validation_filename = static_data['validation_file']
         directory_manager = static_data['directory_manager']
-        #project_name = static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         filename = os.path.join(data_dir, validation_filename)
         self.validation_data_manager = self.xls_manager_registry[filename]

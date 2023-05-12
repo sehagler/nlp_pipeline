@@ -1,0 +1,48 @@
+version: 6.8
+creationDate: '2020-05-27 17:10:02'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 0}
+              of: [FAMILY, HISTORY]
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
+              - link: {path: ../cancer_stage_query.i2qy, id: link2}
+output:
+  columns:
+  - {id: region1}
+  - {id: shadow region1}
+  - id: link2.alternative1.col0
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col1
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col2
+    itemOptions: {}
+    linkItemId: link2
+  - id: link2.alternative1.col3
+    itemOptions: {}
+    linkItemId: link2
+  useOutputEditor: true
+creator: haglers
+queryID: 42fb1068

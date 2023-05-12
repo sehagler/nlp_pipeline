@@ -1,0 +1,40 @@
+version: 6.8
+creationDate: '2019-01-29 17:32:46'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - alternative: [DX]
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - shadowRegion: {id: shadow region1, snid: hc.specimen_id, pt: Specimen Id}
+              - phrase: [bone, marrow]
+              - phrase:
+                  quantifier: {minimum: 0, maximum: 0}
+                  of: [peripheral, blood]
+              - link: {path: ../bone_marrow_blast_query.i2qy, id: link2}
+output:
+  columns:
+  - {id: region1}
+  - {id: shadow region1}
+  - id: link2.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link2
+  useOutputEditor: true
+creator: haglers
+queryID: 14cbf999

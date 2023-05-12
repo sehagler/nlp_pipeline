@@ -1,5 +1,5 @@
 version: 6.8
-creationDate: '2023-05-11 14:02:39'
+creationDate: '2023-05-09 18:34:56'
 query:
   document:
   - alternative:
@@ -337,4 +337,4 @@ query:
             text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
             matchType: Raw regexp
 creator: haglers
-queryID: '69227437'
+queryID: 8891e37e

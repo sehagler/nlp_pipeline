@@ -123,9 +123,7 @@ query:
               - borderline
               - equivocal
               - favorable
-              - high
               - insufficient
-              - low
               - negative
               - phrase: [negative, /, positive]
               - negativity
@@ -142,10 +140,6 @@ query:
                 - phrase:
                   - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
                   - expression
-          - phrase:
-            - 'no'
-            - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
-            - expression
           - phrase:
             - phrase:
                 quantifier: {minimum: 0, maximum: 0}

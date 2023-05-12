@@ -1,0 +1,39 @@
+version: 6.8
+creationDate: '2019-01-31 21:55:38'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region:
+          id: region1
+          snid: hc.section_title
+          pt: Section Title
+          where:
+          - alternative: [DX]
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - phrase:
+            - word:
+                text: peripheral
+                quantifier: {minimum: 0, maximum: 1}
+            - blood
+          - phrase:
+              quantifier: {minimum: 0, maximum: 0}
+              of: [bone, marrow]
+          - link: {path: ../peripheral_blood_blast_query.i2qy, id: link2}
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link2.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link2
+  useOutputEditor: true
+creator: haglers
+queryID: 25b25f3c

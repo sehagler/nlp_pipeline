@@ -505,15 +505,13 @@ class Postprocessor(Postprocessor_base):
         status = re.sub(',', '', status)
         status = re.sub('( nuclear)? staining', '', status)
         status = re.sub('focal ', 'focally ', status)
-        status = re.sub('no [a-z0-9]+ expression', 'negative', status)
-        status = re.sub(' [a-z0-9]+ expression', '', status)
         if biomarker_name in [ 'AR', 'BCL2', 'CD4', 'CD8', 'ER', 'GATA3',
                                'HER2', 'PDL1', 'PR' ]:
             for term in [ 'borderline', 'negative / positive' ]:
                 status = re.sub(term, 'equivocal', status)
-            for term in [ 'negativity', 'lack expression', 'non-amplified',
-                          'nonreactive', 'not amplified', 'unamplified',
-                          'unfavorable', 'without immunoreactivity' ]:
+            for term in [ 'negativity', 'non-amplified', 'nonreactive',
+                          'not amplified', 'unamplified', 'unfavorable',
+                          'without immunoreactivity' ]:
                 status = re.sub(term, 'negative', status)
             for term in [ 'amplified', 'favorable', 'immunoreactive',
                           'immunoreactivity', 'positivity', 'reactive',
@@ -529,6 +527,12 @@ class Postprocessor(Postprocessor_base):
         strength = re.sub(' immunoreactivity', '', strength)
         strength = re.sub(' (nuclear )?intensity', '', strength)
         strength = re.sub(' (nuclear )?staining', '', strength)
+        strength = re.sub('no [a-z0-9]+ expression', 'none', strength)
+        strength = re.sub(' [a-z0-9]+ expression', '', strength)
+        strength = re.sub('high expression', 'high', strength)
+        strength = re.sub('lacks? expression', 'none', strength)
+        strength = re.sub('low expression', 'low', strength)
+        strength = re.sub('no expression', 'none', strength)
         return strength
     
     #
