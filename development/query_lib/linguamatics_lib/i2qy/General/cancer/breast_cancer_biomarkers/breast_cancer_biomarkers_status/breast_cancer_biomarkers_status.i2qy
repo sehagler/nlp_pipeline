@@ -137,9 +137,6 @@ query:
                       text: nuclear
                       quantifier: {minimum: 0, maximum: 1}
                   - staining
-                - phrase:
-                  - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
-                  - expression
           - phrase:
             - phrase:
                 quantifier: {minimum: 0, maximum: 0}

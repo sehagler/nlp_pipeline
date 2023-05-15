@@ -553,25 +553,22 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
         now = datetime.datetime.now()
-        index_start_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
-        self.metadata_manager.load_metadata()
-        self.metadata_manager.append_nlp_metadata_value('DOCUMENT_SET_INDEXING_START_DATETIME',
-                                                        index_start_datetime)
-        self.metadata_manager.save_metadata()
+        self.index_start_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         linguamatics_i2e_object.login()
         linguamatics_i2e_object.make_index_runner(project_name)
         linguamatics_i2e_object.logout()
         now = datetime.datetime.now()
-        index_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
-        self.metadata_manager.load_metadata()
-        self.metadata_manager.append_nlp_metadata_value('DOCUMENT_SET_INDEXING_END_DATETIME',
-                                                        index_end_datetime)
-        self.metadata_manager.save_metadata()
+        self.index_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         
     #
     def linguamatics_i2e_postindexer(self):
+        self.metadata_manager.load_metadata()
+        self.metadata_manager.append_nlp_metadata_value('DOCUMENT_SET_INDEXING_START_DATETIME',
+                                                        self.index_start_datetime)
+        self.metadata_manager.append_nlp_metadata_value('DOCUMENT_SET_INDEXING_END_DATETIME',
+                                                        self.index_end_datetime)
         self.metadata_manager.save_metadata()
         
     #

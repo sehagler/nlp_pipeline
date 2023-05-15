@@ -31,8 +31,8 @@ output:
     itemOptions: {}
     linkItemId: link2
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
-parameters: {Biomarker: CD8}
+parameters: {Biomarker: BCL2}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true
-queryID: 771efc0a
+queryID: 61b34421

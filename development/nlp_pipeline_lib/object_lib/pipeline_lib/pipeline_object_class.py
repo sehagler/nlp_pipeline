@@ -91,7 +91,7 @@ class Pipeline_object(object):
         self.process_manager.linguamatics_i2e_push_resources()
         self.process_manager.linguamatics_i2e_indexer()
         self.process_manager.linguamatics_i2e_postindexer()
-        self.process_manager.linguamatics_i2e_push_queries()
+        #self.process_manager.linguamatics_i2e_push_queries()
         
     #
     def linguamatics_i2e_postqueries(self, project_subdir):

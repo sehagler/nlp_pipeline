@@ -36,7 +36,7 @@ mode_flgs = [ 'update', 'run' ]
 #
 project_name = project_names[3]
 project_subdir = project_subdirs[0]
-server = servers[1]
+server = servers[0]
 
 #
 pipeline_mode_flg = pipeline_mode_flgs[3]
@@ -100,6 +100,7 @@ elif mode_flg == 'run':
         pipeline_object.linguamatics_i2e_prequeries(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_indexer':
         pipeline_object.linguamatics_i2e_indexer()
+        pipeline_object.linguamatics_i2e_push_queries()
     elif pipeline_mode_flg == 'linguamatics_i2e_postqueries':
         pipeline_object.linguamatics_i2e_postqueries(project_subdir)
     elif pipeline_mode_flg == 'linguamatics_i2e_push_queries':

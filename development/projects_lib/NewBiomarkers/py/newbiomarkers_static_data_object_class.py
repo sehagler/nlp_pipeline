@@ -40,39 +40,11 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('BCL2 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_SCORE', 'single_value', True),
               ('BCL2_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STRENGTH', 'single_value', True),
               ('BCL2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_VARIABILITY', 'single_value', True),
-              ('CD4 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_STATUS', 'single_value', True),
-              ('CD4 Percent', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_PERCENTAGE', 'single_value', True),
-              ('CD4 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_SCORE', 'single_value', True),
-              ('CD4_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_STRENGTH', 'single_value', True),
-              ('CD4_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_CD4', 'CD4_VARIABILITY', 'single_value', True),
-              ('CD8 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_STATUS', 'single_value', True),
-              ('CD8 Percent', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_PERCENTAGE', 'single_value', True),
-              ('CD8 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_SCORE', 'single_value', True),
-              ('CD8_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_STRENGTH', 'single_value', True),
-              ('CD8_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_CD8', 'CD8_VARIABILITY', 'single_value', True),
               ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
               ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
               ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
               ('PDL1_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STRENGTH', 'single_value', True),
               ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
-            
-        self.static_data['queries_list'] = \
-            [ ('AR Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_STATUS', 'single_value', True),
-              ('AR Percent', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_PERCENTAGE', 'single_value', True),
-              ('AR Stain Score', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_SCORE', 'single_value', True),
-              ('AR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_STRENGTH', 'single_value', True),
-              ('AR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_AR', 'AR_VARIABILITY', 'single_value', True),
-              ('BCL2 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STATUS', 'single_value', True),
-              ('BCL2 Percent', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_PERCENTAGE', 'single_value', True),
-              ('BCL2 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_SCORE', 'single_value', True),
-              ('BCL2_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_STRENGTH', 'single_value', True),
-              ('BCL2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_BCL2', 'BCL2_VARIABILITY', 'single_value', True),
-              ('PDL1 Nuclear Staining', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STATUS', 'single_value', True),
-              ('PDL1 Percent', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_PERCENTAGE', 'single_value', True),
-              ('PDL1 Stain Score', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_SCORE', 'single_value', True),
-              ('PDL1_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_STRENGTH', 'single_value', True),
-              ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
-            
         self.static_data['validation_file'] = 'smmart_nlp_new_markers.xlsx'
         if self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
@@ -106,7 +78,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
             if data_set_flg == 'training':
                 self._include_lists(docs_files, groups_files, [0])
             elif data_set_flg == 'testing':
-                self._include_lists(docs_files, groups_files, [1])
+                self._include_lists(docs_files, groups_files, [1, 2, 3])
             
             raw_data_dir = \
                 self.static_data['directory_manager'].pull_directory('raw_data_dir')

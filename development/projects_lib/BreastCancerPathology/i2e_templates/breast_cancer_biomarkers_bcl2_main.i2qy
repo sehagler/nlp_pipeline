@@ -1,4 +1,4 @@
-version: 6.3
+version: 6.8
 creationDate: '2018-10-26 16:08:10'
 multiquery:
   Union: [/api;type=saved_query/__private__/haglers/General/queries/breast_cancer_biomarkers/breast_cancer_biomarkers_main.i2qy]
@@ -31,7 +31,8 @@ output:
     itemOptions: {}
     linkItemId: link2
   outputSettings: {allResults: true, allRows: true, allTime: true, outputOrdering: alpha, outputType: standard}
-parameters: {Biomarker: KI67}
+parameters: {Biomarker: BCL2}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true
+queryID: d1426d2c
