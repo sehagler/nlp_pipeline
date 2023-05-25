@@ -25,7 +25,7 @@ class Metadata_manager(Manager_base):
         directory_manager = static_data['directory_manager']
         self.metadata_json_file = \
             os.path.join(directory_manager.pull_directory('metadata_dir'), 'metadata.json')
-        self.metadata_dict_dict = {}
+        self.clear_metadata()
         
     #
     def _sort_metadata_dict(self):
@@ -58,6 +58,20 @@ class Metadata_manager(Manager_base):
         for key in self.metadata_dict_dict.keys():
             self.metadata_dict_dict[key][self.nlp_metadata_key][label] = \
                 value
+                
+    #
+    def clear_metadata(self):
+        self.metadata_dict_dict = {}
+    
+    #
+    def get_doc_idx_offset(self):
+        if not bool(self.metadata_dict_dict):
+            doc_idx_offset = 0
+        else:
+            doc_idxs = list(self.metadata_dict_dict.keys())
+            doc_idxs = list(map(int, doc_idxs))
+            doc_idx_offset = max(doc_idxs) + 1
+        return doc_idx_offset
             
     #
     def get_metadata_dict_dict(self):

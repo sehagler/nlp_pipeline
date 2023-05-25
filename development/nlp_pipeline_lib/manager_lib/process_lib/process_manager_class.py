@@ -518,6 +518,11 @@ class Process_manager(Manager_base):
             self.performance_data_manager.generate_csv_file()
             
     #
+    def cleanup_directory(self, directory_label):
+        static_data = self.static_data_object.get_static_data()
+        static_data['directory_manager'].cleanup_directory(directory_label)
+            
+    #
     def data_set_summary_info(self):
         self._documents_by_year()
         self._total_documents()
@@ -538,6 +543,10 @@ class Process_manager(Manager_base):
         patient_values = list(set(patient_values))
         date_values = list(set(patient_values))
         return document_values, patient_values, date_values
+    
+    #
+    def initialize_metadata(self):
+        self.metadata_manager.save_metadata()
         
     #
     def linguamatics_i2e_generate_csv_files(self):
@@ -575,10 +584,11 @@ class Process_manager(Manager_base):
     def linguamatics_i2e_push_resources(self):
         static_data = self.static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
-        static_data['directory_manager'].cleanup_directory('source_data')
         keywords_file = self.dynamic_data_manager.keywords_file()
-        preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
-        processing_data_dir = directory_manager.pull_directory('processing_data_dir')
+        preprocessing_data_out_dir = \
+            directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
+        processing_data_dir = \
+            directory_manager.pull_directory('processing_data_dir')
         project_name = static_data['project_name']
         source_data_dir = directory_manager.pull_directory('source_data')
         max_files_per_zip = static_data['max_files_per_zip']
@@ -787,7 +797,7 @@ class Process_manager(Manager_base):
         self.json_manager_registry[filename].write_performance_data_to_package_json_file(data)
     
     #
-    def preprocessor_full(self, password, start_idx):
+    def preprocessor_full(self, password):
         static_data = self.static_data_object.get_static_data()
         num_processes = self.raw_data_manager.get_number_of_processes()
         
@@ -822,7 +832,9 @@ class Process_manager(Manager_base):
             return_queues.append(rq)
         for process_idx in range(num_processes):
             processes[process_idx].start()
-        doc_idx_offset = 0
+        self.metadata_manager.load_metadata()
+        doc_idx_offset = self.metadata_manager.get_doc_idx_offset()
+        self.metadata_manager.clear_metadata()
         for i in range(len(raw_data_files)):
             filename, extension = os.path.splitext(raw_data_files[i])
             if extension.lower() in [ '.xls', '.xlsx' ]:
@@ -864,7 +876,7 @@ class Process_manager(Manager_base):
                 argument_dict['num_processes'] = num_processes
                 argument_dict['process_idx'] = process_idx
                 argument_dict['raw_data_manager'] = raw_data_manager_copy
-                argument_dict['start_idx'] = start_idx
+                argument_dict['start_idx'] = 0
                 argument_dict['i2e_version'] = i2e_version
                 argument_dict['password'] = password
                 argument_queues[process_idx].put(argument_dict)
@@ -872,7 +884,10 @@ class Process_manager(Manager_base):
                 ret = return_queues[process_idx].get()
                 if ret[2] > 0:
                     self.dynamic_data_manager.merge_copy(ret[0])
+                    self.metadata_manager.load_metadata()
                     self.metadata_manager.merge_copy(ret[1])
+                    self.metadata_manager.save_metadata()
+                    self.metadata_manager.clear_metadata()
                     num_docs_preprocessed += ret[2]
         for process_idx in range(num_processes):
             argument_dict = {}
@@ -881,7 +896,6 @@ class Process_manager(Manager_base):
             processes[process_idx].join()
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
         self.dynamic_data_manager.generate_keywords_file()
-        self.metadata_manager.save_metadata()
         
     #
     def preprocessor_metadata(self, password, start_idx):
@@ -903,7 +917,9 @@ class Process_manager(Manager_base):
         for i in range(len(raw_data_files_seq)):
             raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))
-        doc_idx_offset = 0
+        self.metadata_manager.load_metadata()
+        doc_idx_offset = self.metadata_manager.get_doc_idx_offset()
+        self.metadata_manager.clear_metadata()
         for i in range(len(raw_data_files)):
             filename, extension = os.path.splitext(raw_data_files[i])
             if extension.lower() in [ '.xls', '.xlsx' ]:
@@ -941,9 +957,11 @@ class Process_manager(Manager_base):
                                                 i2e_version, process_idx,
                                                 start_idx, password)
                 for document_idx in metadata.keys():
+                    self.metadata_manager.load_metadata()
                     self.metadata_manager.append_metadata_dicts(str(document_idx),
                                                                 metadata[document_idx]['source_metadata'],
                                                                 metadata[document_idx]['nlp_metadata'])
+                    self.metadata_manager.save_metadata()
+                    self.metadata_manager.clear_metadata()
                 num_docs_preprocessed = 0
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
-        self.metadata_manager.save_metadata()

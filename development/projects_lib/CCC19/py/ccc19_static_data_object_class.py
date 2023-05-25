@@ -41,48 +41,48 @@ class CCC19_static_data_object(Static_data_object):
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
         if self.project_subdir == 'production':
             self.static_data['raw_data_files'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML']['DATETIME_KEY'] = 'NOTE_DATE'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML']['ENCODING'] = 'utf-16'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML']['DATETIME_KEY'] = 'NOTE_DATE'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML']['ENCODING'] = 'utf-16'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML']['DATETIME_KEY'] = 'NOTE_DATE'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML']['ENCODING'] = 'utf-16'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML']['DATETIME_KEY'] = 'NOTE_DATE'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML']['ENCODING'] = 'utf-16'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML']['DATETIME_KEY'] = 'NOTE_DATE'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML']['ENCODING'] = 'utf-16'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML'] = {}
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML']['DATETIME_KEY'] = 'NOTE_DATE'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML']['ENCODING'] = 'utf-8'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML']['NLP_MODE'] = 'RESULT_ID'
-            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE_20230205_131541.XML',
-                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230205_132736.XML',
-                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230205_134111.XML',
-                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230205_135523.XML',
-                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230205_142121.XML',
-                                                            'NAGLE_CCC19_NLP_PATH_RESULTS_20230205_130950.XML' ]
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML']['DATETIME_KEY'] = 'NOTE_DATE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML']['DATETIME_KEY'] = 'NOTE_DATE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML']['DATETIME_KEY'] = 'NOTE_DATE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML']['DATETIME_KEY'] = 'NOTE_DATE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML']['DATETIME_KEY'] = 'NOTE_DATE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML']['ENCODING'] = 'utf-16'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML'] = {}
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML']['DATETIME_KEY'] = 'NOTE_DATE'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML']['ENCODING'] = 'utf-8'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML']['NLP_MODE'] = 'RESULT_ID'
+            self.static_data['raw_data_files']['NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files_sequence'] = [ 'NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230507_115903.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230507_121005.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230507_122203.XML',
+                                                            'NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML',
+                                                            'NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML' ]
         elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
