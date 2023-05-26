@@ -1,0 +1,37 @@
+version: 6.8
+creationDate: '2019-01-30 17:22:01'
+query:
+  document:
+  - phrase:
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - phrase:
+          maxWordGap: -1
+          wordGapRestricted: false
+          of:
+          - phrase:
+              displayChildren: false
+              of: [bone, marrow]
+          - word:
+              text: ':'
+              quantifier: {minimum: 0, maximum: 0}
+          - phrase:
+              displayChildren: false
+              includeInQuery: false
+              quantifier: {minimum: 0, maximum: 0}
+              of: [peripheral, blood]
+          - ':'
+      - phrase:
+          displayChildren: false
+          quantifier: {minimum: 0, maximum: 0}
+          of: [peripheral, blood]
+      - link: {path: ../bone_marrow_blast_query.i2qy, id: link2}
+output:
+  columns:
+  - id: link2.link1.phrase1
+    itemOptions: {}
+    linkItemId: link1.link2
+  useOutputEditor: true
+creator: haglers
+queryID: 6b2f9a93

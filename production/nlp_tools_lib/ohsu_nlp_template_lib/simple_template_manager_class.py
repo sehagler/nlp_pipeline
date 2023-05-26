@@ -49,7 +49,7 @@ class Simple_template_manager(object):
                                     start = primary_match.start() + offset_base
                                     end = primary_match.end() + offset_base - 1
                                     offset = [ (start, end) ]
-                                    snippet = section
+                                    #snippet = section
                                     if primary_query_output is not None:
                                         secondary_query_outputs = {}
                                         for i in range(len(secondary_template_list)):
@@ -78,14 +78,16 @@ class Simple_template_manager(object):
                                                   primary_query_output ]
                                             for i in range(len(secondary_values)):
                                                 template_output.append(secondary_values[i])
-                                            template_output.append(snippet)
+                                            #template_output.append(snippet)
                                             template_output.append(offset)
                                             template_output_list.append(template_output)
                                             
                                     else:
                                         template_output = \
                                             [ document_id, timestamp, key[0], key[1],
-                                              primary_query_output, snippet, offset ]
+                                              primary_query_output, offset ]
+                                            #[ document_id, timestamp, key[0], key[1],
+                                            #  primary_query_output, snippet, offset ]
                                         template_output_list.append(template_output)
                 else:
                     if template_sections_list is not None:
@@ -95,11 +97,13 @@ class Simple_template_manager(object):
                                 create_output_flg = True
                     if create_output_flg:
                         query_output = section
-                        snippet = section
+                        #snippet = section
                         offset = []
                         template_output = \
                             [ document_id, timestamp, key[0], key[1],
-                              query_output, snippet, offset ]
+                              query_output, offset ]
+                            #[ document_id, timestamp, key[0], key[1],
+                            #  query_output, snippet, offset ]
                         template_output_list.append(template_output)
             template_output_list = \
                 self._unique_elements(template_output_list)
@@ -216,7 +220,7 @@ class Simple_template_manager(object):
         header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
         for i in range(len(template_headers)):
             header.append(template_headers[i])
-        header.append('Snippet')
+        #header.append('Snippet')
         header.append('Coords')
         with open(os.path.join(data_dir, filename), 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)

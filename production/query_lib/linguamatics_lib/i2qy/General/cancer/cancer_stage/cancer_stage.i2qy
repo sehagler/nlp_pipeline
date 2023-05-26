@@ -1,0 +1,59 @@
+version: 6.8
+creationDate: '2020-10-01 17:54:02'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of: ['>', <, '~']
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - phrase:
+                - clinical
+                - word:
+                    text: ':'
+                    quantifier: {minimum: 0, maximum: 1}
+              - ISS
+              - path
+          - word: {text: stage, matchType: Raw regexp}
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - alternative:
+                - {class: /vg}
+                - is
+              - now
+          - word: {text: '[0-9IV]{1,3}([A-Za-z]([0-9])?)?((-|/)[0-9IV]{1,3}([A-Za-z]([0-9])?)?)?', matchType: Regexp}
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of: ['>', <, '~']
+          - alternative: [advanced, early, end, extensive, mild, moderate, severe]
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - phrase:
+                - clinical
+                - word:
+                    text: ':'
+                    quantifier: {minimum: 0, maximum: 1}
+              - ISS
+              - path
+          - word: {text: stage, matchType: Raw regexp}
+      - phrase: [in, situ]
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: 99c8929f

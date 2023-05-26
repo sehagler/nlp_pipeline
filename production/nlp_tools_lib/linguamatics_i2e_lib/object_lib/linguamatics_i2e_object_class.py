@@ -112,18 +112,7 @@ class Linguamatics_i2e_object(object):
         
     #
     def _fix_queries(self, query_paths):
-        '''
-        args = None
-        parser = get_parser()
-        parsed_args = parser.parse_args(args=args)
-        '''
         log_level = logging.INFO
-        '''
-        if parsed_args.debug:
-            log_level = logging.DEBUG
-        elif parsed_args.errors_only:
-            log_level = logging.WARNING
-        '''
         with yaml_constructor():
             query_fixer = QuerySetFixer(query_paths,
                                         dry_run=False,
@@ -244,7 +233,6 @@ class Linguamatics_i2e_object(object):
             
     #
     def _read_file_metadata(self, preprocessing_data_out_dir):
-        #data_dir = self.linguamatics_i2e_file_manager.preprocessing_data_directory()
         files = os.listdir(preprocessing_data_out_dir)
         xml = ET.parse(os.path.join(preprocessing_data_out_dir, files[0]))
         root_element = xml.getroot()
@@ -256,24 +244,13 @@ class Linguamatics_i2e_object(object):
     def _xml_to_gold(self, xml, text_spans=True, old_format=False):
         logger.info('parsing XML')
         parsed = ET.parse(xml)
-        #index_name = parsed.find('.//IndexName').text.replace('.i2etmp', '')
-        #outfile = '{}.csv'.format(index_name)
-    
         col_to_id, query_cols = self._get_col_ids(parsed)
         logger.info('query output columns: {}'.format(query_cols))
         logger.info('evaluate text spans: {}'.format(text_spans))
         id_to_col = {v: k for k, v in list(col_to_id.items())}
-    
-        #first_cols = ['Doc Id']
         first_cols = []
-        #if old_format:
-        #    first_cols += ['URL', 'Annotation Type']
-        #headers = first_cols + query_cols + ['Coords', 'Text span']
         headers = first_cols + query_cols + ['Coords']
-        #headers = first_cols + query_cols + [ 'Coords' ]
         cell_to_colix = {k: headers.index(k) for k in query_cols}
-        #cell_to_colix['docId'] = headers.index('Doc Id')
-        #cell_to_colix['hit'] = headers.index('Text span')
         cell_to_colix['hit'] = headers.index('Coords')
         if text_spans:
             cell_to_colix['coords'] = headers.index('Coords')
@@ -289,15 +266,10 @@ class Linguamatics_i2e_object(object):
                     cells = [cell_group]
                 for cell in cells:
                     cellid = int(cell.attrib['columnId'])
-                    
-                    ###
-                    #colname = id_to_col[cellid]
                     if cellid in id_to_col.keys():
                         colname = id_to_col[cellid]
                     else:
                         colname = None
-                    ###
-                        
                     if colname is not None and colname in cell_to_colix:
                         if colname != 'hit':
                             text = cell.find('.//Text').text
@@ -317,12 +289,11 @@ class Linguamatics_i2e_object(object):
                             if hit_spans:
                                 hit_spans = set(
                                     [ET.tostring(h).strip() for h in hit_spans])
-                                htext = cell.find('.//Text').text
+                                offsets = list()
                                 targets = list()
-                                #targets_in_hit = list()
-                                #targets_in_text = list()
                                 for hit_span in hit_spans:
                                     hit_span = ET.fromstring(hit_span)
+                                    htext = cell.find('.//Text').text
                                     is_sent = hit_span.find('.//IsSentence')
                                     if is_sent is None:
                                         url = hit_span.find('.//URL').text
@@ -339,12 +310,10 @@ class Linguamatics_i2e_object(object):
                                         targets_in_text = (start, stop)
                                         targets.append(tuple([ targets_in_hit,
                                                                targets_in_text ]))
-                                #targets = remove_overlaps(sorted(targets))
-                                #targets_in_hit = remove_overlaps(sorted(targets_in_hit))
-                                #highlighted_span = get_hit_highlights(htext,
-                                #                                      targets_in_hit)
+                                        offsets.append(tuple([ start, start + len(htext) ]))
                                 highlighted_spans = self._get_hit_highlights(htext,
                                                                              targets)
+                                #targets_bak = targets[0][1]
                                 targets = []
                                 for i in range(len(extractions)):
                                     extraction = extractions[i]
@@ -357,21 +326,14 @@ class Linguamatics_i2e_object(object):
                                     if not highlighted_span_found_flg:
                                         targets.append('')
                                 targets = targets[1:-1]
-                                #row_text = '{}'.format(highlighted_spans)
-                                #row[cell_to_colix['hit']] = row_text
+                                if len(targets) == 0:
+                                    targets.append(offsets[0])
                                 if text_spans:
                                     row[cell_to_colix['coords']] = targets
-                                    #row[cell_to_colix['coords']] = highlighted_spans
                             else:
                                 if text_spans:
                                     row[cell_to_colix['coords']] = '[]'
-                                #row[cell_to_colix['hit']] = ''
-            #if old_format:
-            #    row[1] = 'no_gold_url'
-            #    row[2] = 'Results'
             rows.append(row)
-    
-        #return headers, outfile, rows
         return headers, rows
 
     #
@@ -391,8 +353,11 @@ class Linguamatics_i2e_object(object):
                                           "text/plain", source_data)
             
     #
-    def create_source_data_file(self, outdir, ctr, metadata,  raw_text,
-                                rpt_text):
+    def create_source_data_file(self, outdir, document_idx, document_dict):
+        ctr = document_idx
+        metadata = document_dict[document_idx]['xml_metadata']
+        raw_text = document_dict[document_idx]['processed_raw_text']
+        rpt_text = document_dict[document_idx]['processed_report_text']
         raw_text = make_ascii(raw_text)
         raw_text = make_xml_compatible(raw_text)
         keys = metadata.keys()
@@ -441,7 +406,6 @@ class Linguamatics_i2e_object(object):
             if extension in [ '.xml' ]:
                 print('Converting ' + filename)
                 filename = data_dir + '/' + filename
-                #generate_gold(filename, True)
                 self._generate_gold(filename, True)
                 
     #
@@ -465,15 +429,21 @@ class Linguamatics_i2e_object(object):
         return self.data_dict_list
     
     #
-    def generate_query_bundle_file(self, project_name, 
-                                   general_queries_source_dir,
+    def generate_query_bundle_file(self, project_name,
                                    processing_data_dir,
+                                   common_queries_source_dir,
+                                   general_queries_source_dir,
                                    project_queries_source_dir,
                                    max_files_per_zip):
         dest_path_base = self.query_bundle_path
         filename = os.path.join(processing_data_dir,
                                 self.linguamatics_i2e_file_manager.query_bundle_filename())
         remove_file(filename)
+        common_dest_path_base = dest_path_base + 'Common'
+        self._generate_query_bundle_file_component(filename,
+                                                   common_queries_source_dir,
+                                                   common_dest_path_base,
+                                                   max_files_per_zip)
         general_dest_path_base = dest_path_base + 'General'
         self._generate_query_bundle_file_component(filename,
                                                    general_queries_source_dir,
@@ -576,32 +546,6 @@ class Linguamatics_i2e_object(object):
                 response = 'FAILED_TO_CONNECT'
         return response
     
-    '''
-    #
-    def insert_field(self, sub_query_file, alternative_file):
-        sub_query_uri = '/api;type=saved_query/__private__/' + sub_query_file
-        sub_query = Resource(sub_query_uri)
-        filename = alternative_file
-        if filename:
-            with open(filename) as f:
-                alternative_source = f.read()
-        alternative_list = ast.literal_eval(alternative_source)
-        query = i2e.easl.query.Query(5.5)
-        document = query.root  
-        alternative = document.add_alternative()
-        for item in alternative_list:
-            word_item = document.add_word(item)
-            word_item.match_type = "Raw regexp"
-            query.move_item(word_item, new_parent=alternative)
-        query_source = query.to_string()
-        request_maker = RequestMaker(self.conn)
-        task_launcher = TaskLauncher(self.conn)
-        request_config = RequestConfiguration()
-        result = request_maker.update_resource(sub_query,
-                                               EASL_MIME_TYPE,
-                                               query_source, request_config)
-    '''
-    
     #
     def insert_field(self, sub_query_file, alternative_file):
         sub_query_uri = '/api;type=saved_query/__private__/' + sub_query_file
@@ -662,8 +606,6 @@ class Linguamatics_i2e_object(object):
     def push_resources(self, project_name, keywords_file, preprocessing_data_out_dir, 
                        processing_data_dir, source_data_dir, max_files_per_zip,
                        root_dir_flg):
-        #directory_manager = self.static_data['directory_manager']
-        #preprocessing_data_out_dir = directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
         self._generate_source_data_file(project_name, preprocessing_data_out_dir,
                                         source_data_dir, max_files_per_zip)
         self._put_keywords_file(root_dir_flg, keywords_file)
@@ -692,14 +634,6 @@ class Linguamatics_i2e_object(object):
                     self.create_resource(None, resource_type, filename)
                 except Exception:
                     traceback.print_exc()
-        '''
-        try:
-            bundle = os.path.join(processing_data_dir,
-                                  self.linguamatics_i2e_file_manager.query_bundle_filename())
-            self.upload_bundle(bundle)
-        except Exception:
-            traceback.print_exc()
-        '''
             
     #
     def push_queries(self, processing_data_dir):
@@ -762,7 +696,6 @@ class Linguamatics_i2e_object(object):
             time.sleep(15)
             install_status_task = request_maker2.read_resource(install_location, "application/json", request_config2)
             install_status = json.loads(install_status_task.read())['status']
-        # print(install_status)
         if install_status.startswith('succeeded'):
             print('Bundle upload succeeded')
         else:

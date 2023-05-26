@@ -1,0 +1,70 @@
+version: 6.8
+creationDate: '2021-05-25 22:28:56'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - link:
+          path: ../../../tools/inequality_modifier_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+        - phrase:
+          - word:
+              text: very
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+            - dim
+            - dim-intermediate
+            - dim-moderate
+            - dim-strong
+            - intermediate
+            - intermediate-strong
+            - moderate
+            - moderate-strong
+            - strong
+            - trace
+            - unfavorable
+            - weak
+            - word: {text: weak-moderate, morphoVariants: true}
+            - weak-strong
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - expression
+              - immunoreactive
+              - immunoreactivity
+              - phrase:
+                - word:
+                    text: nuclear
+                    quantifier: {minimum: 0, maximum: 1}
+                - alternative: [intensity, staining]
+        - phrase:
+          - alternative:
+            - high
+            - word: {text: lack, morphoVariants: true}
+            - low
+            - 'no'
+            - zero
+          - alternative:
+            - expression
+            - immunoreactive
+            - immunoreactivity
+            - phrase:
+              - word:
+                  text: nuclear
+                  quantifier: {minimum: 0, maximum: 1}
+              - alternative: [intensity, staining]
+        - phrase:
+          - 'no'
+          - link: {path: ../../../tools/breast_cancer_biomarkers_names.i2qy}
+          - expression
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of: [grade, negative, positive]
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+queryID: 848e833d

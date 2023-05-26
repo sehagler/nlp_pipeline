@@ -1,0 +1,304 @@
+version: 6.8
+creationDate: '2015-12-14 15:22:31'
+query:
+  document:
+  - phrase:
+      id: phrase2
+      of:
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - link: {path: ../breast_cancer_biomarkers_constraint.i2qy}
+          - word:
+              text: )
+              quantifier: {minimum: 0, maximum: 1}
+          - alternative:
+            - {class: /prep}
+            - macro:
+                snid: linguamatics_wc.WC_Preposition
+                pt: preposition
+                of:
+                - alternative:
+                    macroPt: preposition
+                    macroSnid: linguamatics_wc.WC_Preposition
+                    of:
+                    - aboard
+                    - about
+                    - above
+                    - absent
+                    - phrase: [according, to]
+                    - across
+                    - after
+                    - against
+                    - phrase: [ahead, of]
+                    - phrase: [all, over]
+                    - along
+                    - alongside
+                    - amid
+                    - amidst
+                    - among
+                    - amongst
+                    - anti
+                    - around
+                    - as
+                    - phrase: [as, far, as]
+                    - phrase: [as, of]
+                    - phrase: [as, to]
+                    - aside
+                    - astraddle
+                    - astride
+                    - at
+                    - atop
+                    - phrase: [because, of]
+                    - before
+                    - behind
+                    - below
+                    - beneath
+                    - beside
+                    - besides
+                    - between
+                    - beyond
+                    - but
+                    - by
+                    - circa
+                    - despite
+                    - down
+                    - during
+                    - except
+                    - phrase: [except, for]
+                    - for
+                    - from
+                    - given
+                    - in
+                    - phrase: [in, addition, to]
+                    - phrase: [in, between]
+                    - phrase: [in, case, of]
+                    - phrase: [in, place, of]
+                    - phrase: [in, spite, of]
+                    - inside
+                    - phrase: [instead, of]
+                    - into
+                    - less
+                    - lest
+                    - like
+                    - minus
+                    - near
+                    - phrase: [near, to]
+                    - next
+                    - phrase: [next, to]
+                    - notwithstanding
+                    - of
+                    - 'off'
+                    - 'on'
+                    - phrase: ['on', account, of]
+                    - phrase: ['on', top, of]
+                    - onto
+                    - opposite
+                    - phrase: [other, than]
+                    - out
+                    - phrase: [out, of]
+                    - outside
+                    - phrase: [outside, of]
+                    - over
+                    - past
+                    - per
+                    - plus
+                    - save
+                    - since
+                    - through
+                    - throughout
+                    - till
+                    - to
+                    - toward
+                    - towards
+                    - under
+                    - underneath
+                    - unlike
+                    - until
+                    - unto
+                    - up
+                    - phrase: [up, to]
+                    - upon
+                    - versus
+                    - via
+                    - vs
+                    - vs.
+                    - with
+                    - within
+                    - without
+      - alternative:
+        - phrase:
+            maxWordGap: -1
+            wordGapRestricted: false
+            of:
+            - link: {path: ../breast_cancer_biomarkers_names_list.i2qy}
+            - link:
+                path: ../breast_cancer_biomarkers_constraint.i2qy
+                quantifier: {minimum: 0, maximum: 0}
+            - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
+        - phrase:
+          - link: {path: ../breast_cancer_biomarkers_names_list.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_1_subquery_0.i2qy}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - alternative:
+            - {class: /prep}
+            - macro:
+                snid: linguamatics_wc.WC_Preposition
+                pt: preposition
+                of:
+                - alternative:
+                    macroPt: preposition
+                    macroSnid: linguamatics_wc.WC_Preposition
+                    of:
+                    - aboard
+                    - about
+                    - above
+                    - absent
+                    - phrase: [according, to]
+                    - across
+                    - after
+                    - against
+                    - phrase: [ahead, of]
+                    - phrase: [all, over]
+                    - along
+                    - alongside
+                    - amid
+                    - amidst
+                    - among
+                    - amongst
+                    - anti
+                    - around
+                    - as
+                    - phrase: [as, far, as]
+                    - phrase: [as, of]
+                    - phrase: [as, to]
+                    - aside
+                    - astraddle
+                    - astride
+                    - at
+                    - atop
+                    - phrase: [because, of]
+                    - before
+                    - behind
+                    - below
+                    - beneath
+                    - beside
+                    - besides
+                    - between
+                    - beyond
+                    - but
+                    - by
+                    - circa
+                    - despite
+                    - down
+                    - during
+                    - except
+                    - phrase: [except, for]
+                    - for
+                    - from
+                    - given
+                    - in
+                    - phrase: [in, addition, to]
+                    - phrase: [in, between]
+                    - phrase: [in, case, of]
+                    - phrase: [in, place, of]
+                    - phrase: [in, spite, of]
+                    - inside
+                    - phrase: [instead, of]
+                    - into
+                    - less
+                    - lest
+                    - like
+                    - minus
+                    - near
+                    - phrase: [near, to]
+                    - next
+                    - phrase: [next, to]
+                    - notwithstanding
+                    - of
+                    - 'off'
+                    - 'on'
+                    - phrase: ['on', account, of]
+                    - phrase: ['on', top, of]
+                    - onto
+                    - opposite
+                    - phrase: [other, than]
+                    - out
+                    - phrase: [out, of]
+                    - outside
+                    - phrase: [outside, of]
+                    - over
+                    - past
+                    - per
+                    - plus
+                    - save
+                    - since
+                    - through
+                    - throughout
+                    - till
+                    - to
+                    - toward
+                    - towards
+                    - under
+                    - underneath
+                    - unlike
+                    - until
+                    - unto
+                    - up
+                    - phrase: [up, to]
+                    - upon
+                    - versus
+                    - via
+                    - vs
+                    - vs.
+                    - with
+                    - within
+                    - without
+          - link: {path: ../breast_cancer_biomarkers_names_list.i2qy}
+      where:
+      - link:
+          path: ../breast_cancer_biomarkers_names_list.i2qy
+          id: link3
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../breast_cancer_biomarkers_status_phrase.i2qy
+          id: link4
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_strength/breast_cancer_biomarkers_strength.i2qy
+          id: link5
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_score/breast_cancer_biomarkers_score.i2qy
+          id: link1
+          quantifier: {minimum: 0, maximum: 1}
+      - link:
+          path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy
+          id: link2
+          quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: phrase2}
+  - id: link3.link2.class1
+    itemOptions: {}
+    linkItemId: link2.link3
+  - id: link4.phrase1
+    itemOptions: {}
+    linkItemId: link4
+  - id: link5.phrase1
+    itemOptions: {}
+    linkItemId: link5
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  - id: link2.alternative1.col0
+    itemOptions: {}
+    linkItemId: link2
+  outputSettings: {allResults: true, allRows: true, allTime: true, boundaries: Exact}
+  useOutputEditor: true
+parameters: {BIOMARKER: ''}
+runAsSmartQuery: true
+creator: szhang
+queryID: 46d8db64

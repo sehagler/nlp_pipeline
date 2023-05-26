@@ -10,30 +10,24 @@ from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_
     import Performance_data_manager
 from projects_lib.BeatAML_Waves_1_And_2.py.beataml_waves_1_and_2_specimens_manager_class \
     import BeatAML_Waves_1_And_2_specimens_manager as Specimens_manager
-from query_lib.processor_lib.antigens_tools \
-    import antibodies_tested_performance
-from query_lib.processor_lib.diagnosis_tools \
-    import diagnosis_performance
-from query_lib.processor_lib.diagnosis_date_tools \
-    import diagnosis_date_performance
-from query_lib.processor_lib.extramedullary_disease_tools \
-    import extramedullary_disease_performance
-from query_lib.processor_lib.fab_classification_tools \
-    import fab_classification_performance
-from query_lib.processor_lib.fish_analysis_summary_tools \
-    import fish_analysis_summary_performance
-from query_lib.processor_lib.immunophenotype_tools \
-    import surface_antigens_performance
-from query_lib.processor_lib.karyotype_tools import karyotype_performance
-from query_lib.processor_lib.relapse_date_tools \
-    import relapse_date_performance
-from query_lib.processor_lib.residual_disease_tools \
-    import residual_disease_performance
-from query_lib.processor_lib.specific_diagnosis_tools \
-    import specific_diagnosis_performance
-from query_lib.processor_lib.base_lib.blasts_tools_base \
-    import blast_performance
-
+from tools_lib.processing_tools_lib.function_processing_tools \
+    import parallel_composition, sequential_composition
+    
+#
+def _get_nlp_value(arg_dict):
+    identifier = arg_dict['identifier']
+    nlp_values = arg_dict['nlp_values']
+    validation_datum_key = arg_dict['validation_datum_key']
+    if identifier in nlp_values.keys():
+        keys0 = list(nlp_values[identifier])
+        if validation_datum_key in nlp_values[identifier][keys0[0]].keys():
+            nlp_value = nlp_values[identifier][keys0[0]][validation_datum_key]
+        else:
+            nlp_value = None
+    else:
+        nlp_value = None
+    return nlp_value
+    
 #
 class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
@@ -51,90 +45,32 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             self.identifier_key = 'MRN'
             self.identifier_list = static_data['patient_list']
             self.queries = static_data['queries_list']
-        
+    
     #
-    def _generate_nlp_performance(self, nlp_performance_dict, labId, nlp_values,
-                                  nlp_datum_key, validation_datum_key):
-        performance = None
-        if validation_datum_key == '%.Blasts.in.BM' or\
-           validation_datum_key == '%.Blasts.in.PB':
-            performance = blast_performance(self.validation_data_manager,
-                                            self.evaluation_manager,
-                                            labId, nlp_values, nlp_datum_key, 
-                                            validation_datum_key)
-        elif validation_datum_key == 'Antibodies.Tested':
-            performance = antibodies_tested_performance(self.validation_data_manager,
-                                                        self.evaluation_manager,
-                                                        labId, nlp_values,
-                                                        nlp_datum_key, 
-                                                        validation_datum_key)
-        elif validation_datum_key == 'Extramedullary.dx':
-            performance = extramedullary_disease_performance(self.validation_data_manager,
-                                                             self.evaluation_manager,
-                                                             labId, nlp_values,
-                                                             nlp_datum_key, 
-                                                             validation_datum_key)
-        elif validation_datum_key == 'FAB/Blast.Morphology':
-            display_flg = True
-            performance = fab_classification_performance(self.validation_data_manager,
-                                                         self.evaluation_manager,
-                                                         labId, nlp_values,
-                                                         nlp_datum_key, 
-                                                         validation_datum_key,
-                                                         display_flg)
-        elif validation_datum_key == 'FISH.Analysis.Summary':
-            performance = fish_analysis_summary_performance(self.validation_data_manager,
-                                                            self.evaluation_manager,labId,
-                                                            nlp_values,
-                                                            nlp_datum_key, 
-                                                            validation_datum_key)
-        elif validation_datum_key == 'Karyotype':
-            performance = karyotype_performance(self.validation_data_manager,
-                                                self.evaluation_manager,
-                                                labId, nlp_values,
-                                                nlp_datum_key, 
-                                                validation_datum_key)
-        elif validation_datum_key == 'Relapse.Date':
-            performance = relapse_date_performance(self.validation_data_manager,
-                                                   self.evaluation_manager,
-                                                   labId, nlp_values,
-                                                   nlp_datum_key, 
-                                                   validation_datum_key)
-        elif validation_datum_key == 'Residual.dx':
-            performance = residual_disease_performance(self.validation_data_manager,
-                                                       self.evaluation_manager,
-                                                       labId, nlp_values,
-                                                       nlp_datum_key, 
-                                                       validation_datum_key)
-        elif validation_datum_key == 'Surface.Antigens.(Immunohistochemical.Stains)':
-            performance = surface_antigens_performance(self.validation_data_manager,
-                                                       self.evaluation_manager,
-                                                       labId, nlp_values,
-                                                       nlp_datum_key, 
-                                                       validation_datum_key)
-        elif validation_datum_key == 'dxAtSpecimenAcquisition':
-            performance = diagnosis_performance(self.validation_data_manager,
-                                                self.evaluation_manager,
-                                                labId, nlp_values,
-                                                nlp_datum_key, 
-                                                validation_datum_key)
-        elif validation_datum_key == 'dx.Date':
-            performance = diagnosis_date_performance(self.validation_data_manager,
-                                                     self.evaluation_manager,
-                                                     labId, nlp_values,
-                                                     nlp_datum_key, 
-                                                     validation_datum_key)
-        elif validation_datum_key == 'specificDxAtAcquisition':
-            display_flg = True
-            performance = specific_diagnosis_performance(self.validation_data_manager,
-                                                         self.evaluation_manager,
-                                                         labId, nlp_values,
-                                                         nlp_datum_key, 
-                                                         validation_datum_key,
-                                                         display_flg)
-        if performance is not None:
-            nlp_performance_dict[validation_datum_key].append(performance)
-        return nlp_performance_dict
+    def _get_nlp_data(self, data_in, queries):
+        data_out = {}
+        for query in queries:
+            key = query[0]
+            sections = query[1]
+            query_name = query[2]
+            data_key = query[3]
+            mode_flg = query[4]
+            strip_flg = query[5]
+            data_out[key] = \
+                self._get_data_value(data_in, sections,
+                                     query_name + '_' + self.nlp_value_key,
+                                     data_key, mode_flg=mode_flg)
+            if strip_flg and data_out[key] is not None:
+                data_out[key] = data_out[key][0]
+        del_keys = []
+        for key in data_out:
+            if data_out[key] is None:
+                del_keys.append(key)
+        for key in del_keys:
+            del data_out[key]  
+        if not data_out:
+            data_out = None
+        return data_out
             
     #
     def _get_nlp_values(self, nlp_data, data_json):
@@ -159,105 +95,63 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         return validation_idx
     
     #
-    def _process_performance(self, nlp_values_in):
-        #document_csn_list = \
-        #    self.metadata_manager.pull_document_identifier_list('SOURCE_SYSTEM_DOCUMENT_ID')
-        nlp_performance_wo_validation_manual_review_dict = {}
-        nlp_performance_w_validation_manual_review_dict = {}
-        wo_validation_manual_review_dict = {}
-        wo_nlp_manual_review_dict = {}
-        for i in range(len(self.queries)):
-            validation_datum_key = self.queries[i][0]
-            nlp_performance_wo_validation_manual_review_dict[validation_datum_key] = []
-            nlp_performance_w_validation_manual_review_dict[validation_datum_key] = []
-            wo_validation_manual_review_dict[validation_datum_key] = 0
-            wo_nlp_manual_review_dict[validation_datum_key] = 0
+    def _get_validation_value(self, arg_dict):
+        identifier = arg_dict['identifier']
+        validation_datum_key = arg_dict['validation_datum_key']
+        validation_value = None
+        for j in range(1, self.validation_data_manager.length()):
+            row = self.validation_data_manager.row(j)
+            if row[0] == identifier:
+                validation_value = \
+                    self._process_validation_item(j, validation_datum_key)
+        return validation_value
+    
+    #
+    def _process_performance(self, nlp_values_in, validation_datum_keys,
+                             display_flg):
+        self._initialize_performance_dicts()
+        nlp_values = \
+            self._identify_manual_review(nlp_values_in, validation_datum_keys)
         validation_datum_keys = []
         for query in self.queries:
             validation_datum_keys.append(query[0])
-        nlp_values = \
-            self._identify_manual_review(nlp_values_in, validation_datum_keys)
-        N_manual_review = {}
-        hit_documents_dict = {}
-        hit_manual_review_dict = {}
-        patientIds = nlp_values.keys()
-        patientIds = list(set(patientIds))
+        labId_list = None
+        patientIds = list(set(nlp_values.keys()))
         N_documents = 0
         for patientId in patientIds:
             if patientId in nlp_values_in:
                 nlp_values = nlp_values_in[patientId]
             else:
-                nlp_values = {}
+                nlp_values = []
             labIds = []
             labIds.extend(nlp_values.keys())
             for labId in labIds:
                 print(labId)
                 N_documents += 1
                 for i in range(len(self.queries)):
-                    nlp_datum_key = self.queries[i][0]
-                    if nlp_datum_key not in N_manual_review.keys():
-                        N_manual_review[nlp_datum_key] = 0
-                    if nlp_datum_key not in hit_documents_dict.keys():
-                        hit_documents_dict[nlp_datum_key] = []
-                    if nlp_datum_key not in hit_manual_review_dict.keys():
-                        hit_manual_review_dict[nlp_datum_key] = []
                     validation_datum_key = self.queries[i][0]
-                    for j in range(1, self.validation_data_manager.length()):
-                        row = self.validation_data_manager.row(j)
-                        if row[0] == labId:
-                            validation_value = self._process_validation_item(j, validation_datum_key)
-                    if validation_value is not None and self.manual_review in validation_value:
-                        N_manual_review[nlp_datum_key] += 1
-                    if labId in nlp_values.keys() and nlp_values[labId] is not None:
-                        if labId in nlp_values.keys():
-                            if nlp_datum_key in nlp_values[labId].keys():
-                                nlp_value = nlp_values[labId][nlp_datum_key]
-                            else:
-                                nlp_value = None
-                        else:
-                            nlp_value = None
-                        if nlp_value is not None:
-                            hit_documents_dict[nlp_datum_key].append(labId)
-                            if validation_value is not None and self.manual_review in validation_value:
-                                hit_manual_review_dict[nlp_datum_key].append(labId)
-                        if not ( validation_value is not None and self.manual_review in validation_value ):
-                            nlp_performance_wo_validation_manual_review_dict = \
-                                self._generate_nlp_performance(nlp_performance_wo_validation_manual_review_dict,
-                                                               labId, nlp_values, nlp_datum_key,
-                                                               validation_datum_key)
-                        else:
-                            nlp_performance_w_validation_manual_review_dict = \
-                                self._generate_nlp_performance(nlp_performance_w_validation_manual_review_dict,
-                                                               labId, nlp_values, nlp_datum_key,
-                                                               validation_datum_key)
-                    else:
-                        if validation_value == None:
-                            nlp_performance_wo_validation_manual_review_dict[nlp_datum_key].append('true negative')
-                        elif self.manual_review in validation_value:
-                            nlp_performance_w_validation_manual_review_dict[nlp_datum_key].append('false negative')
-                            print('false negative')
-                            print(None)
-                            print(validation_value)
-                            print('')
-                        else:
-                            nlp_performance_wo_validation_manual_review_dict[nlp_datum_key].append('false negative')
-                            print('false negative')
-                            print(None)
-                            print(validation_value)
-                            print('')
-        N_hit_documents_wo_validation_manual_review_dict = {}
-        for key in hit_documents_dict.keys():
-            N_hit_documents_wo_validation_manual_review_dict[key] = \
-                len(list(set(hit_documents_dict[key])))
-        N_hit_documents_w_validation_manual_review_dict = {}
-        for key in hit_manual_review_dict.keys():
-            N_hit_documents_w_validation_manual_review_dict[key] = \
-                len(list(set(hit_manual_review_dict[key])))
-        self._generate_performance_statistics(nlp_performance_wo_validation_manual_review_dict,
-                                              nlp_performance_w_validation_manual_review_dict,
-                                              N_documents, N_manual_review,
-                                              N_hit_documents_wo_validation_manual_review_dict,
-                                              N_hit_documents_w_validation_manual_review_dict)
+                    arg_dict = {}
+                    arg_dict['identifier'] = labId
+                    arg_dict['nlp_values'] = nlp_values
+                    arg_dict['validation_datum_key'] = validation_datum_key
+                    return_dict = parallel_composition([self._get_validation_value,
+                                                        _get_nlp_value], arg_dict)
+                    arg_dict = {}
+                    arg_dict['display_flg'] = display_flg
+                    arg_dict['identifier'] = labId
+                    arg_dict['identifier_list'] = labId_list
+                    arg_dict['nlp_value'] = \
+                        return_dict[_get_nlp_value.__name__]
+                    arg_dict['validation_datum_key'] = validation_datum_key
+                    arg_dict['validation_value'] = \
+                        return_dict[self._get_validation_value.__name__]
+                    sequential_composition([self.evaluation_manager.evaluation,
+                                            self._update_performance_dicts],
+                                           arg_dict)
+                    nlp_value = return_dict[_get_nlp_value.__name__]
+                    self._append_csv_header(validation_datum_key + ', ')
+                    self._append_csv_body(nlp_value, newline_flg=False)
+        self._evaluate_performance(N_documents)
         
     #
     def _process_validation_item(self, row_idx, validation_datum_key):
@@ -272,6 +166,22 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
         else:
             x = None
         return x
+    
+    #
+    def _read_metadata(self, nlp_data):
+        metadata_keys = []
+        metadata_dict_dict = {}
+        for key in nlp_data.keys():
+            metadata_dict_dict[key] = {}
+            metadata_dict_dict[key]['METADATA'] = \
+                nlp_data[key]['METADATA']
+            metadata_dict_dict[key]['NLP_METADATA'] = \
+                nlp_data[key]['NLP_METADATA']
+        for metadata_key in metadata_dict_dict.keys():
+            for key in metadata_dict_dict[metadata_key].keys():
+                if key not in metadata_keys:
+                    metadata_keys.append(key)
+        return metadata_keys, metadata_dict_dict
             
     #
     def _read_nlp_value(self, nlp_data, data_json, key, identifier):

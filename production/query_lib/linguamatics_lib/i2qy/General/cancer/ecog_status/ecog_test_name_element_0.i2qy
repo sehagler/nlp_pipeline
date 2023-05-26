@@ -1,0 +1,27 @@
+version: 6.8
+creationDate: '2022-08-24 23:05:24'
+query:
+  document:
+  - phrase:
+    - ecog
+    - phrase:
+        maxWordGap: -1
+        wordGapRestricted: false
+        of:
+        - (
+        - word:
+            text: )
+            quantifier: {minimum: 0, maximum: 0}
+        - alternative:
+            id: alternative1
+            of: [karnofsky, lansky, zubrod]
+        - word:
+            text: (
+            quantifier: {minimum: 0, maximum: 0}
+        - )
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: 1fef50ba

@@ -13,12 +13,11 @@ import re
 import traceback
 
 #
-from base_lib.manager_base_class  import Manager_base
+from tools_lib.processing_tools_lib.function_processing_tools \
+    import parallel_composition, sequential_composition
 
 #
-def _difference(x, y):
-    z = list(set(x) - set(y))
-    return z
+from base_lib.manager_base_class import Manager_base
 
 #
 def _display_performance_statistics(performance_statistics_overall_dict):
@@ -105,7 +104,6 @@ def _get_data_value(section_data_list, section_key_list, mode_flg):
     if len(data_value) > 0:
         if len(data_value[0]) > 1:
             data_tmp = list(data_value[0])
-            data_tmp = [ x for x in data_tmp if x != ('equivocal',) ]
             data_tmp = tuple(data_tmp)
             data_value[0] = data_tmp
     if mode_flg == 'single_value':
@@ -123,6 +121,24 @@ def _get_data_value(section_data_list, section_key_list, mode_flg):
     return data_value, section_data_list
 
 #
+def _get_nlp_value(arg_dict):
+    identifier = arg_dict['identifier']
+    nlp_values = arg_dict['nlp_values']
+    validation_datum_key = arg_dict['validation_datum_key']
+    if identifier in nlp_values.keys():
+        if nlp_values[identifier] is not None:
+            if validation_datum_key in nlp_values[identifier].keys():
+                nlp_value = nlp_values[identifier][validation_datum_key]
+            else:
+                nlp_value = None
+        else:
+            nlp_value = None
+    else:
+        nlp_value = None
+    nlp_value = _nlp_to_tuple(nlp_value)
+    return nlp_value
+
+#
 def _get_nlp_values(nlp_data, data_json):
     nlp_values = data_json
     return nlp_values
@@ -132,21 +148,42 @@ def _identify_manual_review(nlp_values, validation_datum_keys, manual_review):
     for validation_datum_key in validation_datum_keys:
         for key in nlp_values.keys():
             if nlp_values[key] is not None and validation_datum_key in nlp_values[key]:
+                
+                ### Kludge to handle HER2 biomarker
                 if len(nlp_values[key][validation_datum_key]) > 1:
-                    nlp_values[key][validation_datum_key] = \
-                        manual_review,
+                    data_tmp = \
+                        [ x for x in nlp_values[key][validation_datum_key] if x != 'equivocal' ]
+                    nlp_values[key][validation_datum_key] = tuple(data_tmp)
+                ### Kludge to handle HER2 biomarker
+                    
+                if len(nlp_values[key][validation_datum_key]) > 1:
+                    nlp_values[key][validation_datum_key] = manual_review,
     return nlp_values
 
 #
-def _intersection(self, x, y):
-    return list(set(x) & set(y))
+def _normalize_percentage_range(text):
+    if re.match("[0-9]+%?\-[0-9]+%", text):
+        text = re.sub('-', '%-', text)
+        text = re.sub('%+', '%', text)
+    return text
 
 #
 def _nlp_to_tuple(value):
     if value is not None:
+        value_tmp = []
         value = list(value)
         for i in range(len(value)):
-            value[i] = value[i].replace(' ', '')
+            if type(value[i]) is not tuple:
+                if value[i] != 'MANUAL_REVIEW':
+                    value[i] = value[i].lower()
+                value[i] = value[i].replace(' ', '')
+                value_tmp.append(value[i])
+            else:
+                if len(value[i]) > 0:
+                    for j in range(len(value[i])):
+                        value_tmp.append(value[i][j])
+        value = value_tmp
+        value = list(set(value))
         value_tuple = tuple(value)
     else:
         value_tuple = None
@@ -187,15 +224,15 @@ def _performance_statistics(FN, FP, FP_plus_FN, TN, TP,
     else:
         F1 = 'NA'
     performance_statistics = {}
-    if isinstance(A, str):
+    if type(A) is str:
         performance_statistics['ACCURACY'] = A
     else:
         performance_statistics['ACCURACY'] = str(round(A, 3))
-    if isinstance(F1, str):
+    if type(F1) is str:
         performance_statistics['F1'] = F1
     else:
         performance_statistics['F1'] = str(round(F1, 3))
-    if isinstance(N_validation_documents, str):
+    if type(N_validation_documents) is str:
         performance_statistics['N_VALIDATION_DOCUMENTS'] = \
             N_validation_documents
     else:
@@ -227,48 +264,35 @@ def _process_validation_item(x):
     return x
 
 #
-def _read_metadata(nlp_data):
-    metadata_keys = []
-    metadata_dict_dict = {}
-    for key in nlp_data.keys():
-        metadata_dict_dict[key] = {}
-        metadata_dict_dict[key]['METADATA'] = \
-            nlp_data[key]['METADATA']
-        metadata_dict_dict[key]['NLP_METADATA'] = \
-            nlp_data[key]['NLP_METADATA']
-    for metadata_key in metadata_dict_dict.keys():
-        for key in metadata_dict_dict[metadata_key].keys():
-            if key not in metadata_keys:
-                metadata_keys.append(key)
-    return metadata_keys, metadata_dict_dict
-
-#
-def _validation_to_tuple(text):
-    if text is not None:
-        text = text.replace(' ', '')
-        text = text.replace(',', '\',\'')
-        text = text.replace('(', '(\'')
-        text = text.replace(')', '\')')
-        text = text.replace('\'(', '(')
-        text = text.replace(')\'', ')')
+def _validation_to_tuple(value):
+    if value is not None:
+        if value != 'MANUAL_REVIEW':
+            value = value.lower()
+        value = _normalize_percentage_range(value)
+        value = value.replace(' ', '')
+        value = value.replace(',', '\',\'')
+        value = value.replace('(', '(\'')
+        value = value.replace(')', '\')')
+        value = value.replace('\'(', '(')
+        value = value.replace(')\'', ')')
         try:
-            text_eval = '[\'' + text + '\']'
-            text_list = eval(text_eval)
+            value_eval = '[\'' + value + '\']'
+            value_list = eval(value_eval)
         except Exception:
             traceback.print_exc()
-            text = text.replace('(\'', '(')
-            text = text.replace('\')', ')')
-            text_eval = '[\'' + text + '\']'
-            text_list = eval(text_eval)
-        for i in range(len(text_list)):
-            if isinstance(text_list[i], tuple):
-                text_list[i] = str(text_list[i])
-                text_list[i] = text_list[i].replace('\'', '')
-                text_list[i] = text_list[i].replace(' ', '')
-        text_tuple = tuple(text_list)
+            value = value.replace('(\'', '(')
+            value = value.replace('\')', ')')
+            value_eval = '[\'' + value + '\']'
+            value_list = eval(value_eval)
+        for i in range(len(value_list)):
+            if type(value_list[i]) is not tuple:
+                value_list[i] = str(value_list[i])
+                value_list[i] = value_list[i].replace('\'', '')
+                value_list[i] = value_list[i].replace(' ', '')
+        value_tuple = tuple(value_list)
     else:
-        text_tuple = None
-    return text_tuple
+        value_tuple = None
+    return value_tuple
 
 #
 class Performance_data_manager(Manager_base):
@@ -282,17 +306,46 @@ class Performance_data_manager(Manager_base):
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
         self.xls_manager_registry = xls_manager_registry
-        
         static_data = self.static_data_object.get_static_data()
         self.directory_manager = static_data['directory_manager']
         self.save_dir = \
             self.directory_manager.pull_directory('processing_data_dir')
         self.log_dir = self.directory_manager.pull_directory('log_dir')
+        self.csv_body = ''
+        self.csv_header = ''
+        
+    #
+    def _append_csv_body(self, value, newline_flg):
+        if value == None: value = ''
+        if type(value) is tuple:
+            value_tmp = ''
+            for item in value: value_tmp += str(item) + '; '
+            value = value_tmp[:-2]
+        if newline_flg:
+            self.csv_body += '\n' + str(value) + ', '
+        else:
+            self.csv_body += str(value) + ', '
+        
+    #
+    def _append_csv_header(self, text):
+        self.csv_header += text
     
     #
-    def _difference(self, x, y):
-        return _difference(x, y)
-    
+    def _evaluate_performance(self, N_documents):
+        N_hit_documents_wo_validation_manual_review_dict = {}
+        for key in self.hit_documents_dict.keys():
+            N_hit_documents_wo_validation_manual_review_dict[key] = \
+                len(list(set(self.hit_documents_dict[key])))
+        N_hit_documents_w_validation_manual_review_dict = {}
+        for key in self.hit_manual_review_dict.keys():
+            N_hit_documents_w_validation_manual_review_dict[key] = \
+                len(list(set(self.hit_manual_review_dict[key])))
+        self._generate_performance_statistics(self.nlp_performance_wo_validation_manual_review_dict,
+                                              self.nlp_performance_w_validation_manual_review_dict,
+                                              N_documents, self.N_manual_review,
+                                              N_hit_documents_wo_validation_manual_review_dict,
+                                              N_hit_documents_w_validation_manual_review_dict)
+        
     #
     def _generate_performance_statistics(self, nlp_performance_wo_nlp_manual_review_dict,
                                          nlp_performance_nlp_manual_review_dict, 
@@ -335,10 +388,8 @@ class Performance_data_manager(Manager_base):
     #
     def _get_data_value(self, node, section_key_list, target_key, data_key, 
                                 mode_flg='multiple_values'):
-        self.section_data_list = []
-        self._walk(node, target_key, data_key, [], section_key_list)
-        section_data_list = self.section_data_list
-        del self.section_data_list
+        section_data_list = \
+            self._walk(node, target_key, data_key, [], section_key_list)
         data_value, section_data_list = _get_data_value(section_data_list,
                                                         section_key_list,
                                                         mode_flg)
@@ -346,9 +397,96 @@ class Performance_data_manager(Manager_base):
         return data_value
     
     #
-    def _get_nlp_data(self, data_in, queries):
+    def _get_nlp_values(self, nlp_data, data_json):
+        return _get_nlp_values(nlp_data, data_json)
+    
+    #
+    def _get_validation_value(self, arg_dict):
+        identifier = arg_dict['identifier']
+        validation_datum_key = arg_dict['validation_datum_key']
+        validation_value = None
+        column_labels = self.validation_data_manager.column_labels()
+        for i in range(1, self.validation_data_manager.length()):
+            row = self.validation_data_manager.row(i)
+            validation_idx = \
+                [j for j in range(len(column_labels)) \
+                 if column_labels[j] == validation_datum_key]
+            if len(validation_idx) > 0:
+                if row[2] == identifier:
+                    validation_value = \
+                        _process_validation_item(row[validation_idx[0]])
+        validation_value = _validation_to_tuple(validation_value)
+        return validation_value
+    
+    #
+    def _identify_manual_review(self, nlp_values, validation_datum_keys):
+        return _identify_manual_review(nlp_values, validation_datum_keys,
+                                       self.manual_review)
+    
+    #
+    def _initialize_performance_dicts(self):
+        self.nlp_performance_wo_validation_manual_review_dict = {}
+        self.nlp_performance_w_validation_manual_review_dict = {}
+        for i in range(len(self.queries)):
+            validation_datum_key = self.queries[i][0]
+            self.nlp_performance_wo_validation_manual_review_dict[validation_datum_key] = []
+            self.nlp_performance_w_validation_manual_review_dict[validation_datum_key] = []
+        self.N_manual_review = {}
+        self.hit_documents_dict = {}
+        self.hit_manual_review_dict = {}
+    
+    #
+    def _process_performance(self, nlp_values, validation_datum_keys,
+                             display_flg):
+        self._initialize_performance_dicts()
+        self.validation_data_manager.trim_validation_data()
+        self._validation_data_manager_column_to_int()
+        document_csn_list = \
+            self.metadata_manager.pull_document_identifier_list('SOURCE_SYSTEM_DOCUMENT_ID')
+        nlp_values = \
+            self._identify_manual_review(nlp_values, validation_datum_keys)
+        validation_csn_list = \
+            self.validation_data_manager.get_validation_csn_list()
+        for csn in document_csn_list:
+            print(csn)
+            self._append_csv_header('\n' + 'DOCUMENT_IDENTIFIER' + ', ')
+            self._append_csv_body(csn, newline_flg=True)
+            for i in range(len(self.queries)):
+                validation_datum_key = self.queries[i][0]
+                arg_dict = {}
+                arg_dict['identifier'] = csn
+                arg_dict['nlp_values'] = nlp_values
+                arg_dict['validation_datum_key'] = validation_datum_key
+                return_dict = parallel_composition([self._get_validation_value,
+                                                    _get_nlp_value],
+                                                   arg_dict)
+                arg_dict = {}
+                arg_dict['display_flg'] = display_flg
+                arg_dict['identifier'] = csn
+                arg_dict['identifier_list'] = validation_csn_list
+                arg_dict['nlp_value'] = \
+                    return_dict[_get_nlp_value.__name__]
+                arg_dict['validation_datum_key'] = validation_datum_key
+                arg_dict['validation_value'] = \
+                    return_dict[self._get_validation_value.__name__]
+                sequential_composition([self.evaluation_manager.evaluation,
+                                        self._update_performance_dicts],
+                                       arg_dict)
+                nlp_value = return_dict[_get_nlp_value.__name__]
+                self._append_csv_header(validation_datum_key + ', ')
+                self._append_csv_body(nlp_value, newline_flg=False)
+        N_documents = len(document_csn_list)
+        self._evaluate_performance(N_documents)
+    
+    #
+    def _process_validation_item(self, x):
+        return _process_validation_item(x)
+    
+    #
+    def _read_nlp_value(self, nlp_data, data_json, key, identifier):
+        data_in = nlp_data[key][self.nlp_data_key]
         data_out = {}
-        for query in queries:
+        for query in self.queries:
             key = query[0]
             sections = query[1]
             query_name = query[2]
@@ -369,73 +507,67 @@ class Performance_data_manager(Manager_base):
             del data_out[key]  
         if not data_out:
             data_out = None
-        return data_out
-    
-    #
-    def _get_nlp_values(self, nlp_data, data_json):
-        return _get_nlp_values(nlp_data, data_json)
-    
-    #
-    def _get_performance(self, csn, nlp_values, nlp_datum_key, 
-                         validation_datum_key, display_flg):
-        if csn in nlp_values.keys():
-            data_out = nlp_values[csn]
-            if nlp_datum_key in data_out.keys():
-                nlp_value = data_out[nlp_datum_key]
-            else:
-                nlp_value = None
-        else:
-            nlp_value = None
-        nlp_value = _nlp_to_tuple(nlp_value)
-        column_labels = self.validation_data_manager.column_labels()
-        for i in range(1, self.validation_data_manager.length()):
-            row = self.validation_data_manager.row(i)
-            validation_idx = \
-                [j for j in range(len(column_labels)) \
-                 if column_labels[j] == validation_datum_key][0]
-            if row[2] == csn:
-                validation_value = \
-                    self._process_validation_item(row[validation_idx])
-        validation_value = _validation_to_tuple(validation_value)
-        performance = \
-            self.evaluation_manager.evaluation(nlp_value, validation_value,
-                                               display_flg)
-        return performance
-    
-    #
-    def _identify_manual_review(self, nlp_values, validation_datum_keys):
-        return _identify_manual_review(nlp_values, validation_datum_keys,
-                                       self.manual_review)
-    
-    #
-    def _intersection(self, x, y):
-        return _intersection(x, y)
-    
-    #
-    def _nlp_to_tuple(self, value):
-        return _nlp_to_tuple(value)
-    
-    #
-    def _process_validation_item(self, x):
-        return _process_validation_item(x)
-    
-    #
-    def _read_metadata(self, nlp_data):
-        return _read_metadata(nlp_data)
-    
-    #
-    def _read_nlp_value(self, nlp_data, data_json, key, identifier):
-        data_out = self._get_nlp_data(nlp_data[key][self.nlp_data_key],
-                                      self.queries)
         data_json[identifier] = data_out
         return data_json
     
     #
-    def _validation_to_tuple(self, text):
-        return _validation_to_tuple(text)
+    def _update_performance_dicts(self, arg_dict):
+        identifier = arg_dict['identifier']
+        identifier_list = arg_dict['identifier_list']
+        nlp_value = arg_dict['nlp_value']
+        performance = arg_dict['performance']
+        validation_datum_key = arg_dict['validation_datum_key']
+        validation_value = arg_dict['validation_value']
+        if validation_datum_key not in self.N_manual_review.keys():
+            self.N_manual_review[validation_datum_key] = 0
+        if validation_datum_key not in self.hit_documents_dict.keys():
+            self.hit_documents_dict[validation_datum_key] = []
+        if validation_datum_key not in self.hit_manual_review_dict.keys():
+            self.hit_manual_review_dict[validation_datum_key] = []
+        if nlp_value is not None:
+            if identifier_list is None or identifier in identifier_list:
+                if not ( validation_value is not None and self.manual_review in validation_value ):
+                    self.nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append(performance)
+                else:
+                    self.nlp_performance_w_validation_manual_review_dict[validation_datum_key].append(performance)
+            self.hit_documents_dict[validation_datum_key].append(identifier)
+            if validation_value is not None and self.manual_review in validation_value:
+                self.hit_manual_review_dict[validation_datum_key].append(identifier)
+        else:
+            if validation_value == None:
+                self.nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append('true negative')
+            elif self.manual_review in validation_value:
+                self.nlp_performance_w_validation_manual_review_dict[validation_datum_key].append('false negative')
+                print('false negative')
+                print(None)
+                print(validation_value)
+                print('')
+            else:
+                self.nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append('false negative')
+                print('false negative')
+                print(None)
+                print(validation_value)
+                print('')
+        if validation_value is not None and self.manual_review in validation_value:
+            self.N_manual_review[validation_datum_key] += 1
+            
+    #
+    def _validation_data_manager_column_to_int(self):
+        pass
     
     #
-    def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
+    def _validation_datum_keys(self):
+        validation_datum_keys = []
+        for query in self.queries:
+            validation_datum_keys.append(query[0])
+        return validation_datum_keys
+    
+    #
+    def _validation_to_tuple(self, value):
+        return _validation_to_tuple(value)
+    
+    #
+    def _walker(self, node, target_key, data_key, key_list_in, section_key_list):
         for k, v in node.items():
             key_list = deepcopy(key_list_in)
             key_list.append(k)
@@ -452,10 +584,18 @@ class Performance_data_manager(Manager_base):
                         if data_key in v_item.keys():
                             self.section_data_list.append(tuple([section_key, v_item[data_key]]))
             elif isinstance(v, dict):
-                self._walk(v, target_key, data_key, key_list, section_key_list)
+                self._walker(v, target_key, data_key, key_list, section_key_list)
                 
     #
-    def calculate_performance(self):
+    def _walk(self, node, target_key, data_key, key_list_in, section_key_list):
+        self.section_data_list = []
+        self._walker(node, target_key, data_key, key_list_in, section_key_list)
+        section_data_list = self.section_data_list
+        del self.section_data_list
+        return section_data_list
+                
+    #
+    def calculate_performance(self, display_flg):
         data_json = {}
         for key in self.nlp_data.keys():
             identifier = \
@@ -467,21 +607,34 @@ class Performance_data_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         validation_filename = static_data['validation_file']
         directory_manager = static_data['directory_manager']
-        project_name = static_data['project_name']
         data_dir = directory_manager.pull_directory('raw_data_dir')
         filename = os.path.join(data_dir, validation_filename)
         self.validation_data_manager = self.xls_manager_registry[filename]
         self.validation_data_manager.read_validation_data()
-        self._process_performance(nlp_values)
+        validation_datum_keys = self._validation_datum_keys()
+        self._process_performance(nlp_values, validation_datum_keys,
+                                  display_flg)
         
     #
     def display_performance_statistics(self):
         _display_performance_statistics(self.performance_statistics_overall_dict)
         
     #
-    def get_performance_data(self):
+    def generate_csv_file(self):
+        self.csv_header = re.sub('^\n', '', self.csv_header)
+        self.csv_header = re.sub('\n.*', '', self.csv_header)
+        self.csv_header = re.sub(', $', '', self.csv_header)
+        self.csv_body = re.sub('^\n', '', self.csv_body)
+        self.csv_body = re.sub(', \n', '\n', self.csv_body)
+        self.csv_body = re.sub(', $', '', self.csv_body)
+        csv_text = self.csv_header + '\n' + self.csv_body
+        with open('nlp_output.csv', 'w') as f:
+            f.write(csv_text)
+        
+    #
+    def get_performance_data(self, display_flg):
         self.read_nlp_data()
-        self.calculate_performance()
+        self.calculate_performance(display_flg)
             
     #
     def read_nlp_data(self):

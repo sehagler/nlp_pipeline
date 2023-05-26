@@ -1,0 +1,10 @@
+version: 6.8
+creationDate: '2023-01-30 19:48:13'
+query:
+  document:
+  - alternative:
+    - link: {path: ../../../cancer/cancer_stage/cancer_stage.i2qy}
+    - link: {path: ../../../cancer/histology/histologic_type/histologic_type_query.i2qy}
+    - class: {boundaries: Exact, snid: nlm_plus.0, pt: Diseases and Symptoms}
+creator: haglers
+queryID: b1843a6b

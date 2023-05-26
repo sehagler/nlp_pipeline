@@ -1,0 +1,27 @@
+version: 6.8
+creationDate: '2020-06-15 18:38:19'
+query:
+  document:
+  - alternative:
+      boundaries: Exact
+      id: alternative1
+      of:
+      - word: {text: cigar, morphoVariants: true}
+      - word: {text: cigarette, morphoVariants: true}
+      - word: {text: e-cigarette, morphoVariants: true}
+      - phrase:
+        - word:
+            text: medical
+            quantifier: {minimum: 0, maximum: 1}
+        - alternative: [marijuana, THC]
+        - alternative:
+            quantifier: {minimum: 0, maximum: 0}
+            of:
+            - word: {text: edible, morphoVariants: true}
+      - word: {text: pipe, morphoVariants: true}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: a89d2d2b

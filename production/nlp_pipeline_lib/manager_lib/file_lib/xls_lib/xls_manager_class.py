@@ -54,13 +54,13 @@ class Xls_manager(Manager_base):
         for i in range(len(raw_data['FILENAME'])):
             nlp_mode = raw_data['NLP_MODE'][i]
             if nlp_mode == 'CASE_NUMBER':
-                label0 = 'MRN'
+                #label0 = 'MRN'
                 label1 = 'CASE_NUMBER'
             elif nlp_mode == 'RESULT_ID':
-                label0 = 'RESULT_ID'
+                #label0 = 'RESULT_ID'
                 label1 = 'RESULT_ID'
             elif nlp_mode == 'SOURCE_SYSTEM_RESULT_ID':
-                label0 = 'SOURCE_SYSTEM_RESULT_ID'
+                #label0 = 'SOURCE_SYSTEM_RESULT_ID'
                 label1 = 'SOURCE_SYSTEM_RESULT_ID'
             if raw_data[label1][i] == document_value:
                 if raw_data['REPORT_HEADER'][i] in document_dict['REPORT_HEADER']:
@@ -91,7 +91,7 @@ class Xls_manager(Manager_base):
     #
     def _read_data_file(self, raw_data_files_dict, raw_data_file):
         dt_labels = self.static_data['datetime_keys']
-        key_label = 'REPORT_HEADER'
+        #key_label = 'REPORT_HEADER'
         raw_data = {}
         book = read_xlsx_file(raw_data_file)
         sheet = book.sheet_by_index(0)
@@ -163,7 +163,7 @@ class Xls_manager(Manager_base):
         for row in self.validation_data:
             if csn_list is None or row[2] in csn_list:
                 validation_csn_list.append(row[2])
-        validation_csn_list = list(set(validation_csn_list))
+        #validation_csn_list = list(set(validation_csn_list))
         return validation_csn_list
     
     #
@@ -216,6 +216,7 @@ class Xls_manager(Manager_base):
                 cell_value = sheet.cell_value(row_idx, col_idx)
                 cell_value = str(cell_value)
                 validation_data_tmp.append(cell_value)
+            validation_data_tmp[1] = re.sub(' ', '', validation_data_tmp[1])
             validation_data.append(validation_data_tmp)
         self.validation_data = validation_data
     

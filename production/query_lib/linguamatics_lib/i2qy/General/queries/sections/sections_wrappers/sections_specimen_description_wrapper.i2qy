@@ -1,0 +1,31 @@
+version: 6.8
+creationDate: '2019-02-01 21:57:54'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - region:
+              columnOptions: [Text]
+              id: region2
+              showWholeRegion: true
+              snid: hc.specimen
+              pt: Specimen Description
+              where:
+              - link: {path: ../sections_query.i2qy}
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - {id: region2}
+  useOutputEditor: true
+creator: haglers
+queryID: f562713d

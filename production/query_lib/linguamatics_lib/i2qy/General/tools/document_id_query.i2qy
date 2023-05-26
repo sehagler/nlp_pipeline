@@ -1,0 +1,12 @@
+version: 6.8
+creationDate: '2018-05-04 13:11:41'
+query:
+  document:
+  - region: {id: region1, snid: hc.DOCUMENT_ID}
+output:
+  columns:
+  - {id: region1}
+  outputSettings: {allResults: true, allRows: true, allTime: true}
+  useOutputEditor: true
+creator: haglers
+queryID: b25b53c1

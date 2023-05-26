@@ -1,0 +1,34 @@
+version: 6.8
+creationDate: '2019-03-12 16:42:00'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      of:
+      - phrase:
+        - phrase:
+            unordered: true
+            of:
+            - link: {path: blast.i2qy}
+            - phrase:
+                maxWordGap: 1
+                quantifier: {minimum: 0, maximum: none}
+                of:
+                - alternative: [and, +, /]
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [abnormal]
+                - alternative:
+                  - link: {path: blast.i2qy}
+                  - word: {text: promonocyte, morphoVariants: true}
+                  - word: {text: promonocytic, morphoVariants: true}
+                  - word: {text: promyelocyte, morphoVariants: true}
+        - word:
+            text: population
+            quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: b3757a5e

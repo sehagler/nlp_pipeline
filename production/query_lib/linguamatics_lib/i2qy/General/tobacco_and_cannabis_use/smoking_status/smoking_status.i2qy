@@ -1,0 +1,60 @@
+version: 6.8
+creationDate: '2022-08-30 18:18:46'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative2
+      of:
+      - phrase:
+        - alternative: [active, current, former]
+        - alternative:
+          - smoking
+          - phrase:
+            - phrase:
+                maxWordGap: 3
+                quantifier: {minimum: 0, maximum: 1}
+                of:
+                - {class: /word}
+                - class:
+                    quantifier: {minimum: 0, maximum: 1}
+                    snid: /word
+                where:
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 0}
+                    of:
+                    - link: {path: ../query_lib/tobacco_products_smoking.i2qy}
+            - smoker
+      - phrase:
+          displayChildren: false
+          of:
+          - phrase:
+            - alternative:
+              - phrase:
+                - word: {text: smoke, morphoVariants: true}
+                - status
+              - smoker
+            - word:
+                text: ':'
+                quantifier: {minimum: 0, maximum: 1}
+          - alternative: [active, current, former]
+          - alternative:
+              quantifier: {minimum: 0, maximum: 0}
+              of:
+              - smoking
+              - phrase:
+                - phrase:
+                    maxWordGap: 3
+                    quantifier: {minimum: 0, maximum: 1}
+                    of:
+                    - {class: /word}
+                    - class:
+                        quantifier: {minimum: 0, maximum: 1}
+                        snid: /word
+                - smoker
+output:
+  columns:
+  - {id: alternative2}
+  useOutputEditor: true
+creator: haglers
+queryID: 8d2cd324

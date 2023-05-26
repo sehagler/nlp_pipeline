@@ -1,0 +1,31 @@
+version: 6.8
+creationDate: '2022-08-29 20:16:21'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      of:
+      - phrase:
+          showInDefaultOutput: false
+          of:
+          - link: {path: ../../tools/number_query.i2qy}
+          - alternative:
+            - alternative: [ppd, ppm, ppy]
+            - phrase:
+              - link: {path: ../query_lib/tobacco_products_smoking.i2qy}
+              - alternative: [/, a, per]
+              - alternative:
+                - word: {text: mo, morphoVariants: true}
+                - word: {text: yr, morphoVariants: true}
+      - phrase:
+          showInDefaultOutput: false
+          of:
+          - alternative: [ppd, ppm, ppy]
+          - ':'
+          - link: {path: ../../tools/number_query.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: f7299c02

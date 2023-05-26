@@ -1,0 +1,29 @@
+version: 6.8
+creationDate: '2019-02-26 17:24:53'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - word:
+          text: '-'
+          quantifier: {minimum: 0, maximum: 0}
+      - macro:
+          quantifier: {minimum: 0, maximum: 1}
+          snid: linguamatics_wc.WC_Determiner
+          pt: determiner
+          of:
+          - alternative:
+              macroPt: determiner
+              macroSnid: linguamatics_wc.WC_Determiner
+              of: [a, all, an, another, any, both, each, enough, every, few, fewer, less, many, more, most, much, 'no', other, several, some, such, the]
+      - link:
+          path: inequality_modifier_query.i2qy
+          quantifier: {minimum: 0, maximum: 1}
+      - word: {text: '(([0-9]+(\.[0-9]+)?)%?\-)?[0-9]+(\.[0-9]+)?%', matchType: Regexp}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+queryID: f41e52bf

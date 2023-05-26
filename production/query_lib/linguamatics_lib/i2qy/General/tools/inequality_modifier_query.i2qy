@@ -1,0 +1,21 @@
+version: 6.8
+creationDate: '2021-08-12 21:18:04'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      view: {layout: list}
+      of:
+      - '~'
+      - '>'
+      - '>='
+      - phrase: ['>', =]
+      - <
+      - <=
+      - phrase: [<, =]
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: d91393b4

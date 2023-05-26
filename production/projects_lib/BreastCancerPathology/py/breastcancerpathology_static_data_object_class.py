@@ -28,17 +28,19 @@ class BreastCancerPathology_static_data_object(Static_data_object):
             [ 'CSN', 'SOURCE_SYSTEM_UNIQUE_ID' ]
         if 'performance_data_files' in self.static_data.keys():
             self.static_data['performance_data_files'].append('CCC19/test/CCC19.performance.json')
+            self.static_data['performance_data_files'].append('NewBiomarkers/test/NewBiomarkers.performance.json')
         self.static_data['queries_list'] = \
             [ ('ER_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_BLOCK', 'single_value', True), 
               ('ER_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_PERCENTAGE', 'single_value', True),
               ('ER_SCORE', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_SCORE', 'single_value', True),
               ('ER_STATUS', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STATUS', 'single_value', True),
+              ('ER_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_STRENGTH', 'single_value', True),
               ('ER_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_ER', 'ER_VARIABILITY', 'single_value', True),
               ('GATA3_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_BLOCK', 'single_value', True),
               ('GATA3_STATUS', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_STATUS', 'single_value', True),
               ('GATA3_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_GATA3', 'GATA3_VARIABILITY', 'single_value', True),
               ('HER2_BLOCK', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_BLOCK', 'single_value', True),
-              #('HER2_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
+              ('HER2_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_PERCENTAGE', 'single_value', True),
               ('HER2_SCORE', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_SCORE', 'single_value', True), 
               ('HER2_STATUS', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_STATUS', 'single_value', True), 
               ('HER2_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_HER2', 'HER2_VARIABILITY', 'single_value', True),
@@ -50,21 +52,22 @@ class BreastCancerPathology_static_data_object(Static_data_object):
               ('PR_PERCENTAGE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_PERCENTAGE', 'single_value', True),
               ('PR_SCORE', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_SCORE', 'single_value', True), 
               ('PR_STATUS', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STATUS', 'single_value', True),
-              ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True) ,
+              ('PR_STRENGTH', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_STRENGTH', 'single_value', True),
+              ('PR_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PR', 'PR_VARIABILITY', 'single_value', True),
               ('TNM_STAGING', None, 'TNM_STAGING', 'TNM_STAGING', 'single_value', True), 
-              ('TUMOR_SIZE', None, 'TUMOR_SIZE', 'TUMOR_SIZE', 'single_value', True), ]
+              ('TUMOR_SIZE', None, 'TUMOR_SIZE', 'TUMOR_SIZE', 'single_value', True) ]
         self.static_data['validation_file'] = \
             'breastcancerpathology_testing.xlsx'
         if self.project_subdir == 'production':
             self.static_data['raw_data_files'] = {}
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML'] = {}
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['DATETIME_KEY'] = 'SPECIMEN_COLLECTED_DATE'
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['DOCUMENT_FRACTION'] = 1.0
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['ENCODING'] = 'utf-8'
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
-            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
-            self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML' ]
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML'] = {}
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML']['DATETIME_KEY'] = 'SPECIMEN_COLLECTED_DATE'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML']['DOCUMENT_FRACTION'] = 1.0
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML']['ENCODING'] = 'utf-8'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML']['NLP_MODE'] = 'SOURCE_SYSTEM_RESULT_ID'
+            self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
+            self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230515_055033.XML' ]
         elif self.project_subdir == 'test':
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}

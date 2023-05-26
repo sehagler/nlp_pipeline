@@ -1,0 +1,64 @@
+version: 6.8
+creationDate: '2018-07-03 10:46:23'
+query:
+  document:
+  - phrase:
+    - word:
+        text: spanning
+        quantifier: {minimum: 0, maximum: 0}
+    - alternative:
+        quantifier: {minimum: 0, maximum: 1}
+        view: {layout: list}
+        of:
+        - phrase:
+            displayChildren: false
+            of: [less, than]
+        - within
+    - alternative:
+        id: alternative1
+        of:
+        - phrase:
+          - word:
+              text: x
+              quantifier: {minimum: 0, maximum: 0}
+          - class: {unit: length.meter, snid: measurement.length, pt: Length (m)}
+          - word:
+              text: x
+              quantifier: {minimum: 0, maximum: 0}
+        - phrase:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              view: {layout: list}
+              of:
+              - phrase:
+                - class: {snid: numerics.numerics, pt: Numerics}
+                - /
+              - phrase:
+                - class:
+                    quantifier: {minimum: 0, maximum: 1}
+                    snid: numerics.numerics
+                    pt: Numerics
+                - {class: /word}
+                - {class: /prep}
+          - alternative:
+              view: {layout: list}
+              of:
+              - class: {snid: numerics.numerics, pt: Numerics}
+              - {class: /word}
+          - alternative:
+              view: {layout: list}
+              of:
+              - phrase:
+                  displayChildren: false
+                  of: [high, power, field]
+              - HPF
+          - phrase:
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - link: {path: ../../../../tools/parenthetical_query.i2qy}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: 12f170a1

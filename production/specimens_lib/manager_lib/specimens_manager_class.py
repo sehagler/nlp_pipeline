@@ -17,7 +17,7 @@ import traceback
 from base_lib.manager_base_class import Manager_base
 from logger_lib.object_lib.logger_object_class import Logger_object
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from tools_lib.processing_tools_lib.variable_processing_tools \
     import trim_data_value
     
@@ -258,20 +258,20 @@ class Specimens_manager(Manager_base):
     def generate_document_map(self, data_json, filename):
         deidentifier_key_dict = \
             self._get_deidentifier_keys(self.deidentifier_xlsx)
-        generate_specimen_tree = \
-            composite_function(_identify_documents_for_same_specimen,
-                               _identify_documents_with_same_proc_nm)
-        specimen_tree = generate_specimen_tree(deepcopy(data_json))
+        specimen_tree = \
+            sequential_composition([_identify_documents_with_same_proc_nm,
+                                    _identify_documents_for_same_specimen],
+                                   deepcopy(data_json))
         specimen_dict = self._cluster_specimens(specimen_tree,
                                                 deidentifier_key_dict)
-        get_document_map = composite_function(_get_document_map,
-                                              _trim_specimen_tree,
-                                              _trim_documents_wrapper)
         argument_dict = {}
         argument_dict['specimen_tree'] = specimen_tree
         argument_dict['specimen_dict'] = specimen_dict
         argument_dict['deidentifier_key_dict'] = deidentifier_key_dict
-        document_map = get_document_map(argument_dict)
+        document_map = sequential_composition([_trim_documents_wrapper,
+                                               _trim_specimen_tree,
+                                               _get_document_map],
+                                              argument_dict)
         for i in range(len(document_map)):
             log_item = document_map[i]
             self.logger_object.log_entry_merge_documents(log_item[0],

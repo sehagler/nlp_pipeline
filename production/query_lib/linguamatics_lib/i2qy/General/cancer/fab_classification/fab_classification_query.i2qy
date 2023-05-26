@@ -1,0 +1,33 @@
+version: 6.8
+creationDate: '2019-01-30 00:13:24'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      label: Extract
+      of:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of: [previous, previously]
+      - word:
+          text: (
+          quantifier: {minimum: 0, maximum: 1}
+      - alternative:
+          quantifier: {minimum: 0, maximum: 1}
+          of: [AML, FAB]
+      - word:
+          text: ','
+          quantifier: {minimum: 0, maximum: 1}
+      - word: {text: '((AML|FAB)\-)?M[0-9][a-z]?', matchType: Regexp}
+      - word:
+          text: )
+          quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of: [was, considered]
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+queryID: fbe6daf1

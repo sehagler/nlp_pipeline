@@ -1,0 +1,30 @@
+version: 6.8
+creationDate: '2019-02-26 19:12:21'
+query:
+  document:
+  - alternative:
+      id: alternative1
+      of:
+      - involvement
+      - word: {text: monoblast, morphoVariants: true}
+      - word: {text: myeloblast, morphoVariants: true}
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 0}
+              of: [immature, leukemic, lymphoid]
+          - word:
+              text: myeloid
+              quantifier: {minimum: 0, maximum: 1}
+          - word: {text: blast, morphoVariants: true}
+          - word:
+              text: equivalent
+              morphoVariants: true
+              quantifier: {minimum: 0, maximum: 1}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: 27c15f9a

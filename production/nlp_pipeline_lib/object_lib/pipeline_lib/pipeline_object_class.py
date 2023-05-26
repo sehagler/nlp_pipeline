@@ -17,7 +17,8 @@ from nlp_pipeline_lib.manager_lib.software_lib.software_manager_class \
     import Software_manager
 from nlp_pipeline_lib.registry_lib.remote_lib.remote_registry_class \
     import Remote_registry
-from static_data_lib.object_lib.static_data_object_class import Static_data_object
+from static_data_lib.object_lib.static_data_object_class \
+    import Static_data_object
 
 #
 class Pipeline_object(object):
@@ -50,6 +51,10 @@ class Pipeline_object(object):
                      '_static_data_object_class import ' + project_name + \
                      '_static_data_object as Static_data_object'
         exec(import_cmd, globals())
+        
+    #
+    def cleanup_directory(self, directory_label):
+        self.process_manager.cleanup_directory(directory_label)
     
     #
     def download_queries(self):
@@ -67,7 +72,7 @@ class Pipeline_object(object):
         else:
             print('Multiple document fractions detected!')
         num_groups = 4
-        self.process_manager.preprocessor(password, 0, False)
+        self.process_manager.preprocessor_metadata(password, 0)
         document_values, patient_values, date_values = \
             self.process_manager.get_metadata_values()
         num_documents = len(document_values)
@@ -87,16 +92,18 @@ class Pipeline_object(object):
             pickle.dump(training_groups, f)
             
     #
+    def initialize_metadata(self):
+        self.process_manager.initialize_metadata()
+            
+    #
     def linguamatics_i2e_indexer(self):
         self.process_manager.linguamatics_i2e_push_resources()
         self.process_manager.linguamatics_i2e_indexer()
         self.process_manager.linguamatics_i2e_postindexer()
-        self.process_manager.linguamatics_i2e_push_queries()
+        #self.process_manager.linguamatics_i2e_push_queries()
         
     #
     def linguamatics_i2e_postqueries(self, project_subdir):
-        static_data = self.static_data_object.get_static_data()
-        static_data['directory_manager'].cleanup_directory('postprocessing_data_out')
         self.process_manager.linguamatics_i2e_generate_csv_files()
         self.process_manager.ohsu_nlp_templates_post_i2e_linguamatics_setup()
         self.process_manager.ohsu_nlp_templates_run_simple_templates()
@@ -107,18 +114,9 @@ class Pipeline_object(object):
         self.process_manager.postperformance()
         
     #
-    def linguamatics_i2e_prequeries(self, password, start_idx=0, cleanup_flg=True):
-        if start_idx >= 0:
-            if start_idx > 0:
-                cleanup_flg = False
-            static_data = self.static_data_object.get_static_data()
-            if start_idx > 0:
-                cleanup_flg = False
-            if cleanup_flg:
-                static_data['directory_manager'].cleanup_directory('linguamatics_i2e_preprocessing_data_out')
-            self.process_manager.preprocessor(password, start_idx, True)
+    def linguamatics_i2e_prequeries(self, password):
+        self.process_manager.preprocessor_full(password)
         self.process_manager.data_set_summary_info()
-        self.linguamatics_i2e_indexer()
         
     #
     def linguamatics_i2e_push_queries(self):
@@ -144,27 +142,16 @@ class Pipeline_object(object):
         self.process_manager.ohsu_nlp_templates_generate_AB_fields()
         
     #
-    def ohsu_nlp_templates_run_templates(self, password, project_subdir,
-                                         start_idx=0, cleanup_flg=True):
-        if start_idx >= 0:
-            '''
-            if start_idx > 0:
-                cleanup_flg = False
-            static_data = self.static_data_object.get_static_data()
-            if start_idx > 0:
-                cleanup_flg = False
-            if cleanup_flg:
-                pass
-                static_data['directory_manager'].cleanup_directory('preprocessing_data_out')
-            self.process_manager.preprocessor(password, start_idx, True)
-            '''
-            self.process_manager.ohsu_nlp_templates_setup()
-            self.process_manager.ohsu_nlp_templates_run_simple_templates()
-            self.process_manager.postprocessor()
-            self.process_manager.preperformance()
-            if project_subdir == 'test':
-                self.process_manager.calculate_performance()
-            self.process_manager.postperformance()
+    def ohsu_nlp_templates_run_templates(self, password, project_subdir):
+        self.process_manager.set_metadata()
+        self.process_manager.preprocessor_full(password)
+        self.process_manager.ohsu_nlp_templates_setup()
+        self.process_manager.ohsu_nlp_templates_run_simple_templates()
+        self.process_manager.postprocessor()
+        self.process_manager.preperformance()
+        if project_subdir == 'test':
+            self.process_manager.calculate_performance()
+        self.process_manager.postperformance()
         
     #
     def process_manager(self, server, root_dir, project_subdir, project_name,

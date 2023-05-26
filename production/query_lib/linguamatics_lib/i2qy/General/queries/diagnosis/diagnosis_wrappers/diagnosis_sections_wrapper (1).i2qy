@@ -1,0 +1,28 @@
+version: 6.8
+creationDate: '2020-05-27 17:01:37'
+query:
+  document:
+  - region:
+      snid: hc.titled_section
+      pt: Titled Section
+      where:
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
+      - region:
+          columnOptions: [Text]
+          showWholeRegion: true
+          snid: hc.section_body
+          pt: Section Body
+          where:
+          - link: {path: ../diagnosis_query.i2qy, id: link1}
+output:
+  columns:
+  - {id: region1}
+  - id: value1
+    columnOptions: [Empty]
+    isValueColumn: true
+  - id: link1.phrase2
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers
+queryID: 966d89d0

@@ -1,0 +1,22 @@
+version: 6.8
+creationDate: '2022-11-28 17:35:42'
+query:
+  document:
+  - alternative:
+      of:
+      - sentence:
+        - link: {path: ../../cancer/tumor/tumor_size/tumor_size_query_single_dimension.i2qy, id: link1}
+      where:
+      - alternative:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - fn
+          - word: {text: margin, morphoVariants: true}
+output:
+  columns:
+  - id: link1.phrase1
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers
+queryID: e5c58f31

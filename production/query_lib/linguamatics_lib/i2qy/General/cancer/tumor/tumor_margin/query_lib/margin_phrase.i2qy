@@ -1,0 +1,28 @@
+version: 6.8
+creationDate: '2018-07-03 09:21:07'
+query:
+  document:
+  - phrase:
+      id: phrase1
+      of:
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - link: {path: margin_base.i2qy}
+          - alternative:
+              view: {layout: list}
+              of: [+, and, but, to]
+      - link: {path: margin_base.i2qy}
+      - phrase:
+          quantifier: {minimum: 0, maximum: 0}
+          of:
+          - alternative:
+              view: {layout: list}
+              of: [+, and, but, to]
+          - link: {path: margin_base.i2qy}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+queryID: dc2a1d91

@@ -1,0 +1,14 @@
+version: 6.8
+creationDate: '2023-05-05 21:03:37'
+query:
+  document:
+  - alternative:
+    - link: {path: ../../../cancer/breast_cancer_biomarkers/breast_cancer_biomarkers_percentage/breast_cancer_biomarkers_percentage.i2qy}
+    - link: {path: ../breast_cancer_biomarkers_score_list.i2qy}
+    - phrase:
+      - link: {path: ../breast_cancer_biomarkers_status_phrase.i2qy}
+      - link:
+          path: ../breast_cancer_biomarkers_percentage_parenthetical.i2qy
+          quantifier: {minimum: 0, maximum: 1}
+creator: haglers
+queryID: b3620806

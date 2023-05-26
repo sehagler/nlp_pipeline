@@ -10,15 +10,30 @@ import os
 import traceback
 
 #
-from base_lib.postprocessor_registry_base_class \
-    import Postprocessor_registry_base
-
-#
-class Postprocessor_registry(Postprocessor_registry_base):
+class Postprocessor_registry(object):
     
     #
+    def __init__(self, static_data_object, metadata_manager):
+        self.static_data_object = static_data_object
+        self.data_dict_classes_list = []
+        self.postprocessor_registry = {}
+        self._import_postprocessors(static_data_object)
+        
+    #
     def _import_postprocessors(self, static_data_object):
-        pass
+        print('_import_postprocessors() not defined')
+        
+    #
+    def _push_data_dict(self, postprocessor_name, filename, data_dict,
+                        sections_data_dict):
+        self.postprocessor_registry[postprocessor_name].push_data_dict(postprocessor_name,
+                                                                       filename,
+                                                                       data_dict, 
+                                                                       sections_data_dict)
+
+    #
+    def _register_postprocessor(self, postprocessor_name, postprocessor):
+        self.postprocessor_registry[postprocessor_name] = postprocessor
     
     #
     def create_postprocessor(self, file):
@@ -41,31 +56,20 @@ class Postprocessor_registry(Postprocessor_registry_base):
             except Exception:
                 traceback.print_exc()
                 print(filename + ' registration failed')
+                
+    #
+    def pull_postprocessor_registry(self):
+        return self.postprocessor_registry
      
     #
-    def push_data_dict(self, filename, data_dict):
-        print(filename)
-        if filename in [ 'breast_cancer_biomarkers_blocks_er.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', data_dict, idx=1)
-        elif filename in [ 'breast_cancer_biomarkers_blocks_gata3.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3', data_dict, idx=1)
-        elif filename in [ 'breast_cancer_biomarkers_blocks_her2.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2', data_dict, idx=1)
-        elif filename in [ 'breast_cancer_biomarkers_blocks_ki67.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_ki67', data_dict, idx=1)
-        elif filename in [ 'breast_cancer_biomarkers_blocks_pr.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr', data_dict, idx=1)
-        elif filename in [ 'breast_cancer_biomarkers_variability_er.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_er', data_dict, idx=2)
-        elif filename in [ 'breast_cancer_biomarkers_variability_gata3.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_gata3', data_dict, idx=2)
-        elif filename in [ 'breast_cancer_biomarkers_variability_her2.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_her2', data_dict, idx=2)
-        elif filename in [ 'breast_cancer_biomarkers_variability_ki67.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_ki67', data_dict, idx=2)
-        elif filename in [ 'breast_cancer_biomarkers_variability_pr.csv' ]:
-            self._push_data_dict('postprocessor_breast_cancer_biomarkers_pr', data_dict, idx=2)
-        else:
-            filename_base, extension = os.path.splitext(filename)
-            if extension == '.csv' and filename_base != 'sections':
-                self._push_data_dict('postprocessor_' + filename_base, data_dict, filename=filename)
+    def push_data_dict(self, filename, data_dict, sections_data_dict):
+        filename_base, extension = os.path.splitext(filename)
+        if extension == '.csv' and filename_base != 'sections':
+            for key in self.postprocessor_registry.keys():
+                self._push_data_dict(key, filename_base, data_dict,
+                                     sections_data_dict)
+            
+    #
+    def run_registry(self):
+        for key in self.postprocessor_registry.keys():
+            self.postprocessor_registry[key].run_postprocessor()

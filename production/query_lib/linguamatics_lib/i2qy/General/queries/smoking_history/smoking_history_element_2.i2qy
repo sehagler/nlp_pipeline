@@ -1,0 +1,41 @@
+version: 6.8
+creationDate: '2022-08-30 16:42:15'
+query:
+  document:
+  - alternative:
+    - phrase:
+      - phrase:
+          unordered: true
+          of:
+          - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - phrase:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of: [comment, ':']
+              - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_rate.i2qy}
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of: [h/o, hx]
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              quantifier: {minimum: 0, maximum: 1}
+              of: [':', (]
+          - quit
+    - phrase:
+      - active
+      - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
+    - phrase:
+        displayChildren: false
+        of:
+        - alternative:
+          - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_rate.i2qy}
+          - 'no'
+        - link: {path: ../../tobacco_and_cannabis_use/smoking_history/smoking_indicator.i2qy}
+        - hx
+creator: haglers
+queryID: 2c5d6f5d

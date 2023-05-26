@@ -1,0 +1,34 @@
+version: 6.8
+creationDate: '2021-08-11 21:32:49'
+query:
+  document:
+  - phrase:
+      findMatches: longestOnly
+      id: phrase1
+      maxWordGap: -1
+      wordGapRestricted: false
+      of:
+      - alternative:
+          id: alternative1
+          showMultipleColumns: true
+          of:
+          - link: {path: breast_cancer_biomarkers_query_13_subquery_0.i2qy}
+          - link: {path: breast_cancer_biomarkers_query_13_subquery_1.i2qy}
+output:
+  columns:
+  - {id: phrase1}
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  - id: alternative1.col2
+    itemOptions: {}
+  - id: alternative1.col3
+    itemOptions: {}
+  - id: alternative1.col4
+    itemOptions: {}
+  useOutputEditor: true
+parameters: {Biomarker: ''}
+runAsSmartQuery: true
+creator: haglers
+queryID: 4b57e52f

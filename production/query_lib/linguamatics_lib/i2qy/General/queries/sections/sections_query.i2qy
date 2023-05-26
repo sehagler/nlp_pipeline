@@ -1,0 +1,25 @@
+version: 6.8
+creationDate: '2020-03-04 23:34:51'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      label: Extract
+      of:
+      - phrase:
+          findMatches: longestOnly
+          maxSentenceGap: -1
+          maxWordGap: -1
+          multiSentence: true
+          wordGapRestricted: false
+          of:
+          - word: {text: .*, matchType: Regexp}
+          - word: {text: .*, matchType: Regexp}
+      - word: {text: .*, matchType: Regexp}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: f790302b

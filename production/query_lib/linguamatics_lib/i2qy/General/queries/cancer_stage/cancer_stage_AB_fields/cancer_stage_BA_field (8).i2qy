@@ -1,0 +1,172 @@
+version: 6.8
+creationDate: '2023-05-03 12:37:56'
+query:
+  document:
+  - alternative:
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(and|or)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*EBV\\+([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(after|at|for|from|in|of|on|to|with)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*(and|or)([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+    - phrase:
+        multiSentence: true
+        of:
+        - word:
+            text: "(?i)([^A-Za-z0-9 ]+[ \n\r])*[A-Za-z0-9]+([\\-/][A-Za-z0-9]+)?([ \n\r][^A-Za-z0-9 ]+)*"
+            matchType: Raw regexp
+creator: haglers
+queryID: da28dd4e

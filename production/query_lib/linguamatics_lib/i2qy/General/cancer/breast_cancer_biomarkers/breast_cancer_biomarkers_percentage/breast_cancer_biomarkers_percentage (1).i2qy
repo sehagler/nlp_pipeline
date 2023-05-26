@@ -1,0 +1,19 @@
+version: 6.8
+creationDate: '2021-07-08 00:10:38'
+query:
+  document:
+  - phrase:
+    - alternative:
+        columnOptions: [Text]
+        id: alternative1
+        showMultipleColumns: true
+        of:
+        - link: {path: breast_cancer_biomarkers_percentage_0.i2qy}
+        - link: {path: breast_cancer_biomarkers_percentage_1.i2qy}
+output:
+  columns:
+  - id: alternative1.col0
+    itemOptions: {}
+  useOutputEditor: true
+creator: haglers
+queryID: ef1d843c

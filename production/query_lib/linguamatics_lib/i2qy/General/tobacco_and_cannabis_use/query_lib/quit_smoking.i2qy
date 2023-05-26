@@ -1,0 +1,302 @@
+version: 6.8
+creationDate: '2020-06-08 21:29:46'
+query:
+  document:
+  - alternative:
+      findMatches: longestOnly
+      id: alternative1
+      of:
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative: [h/o, hx]
+          - alternative:
+            - smoking
+            - phrase:
+                displayChildren: false
+                of:
+                - tobacco
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [abuse, use]
+          - phrase:
+              displayChildren: false
+              of:
+              - word:
+                  text: ':'
+                  quantifier: {minimum: 0, maximum: 1}
+              - quit
+              - word:
+                  text: date
+                  quantifier: {minimum: 0, maximum: 1}
+              - link:
+                  path: ../../tools/date_query.i2qy
+                  quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+              view: {layout: list}
+              of:
+              - class: {snid: numerics.decimals, pt: Decimal}
+              - class: {snid: numerics.integers, pt: Integer}
+          - alternative:
+            - phrase:
+              - word:
+                  text: pack
+                  morphoVariants: true
+                  quantifier: {minimum: 0, maximum: 1}
+              - word: {text: mo, morphoVariants: true}
+            - ppy
+          - alternative:
+            - smoking
+            - phrase:
+                displayChildren: false
+                of:
+                - tobacco
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [abuse, use]
+          - hx
+          - phrase:
+            - word:
+                text: (
+                quantifier: {minimum: 0, maximum: 1}
+            - quit
+            - alternative:
+              - phrase:
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [date, in]
+                - link: {path: ../../tools/date_query.i2qy}
+              - phrase:
+                - word: {text: \d+\+, matchType: Regexp}
+                - phrase:
+                    displayChildren: false
+                    of:
+                    - alternative:
+                      - word: {text: mo, morphoVariants: true}
+                      - word: {text: yr, morphoVariants: true}
+                    - ago
+            - word:
+                text: )
+                quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+        - active
+        - alternative:
+          - smoking
+          - phrase:
+              displayChildren: false
+              of:
+              - tobacco
+              - alternative:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of: [abuse, use]
+        - phrase:
+          - word:
+              text: (
+              quantifier: {minimum: 0, maximum: 1}
+          - pack
+          - alternative:
+              view: {layout: list}
+              of:
+              - class: {snid: numerics.decimals, pt: Decimal}
+              - class: {snid: numerics.integers, pt: Integer}
+          - alternative:
+            - word: {text: mo, morphoVariants: true}
+            - word: {text: yr, morphoVariants: true}
+          - hx
+          - word:
+              text: )
+              quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+            - phrase:
+              - word: {text: have, morphoVariants: true}
+              - word:
+                  text: now
+                  quantifier: {minimum: 0, maximum: 1}
+              - quit
+            - phrase:
+                displayChildren: false
+                of: [was, able, to, stop]
+            - phrase:
+                displayChildren: false
+                of:
+                - word: {text: continue, morphoVariants: true}
+                - to
+                - abstain
+                - from
+          - alternative:
+            - smoking
+            - phrase:
+                displayChildren: false
+                of:
+                - tobacco
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [abuse, use]
+      - phrase:
+        - phrase:
+            displayChildren: false
+            quantifier: {minimum: 0, maximum: 0}
+            of: [ready, to]
+        - phrase:
+            displayChildren: false
+            of:
+            - quit
+            - alternative:
+              - word: {text: smoke, morphoVariants: true}
+              - phrase:
+                  displayChildren: false
+                  of:
+                  - tobacco
+                  - alternative:
+                      quantifier: {minimum: 0, maximum: 1}
+                      of: [abuse, use]
+        - alternative:
+            quantifier: {minimum: 0, maximum: none}
+            of:
+            - phrase:
+              - word:
+                  text: ','
+                  quantifier: {minimum: 0, maximum: 1}
+              - link: {path: tobacco_products_smoking.i2qy}
+            - phrase:
+              - word:
+                  text: '~'
+                  quantifier: {minimum: 0, maximum: 1}
+              - alternative:
+                  view: {layout: list}
+                  of:
+                  - class: {snid: numerics.decimals, pt: Decimal}
+                  - class: {snid: numerics.integers, pt: Integer}
+              - phrase:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - alternative:
+                    - word: {text: mo, morphoVariants: true}
+                    - word: {text: yr, morphoVariants: true}
+                  - ago
+      - phrase:
+        - phrase:
+          - alternative:
+            - word: {text: smoke, morphoVariants: true}
+            - phrase:
+                displayChildren: false
+                of:
+                - tobacco
+                - alternative:
+                    quantifier: {minimum: 0, maximum: 1}
+                    of: [abuse, use]
+          - phrase:
+              displayChildren: false
+              of: [comment, ':']
+        - phrase:
+            quantifier: {minimum: 0, maximum: 1}
+            of:
+            - alternative:
+                view: {layout: list}
+                of:
+                - class: {snid: numerics.decimals, pt: Decimal}
+                - class: {snid: numerics.integers, pt: Integer}
+            - link: {path: tobacco_products_smoking.i2qy}
+            - /
+            - alternative:
+              - word: {text: mo, morphoVariants: true}
+              - word: {text: yr, morphoVariants: true}
+        - word:
+            text: ;
+            quantifier: {minimum: 0, maximum: 1}
+        - phrase:
+          - quit
+          - alternative:
+            - phrase:
+              - alternative:
+                  view: {layout: list}
+                  of:
+                  - class: {snid: numerics.decimals, pt: Decimal}
+                  - class: {snid: numerics.integers, pt: Integer}
+              - alternative:
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - word: {text: mo, morphoVariants: true}
+                  - word: {text: yr, morphoVariants: true}
+            - link: {path: ../../tools/date_query.i2qy}
+          - word:
+              text: ago
+              quantifier: {minimum: 0, maximum: 1}
+      - phrase:
+          displayChildren: false
+          of:
+          - alternative:
+            - phrase:
+                displayChildren: false
+                of: [former, smoker]
+            - phrase:
+              - phrase:
+                  displayChildren: false
+                  quantifier: {minimum: 0, maximum: 1}
+                  of:
+                  - word: {text: type, morphoVariants: true}
+                  - ':'
+              - link: {path: tobacco_products_smoking.i2qy}
+          - phrase:
+              displayChildren: false
+              quantifier: {minimum: 0, maximum: 1}
+              of:
+              - start
+              - date
+              - ':'
+              - alternative:
+                - alternative:
+                    view: {layout: list}
+                    of:
+                    - class: {snid: numerics.decimals, pt: Decimal}
+                    - class: {snid: numerics.integers, pt: Integer}
+                - link: {path: ../../tools/date_query.i2qy}
+          - phrase:
+            - last
+            - attempt
+            - to
+            - quit
+            - ':'
+            - alternative:
+              - alternative:
+                  view: {layout: list}
+                  of:
+                  - class: {snid: numerics.decimals, pt: Decimal}
+                  - class: {snid: numerics.integers, pt: Integer}
+              - link: {path: ../../tools/date_query.i2qy}
+          - phrase:
+            - alternative:
+              - word: {text: mo, morphoVariants: true}
+              - word: {text: yr, morphoVariants: true}
+            - since
+            - quitting
+            - ':'
+            - alternative:
+                view: {layout: list}
+                of:
+                - class: {snid: numerics.decimals, pt: Decimal}
+                - class: {snid: numerics.integers, pt: Integer}
+      - phrase:
+          displayChildren: false
+          of:
+          - word: {text: yr, morphoVariants: true}
+          - since
+          - quitting
+          - ':'
+          - alternative:
+              view: {layout: list}
+              of:
+              - class: {snid: numerics.decimals, pt: Decimal}
+              - class: {snid: numerics.integers, pt: Integer}
+output:
+  columns:
+  - {id: alternative1}
+  useOutputEditor: true
+creator: haglers
+queryID: 2ea5e474

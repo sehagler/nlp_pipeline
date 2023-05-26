@@ -9,7 +9,7 @@ Created on Mon Feb 24 11:19:40 2020
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools import s
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
     
 #
 pre_punct = '\n'
@@ -126,16 +126,15 @@ def _normalize_poc(text):
    
 #
 def table_normalizer(text):
-    normalize_text = composite_function(_normalize_poc,
-                                        _normalize_nrbc,
-                                        _normalize_neutrophil,
-                                        _normalize_myelocyte,
-                                        _normalize_monocyte,
-                                        _normalize_lymphocyte,
-                                        _normalize_ig,
-                                        _normalize_eosinophil,
-                                        _normalize_blood,
-                                        _normalize_basophil,
-                                        _normalize_atypical_cell)
-    text = normalize_text(text)  
+    text = sequential_composition([_normalize_atypical_cell,
+                                   _normalize_basophil,
+                                   _normalize_blood,
+                                   _normalize_eosinophil,
+                                   _normalize_ig,
+                                   _normalize_lymphocyte,
+                                   _normalize_monocyte,
+                                   _normalize_myelocyte,
+                                   _normalize_neutrophil,
+                                   _normalize_nrbc,
+                                   _normalize_poc], text)
     return text

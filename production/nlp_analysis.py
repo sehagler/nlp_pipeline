@@ -27,19 +27,19 @@ servers = [ 'development', 'production' ]
 #
 pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
                        'linguamatics_i2e_indexer',
-                       'linguamatics_i2e_postqueries',
-                       'linguamatics_i2e_push_queries' ]
+                       'linguamatics_i2e_push_queries',
+                       'linguamatics_i2e_postqueries' ]
 
 #
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[3]
+project_name = project_names[4]
 project_subdir = project_subdirs[0]
-server = servers[1]
+server = servers[0]
 
 #
-pipeline_mode_flg = pipeline_mode_flgs[3]
+pipeline_mode_flg = pipeline_mode_flgs[1]
 
 #
 mode_flg = mode_flgs[1]
@@ -97,10 +97,15 @@ elif mode_flg == 'run':
     if pipeline_mode_flg == 'training_sets':
         pipeline_object.generate_training_data_sets(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_prequeries':
+        pipeline_object.cleanup_directory('linguamatics_i2e_preprocessing_data_out')
+        pipeline_object.cleanup_directory('source_data')
         pipeline_object.linguamatics_i2e_prequeries(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_indexer':
+        pipeline_object.cleanup_directory('source_data')
         pipeline_object.linguamatics_i2e_indexer()
+        pipeline_object.linguamatics_i2e_push_queries()
     elif pipeline_mode_flg == 'linguamatics_i2e_postqueries':
+        pipeline_object.cleanup_directory('postprocessing_data_out')
         pipeline_object.linguamatics_i2e_postqueries(project_subdir)
     elif pipeline_mode_flg == 'linguamatics_i2e_push_queries':
         pipeline_object.linguamatics_i2e_push_queries()

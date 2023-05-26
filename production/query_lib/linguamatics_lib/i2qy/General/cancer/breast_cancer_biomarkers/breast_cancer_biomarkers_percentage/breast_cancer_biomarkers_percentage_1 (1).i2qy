@@ -1,0 +1,26 @@
+version: 6.8
+creationDate: '2023-05-03 18:58:50'
+query:
+  document:
+  - phrase:
+    - alternative:
+      - phrase:
+        - tumor
+        - word:
+            text: proportion
+            quantifier: {minimum: 0, maximum: 1}
+        - word:
+            text: score
+            quantifier: {minimum: 0, maximum: 1}
+      - TPS
+    - =
+    - phrase:
+        id: phrase1
+        of:
+        - word: {text: '[0-9]+', matchType: Regexp}
+output:
+  columns:
+  - {id: phrase1}
+  useOutputEditor: true
+creator: haglers
+queryID: 16a6def2

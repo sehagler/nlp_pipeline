@@ -1,0 +1,13 @@
+version: 6.8
+creationDate: '2023-01-26 20:51:58'
+query:
+  document:
+  - link: {path: ../../cancer/blast_%/peripheral_blood_blast_%/peripheral_blood_blast_summary_base_0.i2qy, id: link1}
+output:
+  columns:
+  - id: link1.alternative1
+    itemOptions: {}
+    linkItemId: link1
+  useOutputEditor: true
+creator: haglers
+queryID: 7087b945

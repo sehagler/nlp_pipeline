@@ -21,57 +21,15 @@ from tools_lib.processing_tools_lib.variable_processing_tools \
     import nlp_to_tuple, validation_to_tuple
 from base_lib.postprocessor_base_class \
     import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
-        
-#
-def blast_performance(validation_data_manager, evaluation_manager, labId,
-                      nlp_values, nlp_datum_key, validation_datum_key):
-    validation_data = validation_data_manager.get_validation_data()
-    if labId in nlp_values.keys():
-        keys0 = list(nlp_values[labId])
-        if nlp_datum_key in nlp_values[labId][keys0[0]].keys():
-            data_out = nlp_values[labId][keys0[0]][nlp_datum_key]
-        else:
-            data_out = None
-    else:
-        data_out = None
-    if data_out is not None:
-        data_out = data_out.replace('~', '')
-        data_out = data_out.replace('>', '')
-        data_out = data_out.replace('<', '')
-        data_out = data_out.replace('.0', '')
-        
-    '''
-    if data_out is not None:
-        for i in range(len(data_out)):
-            data_list_tmp = []
-            for j in range(len(data_out[i])):
-                data_tmp = data_out[i][j]
-                data_tmp = data_tmp.replace('~', '')
-                data_tmp = data_tmp.replace('>', '')
-                data_tmp = data_tmp.replace('<', '')
-                data_tmp = data_tmp.replace('.0', '')
-                data_list_tmp.append(data_tmp)
-            print(data_list_tmp)
-            data_out[i] = tuple(data_list_tmp)
-    '''
     
-    '''
-    if data_out is not None:
-        nlp_value = []
-        nlp_value.append(data_out)
-    else:
-        nlp_value = None
-    nlp_value = nlp_to_tuple(data_out)
-    '''
-    nlp_value = data_out
-    labid_idx = validation_data[0].index('labId')
-    validation_datum_idx = validation_data[0].index(validation_datum_key)
-    validation_value = None
-    for item in validation_data:
-        if item[labid_idx] == labId:
-            validation_value = item[validation_datum_idx]
+#
+def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg,
+              value_range):
+    if nlp_value is not None:
+        nlp_value = nlp_value.replace('~', '')
+        nlp_value = nlp_value.replace('>', '')
+        nlp_value = nlp_value.replace('<', '')
+        nlp_value = nlp_value.replace('.0', '')
     if validation_value is not None:
         if validation_value == '':
             validation_value = None
@@ -82,26 +40,14 @@ def blast_performance(validation_data_manager, evaluation_manager, labId,
         validation_value = validation_value.replace('.0', '')
         validation_value = validation_value.replace('None', '0')
     validation_value = validation_to_tuple(validation_value)
-    display_flg = True
-    #f nlp_value is not None:
-    #  nlp_value = nlp_value[0]
-    '''
-    try:
-        nlp_value = float(nlp_value)
-    except Exception:
-        traceback.print_exc()
-        nlp_value = None
-    try:
-        validation_value = float(validation_value[0])
-    except Exception:
-        traceback.print_exc()
-        validation_value = None
-    '''
     if validation_value is not None:
         validation_value = validation_value[0]
-    performance = evaluation_manager.evaluation(nlp_value, validation_value,
-                                                display_flg, value_range=5.0)
-    return performance
+    arg_dict = {}
+    arg_dict['display_flg'] = display_flg
+    arg_dict['nlp_value'] = nlp_value
+    arg_dict['validation_value'] = validation_value
+    ret_dict = evaluation_manager.evaluation(arg_dict, value_range=value_range)
+    return ret_dict['performance']
 
 #
 def get_blast_value(blast_value_list):
@@ -182,6 +128,15 @@ def get_blast_value(blast_value_list):
         return 'MANUAL_REVIEW'
     else:
         return None
+    
+#
+class Evaluator(object):
+    
+    #
+    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+                 display_flg, value_range):
+        return _evaluate(evaluation_manager, nlp_value, validation_value,
+                         display_flg, value_range)
 
 #
 class Postprocessor(Postprocessor_base):
@@ -344,19 +299,19 @@ class Postprocessor(Postprocessor_base):
         return value_dict_list
     
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        self.text = \
+    def run_preprocessor(self, text):
+        text = \
             lambda_tools.lambda_conversion('(?i)immunohistochemi(cal|stry)',
-                                                  self.text, 'IHC')
-        self.text = \
-            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by IHC',
-                                                           self.text)
-        self.text = \
+                                           text, 'IHC')
+        text = \
+            lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by IHC', text)
+        text = \
             lambda_tools.deletion_lambda_conversion('(?i)[\n\s]+by immunostain',
-                                                           self.text)
+                                                    text)
+        return text
     
 #
 class Section_header_structure():

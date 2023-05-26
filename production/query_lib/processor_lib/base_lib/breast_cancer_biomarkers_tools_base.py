@@ -6,16 +6,14 @@ Created on Tue Mar 31 12:50:00 2020
 """
 
 #
+import os
 import re
 
 #
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
-from base_lib.preprocessor_base_class \
-    import Preprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
-    import composite_function
+    import sequential_composition
 from tools_lib.regex_lib.regex_tools \
     import (
         article,
@@ -80,7 +78,7 @@ def _normalize_GATA3(text):
 #
 def _normalize_HER2(text):
     text = \
-        lambda_tools.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + slash() + ')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text,  'HER2')
+        lambda_tools.space_correction_lambda_conversion('(?<![a-z])HER(' + minus_sign() + '|' + slash() + ')?2(( |' + minus_sign() + '|' + slash() +')?(c' + minus_sign() + ')?neu)?( ?' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text,  'HER2')
     text = \
         lambda_tools.space_correction_lambda_conversion('(?<![a-z])HER2' + minus_sign() + slash() + '(c' + minus_sign() + ')?neu( ' + left_parenthesis() + 'cerb2' + right_parenthesis() + ')?', text, 'HER2')
     text = \
@@ -115,13 +113,11 @@ def _normalize_KI67(text):
     text = \
         lambda_tools.lambda_conversion('Ki' + minus_sign() + '67', text, 'KI67')
     text = \
-        lambda_tools.initialism_lambda_conversion('proliferati(on|ve) (index|rate)', text, 'KI67')
-    text = \
-        lambda_tools.lambda_conversion('KI67( proliferati(on|ve))? (index|rate)', text, 'KI67')
-    text = \
         lambda_tools.lambda_conversion('KI67( ' + left_parenthesis() + 'mm-1' + right_parenthesis() + ')?', text, 'KI67')
     text = \
         lambda_tools.initialism_lambda_conversion('KI67', text, 'KI67')
+    text = \
+        lambda_tools.lambda_conversion('(KI67 )?(proliferati(on|ve))? (index|rate)', text, 'KI67')
     return text
 #
 def _normalize_PDL1(text):
@@ -154,6 +150,42 @@ def _normalize_PR(text):
         lambda_tools.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?\+', text, 'PR positive')
     text = \
         lambda_tools.space_correction_lambda_conversion('(?<![a-z])PR(' + colon() + '|' + space() + ')?pos(?![a-z])', text, 'PR positive')
+    return text
+
+#
+def _normalize_biomarker_strength(text):
+    text = \
+        lambda_tools.initialism_lambda_conversion('dim - intermediate', text, 'dim-intermediate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('dim - moderate', text, 'dim-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('dim - strong', text, 'dim-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('intermediate ?- ?dim', text, 'dim-intermediate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('intermediate - strong', text, 'intermediate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('intermediate ?- ?weak', text, 'weak-intermediate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('moderate - dim', text, 'dim-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('moderate - strong', text, 'moderate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('moderate ?- ?weak', text, 'weak-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?dim', text, 'dim-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?intermediate', text, 'intermediate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?moderate', text, 'moderate-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('strong ?- ?weak', text, 'weak-strong')
+    text = \
+        lambda_tools.initialism_lambda_conversion('weak - intermediate', text, 'weak-intermediate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('weak - moderate', text, 'weak-moderate')
+    text = \
+        lambda_tools.initialism_lambda_conversion('weak - strong', text, 'weak-strong')
     return text
 
 #
@@ -200,8 +232,8 @@ def _remove_extraneous_text(text):
         lambda_tools.deletion_lambda_conversion(article() + ' ER and PR stains are considered(.*\n)*.*Indeterminate recommend repeat on another specimen( \.)?', text)
     text = \
         lambda_tools.deletion_lambda_conversion(article() + ' ER and PR IHC stains are performed(.*\n)*.*10% of ' + article() + ' tumor cells( \.)?', text)
-    text = \
-        lambda_tools.deletion_lambda_conversion('Brightfield Dual ISH analysis(.*\n)*.*positive and negative controls( \.)?', text)
+    #text = \
+    #    lambda_tools.deletion_lambda_conversion('Brightfield Dual ISH analysis(.*\n)*.*positive and negative controls( \.)?', text)
     text = \
         lambda_tools.deletion_lambda_conversion('HER2 IHC staining is performed with(.*\n)*.*Arch Pathol Lab Med 131:18 \- 43 \. 2007( \.)?', text)
     text = \
@@ -235,6 +267,7 @@ class Postprocessor(Postprocessor_base):
             consolidated_biomarker_dict[biomarker_name]['PERCENTAGE'] = []
             consolidated_biomarker_dict[biomarker_name]['SCORE'] = []
             consolidated_biomarker_dict[biomarker_name]['STATUS'] = []
+            consolidated_biomarker_dict[biomarker_name]['STRENGTH'] = []
             consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = []
             consolidated_biomarker_dict[biomarker_name]['SNIPPET'] = []
         for biomarker_dict in biomarker_dict_list:
@@ -244,24 +277,6 @@ class Postprocessor(Postprocessor_base):
                         consolidated_biomarker_dict[biomarker_name][key].extend(biomarker_dict[biomarker_name][key])
                     else:
                         consolidated_biomarker_dict[biomarker_name][key].append(biomarker_dict[biomarker_name][key])
-        for biomarker_name in consolidated_biomarker_dict.keys():
-            if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 1 or \
-               len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 1:
-                   consolidated_biomarker_dict[biomarker_name]['BLOCK'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['PERCENTAGE'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['SCORE'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['STATUS'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['VARIABILITY'] = \
-                       self.manual_review
-                   consolidated_biomarker_dict[biomarker_name]['SNIPPET'] = \
-                       self.manual_review
         return consolidated_biomarker_dict
     
     #
@@ -273,6 +288,7 @@ class Postprocessor(Postprocessor_base):
                len(consolidated_biomarker_dict[biomarker_name]['PERCENTAGE']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0 or \
+               len(consolidated_biomarker_dict[biomarker_name]['STRENGTH']) > 0 or \
                len(consolidated_biomarker_dict[biomarker_name]['VARIABILITY']) > 0:
                 if len(consolidated_biomarker_dict[biomarker_name]['BLOCK']) > 0:
                     value_dict[biomarker_name + '_BLOCK'] = \
@@ -284,6 +300,10 @@ class Postprocessor(Postprocessor_base):
                    len(consolidated_biomarker_dict[biomarker_name]['SCORE']) > 0:
                     value_dict[biomarker_name + '_SCORE'] = \
                         consolidated_biomarker_dict[biomarker_name]['SCORE']
+                if biomarker_name != 'KI67' and \
+                   len(consolidated_biomarker_dict[biomarker_name]['STRENGTH']) > 0:
+                    value_dict[biomarker_name + '_STRENGTH'] = \
+                        consolidated_biomarker_dict[biomarker_name]['STRENGTH']
                 if len(consolidated_biomarker_dict[biomarker_name]['STATUS']) > 0:
                     value_dict[biomarker_name + '_STATUS'] = \
                         consolidated_biomarker_dict[biomarker_name]['STATUS']
@@ -300,9 +320,11 @@ class Postprocessor(Postprocessor_base):
         extracted_data_dict = {}
         for key in value_list_dict.keys():
             text_list = value_list_dict[key]
-            biomarker_name_list = [ 'ER', 'GATA3', 'HER2', 'KI67', 'PR' ]
+            biomarker_name_list = [ 'AR', 'BCL2', 'CD4', 'CD8', 'ER', 'GATA3',
+                                    'HER2', 'KI67', 'PDL1', 'PR' ]
             biomarker_name_text_list = []
             biomarker_status_text_list = []
+            biomarker_strength_text_list = []
             biomarker_score_text_list = []
             biomarker_percentage_text_list = []
             snippet_text_list = []
@@ -310,10 +332,11 @@ class Postprocessor(Postprocessor_base):
             for item in text_list[0]:
                 biomarker_name_text_list.append(item[1].upper())
                 biomarker_status_text_list.append(item[2])
-                biomarker_score_text_list.append(item[3])
-                biomarker_percentage_text_list.append(item[4])
-                snippet_text_list.append(item[5])
-                biomarker_name_offset_list.append(item[6])
+                biomarker_strength_text_list.append(item[3])
+                biomarker_score_text_list.append(item[4])
+                biomarker_percentage_text_list.append(item[5])
+                snippet_text_list.append(item[6])
+                biomarker_name_offset_list.append(item[7])
             blocks_biomarker_name_text_list = []
             blocks_biomarker_block_text_list = []
             blocks_snippet_text_list = []
@@ -341,15 +364,12 @@ class Postprocessor(Postprocessor_base):
             for i in range(len(unique_snippets)):
                 unique_snippets[i] = ''.join(unique_snippets[i])
             biomarker_dict_list = []
-            er_value_list = []
-            her2_value_list = []
-            ki67_value_list = []
-            pr_value_list = []
             for snippet in unique_snippets:
                 biomarker_dict = {}
                 for biomarker_name in biomarker_name_list:
                     biomarker_dict[biomarker_name] = {}
                     biomarker_dict[biomarker_name]['STATUS'] = []
+                    biomarker_dict[biomarker_name]['STRENGTH'] = []
                     biomarker_dict[biomarker_name]['SCORE'] = []
                     biomarker_dict[biomarker_name]['PERCENTAGE'] = []
                     biomarker_dict[biomarker_name]['BLOCK'] = []
@@ -362,6 +382,8 @@ class Postprocessor(Postprocessor_base):
                         biomarker_status = \
                             self._process_status(biomarker_name,
                                                  biomarker_status_text_list[i])
+                        biomarker_strength = \
+                            self._process_strength(biomarker_strength_text_list[i])
                         biomarker_score = \
                             self._process_score(biomarker_score_text_list[i])
                         biomarker_percentage = \
@@ -388,11 +410,15 @@ class Postprocessor(Postprocessor_base):
                             biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
                         if len(biomarker_status) > 0:
                             biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                        if len(biomarker_strength) > 0:
+                            biomarker_dict[biomarker_name]['STRENGTH'].append(biomarker_strength.lower())
                         if len(biomarker_variability) > 0:
                             biomarker_dict[biomarker_name]['VARIABILITY'].append(biomarker_variability.lower())
                     for biomarker_name in biomarker_name_list:
                         biomarker_dict[biomarker_name]['STATUS'] = \
                             list(set(biomarker_dict[biomarker_name]['STATUS']))
+                        biomarker_dict[biomarker_name]['STRENGTH'] = \
+                            list(set(biomarker_dict[biomarker_name]['STRENGTH']))
                         biomarker_dict[biomarker_name]['SCORE'] = \
                             list(set(biomarker_dict[biomarker_name]['SCORE']))
                         biomarker_dict[biomarker_name]['PERCENTAGE'] = \
@@ -407,6 +433,7 @@ class Postprocessor(Postprocessor_base):
                         if variability_snippet_text_list[i] == snippet:
                             biomarker_name = variability_biomarker_name_text_list[i]
                             biomarker_status = ''
+                            biomarker_strength = ''
                             biomarker_score = ''
                             biomarker_percentage = ''
                             biomarker_block = ''
@@ -420,11 +447,15 @@ class Postprocessor(Postprocessor_base):
                                 biomarker_dict[biomarker_name]['SCORE'].append(biomarker_score.lower())
                             if len(biomarker_status) > 0:
                                 biomarker_dict[biomarker_name]['STATUS'].append(biomarker_status.lower())
+                            if len(biomarker_strength) > 0:
+                                biomarker_dict[biomarker_name]['STRENGTH'].append(biomarker_strength.lower())
                             if len(biomarker_variability) > 0:
                                 biomarker_dict[biomarker_name]['VARIABILITY'].append(biomarker_variability.lower())
                     for biomarker_name in biomarker_name_list:
                         biomarker_dict[biomarker_name]['STATUS'] = \
                             list(set(biomarker_dict[biomarker_name]['STATUS']))
+                        biomarker_dict[biomarker_name]['STRENGTH'] = \
+                            list(set(biomarker_dict[biomarker_name]['STRENGTH']))
                         biomarker_dict[biomarker_name]['SCORE'] = \
                             list(set(biomarker_dict[biomarker_name]['SCORE']))
                         biomarker_dict[biomarker_name]['PERCENTAGE'] = \
@@ -445,57 +476,102 @@ class Postprocessor(Postprocessor_base):
     
     #
     def _process_percentage(self, percentage):
+        if len(percentage) > 0:
+            percentage += '%'
+            percentage = re.sub('%+', '%', percentage)
+        percentage = re.sub('> ?=', '>', percentage)
+        percentage = re.sub('< ?=', '<', percentage)
         match = re.search('[0-9]+%-[0-9]+%', percentage)
         if match is not None:
-            percentage = \
-                lambda_tools.lambda_conversion('(?<=%)-(?=[0-9])',
-                                             match.group(0), ',')
-            percentage = '(' + percentage + ')'
+            percentage = match.group(0)
         return percentage
     
     #
     def _process_score(self, score):
         score = lambda_tools.lambda_conversion(' \+', score, '+')
         score = \
-            lambda_tools.lambda_conversion(' (/|(out )?of) [0-4](\+)?', score, '')
+            lambda_tools.lambda_conversion(' (/|(\( )?(out )?of) [0-4](\+)?( \))?', score, '')
         match = re.search('[0-4](\+)? (\-|to) [0-4](\+)?', score)
         if match is not None:
             score = \
-                lambda_tools.lambda_conversion(' (\-|to) ', match.group(0), ',')
-            score = '(' + score +')'
-        match = re.search('no staining', score)
-        if match is not None:
-            score = '0'
+                lambda_tools.lambda_conversion(' (\-|to) ', match.group(0), '-')
+        score = re.sub(' (nuclear )?intensity', '', score)
+        score = re.sub(' (nuclear )?staining', '', score)
         return score
         
     #
     def _process_status(self, biomarker_name, status):
-        if biomarker_name in [ 'ER', 'GATA3', 'HER2', 'PR' ]:
-            if status.lower() in [ 'borderline' ]:
-                status = 'equivocal'
-            elif status.lower() in [ 'negativity', 'no', 'non-amplified', 
-                                     'nonreactive', 'not amplified', 'unamplified',
-                                     'unfavorable', 'without immunoreactivity']:
-                status = 'negative'
-            elif status.lower() in [ 'amplified', 'favorable', 'immunoreactive',
-                                     'immunoreactivity', 'positivity', 'present',
-                                     'reactive', 'strong', 'variable' ]:
-                status = 'positive'
+        status = status.lower()
+        status = re.sub(',', '', status)
+        status = re.sub('( nuclear)? staining', '', status)
+        status = re.sub('focal ', 'focally ', status)
+        if biomarker_name in [ 'AR', 'BCL2', 'CD4', 'CD8', 'ER', 'GATA3',
+                               'HER2', 'PDL1', 'PR' ]:
+            for term in [ 'borderline', 'negative / positive' ]:
+                status = re.sub(term, 'equivocal', status)
+            for term in [ 'negativity', 'non-amplified', 'nonreactive',
+                          'not amplified', 'unamplified', 'unfavorable',
+                          'without immunoreactivity' ]:
+                status = re.sub(term, 'negative', status)
+            for term in [ 'amplified', 'favorable', 'immunoreactive',
+                          'immunoreactivity', 'positivity', 'reactive',
+                          'stains' ]:
+                status = re.sub(term, 'positive', status)
         return status
-
-#
-class Preprocessor(Preprocessor_base):
     
     #
-    def run_preprocessor(self):
-        normalize_text = composite_function(_remove_extraneous_text,
-                                            _normalize_PR,
-                                            _normalize_PDL1,
-                                            _normalize_KI67,
-                                            _normalize_HER2,
-                                            _normalize_GATA3,
-                                            _normalize_ER,
-                                            _normalize_BCL2,
-                                            _normalize_AR,
-                                            _normalize_multiple_biomarkers)
-        self.text = normalize_text(self.text)
+    def _process_strength(self, strength):
+        strength = strength.lower()
+        strength = re.sub('no (nuclear )?staining', 'none', strength)
+        strength = re.sub('zero( (nuclear )?staining)?', 'none', strength)
+        strength = re.sub(' immunoreactivity', '', strength)
+        strength = re.sub(' (nuclear )?intensity', '', strength)
+        strength = re.sub(' (nuclear )?staining', '', strength)
+        strength = re.sub('no [a-z0-9]+ expression', 'none', strength)
+        strength = re.sub(' [a-z0-9]+ expression', '', strength)
+        strength = re.sub('high expression', 'high', strength)
+        strength = re.sub('lacks? expression', 'none', strength)
+        strength = re.sub('low expression', 'low', strength)
+        strength = re.sub('no expression', 'none', strength)
+        return strength
+    
+    #
+    def push_data_dict(self, postprocessor_name, filename, data_dict,
+                       sections_data_dict):
+        postprocessor_name = re.sub('postprocessor_', '', postprocessor_name)
+        if postprocessor_name == filename:
+            self.data_dict_list[0] = data_dict
+            self.sections_data_dict = sections_data_dict
+            self.filename = filename
+        postprocessor_name_split = postprocessor_name.split('_')
+        postprocessor_blocks_name = postprocessor_name_split[:-1]
+        postprocessor_blocks_name.append('blocks')
+        postprocessor_blocks_name.append(postprocessor_name_split[-1])
+        postprocessor_blocks_name = '_'.join(postprocessor_blocks_name)
+        if postprocessor_blocks_name == filename:
+            self.data_dict_list[1] = data_dict
+        postprocessor_name_split = postprocessor_name.split('_')
+        postprocessor_variability_name = postprocessor_name_split[:-1]
+        postprocessor_variability_name.append('variability')
+        postprocessor_variability_name.append(postprocessor_name_split[-1])
+        postprocessor_variability_name = '_'.join(postprocessor_variability_name)
+        if postprocessor_variability_name == filename:
+            self.data_dict_list[2] = data_dict
+
+#
+class Preprocessor(object):
+    
+    #
+    def run_preprocessor(self, text):
+        text = sequential_composition([_normalize_multiple_biomarkers,
+                                       _normalize_AR,
+                                       _normalize_BCL2,
+                                       _normalize_ER,
+                                       _normalize_GATA3,
+                                       _normalize_HER2,
+                                       _normalize_KI67,
+                                       _normalize_PDL1,
+                                       _normalize_PR,
+                                       _normalize_biomarker_strength,
+                                       _remove_extraneous_text], text)
+        return text

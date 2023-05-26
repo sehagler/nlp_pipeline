@@ -1,0 +1,16 @@
+version: 6.8
+creationDate: '2022-06-01 23:54:12'
+query:
+  document:
+  - phrase:
+      multiSentence: true
+      showInDefaultOutput: false
+      of:
+      - link: {path: ../cancer_stage_AB_fields/cancer_stage_AB_field.i2qy}
+      where:
+      - link:
+          path: constraint_query.i2qy
+          quantifier: {minimum: 0, maximum: 0}
+output: {useOutputEditor: true}
+creator: haglers
+queryID: 7c1b6ae6

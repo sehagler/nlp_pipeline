@@ -1,0 +1,24 @@
+version: 6.8
+creationDate: '2022-07-12 17:55:12'
+query:
+  document:
+  - phrase:
+    - alternative:
+        quantifier: {minimum: 0, maximum: 1}
+        of: [infiltrating, invasive, metastatic, recurrent]
+    - alternative:
+        findMatches: longestOnly
+        id: alternative1
+        showMultipleColumns: true
+        of:
+        - link: {path: cancer_type_following_site.i2qy}
+        - link: {path: cancer_type_preceding_site.i2qy}
+output:
+  columns:
+  - id: alternative1.col0
+    itemOptions: {}
+  - id: alternative1.col1
+    itemOptions: {}
+  useOutputEditor: true
+creator: haglers
+queryID: f3117db6

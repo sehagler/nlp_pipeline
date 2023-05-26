@@ -1,0 +1,12 @@
+version: 6.8
+creationDate: '2023-03-14 16:40:20'
+query:
+  document:
+  - alternative:
+    - cm
+    - word: {text: hr, morphoVariants: true}
+    - word: {text: min, morphoVariants: true}
+    - mm
+    - word: {text: sec, morphoVariants: true}
+creator: haglers
+queryID: 56c026a2

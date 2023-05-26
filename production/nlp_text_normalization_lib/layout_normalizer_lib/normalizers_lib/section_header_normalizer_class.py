@@ -79,25 +79,6 @@ class Section_header_normalizer(object):
         self.dynamic_data_manager.append_keywords_text(keyword, index_flg)
     
     #
-    def _extract_section_to_bottom_of_report(self, match_strs, item_label):
-        item_label = item_label
-        footer = ''
-        for match_str in match_strs:
-            m_str0 = re.compile('(?i)' + match_str + '[^\n]+\n')
-            m_str1 = re.compile('(?i)' + match_str)
-            match = 0
-            while match is not None:
-                match = m_str0.search(self.text)
-                if match is not None:
-                    self.text = self.text[:match.start()] + '\n\n' + \
-                                self.text[match.end():]
-                    match1 = m_str1.search(match.group(0))
-                    footer += '\n\n' + item_label  + ' N\n\n' + \
-                              match.group(0)[match1.end():]
-        self.text += footer
-        self.text, num = self._number_section(item_label, self.text)
-    
-    #
     def _get_section_header_list(self, section_header_dict):
         section_header_list = list(section_header_dict.keys())
         section_header_list.sort(key=len, reverse=True)
@@ -117,9 +98,6 @@ class Section_header_normalizer(object):
     def _normalize_section_header(self, mode_flg, text_list, label):
         if mode_flg == 'formatted':
             self._normalize_section_headers(text_list, label)
-        elif mode_flg == 'pull_out_section_header_to_bottom_of_report':
-            self._extract_section_to_bottom_of_report(text_list,
-                                                      self._tagged_section_header(label))
         self._append_keywords_text(self._tagged_section_header(label))
         
     #
@@ -176,76 +154,6 @@ class Section_header_normalizer(object):
         tagged_text = \
             self.section_header_pre_tag + untagged_text + self.section_header_post_tag
         return tagged_text
-
-    #
-    def amendment_and_comment_section_header(self, text):
-        self.text = text
-        regex_list = []
-        regex_list.append(self._pre_punct() + 'comment(' + s() + ')? (\([^\)]*\))?' + self._post_punct())
-        regex_list.append(self._pre_punct() + 'comment(' + s() + ')? (for specimen )?[A-Z]' + self._post_punct())
-        regex_list.append(self._pre_punct() + 'comment(' + s() + ')?' + self._post_punct())
-        regex_list.append(self._pre_punct() + '(\()?comment(' + s() + ')?' + self._post_punct())
-        regex_list.append(self._pre_punct() + 'note' + self._post_punct())
-        regex_list.append(self._pre_punct() + 'note\s+\([^\)]*\)' + self._post_punct())
-        regex_list.append(self._pre_punct() + 'note (\([^\)]*\))?' + self._post_punct())
-        regex_list.append(self._pre_punct() + 'note( [A-Z])?' + self._post_punct())
-        
-        text_list = regex_list
-        #self._normalize_section_header('pull_out_section_header_to_bottom_of_report', text_list, 'COMMENT')
-        self._extract_section_to_bottom_of_report(text_list,
-                                                  self._tagged_section_header('COMMENT'))
-        self._append_keywords_text(self._tagged_section_header('COMMENT'))
-        
-        # From self._section_header_amendment_dict()
-        regex_list = []
-        regex_list.append(self._pre_punct() + '(' + article() + ' )?([a-z]+ )?' + \
-                         amend() + ' comment' + s() + self._post_punct())
-        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + self._post_punct())
-        regex_list.append(self._pre_punct() + amend() + ' comment' + s() + ' (\([^\)]*\))?' + self._post_punct())
-        regex_list.append('(?i)(?<!see )' + amend() + ' comment' + s() + ' #\d' + self._post_punct())
-        regex_list.append('(?i)(?<!see )' + amend() + ' note' + s() + self._post_punct())
-        # From self._section_header_amendment_dict()
-        
-        text_list = regex_list
-        #self._normalize_section_header('pull_out_section_header_to_bottom_of_report', text_list, 'COMMENT')
-        self._extract_section_to_bottom_of_report(text_list,
-                                                  self._tagged_section_header('AMENDMENT COMMENT'))
-        self._append_keywords_text(self._tagged_section_header('AMENDMENT COMMENT'))
-        
-        self.text = \
-            lambda_tools.lambda_conversion(self._tagged_section_header('AMENDMENT COMMENT'),
-                                                  self.text,
-                                                  self._tagged_section_header('AMENDMENT_COMMENT'))
-            
-        # From self._section_header_amendment_dict()
-        regex_list = []
-        regex_list.append('(?i)\n' + article() + ' ([a-z]+ )?' + amend() + \
-                          ' ' +  '(' + be() + '|reports)')
-        regex_list.append('(?i)\n' + article() + ' ' + review_item() + \
-                         ' ' + be() + ' (additionally|further|re)?( )?' + amend())
-        regex_list.append('(?i)\n(' + article() + ' )?([a-z]+ )?' + \
-                         amend() + '( ' + review_item() + ')?(' + self._post_punct() + '|\n)')
-        regex_list.append('(?i)(' + article() + ' )?' + amend() + '( ' + \
-                          review_item() + ')?\s?#\d' + self._post_punct())
-        # From self._section_header_amendment_dict()
-            
-        text_list = regex_list
-        self._extract_section_to_bottom_of_report(text_list,
-                                                  self._tagged_section_header('AMENDMENT'))
-        self._append_keywords_text(self._tagged_section_header('AMENDMENT'))
-        
-        self.text = \
-            lambda_tools.lambda_conversion(self._tagged_section_header('AMENDMENT_COMMENT'),
-                                                  self.text,
-                                                  self._tagged_section_header('AMENDMENT COMMENT'))
-            
-        regex_list = []
-        regex_list.append(self._pre_punct() + 'addendum( \d+)?' + self._post_punct())
-        self._extract_section_to_bottom_of_report(text_list,
-                                                  self._tagged_section_header('ADDENDUM'))
-        self._append_keywords_text(self._tagged_section_header('ADDENDUM'))
-            
-        return self.text
         
     #
     def clear_section_header_tags(self, text):
@@ -263,7 +171,6 @@ class Section_header_normalizer(object):
     #
     def normalize_section_header(self, text):
         self.text = text
-        self.text = self.amendment_and_comment_section_header(self.text)
         section_header_dict = \
             self.section_header_structure.get_section_header_dict()
         section_header_list = \
