@@ -12,6 +12,7 @@ import datetime
 import glob
 import plotext as plt
 import multiprocessing
+import numpy as np
 import os
 import re
 import traceback
@@ -43,6 +44,8 @@ from nlp_text_normalization_lib.object_lib.text_normalization_object_class \
     import Text_normalization_object
 from processor_lib.registry_lib.preprocessor_registry_class \
     import Preprocessor_registry
+from nlp_pipeline_lib.worker_lib.postprocessing_lib.postprocessing_worker_class \
+    import Postprocessing_worker
 from nlp_pipeline_lib.worker_lib.preprocessing_lib.preprocessing_worker_class \
     import Preprocessing_worker
 from tools_lib.processing_tools_lib.file_processing_tools \
@@ -172,6 +175,7 @@ class Process_manager(Manager_base):
         self.password = password
         self._project_imports()
         self._create_managers(remote_registry, password)
+        self._create_workers()
         
         # Kludge to get around memory issue in processor
         linguamatics_i2e_object = \
@@ -275,6 +279,37 @@ class Process_manager(Manager_base):
         # kludge to get postperformance() working
         self.json_manager_registry = json_manager_registry
         # kludge to get postperformance() working
+        
+    #
+    def _create_workers(self):
+        num_processes = self.raw_data_manager.get_number_of_processes()
+        self.preprocessing_dict = {}
+        self.preprocessing_dict['processes'] = []
+        self.preprocessing_dict['argument_queues'] = []
+        self.preprocessing_dict['return_queues'] = []
+        for process_idx in range(num_processes):
+            aq = multiprocessing.Queue()
+            rq = multiprocessing.Queue()
+            w = Preprocessing_worker(self.static_data_object,
+                                     self.preprocessor_registry,
+                                     self.nlp_tool_registry)
+            p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
+            self.preprocessing_dict['processes'].append(p)
+            self.preprocessing_dict['argument_queues'].append(aq)
+            self.preprocessing_dict['return_queues'].append(rq)
+        self.postprocessing_dict = {}
+        self.postprocessing_dict['processes'] = []
+        self.postprocessing_dict['argument_queues'] = []
+        self.postprocessing_dict['return_queues'] = []
+        for process_idx in range(num_processes):
+            aq = multiprocessing.Queue()
+            rq = multiprocessing.Queue()
+            w = Postprocessing_worker(self.static_data_object,
+                                      self.output_manager)
+            p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
+            self.postprocessing_dict['processes'].append(p)
+            self.postprocessing_dict['argument_queues'].append(aq)
+            self.postprocessing_dict['return_queues'].append(rq)
         
     #
     def _collect_performance_statistics_dict(self):
@@ -732,12 +767,13 @@ class Process_manager(Manager_base):
     #
     def postprocessor(self):
         static_data = self.static_data_object.get_static_data()
+        num_processes = static_data['num_processes']
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
         filelist = os.listdir(data_dir)
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        sections_data_dict = \
+        sections_data_dict_list = \
             linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
         if static_data['project_subdir'] == 'test' and \
            'test_postprocessing_data_in_files' in static_data.keys():
@@ -753,31 +789,35 @@ class Process_manager(Manager_base):
                 data_dict = \
                     linguamatics_i2e_object.generate_data_dict(data_dir, filename)
                 self.postprocessor_registry.push_data_dict(filename, data_dict,
-                                                           sections_data_dict)
-        self.postprocessor_registry.run_registry()
-        postprocessor_registry = \
-            self.postprocessor_registry.pull_postprocessor_registry()
-        for key in postprocessor_registry.keys():
-            self.output_manager.append(postprocessor_registry[key])
-        self.output_manager.merge_data_dict_lists()
-        self.output_manager.include_metadata()
-        self.output_manager.include_text()
-        merged_data_dict_list = \
-            self.output_manager.get_merged_data_dict_list()
-        processing_base_dir = \
-            directory_manager.pull_directory('processing_base_dir')
-        data_out = directory_manager.pull_directory('postprocessing_data_out')
-        for data_dict in merged_data_dict_list:
-            if self.nlp_data_key in data_dict.keys():
-                if bool(data_dict[self.nlp_data_key]):
-                    outdir = data_out
-                    filename = data_dict['DOCUMENT_ID'] + '.json'
-                    data_dict.pop('DOCUMENT_ID', None)
-                    file = os.path.join(outdir, filename)
-                    filename = file.replace(processing_base_dir + '/', '')
-                    self.json_manager_registry[filename] = \
-                        Json_manager(self.static_data_object, file)
-                    self.json_manager_registry[filename].write_file(data_dict)
+                                                           sections_data_dict_list)
+        doc_list = []
+        for i in range(len(sections_data_dict_list)):
+            doc_list.append(int(sections_data_dict_list[i]['DOCUMENT_ID']))
+        doc_list = sorted(list(set(doc_list)))
+        partitioned_doc_array_list = np.array_split(doc_list, num_processes)
+        partitioned_doc_list = []
+        for i in range(len(partitioned_doc_array_list)):
+            partitioned_doc_list.append(partitioned_doc_array_list[i].tolist())
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            self.postprocessing_dict['processes'][process_idx].start()
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            json_manager_registry_copy = deepcopy(self.json_manager_registry)
+            postprocessor_registry_copy = deepcopy(self.postprocessor_registry)
+            argument_dict = {}
+            argument_dict['doc_list'] = partitioned_doc_list[process_idx]
+            argument_dict['filename'] = filename
+            argument_dict['json_manager_registry'] = json_manager_registry_copy
+            argument_dict['nlp_data_key'] = self.nlp_data_key
+            argument_dict['postprocessor_registry'] = postprocessor_registry_copy
+            self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            return_dict = \
+                self.postprocessing_dict['return_queues'][process_idx].get()
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            argument_dict = {}
+            argument_dict['command'] = 'stop'
+            self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+            self.postprocessing_dict['processes'][process_idx].join()
         
     #
     def preperformance(self):
@@ -799,7 +839,6 @@ class Process_manager(Manager_base):
     #
     def preprocessor_full(self, password):
         static_data = self.static_data_object.get_static_data()
-        num_processes = self.raw_data_manager.get_number_of_processes()
         
         # Kludge to get around memory issue in processor
         i2e_version = self.i2e_version
@@ -817,33 +856,18 @@ class Process_manager(Manager_base):
             raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))            
         num_docs_preprocessed = 0
-        processes = []
-        argument_queues = []
-        return_queues = []
-        for process_idx in range(num_processes):
-            aq = multiprocessing.Queue()
-            rq = multiprocessing.Queue()
-            w = Preprocessing_worker(self.static_data_object,
-                                     self.preprocessor_registry,
-                                     self.nlp_tool_registry)
-            p = multiprocessing.Process(target=w.process_raw_data, args=(aq, rq,))
-            processes.append(p)
-            argument_queues.append(aq)
-            return_queues.append(rq)
-        for process_idx in range(num_processes):
-            processes[process_idx].start()
+        for process_idx in range(len(self.preprocessing_dict['processes'])):
+            self.preprocessing_dict['processes'][process_idx].start()
         self.metadata_manager.load_metadata()
         doc_idx_offset = self.metadata_manager.get_doc_idx_offset()
         self.metadata_manager.clear_metadata()
         for i in range(len(raw_data_files)):
             filename, extension = os.path.splitext(raw_data_files[i])
             if extension.lower() in [ '.xls', '.xlsx' ]:
-                xls_manager = \
-                    self.xls_manager_registry[raw_data_files[i]]
+                xls_manager = self.xls_manager_registry[raw_data_files[i]]
                 raw_data = xls_manager.read_file()
             elif extension.lower() in [ '.xml' ]:
-                xml_manager = \
-                    self.xml_manager_registry[raw_data_files[i]]
+                xml_manager =  self.xml_manager_registry[raw_data_files[i]]
                 raw_data = xml_manager.read_file()
             else:
                 print('invalid file extension: ' + extension)  
@@ -864,7 +888,7 @@ class Process_manager(Manager_base):
             doc_idx_offset = \
                 self.raw_data_manager.partition_data(doc_idx_offset)
             self.raw_data_manager.print_num_of_docs_in_preprocessing_set()
-            for process_idx in range(num_processes):
+            for process_idx in range(len(self.preprocessing_dict['processes'])):
                 dynamic_data_manager_copy = deepcopy(self.dynamic_data_manager)
                 raw_data_manager_copy = deepcopy(self.raw_data_manager)
                 raw_data_manager_copy.select_process(process_idx)
@@ -873,27 +897,31 @@ class Process_manager(Manager_base):
                 argument_dict['dynamic_data_manager'] = \
                     dynamic_data_manager_copy
                 argument_dict['metadata_manager'] = metadata_manager_copy
-                argument_dict['num_processes'] = num_processes
+                argument_dict['num_processes'] = len(self.preprocessing_dict['processes'])
                 argument_dict['process_idx'] = process_idx
                 argument_dict['raw_data_manager'] = raw_data_manager_copy
                 argument_dict['start_idx'] = 0
                 argument_dict['i2e_version'] = i2e_version
                 argument_dict['password'] = password
-                argument_queues[process_idx].put(argument_dict)
-            for process_idx in range(num_processes):
-                ret = return_queues[process_idx].get()
-                if ret[2] > 0:
-                    self.dynamic_data_manager.merge_copy(ret[0])
+                self.preprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+            for process_idx in range(len(self.preprocessing_dict['processes'])):
+                return_dict = \
+                    self.preprocessing_dict['return_queues'][process_idx].get()
+                dynamic_data_manager = return_dict['dynamic_data_manager']
+                document_dict = return_dict['document_dict']
+                metadata_manager = return_dict['metadata_manager']
+                if len(document_dict.keys()) > 0:
+                    self.dynamic_data_manager.merge_copy(dynamic_data_manager)
                     self.metadata_manager.load_metadata()
-                    self.metadata_manager.merge_copy(ret[1])
+                    self.metadata_manager.merge_copy(metadata_manager)
                     self.metadata_manager.save_metadata()
                     self.metadata_manager.clear_metadata()
-                    num_docs_preprocessed += ret[2]
-        for process_idx in range(num_processes):
+                    num_docs_preprocessed += len(document_dict.keys())
+        for process_idx in range(len(self.preprocessing_dict['processes'])):
             argument_dict = {}
             argument_dict['command'] = 'stop'
-            argument_queues[process_idx].put(argument_dict)
-            processes[process_idx].join()
+            self.preprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+            self.preprocessing_dict['processes'][process_idx].join()
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
         self.dynamic_data_manager.generate_keywords_file()
         

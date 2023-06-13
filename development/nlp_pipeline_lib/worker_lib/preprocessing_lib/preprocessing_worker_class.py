@@ -7,19 +7,19 @@ Created on Fri Feb  5 13:07:13 2021
 
 #
 import datetime
-import numpy as np
 
 #
+from base_lib.worker_base_class import Worker_base
 from tools_lib.processing_tools_lib.function_processing_tools \
     import parallel_composition
     
 #
-class Preprocessing_worker(object):
+class Preprocessing_worker(Worker_base):
     
     #
     def __init__(self, static_data_object, preprocessor_registry,
                  nlp_tool_manager_registry):
-        self.static_data_object = static_data_object
+        Worker_base.__init__(self, static_data_object)
         self.preprocessor_registry = preprocessor_registry
         self.nlp_tool_manager_registry = nlp_tool_manager_registry
         static_data = self.static_data_object.get_static_data()
@@ -127,6 +127,33 @@ class Preprocessing_worker(object):
                                                                    source_metadata,
                                                                    xml_metadata)
         return dynamic_data_manager, document_dict
+    
+    def _process_data(self, argument_dict):
+        self.i2e_version = argument_dict['i2e_version'] 
+        dynamic_data_manager = argument_dict['dynamic_data_manager']
+        metadata_manager = argument_dict['metadata_manager'] 
+        self.num_processes = argument_dict['num_processes']
+        self.process_idx = argument_dict['process_idx']
+        self.raw_data_manager = argument_dict['raw_data_manager']
+        password = argument_dict['password']
+        start_idx = argument_dict['start_idx']
+        print('Process ' + str(self.process_idx) + ' starting')
+        dynamic_data_manager, document_dict = \
+            self._preprocess_documents(dynamic_data_manager, start_idx,
+                                       password)
+        argument_dict = {}
+        argument_dict['document_dict'] = document_dict
+        argument_dict['metadata_manager'] = metadata_manager
+        return_dict = \
+            parallel_composition([self._update_metadata_manager,
+                                  self._generate_files], argument_dict)
+        metadata_manager = \
+            return_dict[self._update_metadata_manager.__name__]
+        return_dict = {}
+        return_dict['dynamic_data_manager'] = dynamic_data_manager
+        return_dict['document_dict'] = document_dict
+        return_dict['metadata_manager'] = metadata_manager
+        return return_dict
             
     #
     def _update_metadata_manager(self, argument_dict):
@@ -139,7 +166,7 @@ class Preprocessing_worker(object):
         return metadata_manager
         
     #
-    def process_raw_data(self, argument_queue, return_queue):
+    def process_data(self, argument_queue, return_queue):
         run_flg = True
         while run_flg:
             argument_dict = argument_queue.get()
@@ -147,27 +174,5 @@ class Preprocessing_worker(object):
                 if argument_dict['command'] == 'stop':
                     run_flg = False
             else:
-                self.i2e_version = argument_dict['i2e_version'] 
-                dynamic_data_manager = argument_dict['dynamic_data_manager']
-                metadata_manager = argument_dict['metadata_manager'] 
-                self.num_processes = argument_dict['num_processes']
-                self.process_idx = argument_dict['process_idx']
-                self.raw_data_manager = argument_dict['raw_data_manager']
-                password = argument_dict['password']
-                start_idx = argument_dict['start_idx']
-                print('Process ' + str(self.process_idx) + ' starting')
-                dynamic_data_manager, document_dict = \
-                    self._preprocess_documents(dynamic_data_manager, start_idx,
-                                               password)
-                argument_dict = {}
-                argument_dict['document_dict'] = document_dict
-                argument_dict['metadata_manager'] = metadata_manager
-                return_dict = \
-                    parallel_composition([self._update_metadata_manager,
-                                          self._generate_files], argument_dict)
-                metadata_manager = \
-                    return_dict[self._update_metadata_manager.__name__]
-                print('Process ' + str(self.process_idx) + ' finished')
-                print(' Number documents processed: %d' % len(document_dict.keys()))
-                return_queue.put([dynamic_data_manager, metadata_manager,
-                                  len(document_dict.keys())])
+                return_dict = self._process_data(argument_dict)
+                return_queue.put(return_dict)

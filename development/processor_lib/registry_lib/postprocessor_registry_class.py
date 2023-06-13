@@ -70,6 +70,6 @@ class Postprocessor_registry(object):
                                      sections_data_dict)
             
     #
-    def run_registry(self):
+    def run_registry(self, doc_list):
         for key in self.postprocessor_registry.keys():
-            self.postprocessor_registry[key].run_postprocessor()
+            self.postprocessor_registry[key].run_postprocessor(doc_list)

@@ -170,11 +170,13 @@ class Postprocessor_base(Manager_base):
     #
     def _build_json_structures(self, argument_dict):
         data_dict_list = argument_dict['data_dict_list']
+        doc_list = argument_dict['doc_list']
         query_name = argument_dict['query_name']
         data_dict_list_out = {}
         for idx in range(len(data_dict_list)):
-            data_dict_list_out[idx] = \
-                self._build_json_structure(data_dict_list[idx], query_name)
+            if idx in doc_list:
+                data_dict_list_out[idx] = \
+                    self._build_json_structure(data_dict_list[idx], query_name)
         return_dict = {}
         return_dict['data_dict_list'] = data_dict_list_out
         return_dict['query_name'] = argument_dict['query_name']
@@ -261,38 +263,6 @@ class Postprocessor_base(Manager_base):
         return data_dict_list
     
     #
-    def _trim_sections(self, data_dict_list):
-        snippet_size = 250
-        for idx in range(len(data_dict_list)):
-            for i in range(len(data_dict_list[idx])):
-                for j in range(len(data_dict_list[idx][i]['DOCUMENT_FRAME'])):
-                    i2e_extract = \
-                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][2]
-                    section = \
-                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-2]
-                    i2e_extract_offsets = \
-                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][0]
-                    section_offsets = \
-                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][-1]
-                    m_idxs = \
-                        [m.start() for m in re.finditer(re.escape(i2e_extract), section)]
-                    if len(m_idxs) == 1:
-                        m_idx = m_idxs[0]
-                        neighborhood = (snippet_size - len(i2e_extract)) // 2
-                        if neighborhood <= m_idx:
-                            start = m_idx - neighborhood
-                            remainder = 0
-                        else:
-                            start = 0
-                            remainder = neighborhood - m_idx
-                        if m_idx + len(i2e_extract) + neighborhood + remainder <= len(section):
-                            stop = m_idx + len(i2e_extract) + neighborhood + remainder
-                        else:
-                            stop = len(section)
-                        snippet = section[start:stop]
-        return data_dict_list
-    
-    #
     def _include_snippets(self, argument_dict):
         data_dict_list = sequential_composition([self._include_full_section,
                                                  self._trim_sections],
@@ -303,9 +273,8 @@ class Postprocessor_base(Manager_base):
     def _merge_data_dicts(self, argument_dict):
         data_dict_list = argument_dict['data_dict_list']
         nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
-        num_components = len(self.data_dict_list)
         doc_ids = []
-        for idx in range(num_components):
+        for idx in range(len(data_dict_list)):
             for i in range(len(data_dict_list[idx])):
                 doc_ids.append(data_dict_list[idx][i]['DOCUMENT_ID'])
         doc_ids = sorted(list(set(doc_ids)))
@@ -314,7 +283,7 @@ class Postprocessor_base(Manager_base):
         for doc_id in doc_ids:
             document_frame = {}
             nlp_data = {}
-            for idx in range(num_components):
+            for idx in range(len(data_dict_list)):
                 document_frame[idx] = None
                 nlp_data[idx] = None
                 for i in range(len(data_dict_list[idx])):
@@ -358,6 +327,38 @@ class Postprocessor_base(Manager_base):
         return return_dict
     
     #
+    def _trim_sections(self, data_dict_list):
+        snippet_size = 250
+        for idx in range(len(data_dict_list)):
+            for i in range(len(data_dict_list[idx])):
+                for j in range(len(data_dict_list[idx][i]['DOCUMENT_FRAME'])):
+                    i2e_extract = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][2]
+                    section = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-2]
+                    i2e_extract_offsets = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][0]
+                    section_offsets = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][-1]
+                    m_idxs = \
+                        [m.start() for m in re.finditer(re.escape(i2e_extract), section)]
+                    if len(m_idxs) == 1:
+                        m_idx = m_idxs[0]
+                        neighborhood = (snippet_size - len(i2e_extract)) // 2
+                        if neighborhood <= m_idx:
+                            start = m_idx - neighborhood
+                            remainder = 0
+                        else:
+                            start = 0
+                            remainder = neighborhood - m_idx
+                        if m_idx + len(i2e_extract) + neighborhood + remainder <= len(section):
+                            stop = m_idx + len(i2e_extract) + neighborhood + remainder
+                        else:
+                            stop = len(section)
+                        snippet = section[start:stop]
+        return data_dict_list
+    
+    #
     def pull_data_dict_base_keys_list(self):
         return [ 'DOCUMENT_ID', 'DOCUMENT_FRAME' ]
     
@@ -379,7 +380,7 @@ class Postprocessor_base(Manager_base):
         self.diagnosis_reader = diagnosis_reader
     
     #
-    def run_postprocessor(self, query_name=None, section_name=None):
+    def run_postprocessor(self, doc_list, query_name=None, section_name=None):
         argument_dict = {}
         argument_dict['data_dict_list'] = self.data_dict_list
         argument_dict['filename'] = self.filename
@@ -390,6 +391,7 @@ class Postprocessor_base(Manager_base):
         argument_dict = {}
         argument_dict['data_dict_list'] = \
             return_dict[self._include_snippets.__name__]
+        argument_dict['doc_list'] = doc_list
         argument_dict['query_name'] = return_dict[_get_query_name.__name__]
         self.merged_data_dict_list = sequential_composition([self._build_json_structures,
                                                              self._merge_data_dicts,
