@@ -809,6 +809,7 @@ class Process_manager(Manager_base):
             argument_dict['json_manager_registry'] = json_manager_registry_copy
             argument_dict['nlp_data_key'] = self.nlp_data_key
             argument_dict['postprocessor_registry'] = postprocessor_registry_copy
+            argument_dict['process_idx'] = process_idx
             self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
         for process_idx in range(len(self.postprocessing_dict['processes'])):
             return_dict = \

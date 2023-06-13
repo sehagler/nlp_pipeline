@@ -137,7 +137,6 @@ class Preprocessing_worker(Worker_base):
         self.raw_data_manager = argument_dict['raw_data_manager']
         password = argument_dict['password']
         start_idx = argument_dict['start_idx']
-        print('Process ' + str(self.process_idx) + ' starting')
         dynamic_data_manager, document_dict = \
             self._preprocess_documents(dynamic_data_manager, start_idx,
                                        password)
@@ -164,15 +163,3 @@ class Preprocessing_worker(Worker_base):
                                                    document_dict[document_idx]['source_metadata'],
                                                    document_dict[document_idx]['nlp_metadata'])
         return metadata_manager
-        
-    #
-    def process_data(self, argument_queue, return_queue):
-        run_flg = True
-        while run_flg:
-            argument_dict = argument_queue.get()
-            if 'command' in argument_dict:
-                if argument_dict['command'] == 'stop':
-                    run_flg = False
-            else:
-                return_dict = self._process_data(argument_dict)
-                return_queue.put(return_dict)

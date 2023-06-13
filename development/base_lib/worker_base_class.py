@@ -21,5 +21,8 @@ class Worker_base(object):
                 if argument_dict['command'] == 'stop':
                     run_flg = False
             else:
+                process_idx = argument_dict['process_idx']
+                print('Process ' + str(process_idx) + ' starting')
                 return_dict = self._process_data(argument_dict)
+                print('Process ' + str(process_idx) + ' ending')
                 return_queue.put(return_dict)
