@@ -236,29 +236,68 @@ class Postprocessor_base(Manager_base):
         return _get_data_table_keys(data_table)
     
     #
-    def _include_snippets(self, argument_dict):
-        data_dict_list_out = self.data_dict_list
-        for idx in range(len(data_dict_list_out)):
-            for i in range(len(data_dict_list_out[idx])):
-                document_id = data_dict_list_out[idx][i]['DOCUMENT_ID']
+    def _include_full_section(self, argument_dict):
+        data_dict_list = argument_dict['data_dict_list']
+        for idx in range(len(data_dict_list)):
+            for i in range(len(data_dict_list[idx])):
+                document_id = data_dict_list[idx][i]['DOCUMENT_ID']
                 for j in range(len(self.sections_data_dict)):
                     if self.sections_data_dict[j]['DOCUMENT_ID'] == document_id:
                         sections = self.sections_data_dict[j]['DOCUMENT_FRAME']
-                for j in range(len(data_dict_list_out[idx][i]['DOCUMENT_FRAME'])):
-                    offsets = data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1]
+                for j in range(len(data_dict_list[idx][i]['DOCUMENT_FRAME'])):
+                    offsets = data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1]
                     offsets.append('NONE')
-                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j] = \
-                        data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][:-1]
-                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j].append('NONE')
-                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j].append(offsets)
-                    section = data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][0]
+                    data_dict_list[idx][i]['DOCUMENT_FRAME'][j] = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][:-1]
+                    data_dict_list[idx][i]['DOCUMENT_FRAME'][j].append('NONE')
+                    data_dict_list[idx][i]['DOCUMENT_FRAME'][j].append(offsets)
+                    section = data_dict_list[idx][i]['DOCUMENT_FRAME'][j][0]
                     for k in range(len(sections)):
                         if sections[k][0] == section:
-                            data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-2] = \
+                            data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-2] = \
                                 sections[k][-2]
-                            data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1][-1] = \
+                            data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][-1] = \
                                 sections[k][-1][0]
-        return data_dict_list_out
+        return data_dict_list
+    
+    #
+    def _trim_sections(self, data_dict_list):
+        snippet_size = 250
+        for idx in range(len(data_dict_list)):
+            for i in range(len(data_dict_list[idx])):
+                for j in range(len(data_dict_list[idx][i]['DOCUMENT_FRAME'])):
+                    i2e_extract = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][2]
+                    section = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-2]
+                    i2e_extract_offsets = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][0]
+                    section_offsets = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][-1]
+                    m_idxs = \
+                        [m.start() for m in re.finditer(re.escape(i2e_extract), section)]
+                    if len(m_idxs) == 1:
+                        m_idx = m_idxs[0]
+                        neighborhood = (snippet_size - len(i2e_extract)) // 2
+                        if neighborhood <= m_idx:
+                            start = m_idx - neighborhood
+                            remainder = 0
+                        else:
+                            start = 0
+                            remainder = neighborhood - m_idx
+                        if m_idx + len(i2e_extract) + neighborhood + remainder <= len(section):
+                            stop = m_idx + len(i2e_extract) + neighborhood + remainder
+                        else:
+                            stop = len(section)
+                        snippet = section[start:stop]
+        return data_dict_list
+    
+    #
+    def _include_snippets(self, argument_dict):
+        data_dict_list = sequential_composition([self._include_full_section,
+                                                 self._trim_sections],
+                                                argument_dict)
+        return data_dict_list
     
     #
     def _merge_data_dicts(self, argument_dict):
@@ -342,11 +381,12 @@ class Postprocessor_base(Manager_base):
     #
     def run_postprocessor(self, query_name=None, section_name=None):
         argument_dict = {}
+        argument_dict['data_dict_list'] = self.data_dict_list
         argument_dict['filename'] = self.filename
         argument_dict['query_name'] = query_name
         return_dict = parallel_composition([_get_query_name,
-                                              self._include_snippets],
-                                             argument_dict)
+                                            self._include_snippets],
+                                            argument_dict)
         argument_dict = {}
         argument_dict['data_dict_list'] = \
             return_dict[self._include_snippets.__name__]

@@ -271,29 +271,28 @@ class Linguamatics_i2e_object(object):
                     else:
                         colname = None
                     if colname is not None and colname in cell_to_colix:
+                        htext = cell.find('.//Text').text
                         if colname != 'hit':
-                            text = cell.find('.//Text').text
-                            if text is not None:
+                            if htext is not None:
                                 if row[cell_to_colix[colname]]:
-                                    text = ' {}'.format(text)
-                                    row[cell_to_colix[colname]] += text
+                                    htext = ' {}'.format(htext)
+                                    row[cell_to_colix[colname]] += htext
                                 else:
-                                    text = text.strip()
-                                    row[cell_to_colix[colname]] = text
+                                    htext = htext.strip()
+                                    row[cell_to_colix[colname]] = htext
                             else:
                                 row[cell_to_colix[colname]] = ''
-                            if colname not in [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Speciment Id']:
-                                extractions.append(text)
+                            if colname not in [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Speciment Id'] and \
+                               htext is not None:
+                                extractions.append(htext)
                         else:
                             hit_spans = cell.findall('.//HitSpan')
                             if hit_spans:
                                 hit_spans = set(
                                     [ET.tostring(h).strip() for h in hit_spans])
-                                offsets = list()
                                 targets = list()
                                 for hit_span in hit_spans:
                                     hit_span = ET.fromstring(hit_span)
-                                    htext = cell.find('.//Text').text
                                     is_sent = hit_span.find('.//IsSentence')
                                     if is_sent is None:
                                         url = hit_span.find('.//URL').text
@@ -310,10 +309,8 @@ class Linguamatics_i2e_object(object):
                                         targets_in_text = (start, stop)
                                         targets.append(tuple([ targets_in_hit,
                                                                targets_in_text ]))
-                                        offsets.append(tuple([ start, start + len(htext) ]))
                                 highlighted_spans = self._get_hit_highlights(htext,
                                                                              targets)
-                                #targets_bak = targets[0][1]
                                 targets = []
                                 for i in range(len(extractions)):
                                     extraction = extractions[i]
@@ -327,7 +324,18 @@ class Linguamatics_i2e_object(object):
                                         targets.append('')
                                 targets = targets[1:-1]
                                 if len(targets) == 0:
-                                    targets.append(offsets[0])
+                                    for i in range(len(extractions)):
+                                        extraction = extractions[i]
+                                        prefix = htext.replace(extraction, '')
+                                        highlighted_span_found_flg = False
+                                        for highlighted_span in highlighted_spans:
+                                            if not highlighted_span_found_flg and \
+                                               extraction.startswith(highlighted_span[1]):
+                                                x = highlighted_span[0][0] + len(prefix)
+                                                targets.append(tuple([x, x + len(extraction)]))
+                                                highlighted_span_found_flg = True
+                                        if not highlighted_span_found_flg:
+                                            targets.append('')
                                 if text_spans:
                                     row[cell_to_colix['coords']] = targets
                             else:

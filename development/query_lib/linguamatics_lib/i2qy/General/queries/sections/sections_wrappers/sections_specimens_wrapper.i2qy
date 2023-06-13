@@ -6,11 +6,7 @@ query:
       snid: hc.titled_section
       pt: Titled Section
       where:
-      - region:
-          id: region1
-          snid: hc.section_title
-          pt: Section Title
-          where: [SUMMARY]
+      - region: {id: region1, snid: hc.section_title, pt: Section Title}
       - region:
           snid: hc.section_body
           pt: Section Body
