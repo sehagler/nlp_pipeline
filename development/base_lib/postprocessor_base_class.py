@@ -170,13 +170,11 @@ class Postprocessor_base(Manager_base):
     #
     def _build_json_structures(self, argument_dict):
         data_dict_list = argument_dict['data_dict_list']
-        doc_list = argument_dict['doc_list']
         query_name = argument_dict['query_name']
         data_dict_list_out = {}
         for idx in range(len(data_dict_list)):
-            if idx in doc_list:
-                data_dict_list_out[idx] = \
-                    self._build_json_structure(data_dict_list[idx], query_name)
+            data_dict_list_out[idx] = \
+                self._build_json_structure(data_dict_list[idx], query_name)
         return_dict = {}
         return_dict['data_dict_list'] = data_dict_list_out
         return_dict['query_name'] = argument_dict['query_name']
@@ -264,7 +262,8 @@ class Postprocessor_base(Manager_base):
     
     #
     def _include_snippets(self, argument_dict):
-        data_dict_list = sequential_composition([self._include_full_section,
+        data_dict_list = sequential_composition([self._trim_documents,
+                                                 self._include_full_section,
                                                  self._trim_sections],
                                                 argument_dict)
         return data_dict_list
@@ -327,6 +326,22 @@ class Postprocessor_base(Manager_base):
         return return_dict
     
     #
+    def _trim_documents(self, argument_dict):
+        data_dict_list = argument_dict['data_dict_list']
+        document_list = argument_dict['doc_list']
+        data_dict_list_out = []
+        for i in range(len(data_dict_list)):
+            document_dict_list_out = []
+            for j in range(len(data_dict_list[i])):
+                document_id = int(data_dict_list[i][j]['DOCUMENT_ID'])
+                if document_id in document_list:
+                    document_dict_list_out.append(data_dict_list[i][j])
+            data_dict_list_out.append(document_dict_list_out)
+        return_dict = argument_dict
+        return_dict['data_dict_list'] = data_dict_list_out
+        return return_dict
+    
+    #
     def _trim_sections(self, data_dict_list):
         snippet_size = 250
         for idx in range(len(data_dict_list)):
@@ -383,6 +398,7 @@ class Postprocessor_base(Manager_base):
     def run_postprocessor(self, doc_list, query_name=None, section_name=None):
         argument_dict = {}
         argument_dict['data_dict_list'] = self.data_dict_list
+        argument_dict['doc_list'] = doc_list
         argument_dict['filename'] = self.filename
         argument_dict['query_name'] = query_name
         return_dict = parallel_composition([_get_query_name,
@@ -391,7 +407,6 @@ class Postprocessor_base(Manager_base):
         argument_dict = {}
         argument_dict['data_dict_list'] = \
             return_dict[self._include_snippets.__name__]
-        argument_dict['doc_list'] = doc_list
         argument_dict['query_name'] = return_dict[_get_query_name.__name__]
         self.merged_data_dict_list = sequential_composition([self._build_json_structures,
                                                              self._merge_data_dicts,

@@ -810,6 +810,7 @@ class Process_manager(Manager_base):
             argument_dict['nlp_data_key'] = self.nlp_data_key
             argument_dict['postprocessor_registry'] = postprocessor_registry_copy
             argument_dict['process_idx'] = process_idx
+            argument_dict['doc_list']
             self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
         for process_idx in range(len(self.postprocessing_dict['processes'])):
             return_dict = \

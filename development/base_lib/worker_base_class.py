@@ -16,13 +16,14 @@ class Worker_base(object):
     def process_data(self, argument_queue, return_queue):
         run_flg = True
         while run_flg:
-            argument_dict = argument_queue.get()
-            if 'command' in argument_dict:
-                if argument_dict['command'] == 'stop':
-                    run_flg = False
-            else:
-                process_idx = argument_dict['process_idx']
-                print('Process ' + str(process_idx) + ' starting')
-                return_dict = self._process_data(argument_dict)
-                print('Process ' + str(process_idx) + ' ending')
-                return_queue.put(return_dict)
+            if not argument_queue.empty():
+                argument_dict = argument_queue.get()
+                if 'command' in argument_dict:
+                    if argument_dict['command'] == 'stop':
+                        run_flg = False
+                else:
+                    process_idx = argument_dict['process_idx']
+                    print('Process ' + str(process_idx) + ' starting')
+                    return_dict = self._process_data(argument_dict)
+                    print('Process ' + str(process_idx) + ' ending')
+                    return_queue.put(return_dict)
