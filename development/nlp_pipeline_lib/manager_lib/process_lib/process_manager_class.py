@@ -52,6 +52,33 @@ from tools_lib.processing_tools_lib.file_processing_tools \
     import read_json_file, read_txt_file, write_file
     
 #
+def _build_data_dictionary(data_dict):
+    data_dict_list = []
+    if bool(data_dict):
+        for key in data_dict.keys():
+            document_dict = {}
+            document_dict['DOCUMENT_ID'] = key
+            document_frame = []
+            document_frame = _build_document_frame(data_dict[key])
+            document_dict['DOCUMENT_FRAME'] = document_frame
+            data_dict_list.append(document_dict)
+    return data_dict_list
+    
+#
+def _build_document_frame(data_list):
+    document_frame = []
+    for item in data_list:
+        entry = []
+        entry.append(tuple([item[1], item[2]]))
+        entry.append(item[0])
+        entry.append(item[3])
+        document_frame.append(entry)
+        num_elements = len(item) - 4
+        for i in range(num_elements):
+            entry.append(item[4+i])
+    return document_frame
+    
+#
 def _create_keywords_regexp(keywords):
     keywords_list = keywords.split('\n')
     keywords_list.remove('')
@@ -182,7 +209,7 @@ class Process_manager(Manager_base):
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         self.i2e_version = \
             linguamatics_i2e_object.get_i2e_version(password)
-        # Kludge to get around memory issue in processor    
+        # Kludge to get around memory issue in processor
     
     #
     def _create_managers(self, remote_registry, password):
@@ -631,14 +658,14 @@ class Process_manager(Manager_base):
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         linguamatics_i2e_object.generate_regions_file(preprocessing_data_out_dir,
-                                                       processing_data_dir)
+                                                      processing_data_dir)
         linguamatics_i2e_object.generate_xml_configuation_file(preprocessing_data_out_dir,
-                                                                processing_data_dir)
+                                                               processing_data_dir)
         linguamatics_i2e_object.login()
         linguamatics_i2e_object.push_resources(project_name, keywords_file,
-                                                preprocessing_data_out_dir,
-                                                processing_data_dir, source_data_dir,
-                                                max_files_per_zip, root_dir_flg)
+                                               preprocessing_data_out_dir,
+                                               processing_data_dir, source_data_dir,
+                                               max_files_per_zip, root_dir_flg)
         linguamatics_i2e_object.logout()
         
     #
@@ -773,7 +800,7 @@ class Process_manager(Manager_base):
         filelist = os.listdir(data_dir)
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        sections_data_dict_list = \
+        sections_data_dict = \
             linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
         if static_data['project_subdir'] == 'test' and \
            'test_postprocessing_data_in_files' in static_data.keys():
@@ -783,16 +810,7 @@ class Process_manager(Manager_base):
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 self.postprocessor_registry.create_postprocessor(filename)
-        for filename in filelist:
-            filename_base, extension = os.path.splitext(filename)
-            if extension in [ '.csv' ]:
-                data_dict = \
-                    linguamatics_i2e_object.generate_data_dict(data_dir, filename)
-                self.postprocessor_registry.push_data_dict(filename, data_dict,
-                                                           sections_data_dict_list)
-        doc_list = []
-        for i in range(len(sections_data_dict_list)):
-            doc_list.append(int(sections_data_dict_list[i]['DOCUMENT_ID']))
+        doc_list = sections_data_dict.keys()
         doc_list = sorted(list(set(doc_list)))
         partitioned_doc_array_list = np.array_split(doc_list, num_processes)
         partitioned_doc_list = []
@@ -803,14 +821,20 @@ class Process_manager(Manager_base):
         for process_idx in range(len(self.postprocessing_dict['processes'])):
             json_manager_registry_copy = deepcopy(self.json_manager_registry)
             postprocessor_registry_copy = deepcopy(self.postprocessor_registry)
+            for filename in filelist:
+                filename_base, extension = os.path.splitext(filename)
+                if extension in [ '.csv' ]:
+                    data_dict = \
+                        linguamatics_i2e_object.generate_data_dict(data_dir, filename)
+                    postprocessor_registry_copy.push_data_dict(filename, data_dict,
+                                                               sections_data_dict,
+                                                               partitioned_doc_list[process_idx])
             argument_dict = {}
-            argument_dict['doc_list'] = partitioned_doc_list[process_idx]
             argument_dict['filename'] = filename
             argument_dict['json_manager_registry'] = json_manager_registry_copy
             argument_dict['nlp_data_key'] = self.nlp_data_key
             argument_dict['postprocessor_registry'] = postprocessor_registry_copy
             argument_dict['process_idx'] = process_idx
-            argument_dict['doc_list']
             self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
         for process_idx in range(len(self.postprocessing_dict['processes'])):
             return_dict = \

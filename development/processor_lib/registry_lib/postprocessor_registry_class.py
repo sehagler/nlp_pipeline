@@ -25,11 +25,12 @@ class Postprocessor_registry(object):
         
     #
     def _push_data_dict(self, postprocessor_name, filename, data_dict,
-                        sections_data_dict):
+                        sections_data_dict, document_list):
         self.postprocessor_registry[postprocessor_name].push_data_dict(postprocessor_name,
                                                                        filename,
                                                                        data_dict, 
-                                                                       sections_data_dict)
+                                                                       sections_data_dict,
+                                                                       document_list)
 
     #
     def _register_postprocessor(self, postprocessor_name, postprocessor):
@@ -62,14 +63,15 @@ class Postprocessor_registry(object):
         return self.postprocessor_registry
      
     #
-    def push_data_dict(self, filename, data_dict, sections_data_dict):
+    def push_data_dict(self, filename, data_dict, sections_data_dict,
+                       document_list):
         filename_base, extension = os.path.splitext(filename)
         if extension == '.csv' and filename_base != 'sections':
             for key in self.postprocessor_registry.keys():
                 self._push_data_dict(key, filename_base, data_dict,
-                                     sections_data_dict)
+                                     sections_data_dict, document_list)
             
     #
-    def run_registry(self, doc_list):
+    def run_registry(self):
         for key in self.postprocessor_registry.keys():
-            self.postprocessor_registry[key].run_postprocessor(doc_list)
+            self.postprocessor_registry[key].run_postprocessor()

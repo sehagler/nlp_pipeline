@@ -25,12 +25,11 @@ class Postprocessing_worker(Worker_base):
         
     #
     def _process_data(self, argument_dict):
-        doc_list = argument_dict['doc_list']
         filename = argument_dict['filename']
         self.json_manager_registry = argument_dict['json_manager_registry']
         nlp_data_key = argument_dict['nlp_data_key']
         self.postprocessor_registry = argument_dict['postprocessor_registry']
-        self.postprocessor_registry.run_registry(doc_list)
+        self.postprocessor_registry.run_registry()
         postprocessor_registry = \
             self.postprocessor_registry.pull_postprocessor_registry()
         for key in postprocessor_registry.keys():

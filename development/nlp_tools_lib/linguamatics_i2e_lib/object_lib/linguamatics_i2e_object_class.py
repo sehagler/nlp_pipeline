@@ -2,12 +2,6 @@ from __future__ import unicode_literals, print_function
 
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 2 10:02:08 2021
-
-@author: haglers
-"""
-# -*- coding: utf-8 -*-
-"""
 Created on Fri Jan 04 10:50:12 2019
 
 @author: haglers
@@ -85,30 +79,6 @@ class Linguamatics_i2e_object(object):
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
-        
-    #
-    def _build_data_dictionary(self):
-        for key in self.data_csv.keys():
-            document_dict = {}
-            document_dict['DOCUMENT_ID'] = key
-            document_frame = []
-            document_frame = self._build_document_frame(self.data_csv[key])
-            document_dict['DOCUMENT_FRAME'] = document_frame
-            self.data_dict_list.append(document_dict)
-            
-    #
-    def _build_document_frame(self, data_list):
-        document_frame = []
-        for item in data_list:
-            entry = []
-            entry.append(tuple([item[1], item[2]]))
-            entry.append(item[0])
-            entry.append(item[3])
-            document_frame.append(entry)
-            num_elements = len(item) - 4
-            for i in range(num_elements):
-                entry.append(item[4+i])
-        return(document_frame)
         
     #
     def _fix_queries(self, query_paths):
@@ -430,11 +400,7 @@ class Linguamatics_i2e_object(object):
                     row[-1] = ast.literal_eval(row[-1])
                     data_dict[row[0]].append(row[1:])
                 line_count += 1
-        self.data_csv = data_dict
-        self.data_dict_list = []
-        if bool(self.data_csv):
-            self._build_data_dictionary()
-        return self.data_dict_list
+        return data_dict
     
     #
     def generate_query_bundle_file(self, project_name,
