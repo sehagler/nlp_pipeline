@@ -816,6 +816,13 @@ class Process_manager(Manager_base):
         partitioned_doc_list = []
         for i in range(len(partitioned_doc_array_list)):
             partitioned_doc_list.append(partitioned_doc_array_list[i].tolist())
+        data_dict_dict = {}
+        for filename in filelist:
+            filename_base, extension = os.path.splitext(filename)
+            if extension in [ '.csv' ]:
+                data_dict = \
+                    linguamatics_i2e_object.generate_data_dict(data_dir, filename)
+                data_dict_dict[filename_base] = data_dict
         for process_idx in range(len(self.postprocessing_dict['processes'])):
             self.postprocessing_dict['processes'][process_idx].start()
         for process_idx in range(len(self.postprocessing_dict['processes'])):
@@ -824,9 +831,7 @@ class Process_manager(Manager_base):
             for filename in filelist:
                 filename_base, extension = os.path.splitext(filename)
                 if extension in [ '.csv' ]:
-                    data_dict = \
-                        linguamatics_i2e_object.generate_data_dict(data_dir, filename)
-                    postprocessor_registry_copy.push_data_dict(filename, data_dict,
+                    postprocessor_registry_copy.push_data_dict(filename, data_dict_dict[filename_base],
                                                                sections_data_dict,
                                                                partitioned_doc_list[process_idx])
             argument_dict = {}
@@ -837,8 +842,7 @@ class Process_manager(Manager_base):
             argument_dict['process_idx'] = process_idx
             self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
         for process_idx in range(len(self.postprocessing_dict['processes'])):
-            return_dict = \
-                self.postprocessing_dict['return_queues'][process_idx].get()
+            self.postprocessing_dict['return_queues'][process_idx].get()
         for process_idx in range(len(self.postprocessing_dict['processes'])):
             argument_dict = {}
             argument_dict['command'] = 'stop'
