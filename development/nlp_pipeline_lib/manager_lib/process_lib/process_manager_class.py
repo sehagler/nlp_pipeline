@@ -337,6 +337,10 @@ class Process_manager(Manager_base):
             self.postprocessing_dict['processes'].append(p)
             self.postprocessing_dict['argument_queues'].append(aq)
             self.postprocessing_dict['return_queues'].append(rq)
+        for process_idx in range(len(self.preprocessing_dict['processes'])):
+            self.preprocessing_dict['processes'][process_idx].start()
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            self.postprocessing_dict['processes'][process_idx].start()
         
     #
     def _collect_performance_statistics_dict(self):
@@ -824,8 +828,6 @@ class Process_manager(Manager_base):
                     linguamatics_i2e_object.generate_data_dict(data_dir, filename)
                 data_dict_dict[filename_base] = data_dict
         for process_idx in range(len(self.postprocessing_dict['processes'])):
-            self.postprocessing_dict['processes'][process_idx].start()
-        for process_idx in range(len(self.postprocessing_dict['processes'])):
             json_manager_registry_copy = deepcopy(self.json_manager_registry)
             postprocessor_registry_copy = deepcopy(self.postprocessor_registry)
             for filename in filelist:
@@ -886,8 +888,6 @@ class Process_manager(Manager_base):
             raw_data_files.append(os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))            
         num_docs_preprocessed = 0
-        for process_idx in range(len(self.preprocessing_dict['processes'])):
-            self.preprocessing_dict['processes'][process_idx].start()
         self.metadata_manager.load_metadata()
         doc_idx_offset = self.metadata_manager.get_doc_idx_offset()
         self.metadata_manager.clear_metadata()
