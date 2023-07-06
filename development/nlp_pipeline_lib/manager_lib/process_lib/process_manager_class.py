@@ -44,10 +44,12 @@ from nlp_text_normalization_lib.object_lib.text_normalization_object_class \
     import Text_normalization_object
 from processor_lib.registry_lib.preprocessor_registry_class \
     import Preprocessor_registry
-from nlp_pipeline_lib.worker_lib.postprocessing_lib.postprocessing_worker_class \
+from nlp_pipeline_lib.worker_lib.postprocessing_worker_class \
     import Postprocessing_worker
-from nlp_pipeline_lib.worker_lib.preprocessing_lib.preprocessing_worker_class \
+from nlp_pipeline_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
+from nlp_pipeline_lib.worker_lib.simple_template_worker_class \
+    import Simple_template_worker
 from tools_lib.processing_tools_lib.file_processing_tools \
     import read_json_file, read_txt_file, write_file
     
@@ -201,8 +203,10 @@ class Process_manager(Manager_base):
         Manager_base.__init__(self, static_data_object)
         self.password = password
         self._project_imports()
-        self._create_managers(remote_registry, password)
+        self._create_managers(password)
+        self._create_registries(remote_registry, password)
         self._create_workers()
+        self._start_workers()
         
         # Kludge to get around memory issue in processor
         linguamatics_i2e_object = \
@@ -212,7 +216,7 @@ class Process_manager(Manager_base):
         # Kludge to get around memory issue in processor
     
     #
-    def _create_managers(self, remote_registry, password):
+    def _create_managers(self, password):
         static_data = self.static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
         project_name = static_data['project_name']
@@ -264,9 +268,6 @@ class Process_manager(Manager_base):
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_object)
         self.metadata_manager = Metadata_manager(self.static_data_object)
-        self.nlp_tool_registry = \
-            Nlp_tool_registry(self.static_data_object, remote_registry,
-                              password)
         evaluator_registry = Evaluator_registry(static_data)
         evaluator_registry.create_evaluators()
         evaluation_manager = \
@@ -282,18 +283,8 @@ class Process_manager(Manager_base):
         except Exception:
             traceback.print_exc()
             self.performance_data_manager = None
-        self.postprocessor_registry = \
-            Postprocessor_registry(self.static_data_object,
-                                   self.metadata_manager)
-        text_normalization_object = \
-            Text_normalization_object(static_data['section_header_structure_tools'],
-                                      static_data['remove_date'])
-        self.preprocessor_registry = Preprocessor_registry(static_data)
-        self.preprocessor_registry.push_text_normalization_object(text_normalization_object)
-        self.preprocessor_registry.create_preprocessors()
         self.output_manager = Output_manager(self.static_data_object, 
                                              self.metadata_manager)
-        
         multiprocessing_flg = static_data['multiprocessing']
         if multiprocessing_flg:
             keys = list(static_data['raw_data_files'].keys())
@@ -306,6 +297,23 @@ class Process_manager(Manager_base):
         # kludge to get postperformance() working
         self.json_manager_registry = json_manager_registry
         # kludge to get postperformance() working
+        
+    #
+    def _create_registries(self, remote_registry, password):
+        static_data = self.static_data_object.get_static_data()
+        self.nlp_tool_registry = \
+            Nlp_tool_registry(self.static_data_object, remote_registry,
+                              password)
+        self.postprocessor_registry = \
+            Postprocessor_registry(self.static_data_object,
+                                   self.metadata_manager)
+        text_normalization_object = \
+            Text_normalization_object(static_data['section_header_structure_tools'],
+                                      static_data['remove_date'])
+            
+        self.preprocessor_registry = Preprocessor_registry(static_data)
+        self.preprocessor_registry.push_text_normalization_object(text_normalization_object)
+        self.preprocessor_registry.create_preprocessors()
         
     #
     def _create_workers(self):
@@ -337,10 +345,18 @@ class Process_manager(Manager_base):
             self.postprocessing_dict['processes'].append(p)
             self.postprocessing_dict['argument_queues'].append(aq)
             self.postprocessing_dict['return_queues'].append(rq)
-        for process_idx in range(len(self.preprocessing_dict['processes'])):
-            self.preprocessing_dict['processes'][process_idx].start()
-        for process_idx in range(len(self.postprocessing_dict['processes'])):
-            self.postprocessing_dict['processes'][process_idx].start()
+        self.simple_template_dict = {}
+        self.simple_template_dict['processes'] = []
+        self.simple_template_dict['argument_queues'] = []
+        self.simple_template_dict['return_queues'] = []
+        for process_idx in range(num_processes):
+            aq = multiprocessing.Queue()
+            rq = multiprocessing.Queue()
+            w = Simple_template_worker(self.static_data_object)
+            p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
+            self.simple_template_dict['processes'].append(p)
+            self.simple_template_dict['argument_queues'].append(aq)
+            self.simple_template_dict['return_queues'].append(rq)
         
     #
     def _collect_performance_statistics_dict(self):
@@ -394,7 +410,6 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         raw_data_files_dict = static_data['raw_data_files']
         raw_data_files = list(raw_data_files_dict.keys())
-        document_dict = {}
         for data_file in raw_data_files:
             document_numbers = \
                 raw_data_manager.get_document_numbers(data_file)
@@ -413,6 +428,24 @@ class Process_manager(Manager_base):
                 metadata[document_number]['nlp_metadata'] = \
                     nlp_metadata_list[0]
         return metadata
+    
+    #
+    def _get_partitioned_document_list(self):
+        static_data = self.static_data_object.get_static_data()
+        directory_manager = static_data['directory_manager']
+        data_dir = directory_manager.pull_directory('postprocessing_data_in')
+        num_processes = static_data['num_processes']
+        linguamatics_i2e_object = \
+            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+        sections_data_dict = \
+            linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
+        doc_list = sections_data_dict.keys()
+        doc_list = sorted(list(set(doc_list)))
+        partitioned_doc_array_list = np.array_split(doc_list, num_processes)
+        partitioned_doc_list = []
+        for i in range(len(partitioned_doc_array_list)):
+            partitioned_doc_list.append(partitioned_doc_array_list[i].tolist())
+        return partitioned_doc_list
         
     #
     def _ohsu_nlp_templates_generate_AB_fields(self):
@@ -486,10 +519,11 @@ class Process_manager(Manager_base):
             '''
             linguamatics_i2e_AB_fields_path = \
                 template_manager.pull_linguamatics_i2e_AB_fields_path()
-            data_AB_fields_dir = \
-                directory_manager.pull_directory('AB_fields_dir')
+            #data_AB_fields_dir = \
+            #    directory_manager.pull_directory('AB_fields_dir')
             filename, extension = os.path.splitext(file)
-            filename = re.sub('_AB_fields_template_manager_class', '', filename)
+            filename = \
+                re.sub('_AB_fields_template_manager_class', '', filename)
             for field in [ '_AB_field', '_BA_field' ]:
                 i2qy_file =  user + '/' + linguamatics_i2e_AB_fields_path + \
                              '/' + filename + field + '.i2qy'
@@ -546,6 +580,13 @@ class Process_manager(Manager_base):
             import_cmd = 'from processor_lib.registry_lib.postprocessor_registry_class import Postprocessor_registry'
             exec(import_cmd, globals())
             print('Postprocessor_registry: Postprocessor_registry')
+            
+    #
+    def _start_workers(self):
+        for process_idx in range(len(self.preprocessing_dict['processes'])):
+            self.preprocessing_dict['processes'][process_idx].start()
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            self.postprocessing_dict['processes'][process_idx].start()
             
     #
     def _total_documents(self):
@@ -750,14 +791,39 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             print('OHSU NLP Template Manager: ' + class_name)
             template_manager = Template_manager(self.static_data_object)
+            
+            num_processes = static_data['num_processes']
+            linguamatics_i2e_object = \
+                self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            sections_data_dict = \
+                linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
+            doc_list = sections_data_dict.keys()
+            doc_list = sorted(list(set(doc_list)))
+            partitioned_doc_array_list = np.array_split(doc_list, num_processes)
+            partitioned_doc_list = []
+            for i in range(len(partitioned_doc_array_list)):
+                partitioned_doc_list.append(partitioned_doc_array_list[i].tolist())
+            
             ohsu_nlp_template_manager.clear_simple_template_output()
             ohsu_nlp_template_manager.run_simple_template(template_manager, 
-                                                          self.template_text_dict)
+                                                          self.template_text_dict,
+                                                          doc_list)
             filename, extension = os.path.splitext(file)
             filename = re.sub('_simple_template_manager_class', '', filename)
-            ohsu_nlp_template_manager.write_simple_template_output(template_manager,
-                                                            data_dir,
-                                                            filename + '.csv')
+            template_output = \
+                ohsu_nlp_template_manager.pull_simple_template_output()
+            csv_filename = filename + '.csv'
+            template_dict = template_manager.simple_template()
+            template_headers = template_dict['template_headers']
+            header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
+            for i in range(len(template_headers)):
+                header.append(template_headers[i])
+            #header.append('Snippet')
+            header.append('Coords')
+            with open(os.path.join(data_dir, csv_filename), 'w', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(header)
+                writer.writerows(template_output)
         
     #
     def postperformance(self):
@@ -798,7 +864,6 @@ class Process_manager(Manager_base):
     #
     def postprocessor(self):
         static_data = self.static_data_object.get_static_data()
-        num_processes = static_data['num_processes']
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
         filelist = os.listdir(data_dir)
@@ -814,12 +879,7 @@ class Process_manager(Manager_base):
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 self.postprocessor_registry.create_postprocessor(filename)
-        doc_list = sections_data_dict.keys()
-        doc_list = sorted(list(set(doc_list)))
-        partitioned_doc_array_list = np.array_split(doc_list, num_processes)
-        partitioned_doc_list = []
-        for i in range(len(partitioned_doc_array_list)):
-            partitioned_doc_list.append(partitioned_doc_array_list[i].tolist())
+        partitioned_doc_list = self._get_partitioned_document_list()
         data_dict_dict = {}
         for filename in filelist:
             filename_base, extension = os.path.splitext(filename)

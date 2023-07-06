@@ -24,10 +24,16 @@ class Ohsu_nlp_template_manager(Manager_base):
     #
     def clear_simple_template_output(self):
         self.simple_template_manager.clear_template_output()
+        
+    #
+    def pull_simple_template_output(self):
+        template_output = self.simple_template_manager.pull_template_output()
+        return template_output
     
     #
-    def run_simple_template(self, template_manager, text_dict):
-        self.simple_template_manager.run_template(template_manager, text_dict)
+    def run_simple_template(self, template_manager, text_dict, doc_list):
+        self.simple_template_manager.run_template(template_manager, text_dict,
+                                                  doc_list)
             
     #
     def train_ab_fields(self, template_manager, metadata_manager, data_dir,
@@ -39,7 +45,3 @@ class Ohsu_nlp_template_manager(Manager_base):
     #
     def write_ab_fields(self, template_outlines_dir, filename):
         self.ab_fields_manager.write_ab_fields(template_outlines_dir, filename)
-
-    #
-    def write_simple_template_output(self, template_manager, data_dir, filename):
-        self.simple_template_manager.write_template_output(template_manager, data_dir, filename)
