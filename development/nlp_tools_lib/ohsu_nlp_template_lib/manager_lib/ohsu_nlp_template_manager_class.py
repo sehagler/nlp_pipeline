@@ -31,9 +31,12 @@ class Ohsu_nlp_template_manager(Manager_base):
         return template_output
     
     #
-    def run_simple_template(self, template_manager, text_dict, doc_list):
-        self.simple_template_manager.run_template(template_manager, text_dict,
-                                                  doc_list)
+    def run_simple_template(self, argument_dict):
+        doc_list = argument_dict['doc_list']
+        template_manager = argument_dict['template_manager']
+        template_text_dict = argument_dict['template_text_dict']
+        self.simple_template_manager.run_template(template_manager, 
+                                                  template_text_dict, doc_list)
             
     #
     def train_ab_fields(self, template_manager, metadata_manager, data_dir,

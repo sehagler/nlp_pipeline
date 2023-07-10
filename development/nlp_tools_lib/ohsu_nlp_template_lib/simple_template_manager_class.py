@@ -8,7 +8,6 @@ Created on Fri Aug 26 12:10:43 2022
 #
 import datetime
 import itertools
-import os
 import re
 
 #
@@ -20,8 +19,8 @@ class Simple_template_manager(object):
     
     #
     def _apply_template(self, primary_template_list, secondary_template_list,
-                        template_sections_list, text_dict):
-        for document_id in text_dict.keys():
+                        template_sections_list, text_dict, doc_list):
+        for document_id in doc_list:
             template_output_list = []
             for key in text_dict[document_id].keys():
                 offset_base = text_dict[document_id][key]['OFFSET_BASE']
@@ -214,4 +213,4 @@ class Simple_template_manager(object):
             secondary_template_list = []
         template_sections_list = template_dict['sections_list']
         self._apply_template(primary_template_list, secondary_template_list,
-                             template_sections_list, text_dict)
+                             template_sections_list, text_dict, doc_list)
