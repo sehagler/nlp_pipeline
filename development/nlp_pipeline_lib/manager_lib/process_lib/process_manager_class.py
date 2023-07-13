@@ -92,29 +92,6 @@ def _create_keywords_regexp(keywords):
     return keywords_regexp
 
 #
-def _create_text_dict_postprocessing_data_in(sections):
-    document_ids = []
-    for i in range(1, len(sections)):
-        row = sections[i]
-        document_ids.append(row[0])
-    document_ids = list(set(document_ids))
-    document_ids = sorted(document_ids)
-    text_dict = {}
-    for document_id in document_ids:
-        text_dict[document_id] = {}
-        for i in range(1, len(sections)):
-            row = sections[i]
-            if row[0] == document_id:
-                key = (row[2], row[3])
-                section = row[4]
-                offset_base = 0
-                if section != '.*':
-                    text_dict[document_id][key] = {}
-                    text_dict[document_id][key]['OFFSET_BASE'] = offset_base
-                    text_dict[document_id][key]['TEXT'] = section
-    return text_dict
-
-#
 def _create_text_dict_preprocessing_data_out(data_dir, keywords_regexp):
     text_dict = {}
     filenames = os.listdir(data_dir)
@@ -196,6 +173,22 @@ def _trim_data_by_patient_list(data, patient_identifiers, patient_list):
     return data
 
 #
+def _trim_data_dict(data_dict_in, doc_list):
+    doc_list = list(set(doc_list).intersection(set(list(data_dict_in.keys()))))
+    data_dict_out = {}
+    for doc in doc_list:
+        data_dict_out[doc] = data_dict_in[doc]
+    return data_dict_out
+
+#
+def _trim_sections(sections_in, doc_list):
+    sections_out = []
+    for i in range(len(sections_in)):
+        if sections_in[i][0] in doc_list:
+            sections_out.append(sections_in[i])
+    return sections_out
+
+#
 class Process_manager(Manager_base):
     
     #
@@ -206,7 +199,6 @@ class Process_manager(Manager_base):
         self._create_managers(password)
         self._create_registries(remote_registry, password)
         self._create_workers()
-        self._start_workers()
         
         # Kludge to get around memory issue in processor
         linguamatics_i2e_object = \
@@ -434,6 +426,7 @@ class Process_manager(Manager_base):
     
     #
     def _get_partitioned_document_list(self):
+        N = 10000
         static_data = self.static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
@@ -444,7 +437,13 @@ class Process_manager(Manager_base):
             linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
         doc_list = sections_data_dict.keys()
         doc_list = sorted(list(set(doc_list)))
-        partitioned_doc_array_list = np.array_split(doc_list, num_processes)
+        num_docs = len(doc_list)
+        avg_docs_per_partition = num_docs / num_processes
+        if avg_docs_per_partition <= N:
+            rho = 1
+        else:
+            rho = avg_docs_per_partition // N
+        partitioned_doc_array_list = np.array_split(doc_list, rho*num_processes)
         partitioned_doc_list = []
         for i in range(len(partitioned_doc_array_list)):
             partitioned_doc_list.append(partitioned_doc_array_list[i].tolist())
@@ -585,13 +584,49 @@ class Process_manager(Manager_base):
             print('Postprocessor_registry: Postprocessor_registry')
             
     #
-    def _start_workers(self):
+    def _start_preprocessing_workers(self):
         for process_idx in range(len(self.preprocessing_dict['processes'])):
+            print('Starting Preprocessing Worker ' + str(process_idx))
             self.preprocessing_dict['processes'][process_idx].start()
+                    
+    #
+    def _start_postprocessing_workers(self):
         for process_idx in range(len(self.postprocessing_dict['processes'])):
+            print('Starting Postprocessing Worker ' + str(process_idx))
             self.postprocessing_dict['processes'][process_idx].start()
+            
+    #
+    def _start_simple_template_workers(self):
         for process_idx in range(len(self.simple_template_dict['processes'])):
+            print('Starting Simple Template Worker ' + str(process_idx))
             self.simple_template_dict['processes'][process_idx].start()
+            
+    #
+    def _stop_preprocessing_workers(self):
+        for process_idx in range(len(self.preprocessing_dict['processes'])):
+            print('Stopping Preprocessing Worker ' + str(process_idx))
+            argument_dict = {}
+            argument_dict['command'] = 'stop'
+            self.preprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+            self.preprocessing_dict['processes'][process_idx].join()
+            
+    #
+    def _stop_postprocessing_workers(self):
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            print('Stopping Postprocessing Worker ' + str(process_idx))
+            argument_dict = {}
+            argument_dict['command'] = 'stop'
+            self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+            self.postprocessing_dict['processes'][process_idx].join()
+            
+    #
+    def _stop_simple_template_workers(self):
+        for process_idx in range(len(self.postprocessing_dict['processes'])):
+            print('Stopping Simple Template Worker ' + str(process_idx))
+            argument_dict = {}
+            argument_dict['command'] = 'stop'
+            self.simple_template_dict['argument_queues'][process_idx].put(argument_dict)
+            self.simple_template_dict['processes'][process_idx].join()
             
     #
     def _total_documents(self):
@@ -754,80 +789,73 @@ class Process_manager(Manager_base):
         melax_clamp_manager = \
             self.nlp_tool_registry.get_manager('melax_clamp_manager')
         melax_clamp_manager.run_pipeline()
-            
-    #
-    def ohsu_nlp_templates_post_i2e_linguamatics_setup(self):
-        static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        if 'sections.csv' in os.listdir(data_dir):
-            sections = []
-            with open(os.path.join(data_dir, 'sections.csv')) as f:
-                csv_reader = csv.reader(f)
-                for row in csv_reader:
-                    sections.append(row)
-            text_dict = _create_text_dict_postprocessing_data_in(sections)
-        else:
-            text_dict = None
-        self.template_data_dir = data_dir
-        self.template_text_dict = text_dict
         
     #
     def ohsu_nlp_templates_run_simple_templates(self):
         static_data = self.static_data_object.get_static_data()
+        num_processes = static_data['num_processes']
         project_name = static_data['project_name']
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        ohsu_nlp_template_manager = \
-            self.nlp_tool_registry.get_manager('ohsu_nlp_template_manager')
         simple_templates_dir = \
             directory_manager.pull_directory('ohsu_nlp_project_simple_templates_dir')
+        ohsu_nlp_template_manager = \
+            self.nlp_tool_registry.get_manager('ohsu_nlp_template_manager')
         files = glob.glob(simple_templates_dir + '/*.py')
         for i in range(len(files)):
             files[i] = re.sub(simple_templates_dir + '/', '', files[i])
-        for file in files:
-            class_filename, extension = os.path.splitext(file)
-            class_filename = re.sub('/', '.', class_filename)
-            class_name, extension = os.path.splitext(os.path.basename(file))
-            class_name = class_name[0].upper() + class_name[1:-6]
-            import_cmd = 'from projects_lib.' + project_name + \
-                         '.nlp_templates.simple_templates.' + class_filename + \
-                         ' import ' + class_name + ' as Template_manager'
-            exec(import_cmd, globals())
-            print('OHSU NLP Template Manager: ' + class_name)
-            template_manager = Template_manager(self.static_data_object)
-            partitioned_doc_list = self._get_partitioned_document_list()
-            template_output = []
-            for process_idx in range(len(self.simple_template_dict['processes'])):
-                argument_dict = {}
-                argument_dict['doc_list'] = partitioned_doc_list[process_idx]
-                argument_dict['process_idx'] = process_idx
-                argument_dict['template_manager'] = template_manager
-                argument_dict['template_text_dict'] = self.template_text_dict
-                self.simple_template_dict['argument_queues'][process_idx].put(argument_dict)
-            for process_idx in range(len(self.simple_template_dict['processes'])):
-                return_dict = \
-                    self.simple_template_dict['return_queues'][process_idx].get()
-                template_output.extend(return_dict['template_output'])
-            for process_idx in range(len(self.postprocessing_dict['processes'])):
-                argument_dict = {}
-                argument_dict['command'] = 'stop'
-                self.simple_template_dict['argument_queues'][process_idx].put(argument_dict)
-                self.simple_template_dict['processes'][process_idx].join()
-            filename, extension = os.path.splitext(file)
-            filename = re.sub('_simple_template_manager_class', '', filename)
-            csv_filename = filename + '.csv'
-            template_dict = template_manager.simple_template()
-            template_headers = template_dict['template_headers']
-            header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
-            for i in range(len(template_headers)):
-                header.append(template_headers[i])
-            #header.append('Snippet')
-            header.append('Coords')
-            with open(os.path.join(data_dir, csv_filename), 'w', encoding='UTF8', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(header)
-                writer.writerows(template_output)
+        if len(files) > 0:
+            self._start_simple_template_workers()
+            sections = []
+            if 'sections.csv' in os.listdir(data_dir):
+                with open(os.path.join(data_dir, 'sections.csv')) as f:
+                    csv_reader = csv.reader(f)
+                    for row in csv_reader:
+                        sections.append(row)
+            for file in files:
+                class_filename, extension = os.path.splitext(file)
+                class_filename = re.sub('/', '.', class_filename)
+                class_name, extension = os.path.splitext(os.path.basename(file))
+                class_name = class_name[0].upper() + class_name[1:-6]
+                import_cmd = 'from projects_lib.' + project_name + \
+                             '.nlp_templates.simple_templates.' + class_filename + \
+                             ' import ' + class_name + ' as Template_manager'
+                exec(import_cmd, globals())
+                print('OHSU NLP Template Manager: ' + class_name)
+                template_manager = Template_manager(self.static_data_object)
+                partitioned_doc_list = self._get_partitioned_document_list()
+                num_worker_runs = len(partitioned_doc_list) // num_processes
+                template_output = []
+                for n in range(num_worker_runs):
+                    for process_idx in range(len(self.simple_template_dict['processes'])):
+                        doc_list = partitioned_doc_list[process_idx + n*num_processes]
+                        sections_copy = deepcopy(sections)
+                        sections_copy = _trim_sections(sections_copy, doc_list)
+                        argument_dict = {}
+                        argument_dict['doc_list'] = partitioned_doc_list[process_idx]
+                        argument_dict['process_idx'] = process_idx
+                        argument_dict['sections'] = sections_copy
+                        argument_dict['template_manager'] = template_manager
+                        self.simple_template_dict['argument_queues'][process_idx].put(argument_dict)
+                    for process_idx in range(len(self.simple_template_dict['processes'])):
+                        return_dict = \
+                            self.simple_template_dict['return_queues'][process_idx].get()
+                        template_output.extend(return_dict['template_output'])
+                filename, extension = os.path.splitext(file)
+                filename = re.sub('_simple_template_manager_class', '', filename)
+                csv_filename = filename + '.csv'
+                template_dict = template_manager.simple_template()
+                template_headers = template_dict['template_headers']
+                header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
+                for i in range(len(template_headers)):
+                    header.append(template_headers[i])
+                #header.append('Snippet')
+                header.append('Coords')
+                with open(os.path.join(data_dir, csv_filename), 'w', encoding='UTF8', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(header)
+                    writer.writerows(template_output)
+            self._stop_simple_template_workers()
         
     #
     def postperformance(self):
@@ -868,52 +896,52 @@ class Process_manager(Manager_base):
     #
     def postprocessor(self):
         static_data = self.static_data_object.get_static_data()
+        num_processes = static_data['num_processes']
         directory_manager = static_data['directory_manager']
         data_dir = directory_manager.pull_directory('postprocessing_data_in')
-        filelist = os.listdir(data_dir)
+        file_list = os.listdir(data_dir)
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        sections_data_dict = \
-            linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
         if static_data['project_subdir'] == 'test' and \
            'test_postprocessing_data_in_files' in static_data.keys():
-            filelist = \
-                list(set(filelist).intersection(static_data['test_postprocessing_data_in_files']))
-        for filename in filelist:
+            file_list = \
+                list(set(file_list).intersection(static_data['test_postprocessing_data_in_files']))
+        for filename in file_list:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 self.postprocessor_registry.create_postprocessor(filename)
         partitioned_doc_list = self._get_partitioned_document_list()
+        num_worker_runs = len(partitioned_doc_list) // num_processes
+        self._start_postprocessing_workers()
         data_dict_dict = {}
-        for filename in filelist:
+        for filename in file_list:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 data_dict = \
                     linguamatics_i2e_object.generate_data_dict(data_dir, filename)
                 data_dict_dict[filename_base] = data_dict
-        for process_idx in range(len(self.postprocessing_dict['processes'])):
-            json_manager_registry_copy = deepcopy(self.json_manager_registry)
-            postprocessor_registry_copy = deepcopy(self.postprocessor_registry)
-            for filename in filelist:
-                filename_base, extension = os.path.splitext(filename)
-                if extension in [ '.csv' ]:
-                    postprocessor_registry_copy.push_data_dict(filename, data_dict_dict[filename_base],
-                                                               sections_data_dict,
-                                                               partitioned_doc_list[process_idx])
-            argument_dict = {}
-            argument_dict['filename'] = filename
-            argument_dict['json_manager_registry'] = json_manager_registry_copy
-            argument_dict['nlp_data_key'] = self.nlp_data_key
-            argument_dict['postprocessor_registry'] = postprocessor_registry_copy
-            argument_dict['process_idx'] = process_idx
-            self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
-        for process_idx in range(len(self.postprocessing_dict['processes'])):
-            self.postprocessing_dict['return_queues'][process_idx].get()
-        for process_idx in range(len(self.postprocessing_dict['processes'])):
-            argument_dict = {}
-            argument_dict['command'] = 'stop'
-            self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
-            self.postprocessing_dict['processes'][process_idx].join()
+        for n in range(num_worker_runs):
+            for process_idx in range(len(self.postprocessing_dict['processes'])):
+                doc_list = partitioned_doc_list[process_idx + n*num_processes]
+                data_dict_dict_copy = deepcopy(data_dict_dict)
+                for key in data_dict_dict_copy.keys():
+                    data_dict_dict_copy[key] = \
+                        _trim_data_dict(data_dict_dict_copy[key], doc_list)
+                json_manager_registry_copy = deepcopy(self.json_manager_registry)
+                postprocessor_registry_copy = deepcopy(self.postprocessor_registry)
+                argument_dict = {}
+                argument_dict['data_dict_dict'] = data_dict_dict_copy
+                argument_dict['doc_list'] = doc_list
+                argument_dict['filename'] = filename
+                argument_dict['file_list'] = file_list
+                argument_dict['json_manager_registry'] = json_manager_registry_copy
+                argument_dict['nlp_data_key'] = self.nlp_data_key
+                argument_dict['postprocessor_registry'] = postprocessor_registry_copy
+                argument_dict['process_idx'] = process_idx
+                self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
+            for process_idx in range(len(self.postprocessing_dict['processes'])):
+                self.postprocessing_dict['return_queues'][process_idx].get()
+        self._stop_postprocessing_workers()
         
     #
     def preperformance(self):
@@ -955,6 +983,7 @@ class Process_manager(Manager_base):
         self.metadata_manager.load_metadata()
         doc_idx_offset = self.metadata_manager.get_doc_idx_offset()
         self.metadata_manager.clear_metadata()
+        self._start_preprocessing_workers()
         for i in range(len(raw_data_files)):
             filename, extension = os.path.splitext(raw_data_files[i])
             if extension.lower() in [ '.xls', '.xlsx' ]:
@@ -1011,11 +1040,7 @@ class Process_manager(Manager_base):
                     self.metadata_manager.save_metadata()
                     self.metadata_manager.clear_metadata()
                     num_docs_preprocessed += len(document_dict.keys())
-        for process_idx in range(len(self.preprocessing_dict['processes'])):
-            argument_dict = {}
-            argument_dict['command'] = 'stop'
-            self.preprocessing_dict['argument_queues'][process_idx].put(argument_dict)
-            self.preprocessing_dict['processes'][process_idx].join()
+        self._stop_postprocessing_workers()
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
         self.dynamic_data_manager.generate_keywords_file()
         

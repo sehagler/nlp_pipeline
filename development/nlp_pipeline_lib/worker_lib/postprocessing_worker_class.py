@@ -25,10 +25,19 @@ class Postprocessing_worker(Worker_base):
         
     #
     def _process_data(self, argument_dict):
+        data_dict_dict = argument_dict['data_dict_dict']
+        doc_list = argument_dict['doc_list']
+        file_list = argument_dict['file_list']
         filename = argument_dict['filename']
         self.json_manager_registry = argument_dict['json_manager_registry']
         nlp_data_key = argument_dict['nlp_data_key']
         self.postprocessor_registry = argument_dict['postprocessor_registry']
+        for filename in file_list:
+            filename_base, extension = os.path.splitext(filename)
+            if extension in [ '.csv' ]:
+                self.postprocessor_registry.push_data_dict(filename, data_dict_dict[filename_base],
+                                                           data_dict_dict['sections'],
+                                                           doc_list)
         self.postprocessor_registry.run_registry()
         postprocessor_registry = \
             self.postprocessor_registry.pull_postprocessor_registry()

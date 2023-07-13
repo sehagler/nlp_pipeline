@@ -415,7 +415,7 @@ class Postprocessor_base(Manager_base):
         argument_dict['query_name'] = query_name
         return_dict = parallel_composition([_get_query_name,
                                             self._include_snippets],
-                                            argument_dict)
+                                           argument_dict)
         argument_dict = {}
         argument_dict['data_dict_list'] = \
             return_dict[self._include_snippets.__name__]

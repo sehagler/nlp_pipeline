@@ -105,7 +105,6 @@ class Pipeline_object(object):
     #
     def linguamatics_i2e_postqueries(self, project_subdir):
         self.process_manager.linguamatics_i2e_generate_csv_files()
-        self.process_manager.ohsu_nlp_templates_post_i2e_linguamatics_setup()
         self.process_manager.ohsu_nlp_templates_run_simple_templates()
         self.process_manager.postprocessor()
         self.process_manager.preperformance()
