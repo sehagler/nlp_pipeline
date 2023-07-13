@@ -113,6 +113,29 @@ def _create_text_dict_preprocessing_data_out(data_dir, keywords_regexp):
     return text_dict
 
 #
+def _get_document_metadata(raw_data_manager, raw_data_files, i2e_version,
+                           process_idx, start_idx, password):
+    metadata = {}
+    for data_file in raw_data_files:
+        document_numbers = \
+            raw_data_manager.get_document_numbers(data_file)
+        for document_number in document_numbers:
+            data_tmp, document_idx, source_metadata_list, \
+            nlp_metadata_list, text_list, xml_metadata_list, \
+            source_system = \
+                raw_data_manager.get_data_by_document_number(data_file,
+                                                             document_number,
+                                                             i2e_version,
+                                                             process_idx,
+                                                             password)
+            metadata[document_number] = {}
+            metadata[document_number]['source_metadata'] = \
+                source_metadata_list[0]
+            metadata[document_number]['nlp_metadata'] = \
+                nlp_metadata_list[0]
+    return metadata
+
+#
 def _parse_document(keywords_regexp, text):
     key = None
     offset_base = 0
@@ -136,6 +159,29 @@ def _parse_document(keywords_regexp, text):
     text_dict[key]['OFFSET_BASE'] = offset_base
     text_dict[key]['TEXT'] = section
     return text_dict
+
+#
+def _total_documents(metadata_json_file):
+    #static_data = self.static_data_object.get_static_data()
+    #datetime_keys = {}
+    metadata = read_json_file(metadata_json_file)
+    num_documents = str(len(metadata.keys()))
+    print('number of documents: ' + num_documents)
+    
+#
+def _total_patients(patient_identifiers, metadata_json_file):
+    metadata = read_json_file(metadata_json_file)
+    patient_list = []
+    for doc_id in metadata.keys():
+        metadata_keys = set(metadata[doc_id]['METADATA'].keys())
+        keys = list(metadata_keys & patient_identifiers)
+        if len(keys) != 1:
+            keys = None
+        if keys is not None:
+            patient_list.append(metadata[doc_id]['METADATA'][keys[0]])
+    patient_list = list(set(patient_list))
+    num_patients = str(len(patient_list))
+    print('number of patients: ' + num_patients)
     
 #
 def _trim_data_by_document_list(data, document_identifiers, document_list):
@@ -371,10 +417,8 @@ class Process_manager(Manager_base):
             self.simple_template_dict['return_queues'].append(rq)
     
     #
-    def _documents_by_year(self):
+    def _documents_by_year(self, metadata_json_file):
         static_data = self.static_data_object.get_static_data()
-        #datetime_keys = {}
-        metadata_json_file = self.metadata_manager.get_metadata_json_file()
         metadata = read_json_file(metadata_json_file)
         year_list = []
         for doc_id in metadata.keys():
@@ -397,32 +441,6 @@ class Process_manager(Manager_base):
             year_lbls.append('*' + str(years[i]))
         plt.bar(year_lbls, year_cts, orientation = 'h')
         plt.show()
-        
-    #
-    def _get_document_metadata(self, raw_data_manager, i2e_version, 
-                               process_idx, start_idx, password):
-        metadata = {}
-        static_data = self.static_data_object.get_static_data()
-        raw_data_files_dict = static_data['raw_data_files']
-        raw_data_files = list(raw_data_files_dict.keys())
-        for data_file in raw_data_files:
-            document_numbers = \
-                raw_data_manager.get_document_numbers(data_file)
-            for document_number in document_numbers:
-                data_tmp, document_idx, source_metadata_list, \
-                nlp_metadata_list, text_list, xml_metadata_list, \
-                source_system = \
-                    raw_data_manager.get_data_by_document_number(data_file,
-                                                                 document_number,
-                                                                 i2e_version,
-                                                                 process_idx,
-                                                                 password)
-                metadata[document_number] = {}
-                metadata[document_number]['source_metadata'] = \
-                    source_metadata_list[0]
-                metadata[document_number]['nlp_metadata'] = \
-                    nlp_metadata_list[0]
-        return metadata
     
     #
     def _get_partitioned_document_list(self):
@@ -629,33 +647,6 @@ class Process_manager(Manager_base):
             self.simple_template_dict['processes'][process_idx].join()
             
     #
-    def _total_documents(self):
-        #static_data = self.static_data_object.get_static_data()
-        #datetime_keys = {}
-        metadata_json_file = self.metadata_manager.get_metadata_json_file()
-        metadata = read_json_file(metadata_json_file)
-        num_documents = str(len(metadata.keys()))
-        print('number of documents: ' + num_documents)
-        
-    #
-    def _total_patients(self):
-        static_data = self.static_data_object.get_static_data()
-        patient_identifiers = set(static_data['patient_identifiers'])
-        metadata_json_file = self.metadata_manager.get_metadata_json_file()
-        metadata = read_json_file(metadata_json_file)
-        patient_list = []
-        for doc_id in metadata.keys():
-            metadata_keys = set(metadata[doc_id]['METADATA'].keys())
-            keys = list(metadata_keys & patient_identifiers)
-            if len(keys) != 1:
-                keys = None
-            if keys is not None:
-                patient_list.append(metadata[doc_id]['METADATA'][keys[0]])
-        patient_list = list(set(patient_list))
-        num_patients = str(len(patient_list))
-        print('number of patients: ' + num_patients)
-            
-    #
     def calculate_performance(self):
         display_flg = True
         if self.performance_data_manager is not None:
@@ -671,9 +662,12 @@ class Process_manager(Manager_base):
             
     #
     def data_set_summary_info(self):
-        self._documents_by_year()
-        self._total_documents()
-        self._total_patients()
+        static_data = self.static_data_object.get_static_data()
+        patient_identifiers = set(static_data['patient_identifiers'])
+        metadata_json_file = self.metadata_manager.get_metadata_json_file()
+        self._documents_by_year(metadata_json_file)
+        _total_documents(metadata_json_file)
+        _total_patients(patient_identifiers, metadata_json_file)
         
     #
     def get_metadata_values(self):
@@ -963,11 +957,6 @@ class Process_manager(Manager_base):
     #
     def preprocessor_full(self, password):
         static_data = self.static_data_object.get_static_data()
-        
-        # Kludge to get around memory issue in processor
-        i2e_version = self.i2e_version
-        # Kludge to get around memory issue in processor
-        
         raw_data_files_dict = static_data['raw_data_files']
         if 'raw_data_files_sequence' in static_data.keys():
             raw_data_files_seq = static_data['raw_data_files_sequence']
@@ -1020,11 +1009,12 @@ class Process_manager(Manager_base):
                 argument_dict['dynamic_data_manager'] = \
                     dynamic_data_manager_copy
                 argument_dict['metadata_manager'] = metadata_manager_copy
-                argument_dict['num_processes'] = len(self.preprocessing_dict['processes'])
+                argument_dict['num_processes'] = \
+                    len(self.preprocessing_dict['processes'])
                 argument_dict['process_idx'] = process_idx
                 argument_dict['raw_data_manager'] = raw_data_manager_copy
                 argument_dict['start_idx'] = 0
-                argument_dict['i2e_version'] = i2e_version
+                argument_dict['i2e_version'] = self.i2e_version
                 argument_dict['password'] = password
                 self.preprocessing_dict['argument_queues'][process_idx].put(argument_dict)
             for process_idx in range(len(self.preprocessing_dict['processes'])):
@@ -1040,7 +1030,7 @@ class Process_manager(Manager_base):
                     self.metadata_manager.save_metadata()
                     self.metadata_manager.clear_metadata()
                     num_docs_preprocessed += len(document_dict.keys())
-        self._stop_postprocessing_workers()
+        self._stop_preprocessing_workers()
         print('Number of documents preprocessed: ' + str(num_docs_preprocessed))
         self.dynamic_data_manager.generate_keywords_file()
         
@@ -1048,11 +1038,6 @@ class Process_manager(Manager_base):
     def preprocessor_metadata(self, password, start_idx):
         static_data = self.static_data_object.get_static_data()
         num_processes = self.raw_data_manager.get_number_of_processes()
-        
-        # Kludge to get around memory issue in processor
-        i2e_version = self.i2e_version
-        # Kludge to get around memory issue in processor
-        
         raw_data_files_dict = static_data['raw_data_files']
         if 'raw_data_files_sequence' in static_data.keys():
             raw_data_files_seq = static_data['raw_data_files_sequence']
@@ -1099,10 +1084,11 @@ class Process_manager(Manager_base):
             for process_idx in range(num_processes):
                 raw_data_manager_copy = deepcopy(self.raw_data_manager)
                 raw_data_manager_copy.select_process(process_idx)
+                raw_data_files = list(raw_data_files_dict.keys())
                 metadata = \
-                    self._get_document_metadata(raw_data_manager_copy,
-                                                i2e_version, process_idx,
-                                                start_idx, password)
+                    _get_document_metadata(raw_data_manager_copy, 
+                                           raw_data_files, self.i2e_version,
+                                           process_idx, start_idx, password)
                 for document_idx in metadata.keys():
                     self.metadata_manager.load_metadata()
                     self.metadata_manager.append_metadata_dicts(str(document_idx),
