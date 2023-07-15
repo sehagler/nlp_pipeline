@@ -9,8 +9,9 @@ Created on Tue Jun 13 12:28:51 2023
 class Worker_base(object):
     
     #
-    def __init__(self, static_data_object):
+    def __init__(self, static_data_object, logger_object):
         self.static_data_object = static_data_object
+        self.logger_object = logger_object
     
     #
     def process_data(self, argument_queue, return_queue):
@@ -23,7 +24,9 @@ class Worker_base(object):
                         run_flg = False
                 else:
                     process_idx = argument_dict['process_idx']
-                    print('Process ' + str(process_idx) + ' starting')
+                    log_text = 'Process ' + str(process_idx) + ' starting'
+                    self.logger_object.print_log(log_text)
                     return_dict = self._process_data(argument_dict)
-                    print('Process ' + str(process_idx) + ' ending')
+                    log_text = 'Process ' + str(process_idx) + ' ending'
+                    self.logger_object.print_log(log_text)
                     return_queue.put(return_dict)

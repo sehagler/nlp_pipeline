@@ -8,8 +8,9 @@ Created on Mon Nov  7 09:04:42 2022
 #
 class Manager_base(object):
     
-    def __init__(self, static_data_object):
+    def __init__(self, static_data_object, logger_object=None):
         self.static_data_object = static_data_object
+        self.logger_object = logger_object
         static_data = self.static_data_object.get_static_data()
         self.json_structure_tools = static_data['json_structure_tools']
         self.document_wrapper_key = \

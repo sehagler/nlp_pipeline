@@ -12,8 +12,9 @@ from base_lib.worker_base_class import Worker_base
 class Simple_template_worker(Worker_base):
     
     #
-    def __init__(self, static_data_object, ohsu_nlp_template_manager):
-        Worker_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object,
+                 ohsu_nlp_template_manager):
+        Worker_base.__init__(self, static_data_object, logger_object)
         self.ohsu_nlp_template_manager = ohsu_nlp_template_manager
         
     #
