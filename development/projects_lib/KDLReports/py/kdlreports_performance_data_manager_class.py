@@ -16,11 +16,11 @@ from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_
 class KDLReports_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_object, evaluation_manager,
+    def __init__(self, static_data_object, logger_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
         Performance_data_manager.__init__(self, static_data_object,
-                                          evaluation_manager,
+                                          logger_object, evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)

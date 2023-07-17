@@ -14,8 +14,9 @@ import traceback
 class Evaluator_registry(object):
     
     #
-    def __init__(self, static_data):
-        self.static_data = static_data
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
         self.evaluator_registry = {}
     
     #
@@ -24,12 +25,14 @@ class Evaluator_registry(object):
         
     #
     def create_evaluators(self):
-        directory_manager = self.static_data['directory_manager']
-        operation_mode = self.static_data['operation_mode']
+        static_data = self.static_data_object.get_static_data()
+        directory_manager = static_data['directory_manager']
+        operation_mode = static_data['operation_mode']
         software_dir = directory_manager.pull_directory('software_dir')
         root_dir = \
             os.path.join(software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
-        print(root_dir)
+        log_text = root_dir
+        self.logger_object.print_log(log_text)
         for root, dirs, files in os.walk(root_dir):
             relpath = '.' + os.path.relpath(root, root_dir) + '.'
             relpath = re.sub('\.+', '.', relpath)
@@ -40,7 +43,8 @@ class Evaluator_registry(object):
                                  filename + ' import Evaluator'
                     exec(import_cmd, globals())
                     self._register_evaluator(filename, Evaluator())
-                    print('Registered Evaluator from ' + filename)
+                    log_text = 'Registered Evaluator from ' + filename
+                    self.logger_object.print_log(log_text)
                 except Exception:
                     traceback.print_exc()
     

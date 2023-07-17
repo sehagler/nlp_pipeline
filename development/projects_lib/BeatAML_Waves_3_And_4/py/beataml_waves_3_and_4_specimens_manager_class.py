@@ -50,8 +50,8 @@ def _get_process_label(proc_nm, doc_label):
 class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
     
     #
-    def __init__(self, static_data_object, metadata_dict_dict):
-        Specimens_manager.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, metadata_dict_dict):
+        Specimens_manager.__init__(self, static_data_object, logger_object)
         static_data = static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
         self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \

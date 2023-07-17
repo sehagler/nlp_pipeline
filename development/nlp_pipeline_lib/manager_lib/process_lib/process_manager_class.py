@@ -262,7 +262,8 @@ class Process_manager(Manager_base):
                                  file)
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_object, self.logger_object)
-        evaluator_registry = Evaluator_registry(static_data)
+        evaluator_registry = Evaluator_registry(self.static_data_object,
+                                                self.logger_object)
         evaluator_registry.create_evaluators()
         evaluation_manager = \
             Evaluation_manager(self.static_data_object, self.logger_object,
@@ -270,6 +271,7 @@ class Process_manager(Manager_base):
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,
+                                         self.logger_object,
                                          evaluation_manager,
                                          json_manager_registry,
                                          self.metadata_manager,
@@ -285,7 +287,8 @@ class Process_manager(Manager_base):
             keys = list(static_data['raw_data_files'].keys())
             for key in keys:
                 filename, extension = os.path.splitext(key)
-        self.raw_data_manager = Raw_data_manager(self.static_data_object, 
+        self.raw_data_manager = Raw_data_manager(self.static_data_object,
+                                                 self.logger_object,
                                                  multiprocessing_flg,
                                                  password)
         
@@ -307,6 +310,7 @@ class Process_manager(Manager_base):
                               password)
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_object,
+                                   self.logger_object,
                                    self.metadata_manager)
         self.xls_manager_registry = {}
         self.xml_manager_registry = {}
@@ -315,11 +319,13 @@ class Process_manager(Manager_base):
             if extension.lower() in [ '.xls', '.xlsx' ]:
                 file = os.path.join(raw_data_dir, key)
                 self.xls_manager_registry[file] = \
-                    Xls_manager(self.static_data_object, file, password)
+                    Xls_manager(self.static_data_object, self.logger_object,
+                                file, password)
             elif extension.lower() in [ '.xml' ]:
                 file = os.path.join(raw_data_dir, key)
                 self.xml_manager_registry[file] = \
-                    Xml_manager(self.static_data_object, file, password)
+                    Xml_manager(self.static_data_object, self.logger_object,
+                                file, password)
         for file in os.listdir(project_AB_fields_dir):
             class_filename, extension = os.path.splitext(file)
             class_filename = re.sub('/', '.', class_filename)
@@ -331,31 +337,35 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             log_text = 'OHSU NLP Template Manager: ' + class_name
             self.logger_object.print_log(log_text)
-            template_manager = Template_manager(self.static_data_object)
+            template_manager = Template_manager(self.static_data_object,
+                                                self.logger_object)
             training_data_file = template_manager.pull_training_data_file()
             file = os.path.join(raw_data_dir, training_data_file)
             self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, file, password)
+                Xls_manager(self.static_data_object, self.logger_object, file,
+                            password)
         if static_data['project_subdir'] == 'test' and \
            'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
             file = os.path.join(raw_data_dir, validation_filename)
             self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, file, password)
+                Xls_manager(self.static_data_object, self.logger_object, file,
+                            password)
         
     #
     def _create_workers(self):
         num_processes = self.raw_data_manager.get_number_of_processes()
-        static_data = self.static_data_object.get_static_data()
         self.preprocessing_dict = {}
         self.preprocessing_dict['processes'] = []
         self.preprocessing_dict['argument_queues'] = []
         self.preprocessing_dict['return_queues'] = []
         for process_idx in range(num_processes):
+            static_data = self.static_data_object.get_static_data()
             text_normalization_object = \
                 Text_normalization_object(static_data['section_header_structure_tools'],
                                           static_data['remove_date'])
-            preprocessor_registry = Preprocessor_registry(static_data)
+            preprocessor_registry = Preprocessor_registry(self.static_data_object,
+                                                          self.logger_object)
             preprocessor_registry.push_text_normalization_object(text_normalization_object)
             preprocessor_registry.create_preprocessors()
             aq = multiprocessing.Queue()
@@ -758,7 +768,8 @@ class Process_manager(Manager_base):
                 exec(import_cmd, globals())
                 log_text = 'OHSU NLP Template Manager: ' + class_name
                 self.logger_object.print_log(log_text)
-                template_manager = Template_manager(self.static_data_object)
+                template_manager = Template_manager(self.static_data_object,
+                                                    self.logger_object)
                 partitioned_doc_list = self._get_partitioned_document_list()
                 num_worker_runs = len(partitioned_doc_list) // num_processes
                 template_output = []

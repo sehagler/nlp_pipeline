@@ -41,8 +41,9 @@ def _read_datetime(book, value):
 class Xls_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, raw_data_file, password):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, raw_data_file,
+                 password):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = self.static_data_object.get_static_data()
         self.raw_data_file = raw_data_file
     
@@ -177,7 +178,8 @@ class Xls_manager(Manager_base):
     #
     def read_file(self):
         raw_data_files_dict = self.static_data['raw_data_files']
-        print('Reading file: ' + self.raw_data_file)
+        log_text = 'Reading file: ' + self.raw_data_file
+        self.logger_object.print_log(log_text)
         data = self._read_data_file(raw_data_files_dict, self.raw_data_file)
         return data
     

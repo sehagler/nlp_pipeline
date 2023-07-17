@@ -32,11 +32,11 @@ def _get_nlp_value(arg_dict):
 class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_object, evaluation_manager,
+    def __init__(self, static_data_object, logger_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
         Performance_data_manager.__init__(self, static_data_object,
-                                          evaluation_manager,
+                                          logger_object, evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)
@@ -76,6 +76,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     def _get_nlp_values(self, nlp_data, data_json):
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
         specimens_manager = Specimens_manager(self.static_data_object,
+                                              self.logger_object,
                                               metadata_dict_dict)
         specimens_manager.generate_document_map(data_json, 'file_map.txt')
         specimens_manager.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
@@ -126,7 +127,8 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             labIds = []
             labIds.extend(nlp_values.keys())
             for labId in labIds:
-                print(labId)
+                log_text = labId
+                self.logger_object.print_log(log_text)
                 N_documents += 1
                 for i in range(len(self.queries)):
                     validation_datum_key = self.queries[i][0]

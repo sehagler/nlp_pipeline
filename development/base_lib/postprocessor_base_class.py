@@ -135,8 +135,8 @@ def _trim_snippet(data_row):
 class Postprocessor_base(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.data_dict_list = {}
         self.filename = None
         self.sections_data_dict_list = {}
@@ -209,7 +209,8 @@ class Postprocessor_base(Manager_base):
     
     #
     def _extract_data_value(self, text_list):
-        print('self._extract_data_value function not defined')
+        log_text = 'self._extract_data_value function not defined'
+        self.logger_object.print_log(log_text)
     
     #
     def _extract_data_values(self, argument_dict):

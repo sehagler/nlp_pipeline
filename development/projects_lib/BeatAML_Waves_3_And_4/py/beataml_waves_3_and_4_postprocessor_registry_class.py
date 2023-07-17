@@ -30,4 +30,5 @@ class BeatAML_Waves_3_And_4_postprocessor_registry(Postprocessor_registry):
             self.postprocessor_registry['postprocessor_diagnosis'].push_diagnosis_reader(diagnosis_reader)
         if filename in [ 'sections.csv' ]:
             self._register_postprocessor('postprocessor_specific_diagnosis',
-                                         Postprocessor_specific_diagnosis(self.static_data_object))
+                                         Postprocessor_specific_diagnosis(self.static_data_object,
+                                                                          self.logger_object))
