@@ -457,7 +457,8 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             log_text = 'OHSU NLP Template Manager: ' + class_name
             self.logger_object.print_log(log_text)
-            template_manager = Template_manager(self.static_data_object)
+            template_manager = Template_manager(self.static_data_object,
+                                                self.logger_object)
             training_data_file = template_manager.pull_training_data_file()
             training_data_file = \
                 os.path.join(static_data['directory_manager'].pull_directory('raw_data_dir'),
@@ -500,7 +501,8 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             log_text = 'OHSU NLP Template Manager: ' + class_name
             self.logger_object.print_log(log_text)
-            template_manager = Template_manager(self.static_data_object)
+            template_manager = Template_manager(self.static_data_object,
+                                                self.logger_object)
             '''
             training_data_file = template_manager.pull_training_data_file()
             training_data_file = \
