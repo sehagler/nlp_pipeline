@@ -246,37 +246,6 @@ def _process_validation_item(x):
     return x
 
 #
-def _validation_to_tuple(value):
-    if value is not None:
-        if value != 'MANUAL_REVIEW':
-            value = value.lower()
-        value = _normalize_percentage_range(value)
-        value = value.replace(' ', '')
-        value = value.replace(',', '\',\'')
-        value = value.replace('(', '(\'')
-        value = value.replace(')', '\')')
-        value = value.replace('\'(', '(')
-        value = value.replace(')\'', ')')
-        try:
-            value_eval = '[\'' + value + '\']'
-            value_list = eval(value_eval)
-        except Exception:
-            traceback.print_exc()
-            value = value.replace('(\'', '(')
-            value = value.replace('\')', ')')
-            value_eval = '[\'' + value + '\']'
-            value_list = eval(value_eval)
-        for i in range(len(value_list)):
-            if type(value_list[i]) is not tuple:
-                value_list[i] = str(value_list[i])
-                value_list[i] = value_list[i].replace('\'', '')
-                value_list[i] = value_list[i].replace(' ', '')
-        value_tuple = tuple(value_list)
-    else:
-        value_tuple = None
-    return value_tuple
-
-#
 class Performance_data_manager(Manager_base):
     
     #
@@ -397,7 +366,7 @@ class Performance_data_manager(Manager_base):
                 if row[2] == identifier:
                     validation_value = \
                         _process_validation_item(row[validation_idx[0]])
-        validation_value = _validation_to_tuple(validation_value)
+        validation_value = self._validation_to_tuple(validation_value)
         return validation_value
     
     #
@@ -544,10 +513,38 @@ class Performance_data_manager(Manager_base):
         for query in self.queries:
             validation_datum_keys.append(query[0])
         return validation_datum_keys
-    
+
     #
     def _validation_to_tuple(self, value):
-        return _validation_to_tuple(value)
+        if value is not None:
+            if value != 'MANUAL_REVIEW':
+                value = value.lower()
+            value = _normalize_percentage_range(value)
+            value = value.replace(' ', '')
+            value = value.replace(',', '\',\'')
+            value = value.replace('(', '(\'')
+            value = value.replace(')', '\')')
+            value = value.replace('\'(', '(')
+            value = value.replace(')\'', ')')
+            try:
+                value_eval = '[\'' + value + '\']'
+                value_list = eval(value_eval)
+            except Exception:
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
+                value = value.replace('(\'', '(')
+                value = value.replace('\')', ')')
+                value_eval = '[\'' + value + '\']'
+                value_list = eval(value_eval)
+            for i in range(len(value_list)):
+                if type(value_list[i]) is not tuple:
+                    value_list[i] = str(value_list[i])
+                    value_list[i] = value_list[i].replace('\'', '')
+                    value_list[i] = value_list[i].replace(' ', '')
+            value_tuple = tuple(value_list)
+        else:
+            value_tuple = None
+        return value_tuple
     
     #
     def _walker(self, node, target_key, data_key, key_list_in, section_key_list):

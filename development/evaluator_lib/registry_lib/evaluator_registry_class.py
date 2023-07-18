@@ -46,7 +46,8 @@ class Evaluator_registry(object):
                     log_text = 'Registered Evaluator from ' + filename
                     self.logger_object.print_log(log_text)
                 except Exception:
-                    traceback.print_exc()
+                    log_text = traceback.format_exc()
+                    self.logger_object.print_exc(log_text)
     
     #
     def get_keys(self):

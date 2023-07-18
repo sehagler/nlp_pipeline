@@ -280,8 +280,9 @@ class Process_manager(Manager_base):
                        '_performance_data_manager'
             self.logger_object.print_log(log_text)
         except Exception:
-            traceback.print_exc()
             self.performance_data_manager = None
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
         multiprocessing_flg = static_data['multiprocessing']
         if multiprocessing_flg:
             keys = list(static_data['raw_data_files'].keys())
@@ -550,7 +551,8 @@ class Process_manager(Manager_base):
         try:
             exec(import_cmd, globals())
         except Exception:
-            traceback.print_exc()
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
         import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                      project_name.lower() + \
                      '_performance_data_manager_class import ' + project_name + \
@@ -558,7 +560,8 @@ class Process_manager(Manager_base):
         try:
             exec(import_cmd, globals())
         except Exception:
-            traceback.print_exc()
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
         try:
             import_cmd = 'from projects_lib.' + project_name + '.py.' + \
                          project_name.lower() + \
@@ -569,7 +572,8 @@ class Process_manager(Manager_base):
                        '_postprocessor_registry'
             self.logger_object.print_log(log_text)
         except Exception:
-            traceback.print_exc()
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
             import_cmd = 'from processor_lib.registry_lib.postprocessor_registry_class import Postprocessor_registry'
             exec(import_cmd, globals())
             log_text = 'Postprocessor_registry: Postprocessor_registry'

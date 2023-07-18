@@ -46,7 +46,8 @@ class Preprocessor_registry(object):
                     log_text = 'Registered Preprocessor from ' + filename
                     self.logger_object.print_log(log_text)
                 except Exception:
-                    traceback.print_exc()
+                    log_text = traceback.format_exc()
+                    self.logger_object.print_exc(log_text)
                     
     #
     def push_text_normalization_object(self, text_normalization_object):

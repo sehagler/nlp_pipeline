@@ -51,7 +51,8 @@ class Postprocessor_registry(object):
         except Exception:
             log_text = 'Postprocessor_' + filename + ' import failed'
             self.logger_object.print_log(log_text)
-            traceback.print_exc()
+            log_text = traceback.format_exc()
+            self.logger_object.print_exc(log_text)
             postprocessor_imported_flg = False
         if postprocessor_imported_flg:
             try:
@@ -61,7 +62,8 @@ class Postprocessor_registry(object):
                 log_text = filename + ' registration succeeded'
                 self.logger_object.print_log(log_text)
             except Exception:
-                traceback.print_exc()
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
                 log_text = filename + ' registration failed'
                 self.logger_object.print_log(log_text)
                 

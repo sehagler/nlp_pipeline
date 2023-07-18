@@ -244,7 +244,8 @@ class Postprocessor_base(Manager_base):
                 data_dict_list[i][nlp_data_key] = \
                     data_dict_list[i][nlp_data_key][0]
             except Exception:
-                traceback.print_exc()
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
         return data_dict_list
     
     #

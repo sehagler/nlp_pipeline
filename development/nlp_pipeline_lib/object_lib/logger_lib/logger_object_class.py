@@ -35,14 +35,17 @@ class Logger_object(object):
     #
     def log_entry(self, patientId, labId, data_item, value0, value1):
         try:
-            item = [ str(patientId), str(labId), str(data_item), str(value0), str(value1) ]
+            item = \
+                [ str(patientId), str(labId), str(data_item), str(value0), str(value1) ]
         except Exception:
-            traceback.print_exc()
+            log_text = traceback.format_exc()
+            self.print_exc(log_text)
             item = []
         self.log_list.append(item)
         
     #
-    def log_entry_merge_documents(self, MRN, specimen_date, date_str, delta_day, documents_in):
+    def log_entry_merge_documents(self, MRN, specimen_date, date_str,
+                                  delta_day, documents_in):
         delta_day = 'N\A'
         documents_out = documents_in
         item = [ str(MRN), str(specimen_date), str(date_str), str(delta_day), documents_out ]
@@ -54,6 +57,10 @@ class Logger_object(object):
                 item = [ str(MRN), str(specimen_date), str(date_str), str(delta_day), documents_out ]
                 self.log_list.remove(entry)
         self.log_list.append(item)
+        
+    #
+    def print_exc(self, text):
+        print(text)
         
     #
     def print_log(self, text):
