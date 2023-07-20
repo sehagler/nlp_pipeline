@@ -6,7 +6,6 @@ Created on Fri Nov  6 12:13:55 2020
 """
 
 #
-from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.text_processing_tools \
     import block_label, case_number, part_label, slice_label, slide_label, s, test_label
@@ -61,13 +60,13 @@ def _remove_test(text):
     return text
 
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        normalize_text = sequential_composition(_remove_test,
-                                            _remove_slide,
-                                            _remove_slice,
-                                            _remove_part,
-                                            _remove_case_number)
-        self.text = normalize_text(self.text)
+    def run_preprocessor(self, text):
+        text = sequential_composition([_remove_test,
+                                       _remove_slide,
+                                       _remove_slice,
+                                       _remove_part,
+                                       _remove_case_number], text)
+        text = normalize_text(self.text)

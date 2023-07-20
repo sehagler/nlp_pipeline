@@ -14,8 +14,6 @@ from tools_lib.processing_tools_lib.variable_processing_tools \
 from query_lib.processor_lib.base_lib.blasts_tools_base \
     import Postprocessor as Postprocessor_base
 from query_lib.processor_lib.base_lib.blasts_tools_base \
-    import Preprocessor as Preprocessor_base
-from query_lib.processor_lib.base_lib.blasts_tools_base \
     import get_blast_value
     
 #
@@ -23,8 +21,11 @@ class Postprocessor(Postprocessor_base):
     pass
     
 #
-class Preprocessor(Preprocessor_base):
-    pass
+class Preprocessor(object):
+    
+    #
+    def run_preprocessor(self, text):
+        return text
 
 #
 def evaluate_peripheral_blood_blast(data_json):

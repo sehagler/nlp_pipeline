@@ -82,8 +82,7 @@ class Postprocessor(Postprocessor_base):
 class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        text = self.text
+    def run_preprocessor(self, text):
         text = \
             lambda_tools.initialism_lambda_conversion('packs?(' + slash() + '| a | per )day', text, 'PPD')
         text = \
@@ -98,4 +97,4 @@ class Preprocessor(object):
             lambda_tools.lambda_conversion(' ppy', text, ' PPY')
         text = \
             lambda_tools.deletion_lambda_conversion('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', text)
-        self.text = text
+        return text
