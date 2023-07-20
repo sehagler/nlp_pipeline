@@ -36,8 +36,9 @@ class CCC19_static_data_object(Static_data_object):
               ('NORMALIZED_SMOKING_PRODUCTS', None, 'SMOKING_PRODUCTS', 'NORMALIZED_SMOKING_PRODUCTS', 'multiple_values', False),
               ('NORMALIZED_SMOKING_STATUS', None, 'SMOKING_STATUS', 'NORMALIZED_SMOKING_STATUS', 'single_value', True) ] 
         self.static_data['test_postprocessing_data_in_files'] = \
-            [ 'cancer_stage.csv', 'ecog_status.csv', 'smoking_history.csv',
-              'smoking_products.csv', 'smoking_status.csv' ]
+            [ 'cancer_stage.csv', 'ecog_status.csv', 'sections.csv',
+              'smoking_history.csv', 'smoking_products.csv',
+              'smoking_status.csv' ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
         if self.project_subdir == 'production':
             self.static_data['raw_data_files'] = {}
