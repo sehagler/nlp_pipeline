@@ -580,8 +580,8 @@ class Performance_data_manager(Manager_base):
         for key in self.nlp_data.keys():
             identifier = \
                 self.nlp_data[key][self.metadata_key][self.identifier_key]
-            data_json = self._read_nlp_value(self.nlp_data, data_json,
-                                             key, identifier)
+            data_json = self._read_nlp_value(self.nlp_data, data_json, key,
+                                             identifier)
         nlp_values = self._get_nlp_values(self.nlp_data, data_json)
         self.performance_statistics_overall_dict = {}
         static_data = self.static_data_object.get_static_data()

@@ -11,7 +11,6 @@ import re
 
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
-from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
@@ -80,7 +79,7 @@ class Postprocessor(Postprocessor_base):
         return value_list
     
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
     def run_preprocessor(self):
