@@ -16,8 +16,8 @@ from base_lib.manager_base_class import Manager_base
 class Software_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, server_manager):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, server_manager):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = static_data_object.get_static_data()
         self.server_manager = server_manager
         self.directory_manager = self.static_data['directory_manager']
