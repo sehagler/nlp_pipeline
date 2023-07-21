@@ -2,12 +2,6 @@ from __future__ import unicode_literals, print_function
 
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 2 10:02:08 2021
-
-@author: haglers
-"""
-# -*- coding: utf-8 -*-
-"""
 Created on Fri Jan 04 10:50:12 2019
 
 @author: haglers
@@ -85,30 +79,6 @@ class Linguamatics_i2e_object(object):
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
-        
-    #
-    def _build_data_dictionary(self):
-        for key in self.data_csv.keys():
-            document_dict = {}
-            document_dict['DOCUMENT_ID'] = key
-            document_frame = []
-            document_frame = self._build_document_frame(self.data_csv[key])
-            document_dict['DOCUMENT_FRAME'] = document_frame
-            self.data_dict_list.append(document_dict)
-            
-    #
-    def _build_document_frame(self, data_list):
-        document_frame = []
-        for item in data_list:
-            entry = []
-            entry.append(tuple([item[1], item[2]]))
-            entry.append(item[0])
-            entry.append(item[3])
-            document_frame.append(entry)
-            num_elements = len(item) - 4
-            for i in range(num_elements):
-                entry.append(item[4+i])
-        return(document_frame)
         
     #
     def _fix_queries(self, query_paths):
@@ -271,29 +241,28 @@ class Linguamatics_i2e_object(object):
                     else:
                         colname = None
                     if colname is not None and colname in cell_to_colix:
+                        htext = cell.find('.//Text').text
                         if colname != 'hit':
-                            text = cell.find('.//Text').text
-                            if text is not None:
+                            if htext is not None:
                                 if row[cell_to_colix[colname]]:
-                                    text = ' {}'.format(text)
-                                    row[cell_to_colix[colname]] += text
+                                    htext = ' {}'.format(htext)
+                                    row[cell_to_colix[colname]] += htext
                                 else:
-                                    text = text.strip()
-                                    row[cell_to_colix[colname]] = text
+                                    htext = htext.strip()
+                                    row[cell_to_colix[colname]] = htext
                             else:
                                 row[cell_to_colix[colname]] = ''
-                            if colname not in [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Speciment Id']:
-                                extractions.append(text)
+                            if colname not in [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Speciment Id'] and \
+                               htext is not None:
+                                extractions.append(htext)
                         else:
                             hit_spans = cell.findall('.//HitSpan')
                             if hit_spans:
                                 hit_spans = set(
                                     [ET.tostring(h).strip() for h in hit_spans])
-                                offsets = list()
                                 targets = list()
                                 for hit_span in hit_spans:
                                     hit_span = ET.fromstring(hit_span)
-                                    htext = cell.find('.//Text').text
                                     is_sent = hit_span.find('.//IsSentence')
                                     if is_sent is None:
                                         url = hit_span.find('.//URL').text
@@ -310,10 +279,8 @@ class Linguamatics_i2e_object(object):
                                         targets_in_text = (start, stop)
                                         targets.append(tuple([ targets_in_hit,
                                                                targets_in_text ]))
-                                        offsets.append(tuple([ start, start + len(htext) ]))
                                 highlighted_spans = self._get_hit_highlights(htext,
                                                                              targets)
-                                #targets_bak = targets[0][1]
                                 targets = []
                                 for i in range(len(extractions)):
                                     extraction = extractions[i]
@@ -327,7 +294,18 @@ class Linguamatics_i2e_object(object):
                                         targets.append('')
                                 targets = targets[1:-1]
                                 if len(targets) == 0:
-                                    targets.append(offsets[0])
+                                    for i in range(len(extractions)):
+                                        extraction = extractions[i]
+                                        prefix = htext.replace(extraction, '')
+                                        highlighted_span_found_flg = False
+                                        for highlighted_span in highlighted_spans:
+                                            if not highlighted_span_found_flg and \
+                                               extraction.startswith(highlighted_span[1]):
+                                                x = highlighted_span[0][0] + len(prefix)
+                                                targets.append(tuple([x, x + len(extraction)]))
+                                                highlighted_span_found_flg = True
+                                        if not highlighted_span_found_flg:
+                                            targets.append('')
                                 if text_spans:
                                     row[cell_to_colix['coords']] = targets
                             else:
@@ -422,11 +400,7 @@ class Linguamatics_i2e_object(object):
                     row[-1] = ast.literal_eval(row[-1])
                     data_dict[row[0]].append(row[1:])
                 line_count += 1
-        self.data_csv = data_dict
-        self.data_dict_list = []
-        if bool(self.data_csv):
-            self._build_data_dictionary()
-        return self.data_dict_list
+        return data_dict
     
     #
     def generate_query_bundle_file(self, project_name,

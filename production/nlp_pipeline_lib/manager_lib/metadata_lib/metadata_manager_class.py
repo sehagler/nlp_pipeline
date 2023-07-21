@@ -19,8 +19,8 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Metadata_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
         self.metadata_json_file = \
@@ -44,7 +44,8 @@ class Metadata_manager(Manager_base):
                     source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
                         str(int(float(source_metadata_dict[id_key])))
                 except Exception:
-                    #traceback.print_exc()
+                    #log_text = traceback.format_exc()
+                    #self.logger_object.print_exc(log_text)
                     source_metadata_dict['SOURCE_SYSTEM_DOCUMENT_ID'] = \
                         source_metadata_dict[id_key]
         self.metadata_dict_dict[metadata_dict_key] = {}

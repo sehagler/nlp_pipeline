@@ -35,4 +35,4 @@ parameters: {Biomarker: BCL2}
 runAsSmartQuery: true
 creator: haglers
 useInSmartQuery: true
-queryID: 61b34421
+queryID: 7b5fc2cb

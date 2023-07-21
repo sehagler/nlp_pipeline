@@ -21,30 +21,25 @@ def _compare_lists(x, y, display_flg, manual_review):
         if y is not None:
             if x is not None:
                 if collections.Counter(x) == collections.Counter(y):
-                    result = 'true positive'
+                    performance = 'true positive'
                 else:
-                    result = 'false positive + false negative'
+                    performance = 'false positive + false negative'
             else:
-                result = 'false negative'
+                performance = 'false negative'
         else:
             if x is not None:
-                result = 'false positive'
+                performance = 'false positive'
             else:
-                result = 'true negative'
+                performance = 'true negative'
     else:
         if y is not None:
             if manual_review in y:
-                result = 'true positive'
+                performance = 'true positive'
             else:
-                result = 'false positive + false negative'
+                performance = 'false positive + false negative'
         else:
-            result = 'false positive'
-    if display_flg and 'true positive' not in result and 'true negative' not in result:
-        print(result)
-        print(x)
-        print(y)
-        print('')
-    return result
+            performance = 'false positive'
+    return performance
     
 #
 def _compare_values(x, y, display_flg, manual_review):
@@ -54,30 +49,25 @@ def _compare_values(x, y, display_flg, manual_review):
         if y is not None:
             if x is not None:
                 if str(x) == str(y):
-                    result = 'true positive'
+                    performance = 'true positive'
                 else:
-                    result = 'false positive + false negative'
+                    performance = 'false positive + false negative'
             elif x is None:
-                result = 'false negative'
+                performance = 'false negative'
         else:
             if x is not None:
-                result = 'false positive'
+                performance = 'false positive'
             else:
-                result = 'true negative'
+                performance = 'true negative'
     else:
         if y is not None:
             if manual_review in y:
-                result = 'true positive'
+                performance = 'true positive'
             else:
-                result = 'false positive + false negative'
+                performance = 'false positive + false negative'
         else:
-            result = 'false positive'
-    if display_flg and 'true positive' not in result and 'true negative' not in result:
-        print(result)
-        print(x)
-        print(y)
-        print('')
-    return result
+            performance = 'false positive'
+    return performance
 
 #
 def _compare_values_range(x, y, display_flg, value_range,
@@ -88,37 +78,32 @@ def _compare_values_range(x, y, display_flg, value_range,
         if y is not None:
             if x is not None:
                 if abs(float(x) - float(y)) <= value_range:
-                    result = 'true positive'
+                    performance = 'true positive'
                 else:
-                    result = 'false positive + false negative'
+                    performance = 'false positive + false negative'
             elif x is None:
-                result = 'false negative'
+                performance = 'false negative'
         else:
             if x is not None:
-                result = 'false positive'
+                performance = 'false positive'
             else:
-                result = 'true negative'
+                performance = 'true negative'
     else:
         if y is not None:
             if manual_review in y:
-                result = 'true positive'
+                performance = 'true positive'
             else:
-                result = 'false positive + false negative'
+                performance = 'false positive + false negative'
         else:
-            result = 'false positive'
-    if display_flg and 'true positive' not in result and 'true negative' not in result:
-        print(result)
-        print(x)
-        print(y)
-        print('')
-    return result
+            performance = 'false positive'
+    return performance
 
 #
 class Evaluation_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, evaluator_registry):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, evaluator_registry):
+        Manager_base.__init__(self, static_data_object, logger_object)
         
     #
     def evaluation(self, arg_dict, value_range=None):
@@ -138,4 +123,9 @@ class Evaluation_manager(Manager_base):
                 _compare_values_range(x, y, display_flg, value_range,
                                       self.manual_review)
         arg_dict['performance'] = performance
+        if display_flg and 'true positive' not in performance and 'true negative' not in performance:
+            self.logger_object.print_log(performance)
+            self.logger_object.print_log(x)
+            self.logger_object.print_log(y)
+            self.logger_object.print_log('')
         return arg_dict

@@ -17,11 +17,11 @@ from query_lib.processor_lib.base_lib.date_tools_base import compare_dates
 class OhsuNlpTemplate_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_object, evaluation_manager,
+    def __init__(self, static_data_object, logger_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
         Performance_data_manager.__init__(self, static_data_object,
-                                          evaluation_manager,
+                                          logger_object, evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)
@@ -119,7 +119,8 @@ class OhsuNlpTemplate_performance_data_manager(Performance_data_manager):
         hit_documents_dict = {}
         hit_manual_review_dict = {}
         for csn in document_csn_list:
-            print(csn)
+            log_text = csn
+            self.logger_object.print_log(log_text)
             for i in range(len(self.queries)):
                 nlp_datum_key = self.queries[i][3]
                 if nlp_datum_key not in N_manual_review.keys():
@@ -173,16 +174,16 @@ class OhsuNlpTemplate_performance_data_manager(Performance_data_manager):
                         nlp_performance_wo_validation_manual_review_dict[nlp_datum_key].append('true negative')
                     elif self.manual_review in validation_value:
                         nlp_performance_w_validation_manual_review_dict[nlp_datum_key].append('false negative')
-                        print('false negative')
-                        print(None)
-                        print(validation_value)
-                        print('')
+                        self.logger_object.print_log('false negative')
+                        self.logger_object.print_log(None)
+                        self.logger_object.print_log(validation_value)
+                        self.logger_object.print_log('')
                     else:
                         nlp_performance_wo_validation_manual_review_dict[nlp_datum_key].append('false negative')
-                        print('false negative')
-                        print(None)
-                        print(validation_value)
-                        print('')
+                        self.logger_object.print_log('false negative')
+                        self.logger_object.print_log(None)
+                        self.logger_object.print_log(validation_value)
+                        self.logger_object.print_log('')
         N_documents = len(document_csn_list)
         N_hit_documents_wo_validation_manual_review_dict = {}
         for key in hit_documents_dict.keys():

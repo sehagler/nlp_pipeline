@@ -14,8 +14,9 @@ import traceback
 class Preprocessor_registry(object):
     
     #
-    def __init__(self, static_data):
-        self.static_data = static_data
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
         self.preprocessor_registry = {}
     
     #
@@ -24,12 +25,14 @@ class Preprocessor_registry(object):
     
     #
     def create_preprocessors(self):
-        directory_manager = self.static_data['directory_manager']
-        operation_mode = self.static_data['operation_mode']
+        static_data = self.static_data_object.get_static_data()
+        directory_manager = static_data['directory_manager']
+        operation_mode = static_data['operation_mode']
         software_dir = directory_manager.pull_directory('software_dir')
         root_dir = \
             os.path.join(software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
-        print(root_dir)
+        log_text = root_dir
+        self.logger_object.print_log(log_text)
         for root, dirs, files in os.walk(root_dir):
             relpath = '.' + os.path.relpath(root, root_dir) + '.'
             relpath = re.sub('\.+', '.', relpath)
@@ -40,9 +43,11 @@ class Preprocessor_registry(object):
                                  filename + ' import Preprocessor'
                     exec(import_cmd, globals())
                     self._register_preprocessor(filename, Preprocessor())
-                    print('Registered Preprocessor from ' + filename)
+                    log_text = 'Registered Preprocessor from ' + filename
+                    self.logger_object.print_log(log_text)
                 except Exception:
-                    traceback.print_exc()
+                    log_text = traceback.format_exc()
+                    self.logger_object.print_exc(log_text)
                     
     #
     def push_text_normalization_object(self, text_normalization_object):

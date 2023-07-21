@@ -115,8 +115,9 @@ def _prune_metadata(metadata):
 class Raw_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, multiprocessing_flg, password):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, multiprocessing_flg,
+                 password):
+        Manager_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
         self.multiprocessing_flg = multiprocessing_flg
         self.clear_raw_data()
@@ -206,7 +207,8 @@ class Raw_data_manager(Manager_base):
             for data in self.partitioned_data[key]:
                 keys = list(data.keys())
                 num_docs += len(data[keys[0]])
-        print('Number of documents in preprocessing set: ' + str(num_docs))
+        log_text = 'Number of documents in preprocessing set: ' + str(num_docs)
+        self.logger_object.print_log(log_text)
         
     #
     def select_process(self, process_idx):

@@ -14,8 +14,8 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Dynamic_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
         directory_manager = static_data['directory_manager']
         project_name = static_data['project_name']

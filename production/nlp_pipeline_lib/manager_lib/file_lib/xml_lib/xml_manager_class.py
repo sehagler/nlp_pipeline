@@ -8,7 +8,6 @@ Created on Tue Mar 22 14:57:36 2022
 #
 import codecs
 import os
-import re
 import xml.etree.ElementTree as ET
 
 #
@@ -18,8 +17,9 @@ from base_lib.manager_base_class import Manager_base
 class Xml_manager(Manager_base):
 
     #
-    def __init__(self, static_data_object, raw_data_file, password):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, raw_data_file,
+                 password):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = self.static_data_object.get_static_data()
         self.raw_data_file = raw_data_file       
         
@@ -30,7 +30,7 @@ class Xml_manager(Manager_base):
             self.static_data['raw_data_files'][filename]['ENCODING']
         filename, file_extension = os.path.splitext(raw_data_file)
         tmp_file = filename + '.tmp'
-        dt_labels = self.static_data['datetime_keys']
+        #dt_labels = self.static_data['datetime_keys']
         text_identifiers = self.static_data['text_identifiers']
         with open(raw_data_file, encoding=raw_data_encoding, errors='ignore') as f:
             xml_txt = f.read()
@@ -92,6 +92,7 @@ class Xml_manager(Manager_base):
     #
     def read_file(self):
         raw_data_files_dict = self.static_data['raw_data_files']
-        print('Reading file: ' + self.raw_data_file)
+        log_text = 'Reading file: ' + self.raw_data_file
+        self.logger_object.print_log(log_text)
         data = self._read_data_file(raw_data_files_dict, self.raw_data_file)
         return data

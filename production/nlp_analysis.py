@@ -34,9 +34,9 @@ pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[4]
-project_subdir = project_subdirs[0]
-server = servers[0]
+project_name = project_names[5]
+project_subdir = project_subdirs[1]
+server = servers[1]
 
 #
 pipeline_mode_flg = pipeline_mode_flgs[1]
@@ -97,9 +97,13 @@ elif mode_flg == 'run':
     if pipeline_mode_flg == 'training_sets':
         pipeline_object.generate_training_data_sets(password)
     elif pipeline_mode_flg == 'linguamatics_i2e_prequeries':
-        pipeline_object.cleanup_directory('linguamatics_i2e_preprocessing_data_out')
-        pipeline_object.cleanup_directory('source_data')
+        if True:
+            pipeline_object.cleanup_directory('linguamatics_i2e_preprocessing_data_out')
+            pipeline_object.initialize_metadata()
         pipeline_object.linguamatics_i2e_prequeries(password)
+        pipeline_object.cleanup_directory('source_data')
+        pipeline_object.linguamatics_i2e_indexer()
+        pipeline_object.linguamatics_i2e_push_queries()
     elif pipeline_mode_flg == 'linguamatics_i2e_indexer':
         pipeline_object.cleanup_directory('source_data')
         pipeline_object.linguamatics_i2e_indexer()

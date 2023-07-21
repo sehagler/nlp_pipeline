@@ -10,7 +10,8 @@ import os
 import re
 
 #
-from base_lib.postprocessor_base_class import Postprocessor_base
+from base_lib.postprocessor_base_class \
+    import _build_data_dictionary, _build_document_frame, Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.processing_tools_lib.function_processing_tools \
     import sequential_composition
@@ -537,11 +538,14 @@ class Postprocessor(Postprocessor_base):
     
     #
     def push_data_dict(self, postprocessor_name, filename, data_dict,
-                       sections_data_dict):
+                       sections_data_dict, document_list):
+        data_dict_list = _build_data_dictionary(data_dict, document_list)
+        sections_data_dict_list = _build_data_dictionary(sections_data_dict,
+                                                         document_list)
         postprocessor_name = re.sub('postprocessor_', '', postprocessor_name)
         if postprocessor_name == filename:
-            self.data_dict_list[0] = data_dict
-            self.sections_data_dict = sections_data_dict
+            self.data_dict_list[0] = data_dict_list
+            self.sections_data_dict = sections_data_dict_list
             self.filename = filename
         postprocessor_name_split = postprocessor_name.split('_')
         postprocessor_blocks_name = postprocessor_name_split[:-1]
@@ -549,14 +553,14 @@ class Postprocessor(Postprocessor_base):
         postprocessor_blocks_name.append(postprocessor_name_split[-1])
         postprocessor_blocks_name = '_'.join(postprocessor_blocks_name)
         if postprocessor_blocks_name == filename:
-            self.data_dict_list[1] = data_dict
+            self.data_dict_list[1] = data_dict_list
         postprocessor_name_split = postprocessor_name.split('_')
         postprocessor_variability_name = postprocessor_name_split[:-1]
         postprocessor_variability_name.append('variability')
         postprocessor_variability_name.append(postprocessor_name_split[-1])
         postprocessor_variability_name = '_'.join(postprocessor_variability_name)
         if postprocessor_variability_name == filename:
-            self.data_dict_list[2] = data_dict
+            self.data_dict_list[2] = data_dict_list
 
 #
 class Preprocessor(object):

@@ -11,7 +11,6 @@ import re
 
 #
 from base_lib.postprocessor_base_class import Postprocessor_base
-from base_lib.preprocessor_base_class import Preprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
@@ -80,11 +79,10 @@ class Postprocessor(Postprocessor_base):
         return value_list
     
 #
-class Preprocessor(Preprocessor_base):
+class Preprocessor(object):
     
     #
-    def run_preprocessor(self):
-        text = self.text
+    def run_preprocessor(self, text):
         text = \
             lambda_tools.initialism_lambda_conversion('packs?(' + slash() + '| a | per )day', text, 'PPD')
         text = \
@@ -99,4 +97,4 @@ class Preprocessor(Preprocessor_base):
             lambda_tools.lambda_conversion(' ppy', text, ' PPY')
         text = \
             lambda_tools.deletion_lambda_conversion('(?i)check out the free oregon quit line(.*\n)*.*www . quitnow . net / oregon', text)
-        self.text = text
+        return text

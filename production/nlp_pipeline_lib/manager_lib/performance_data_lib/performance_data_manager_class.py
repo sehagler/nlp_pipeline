@@ -18,24 +18,6 @@ from tools_lib.processing_tools_lib.function_processing_tools \
 
 #
 from base_lib.manager_base_class import Manager_base
-
-#
-def _display_performance_statistics(performance_statistics_overall_dict):
-    for key in performance_statistics_overall_dict.keys():
-        print(key)
-        print('\t\t\tNON_MAN_REV\tMAN_REV')
-        print(' N documents:\t\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
-              '\t\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_MANUAL_REVIEW'])
-        print(' N hit documents:\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
-              '\t\t ' + performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_MANUAL_REVIEW'])
-        print(' accuracy:\t\t ' + performance_statistics_overall_dict[key]['ACCURACY']['NLP_WITHOUT_MANUAL_REVIEW'] + \
-              '\t\t ' + performance_statistics_overall_dict[key]['ACCURACY']['NLP_MANUAL_REVIEW'])
-        print(' precision:\t\t ' + performance_statistics_overall_dict[key]['PRECISION']['NLP_WITHOUT_MANUAL_REVIEW'] + \
-              '\t\t ' + performance_statistics_overall_dict[key]['PRECISION']['NLP_MANUAL_REVIEW'])
-        print(' recall:\t\t ' + performance_statistics_overall_dict[key]['RECALL']['NLP_WITHOUT_MANUAL_REVIEW'] + \
-              '\t\t ' + performance_statistics_overall_dict[key]['RECALL']['NLP_MANUAL_REVIEW'])
-        print(' F1:\t\t\t ' + performance_statistics_overall_dict[key]['F1']['NLP_WITHOUT_MANUAL_REVIEW'] + \
-              '\t\t ' + performance_statistics_overall_dict[key]['F1']['NLP_MANUAL_REVIEW'])
             
 #
 def _get_data_value(section_data_list, section_key_list, mode_flg):
@@ -264,44 +246,13 @@ def _process_validation_item(x):
     return x
 
 #
-def _validation_to_tuple(value):
-    if value is not None:
-        if value != 'MANUAL_REVIEW':
-            value = value.lower()
-        value = _normalize_percentage_range(value)
-        value = value.replace(' ', '')
-        value = value.replace(',', '\',\'')
-        value = value.replace('(', '(\'')
-        value = value.replace(')', '\')')
-        value = value.replace('\'(', '(')
-        value = value.replace(')\'', ')')
-        try:
-            value_eval = '[\'' + value + '\']'
-            value_list = eval(value_eval)
-        except Exception:
-            traceback.print_exc()
-            value = value.replace('(\'', '(')
-            value = value.replace('\')', ')')
-            value_eval = '[\'' + value + '\']'
-            value_list = eval(value_eval)
-        for i in range(len(value_list)):
-            if type(value_list[i]) is not tuple:
-                value_list[i] = str(value_list[i])
-                value_list[i] = value_list[i].replace('\'', '')
-                value_list[i] = value_list[i].replace(' ', '')
-        value_tuple = tuple(value_list)
-    else:
-        value_tuple = None
-    return value_tuple
-
-#
 class Performance_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, evaluation_manager,
+    def __init__(self, static_data_object, logger_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
                  xls_manager_registry):
-        Manager_base.__init__(self, static_data_object)
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.evaluation_manager = evaluation_manager
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
@@ -415,7 +366,7 @@ class Performance_data_manager(Manager_base):
                 if row[2] == identifier:
                     validation_value = \
                         _process_validation_item(row[validation_idx[0]])
-        validation_value = _validation_to_tuple(validation_value)
+        validation_value = self._validation_to_tuple(validation_value)
         return validation_value
     
     #
@@ -448,7 +399,8 @@ class Performance_data_manager(Manager_base):
         validation_csn_list = \
             self.validation_data_manager.get_validation_csn_list()
         for csn in document_csn_list:
-            print(csn)
+            log_text = csn
+            self.logger_object.print_log(log_text)
             self._append_csv_header('\n' + 'DOCUMENT_IDENTIFIER' + ', ')
             self._append_csv_body(csn, newline_flg=True)
             for i in range(len(self.queries)):
@@ -538,16 +490,16 @@ class Performance_data_manager(Manager_base):
                 self.nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append('true negative')
             elif self.manual_review in validation_value:
                 self.nlp_performance_w_validation_manual_review_dict[validation_datum_key].append('false negative')
-                print('false negative')
-                print(None)
-                print(validation_value)
-                print('')
+                self.logger_object.print_log('false negative')
+                self.logger_object.print_log(None)
+                self.logger_object.print_log(validation_value)
+                self.logger_object.print_log('')
             else:
                 self.nlp_performance_wo_validation_manual_review_dict[validation_datum_key].append('false negative')
-                print('false negative')
-                print(None)
-                print(validation_value)
-                print('')
+                self.logger_object.print_log('false negative')
+                self.logger_object.print_log(None)
+                self.logger_object.print_log(validation_value)
+                self.logger_object.print_log('')
         if validation_value is not None and self.manual_review in validation_value:
             self.N_manual_review[validation_datum_key] += 1
             
@@ -561,10 +513,38 @@ class Performance_data_manager(Manager_base):
         for query in self.queries:
             validation_datum_keys.append(query[0])
         return validation_datum_keys
-    
+
     #
     def _validation_to_tuple(self, value):
-        return _validation_to_tuple(value)
+        if value is not None:
+            if value != 'MANUAL_REVIEW':
+                value = value.lower()
+            value = _normalize_percentage_range(value)
+            value = value.replace(' ', '')
+            value = value.replace(',', '\',\'')
+            value = value.replace('(', '(\'')
+            value = value.replace(')', '\')')
+            value = value.replace('\'(', '(')
+            value = value.replace(')\'', ')')
+            try:
+                value_eval = '[\'' + value + '\']'
+                value_list = eval(value_eval)
+            except Exception:
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
+                value = value.replace('(\'', '(')
+                value = value.replace('\')', ')')
+                value_eval = '[\'' + value + '\']'
+                value_list = eval(value_eval)
+            for i in range(len(value_list)):
+                if type(value_list[i]) is not tuple:
+                    value_list[i] = str(value_list[i])
+                    value_list[i] = value_list[i].replace('\'', '')
+                    value_list[i] = value_list[i].replace(' ', '')
+            value_tuple = tuple(value_list)
+        else:
+            value_tuple = None
+        return value_tuple
     
     #
     def _walker(self, node, target_key, data_key, key_list_in, section_key_list):
@@ -600,8 +580,8 @@ class Performance_data_manager(Manager_base):
         for key in self.nlp_data.keys():
             identifier = \
                 self.nlp_data[key][self.metadata_key][self.identifier_key]
-            data_json = self._read_nlp_value(self.nlp_data, data_json,
-                                             key, identifier)
+            data_json = self._read_nlp_value(self.nlp_data, data_json, key,
+                                             identifier)
         nlp_values = self._get_nlp_values(self.nlp_data, data_json)
         self.performance_statistics_overall_dict = {}
         static_data = self.static_data_object.get_static_data()
@@ -617,7 +597,29 @@ class Performance_data_manager(Manager_base):
         
     #
     def display_performance_statistics(self):
-        _display_performance_statistics(self.performance_statistics_overall_dict)
+        for key in self.performance_statistics_overall_dict.keys():
+            log_text = key
+            self.logger_object.print_log(log_text)
+            log_text = '\t\t\tNON_MAN_REV\tMAN_REV'
+            self.logger_object.print_log(log_text)
+            log_text = 'N documents:\t\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                       '\t\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_DOCUMENTS']['NLP_MANUAL_REVIEW']
+            self.logger_object.print_log(log_text)
+            log_text = ' N hit documents:\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                       '\t\t ' + self.performance_statistics_overall_dict[key]['N_VALIDATION_HIT_DOCUMENTS']['NLP_MANUAL_REVIEW']
+            self.logger_object.print_log(log_text)
+            log_text = ' accuracy:\t\t ' + self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                       '\t\t ' + self.performance_statistics_overall_dict[key]['ACCURACY']['NLP_MANUAL_REVIEW']
+            self.logger_object.print_log(log_text)
+            log_text = ' precision:\t\t ' + self.performance_statistics_overall_dict[key]['PRECISION']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                       '\t\t ' + self.performance_statistics_overall_dict[key]['PRECISION']['NLP_MANUAL_REVIEW']
+            self.logger_object.print_log(log_text)
+            log_text = ' recall:\t\t ' + self.performance_statistics_overall_dict[key]['RECALL']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                       '\t\t ' + self.performance_statistics_overall_dict[key]['RECALL']['NLP_MANUAL_REVIEW']
+            self.logger_object.print_log(log_text)
+            log_text = ' F1:\t\t\t ' + self.performance_statistics_overall_dict[key]['F1']['NLP_WITHOUT_MANUAL_REVIEW'] + \
+                       '\t\t ' + self.performance_statistics_overall_dict[key]['F1']['NLP_MANUAL_REVIEW']
+            self.logger_object.print_log(log_text)
         
     #
     def generate_csv_file(self):

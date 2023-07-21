@@ -11,6 +11,23 @@ from nlp_tools_lib.ohsu_nlp_template_lib.AB_fields_manager_class \
     import AB_fields_manager
 from nlp_tools_lib.ohsu_nlp_template_lib.simple_template_manager_class \
     import Simple_template_manager
+    
+#
+def _create_text_dict_postprocessing_data_in(sections, document_ids):
+    text_dict = {}
+    for document_id in document_ids:
+        text_dict[document_id] = {}
+        for i in range(1, len(sections)):
+            row = sections[i]
+            if row[0] == document_id:
+                key = (row[2], row[3])
+                section = row[4]
+                offset_base = 0
+                if section != '.*':
+                    text_dict[document_id][key] = {}
+                    text_dict[document_id][key]['OFFSET_BASE'] = offset_base
+                    text_dict[document_id][key]['TEXT'] = section
+    return text_dict
 
 #
 class Ohsu_nlp_template_manager(Manager_base):
@@ -24,10 +41,26 @@ class Ohsu_nlp_template_manager(Manager_base):
     #
     def clear_simple_template_output(self):
         self.simple_template_manager.clear_template_output()
+        
+    #
+    def pull_simple_template_output(self):
+        template_output = self.simple_template_manager.pull_template_output()
+        return template_output
     
     #
-    def run_simple_template(self, template_manager, text_dict):
-        self.simple_template_manager.run_template(template_manager, text_dict)
+    def run_simple_template(self, argument_dict):
+        doc_list = argument_dict['doc_list']
+        sections = argument_dict['sections']
+        template_manager = argument_dict['template_manager']
+        if len(sections) > 0:
+            text_dict = _create_text_dict_postprocessing_data_in(sections,
+                                                                 doc_list)
+        else:
+            text_dict = None
+        del argument_dict
+        del sections
+        self.simple_template_manager.run_template(template_manager, 
+                                                  text_dict, doc_list)
             
     #
     def train_ab_fields(self, template_manager, metadata_manager, data_dir,
@@ -39,7 +72,3 @@ class Ohsu_nlp_template_manager(Manager_base):
     #
     def write_ab_fields(self, template_outlines_dir, filename):
         self.ab_fields_manager.write_ab_fields(template_outlines_dir, filename)
-
-    #
-    def write_simple_template_output(self, template_manager, data_dir, filename):
-        self.simple_template_manager.write_template_output(template_manager, data_dir, filename)

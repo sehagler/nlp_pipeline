@@ -23,26 +23,12 @@ def _get_document_values(raw_data):
     return document_values
     
 #
-def _read_datetime(book, value):
-    if value != '':
-        try:
-            value = float(value)
-            y, m, d, h, mi, s = \
-                xlrd.xldate_as_tuple(value, book.datemode)
-            datetime_str = str(m) + '/' + str(d) + '/' + str(y)
-        except Exception:
-            traceback.print_exc()
-            datetime_str = ''
-    else:
-        datetime_str = ''
-    return datetime_str
-    
-#
 class Xls_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, raw_data_file, password):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, raw_data_file,
+                 password):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = self.static_data_object.get_static_data()
         self.raw_data_file = raw_data_file
     
@@ -111,7 +97,7 @@ class Xls_manager(Manager_base):
             raw_data['NLP_MODE'].append(raw_data_files_dict[os.path.basename(raw_data_file)]['NLP_MODE'])
             for i in range(len(keys)):
                 if keys[i] in dt_labels:
-                    raw_data[keys[i]].append(_read_datetime(book, row[i].value))
+                    raw_data[keys[i]].append(self._read_datetime(book, row[i].value))
                 else:
                     raw_data[keys[i]].append(row[i].value)
         raw_data['RAW_TEXT'] = raw_data[keys[-1]]
@@ -126,6 +112,22 @@ class Xls_manager(Manager_base):
             for key in document_dict.keys():
                 data[key].append(document_dict[key][0])
         return data
+    
+    #
+    def _read_datetime(self, book, value):
+        if value != '':
+            try:
+                value = float(value)
+                y, m, d, h, mi, s = \
+                    xlrd.xldate_as_tuple(value, book.datemode)
+                datetime_str = str(m) + '/' + str(d) + '/' + str(y)
+            except Exception:
+                datetime_str = ''
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
+        else:
+            datetime_str = ''
+        return datetime_str
     
     #
     def column(self, column_label):
@@ -149,7 +151,8 @@ class Xls_manager(Manager_base):
                 self.validation_data[i][idx] = \
                     str(int(float(self.validation_data[i][idx])))
             except Exception:
-                traceback.print_exc()
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
     
     #
     def get_validation_csn_list(self):
@@ -177,7 +180,8 @@ class Xls_manager(Manager_base):
     #
     def read_file(self):
         raw_data_files_dict = self.static_data['raw_data_files']
-        print('Reading file: ' + self.raw_data_file)
+        log_text = 'Reading file: ' + self.raw_data_file
+        self.logger_object.print_log(log_text)
         data = self._read_data_file(raw_data_files_dict, self.raw_data_file)
         return data
     
@@ -197,7 +201,8 @@ class Xls_manager(Manager_base):
                 try:
                     cell_value = str(int(cell_value))
                 except Exception:
-                    traceback.print_exc()
+                    log_text = traceback.format_exc()
+                    self.logger_object.print_exc(log_text)
                 '''
                 training_data_tmp.append(cell_value)
             training_data.append(training_data_tmp)

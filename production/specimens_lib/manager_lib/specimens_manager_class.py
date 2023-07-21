@@ -15,7 +15,6 @@ import traceback
 
 #
 from base_lib.manager_base_class import Manager_base
-from logger_lib.object_lib.logger_object_class import Logger_object
 from tools_lib.processing_tools_lib.function_processing_tools \
     import sequential_composition
 from tools_lib.processing_tools_lib.variable_processing_tools \
@@ -57,36 +56,6 @@ def _correct_merged_data(raw_data_json, filename, log_dir, manual_review):
     else:
         corrected_data_json = {}
     return corrected_data_json
-    
-#                 
-def _evaluate_generic(entry_label, data_json):
-    data_json_tmp = data_json
-    for key0 in data_json_tmp.keys():
-        for key1 in data_json_tmp[key0].keys():
-            for key2 in data_json_tmp[key0][key1].keys():
-                try:
-                    values = data_json_tmp[key0][key1][key2][entry_label]
-                    values = trim_data_value(values)
-                    values = list(set(values))
-                    if len(values) == 1:
-                        value = values[0]
-                    elif len(values) > 1:
-                        value = 'MANUAL_REVIEW'
-                        
-                        # kludge to fix BeatAML projects
-                        if entry_label == 'FISH.Analysis.Summary':
-                            value = values[-1]
-                        # kludge to fix BeatAML projects
-                        
-                    else:
-                        value = None
-                    if value is not None:
-                        data_json[key0][key1][key2][entry_label] = value
-                    else:
-                        del data_json[key0][key1][key2][entry_label]
-                except Exception:
-                    traceback.print_exc()
-    return data_json
 
 #
 def _get_document_map(argument_dict):
@@ -239,16 +208,42 @@ def _trim_specimen_tree(argument_dict):
 class Specimens_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         static_data = static_data_object.get_static_data()
         self.directory_manager = static_data['directory_manager']
         self.log_dir = self.directory_manager.pull_directory('log_dir')
-        self.logger_object = Logger_object(self.log_dir)
     
     #                 
     def _evaluate_generic(self, entry_label, data_json):
-        return _evaluate_generic(entry_label, data_json)
+        data_json_tmp = data_json
+        for key0 in data_json_tmp.keys():
+            for key1 in data_json_tmp[key0].keys():
+                for key2 in data_json_tmp[key0][key1].keys():
+                    try:
+                        values = data_json_tmp[key0][key1][key2][entry_label]
+                        values = trim_data_value(values)
+                        values = list(set(values))
+                        if len(values) == 1:
+                            value = values[0]
+                        elif len(values) > 1:
+                            value = 'MANUAL_REVIEW'
+                            
+                            # kludge to fix BeatAML projects
+                            if entry_label == 'FISH.Analysis.Summary':
+                                value = values[-1]
+                            # kludge to fix BeatAML projects
+                            
+                        else:
+                            value = None
+                        if value is not None:
+                            data_json[key0][key1][key2][entry_label] = value
+                        else:
+                            del data_json[key0][key1][key2][entry_label]
+                    except Exception:
+                        log_text = traceback.format_exc()
+                        self.logger_object.print_exc(log_text)
+        return data_json
     
     #
     def _make_strings(self, column_values):

@@ -11,6 +11,7 @@ import os
 import re
 
 #
+from base_lib.manager_base_class import Manager_base
 from tools_lib.regex_lib.regex_tools import regex_from_list
 from tools_lib.processing_tools_lib.file_processing_tools \
     import read_xlsx_file, write_file, xml_diff
@@ -20,11 +21,11 @@ from query_lib.processor_lib.cancer_tools \
     import get_initialisms, nonnumeric_stage, numeric_stage
     
 #
-class AB_fields_template_manager(object):
+class AB_fields_template_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        self.static_data_object = static_data_object
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.xls_manager = None
         self._get_secondary_template_list()
         self.blank_space = ' NLP_BLANK_SPACE '

@@ -11,10 +11,37 @@ import re
 import traceback
 
 #
-from base_lib.manager_base_class \
-    import Manager_base
+from base_lib.manager_base_class import Manager_base
 from tools_lib.processing_tools_lib.function_processing_tools \
     import parallel_composition, sequential_composition
+    
+#
+def _build_data_dictionary(data_dict, document_list):
+    data_dict_list = []
+    if bool(data_dict):
+        for key in data_dict.keys():
+            if key in document_list:
+                document_dict = {}
+                document_dict['DOCUMENT_ID'] = key
+                document_frame = []
+                document_frame = _build_document_frame(data_dict[key])
+                document_dict['DOCUMENT_FRAME'] = document_frame
+                data_dict_list.append(document_dict)
+    return data_dict_list
+    
+#
+def _build_document_frame(data_list):
+    document_frame = []
+    for item in data_list:
+        entry = []
+        entry.append(tuple([item[1], item[2]]))
+        entry.append(item[0])
+        entry.append(item[3])
+        document_frame.append(entry)
+        num_elements = len(item) - 4
+        for i in range(num_elements):
+            entry.append(item[4+i])
+    return document_frame
     
 #
 def _extract_value(context_regex, regex, map_func, text):
@@ -108,8 +135,8 @@ def _trim_snippet(data_row):
 class Postprocessor_base(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.data_dict_list = {}
         self.filename = None
         self.sections_data_dict_list = {}
@@ -182,7 +209,8 @@ class Postprocessor_base(Manager_base):
     
     #
     def _extract_data_value(self, text_list):
-        print('self._extract_data_value function not defined')
+        log_text = 'self._extract_data_value function not defined'
+        self.logger_object.print_log(log_text)
     
     #
     def _extract_data_values(self, argument_dict):
@@ -216,7 +244,8 @@ class Postprocessor_base(Manager_base):
                 data_dict_list[i][nlp_data_key] = \
                     data_dict_list[i][nlp_data_key][0]
             except Exception:
-                traceback.print_exc()
+                log_text = traceback.format_exc()
+                self.logger_object.print_exc(log_text)
         return data_dict_list
     
     #
@@ -236,37 +265,43 @@ class Postprocessor_base(Manager_base):
         return _get_data_table_keys(data_table)
     
     #
-    def _include_snippets(self, argument_dict):
-        data_dict_list_out = self.data_dict_list
-        for idx in range(len(data_dict_list_out)):
-            for i in range(len(data_dict_list_out[idx])):
-                document_id = data_dict_list_out[idx][i]['DOCUMENT_ID']
+    def _include_full_section(self, argument_dict):
+        data_dict_list = argument_dict['data_dict_list']
+        for idx in range(len(data_dict_list)):
+            for i in range(len(data_dict_list[idx])):
+                document_id = data_dict_list[idx][i]['DOCUMENT_ID']
                 for j in range(len(self.sections_data_dict)):
                     if self.sections_data_dict[j]['DOCUMENT_ID'] == document_id:
                         sections = self.sections_data_dict[j]['DOCUMENT_FRAME']
-                for j in range(len(data_dict_list_out[idx][i]['DOCUMENT_FRAME'])):
-                    offsets = data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1]
+                for j in range(len(data_dict_list[idx][i]['DOCUMENT_FRAME'])):
+                    offsets = data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1]
                     offsets.append('NONE')
-                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j] = \
-                        data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][:-1]
-                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j].append('NONE')
-                    data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j].append(offsets)
-                    section = data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][0]
+                    data_dict_list[idx][i]['DOCUMENT_FRAME'][j] = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][:-1]
+                    data_dict_list[idx][i]['DOCUMENT_FRAME'][j].append('NONE')
+                    data_dict_list[idx][i]['DOCUMENT_FRAME'][j].append(offsets)
+                    section = data_dict_list[idx][i]['DOCUMENT_FRAME'][j][0]
                     for k in range(len(sections)):
                         if sections[k][0] == section:
-                            data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-2] = \
+                            data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-2] = \
                                 sections[k][-2]
-                            data_dict_list_out[idx][i]['DOCUMENT_FRAME'][j][-1][-1] = \
+                            data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][-1] = \
                                 sections[k][-1][0]
-        return data_dict_list_out
+        return data_dict_list
+    
+    #
+    def _include_snippets(self, argument_dict):
+        data_dict_list = sequential_composition([self._include_full_section,
+                                                 self._trim_sections],
+                                                argument_dict)
+        return data_dict_list
     
     #
     def _merge_data_dicts(self, argument_dict):
         data_dict_list = argument_dict['data_dict_list']
         nlp_data_key = self.json_structure_tools.pull_key('nlp_data_key')
-        num_components = len(self.data_dict_list)
         doc_ids = []
-        for idx in range(num_components):
+        for idx in range(len(data_dict_list)):
             for i in range(len(data_dict_list[idx])):
                 doc_ids.append(data_dict_list[idx][i]['DOCUMENT_ID'])
         doc_ids = sorted(list(set(doc_ids)))
@@ -275,7 +310,7 @@ class Postprocessor_base(Manager_base):
         for doc_id in doc_ids:
             document_frame = {}
             nlp_data = {}
-            for idx in range(num_components):
+            for idx in range(len(data_dict_list)):
                 document_frame[idx] = None
                 nlp_data[idx] = None
                 for i in range(len(data_dict_list[idx])):
@@ -319,6 +354,38 @@ class Postprocessor_base(Manager_base):
         return return_dict
     
     #
+    def _trim_sections(self, data_dict_list):
+        snippet_size = 250
+        for idx in range(len(data_dict_list)):
+            for i in range(len(data_dict_list[idx])):
+                for j in range(len(data_dict_list[idx][i]['DOCUMENT_FRAME'])):
+                    i2e_extract = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][2]
+                    section = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-2]
+                    i2e_extract_offsets = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][0]
+                    section_offsets = \
+                        data_dict_list[idx][i]['DOCUMENT_FRAME'][j][-1][-1]
+                    m_idxs = \
+                        [m.start() for m in re.finditer(re.escape(i2e_extract), section)]
+                    if len(m_idxs) == 1:
+                        m_idx = m_idxs[0]
+                        neighborhood = (snippet_size - len(i2e_extract)) // 2
+                        if neighborhood <= m_idx:
+                            start = m_idx - neighborhood
+                            remainder = 0
+                        else:
+                            start = 0
+                            remainder = neighborhood - m_idx
+                        if m_idx + len(i2e_extract) + neighborhood + remainder <= len(section):
+                            stop = m_idx + len(i2e_extract) + neighborhood + remainder
+                        else:
+                            stop = len(section)
+                        snippet = section[start:stop]
+        return data_dict_list
+    
+    #
     def pull_data_dict_base_keys_list(self):
         return [ 'DOCUMENT_ID', 'DOCUMENT_FRAME' ]
     
@@ -328,11 +395,14 @@ class Postprocessor_base(Manager_base):
     
     #
     def push_data_dict(self, postprocessor_name, filename, data_dict,
-                       sections_data_dict):
+                       sections_data_dict, document_list):
+        data_dict_list = _build_data_dictionary(data_dict, document_list)
+        sections_data_dict_list = _build_data_dictionary(sections_data_dict,
+                                                         document_list)
         postprocessor_name = re.sub('postprocessor_', '', postprocessor_name)
         if postprocessor_name == filename:
-            self.data_dict_list[0] = data_dict
-            self.sections_data_dict = sections_data_dict
+            self.data_dict_list[0] = data_dict_list
+            self.sections_data_dict = sections_data_dict_list
             self.filename = filename
         
     #
@@ -342,11 +412,12 @@ class Postprocessor_base(Manager_base):
     #
     def run_postprocessor(self, query_name=None, section_name=None):
         argument_dict = {}
+        argument_dict['data_dict_list'] = self.data_dict_list
         argument_dict['filename'] = self.filename
         argument_dict['query_name'] = query_name
         return_dict = parallel_composition([_get_query_name,
-                                              self._include_snippets],
-                                             argument_dict)
+                                            self._include_snippets],
+                                           argument_dict)
         argument_dict = {}
         argument_dict['data_dict_list'] = \
             return_dict[self._include_snippets.__name__]

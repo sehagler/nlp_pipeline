@@ -13,10 +13,11 @@ from nlp_pipeline_lib.manager_lib.evaluation_lib.evaluation_manager_class \
 class BeatAML_Waves_1_And_2_evaluation_manager(Evaluation_manager):
     
     #
-    def __init__(self, static_data_object, evaluator_registry):
+    def __init__(self, static_data_object, logger_object, evaluator_registry):
         self.evaluator_registry = evaluator_registry
         self.evaluation_manager = \
-            Evaluation_manager(static_data_object, evaluator_registry)
+            Evaluation_manager(static_data_object, logger_object,
+                               evaluator_registry)
     
     #
     def evaluation(self, arg_dict):

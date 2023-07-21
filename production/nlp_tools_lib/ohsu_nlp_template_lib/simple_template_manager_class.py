@@ -6,10 +6,8 @@ Created on Fri Aug 26 12:10:43 2022
 """
 
 #
-import csv
 import datetime
 import itertools
-import os
 import re
 
 #
@@ -21,8 +19,8 @@ class Simple_template_manager(object):
     
     #
     def _apply_template(self, primary_template_list, secondary_template_list,
-                        template_sections_list, text_dict):
-        for document_id in text_dict.keys():
+                        template_sections_list, text_dict, doc_list):
+        for document_id in doc_list:
             template_output_list = []
             for key in text_dict[document_id].keys():
                 offset_base = text_dict[document_id][key]['OFFSET_BASE']
@@ -202,7 +200,11 @@ class Simple_template_manager(object):
         self.template_output = []
         
     #
-    def run_template(self, template_manager, text_dict):
+    def pull_template_output(self):
+        return self.template_output
+        
+    #
+    def run_template(self, template_manager, text_dict, doc_list):
         template_dict = template_manager.simple_template()
         primary_template_list = template_dict['primary_template_list']
         if 'secondary_template_list' in template_dict.keys():
@@ -211,18 +213,4 @@ class Simple_template_manager(object):
             secondary_template_list = []
         template_sections_list = template_dict['sections_list']
         self._apply_template(primary_template_list, secondary_template_list,
-                             template_sections_list, text_dict)
-        
-    #
-    def write_template_output(self, template_manager, data_dir, filename):
-        template_dict = template_manager.simple_template()
-        template_headers = template_dict['template_headers']
-        header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
-        for i in range(len(template_headers)):
-            header.append(template_headers[i])
-        #header.append('Snippet')
-        header.append('Coords')
-        with open(os.path.join(data_dir, filename), 'w', encoding='UTF8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerows(self.template_output)
+                             template_sections_list, text_dict, doc_list)
