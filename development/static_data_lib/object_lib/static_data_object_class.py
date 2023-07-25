@@ -13,8 +13,6 @@ from static_data_lib.object_lib.directory_object_class \
     import Directory_object
 from static_data_lib.tools_lib.json_structure_tools \
     import Json_structure_tools
-from static_data_lib.object_lib.linguamatics_i2e_file_object_class \
-    import Linguamatics_i2e_file_object
 from static_data_lib.tools_lib.section_header_structure_tools \
     import Section_header_structure_tools
     
@@ -68,8 +66,6 @@ class Static_data_object(object):
             Directory_object(self.static_data, root_dir_flg)
         self.static_data['json_structure_tools'] = \
             Json_structure_tools()
-        self.static_data['linguamatics_i2e_file_object'] = \
-            Linguamatics_i2e_file_object(project_name, user)
         self.static_data['section_header_structure_tools'] = \
             Section_header_structure_tools()
             

@@ -34,6 +34,8 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 #
+from nlp_tools_lib.linguamatics_i2e_lib.object_lib.linguamatics_i2e_file_object_class \
+    import Linguamatics_i2e_file_object
 from nlp_tools_lib.linguamatics_i2e_lib.check_queries \
     import QuerySetFixer, get_logger, yaml_constructor
 from tools_lib.processing_tools_lib.file_processing_tools \
@@ -53,12 +55,12 @@ logger = logging.getLogger()
 class Linguamatics_i2e_object(object):
     
     #
-    def __init__(self, linguamatics_i2e_file_object, server_manager,
-                 project_name, server, user, password):
+    def __init__(self, server_manager, project_name, server, user, password):
         self.server_manager = server_manager
         self.server = server
         self.user = user
-        self.linguamatics_i2e_file_object = linguamatics_i2e_file_object
+        self.linguamatics_i2e_file_object = \
+            Linguamatics_i2e_file_object(project_name, user)
         self.license_pool = 'admin'
         self.query_bundle_path = \
             '/Repository/Saved Queries/__private__/' + user + '/'
