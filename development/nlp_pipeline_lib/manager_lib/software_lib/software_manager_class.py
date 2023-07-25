@@ -21,7 +21,6 @@ class Software_manager(Manager_base):
         self.static_data = static_data_object.get_static_data()
         self.server_manager = server_manager
         self.directory_object = self.static_data['directory_object']
-        self.network_object = self.static_data['network_object']
         
     #
     def _copy_nlp_software(self, sandbox_path):
