@@ -28,8 +28,8 @@ class BreastCancerPathology_performance_data_manager(Performance_data_manager):
         if static_data['project_subdir'] == 'test':
             self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
             validation_filename = static_data['validation_file']
-            directory_manager = static_data['directory_manager']
-            data_dir = directory_manager.pull_directory('raw_data_dir')
+            directory_object = static_data['directory_object']
+            data_dir = directory_object.pull_directory('raw_data_dir')
             filename = os.path.join(data_dir, validation_filename)
             self.xls_manager_registry[filename].read_validation_data()
             self.queries = static_data['queries_list']

@@ -14,7 +14,7 @@ from tools_lib.processing_tools_lib.directory_processing_tools \
     import clean_directory, create_directory
 
 #
-class Directory_manager(object):
+class Directory_object(object):
     
     #
     def __init__(self, static_data, root_dir_flg, create_dir_flg=True):

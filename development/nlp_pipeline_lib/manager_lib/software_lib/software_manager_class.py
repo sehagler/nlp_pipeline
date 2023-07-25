@@ -20,8 +20,8 @@ class Software_manager(Manager_base):
         Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = static_data_object.get_static_data()
         self.server_manager = server_manager
-        self.directory_manager = self.static_data['directory_manager']
-        self.network_manager = self.static_data['network_manager']
+        self.directory_object = self.static_data['directory_object']
+        self.network_object = self.static_data['network_object']
         
     #
     def _copy_nlp_software(self, sandbox_path):
@@ -33,7 +33,7 @@ class Software_manager(Manager_base):
     
     #
     def cleanup_nlp_software(self):
-        for root, dirs, files in os.walk(self.directory_manager.pull_directory('software_dir')):
+        for root, dirs, files in os.walk(self.directory_object.pull_directory('software_dir')):
             for name in dirs:
                 if name == '__pycache__':
                     shutil.rmtree(os.path.join(root, name))

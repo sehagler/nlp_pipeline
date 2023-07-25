@@ -86,7 +86,7 @@ class KDLReports_static_data_object(Static_data_object):
             self._include_lists(docs_files, groups_files, [0, 1])
             
             raw_data_dir = \
-                self.static_data['directory_manager'].pull_directory('raw_data_dir')
+                self.static_data['directory_object'].pull_directory('raw_data_dir')
             raw_data_file = os.path.join(raw_data_dir, 'smmart_nlp_comparison.xlsx')
             book = read_xlsx_file(raw_data_file)
             sheet = book.sheet_by_index(0)

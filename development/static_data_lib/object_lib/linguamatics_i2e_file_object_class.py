@@ -6,7 +6,7 @@ Created on Fri Jan 18 08:18:53 2019
 """
 
 #
-class Linguamatics_i2e_file_manager(object):
+class Linguamatics_i2e_file_object(object):
 
     #
     def __init__(self, project_name, user):

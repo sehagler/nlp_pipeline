@@ -79,7 +79,7 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
                                               self.logger_object,
                                               metadata_dict_dict)
         specimens_manager.generate_document_map(data_json, 'file_map.txt')
-        specimens_manager.generate_json_file(self.directory_manager.pull_directory('log_dir'), 'validation.json')
+        specimens_manager.generate_json_file(self.directory_object.pull_directory('log_dir'), 'validation.json')
         nlp_values = specimens_manager.get_data_json()
         return nlp_values
     

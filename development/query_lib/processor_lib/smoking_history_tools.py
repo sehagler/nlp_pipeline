@@ -75,7 +75,7 @@ class Postprocessor(Postprocessor_base):
                     value = 'quit more than 10 years ago'
                 value_list.append(value.lower())
             else:
-                value_list.append('MANUAL_REVIEW')
+                value_list.append(self.manual_review)
         return value_list
     
 #

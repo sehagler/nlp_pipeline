@@ -7,9 +7,9 @@ Created on Wed Jan 12 09:40:02 2022
 
 #
 from base_lib.manager_base_class import Manager_base
-from nlp_tools_lib.ohsu_nlp_template_lib.AB_fields_manager_class \
+from nlp_tools_lib.ohsu_nlp_template_lib.manager_lib.AB_fields_manager_class \
     import AB_fields_manager
-from nlp_tools_lib.ohsu_nlp_template_lib.simple_template_manager_class \
+from nlp_tools_lib.ohsu_nlp_template_lib.manager_lib.simple_template_manager_class \
     import Simple_template_manager
     
 #
@@ -33,8 +33,8 @@ def _create_text_dict_postprocessing_data_in(sections, document_ids):
 class Ohsu_nlp_template_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.ab_fields_manager = AB_fields_manager(static_data_object)
         self.simple_template_manager = Simple_template_manager()
     

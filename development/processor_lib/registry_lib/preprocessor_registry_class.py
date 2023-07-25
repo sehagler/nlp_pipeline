@@ -26,9 +26,9 @@ class Preprocessor_registry(object):
     #
     def create_preprocessors(self):
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
+        directory_object = static_data['directory_object']
         operation_mode = static_data['operation_mode']
-        software_dir = directory_manager.pull_directory('software_dir')
+        software_dir = directory_object.pull_directory('software_dir')
         root_dir = \
             os.path.join(software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
         log_text = root_dir

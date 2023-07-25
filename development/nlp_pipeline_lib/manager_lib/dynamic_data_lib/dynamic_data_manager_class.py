@@ -17,11 +17,11 @@ class Dynamic_data_manager(Manager_base):
     def __init__(self, static_data_object, logger_object):
         Manager_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
+        directory_object = static_data['directory_object']
         project_name = static_data['project_name']
         keywords_filename = project_name + ".keywords.txt"
         self.keywords_filename = \
-            directory_manager.pull_directory('processing_data_dir') + '/' + keywords_filename
+            directory_object.pull_directory('processing_data_dir') + '/' + keywords_filename
         self.clear_keywords_text()
         
     #

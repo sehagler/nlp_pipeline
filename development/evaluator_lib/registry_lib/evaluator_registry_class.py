@@ -26,9 +26,9 @@ class Evaluator_registry(object):
     #
     def create_evaluators(self):
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
+        directory_object = static_data['directory_object']
         operation_mode = static_data['operation_mode']
-        software_dir = directory_manager.pull_directory('software_dir')
+        software_dir = directory_object.pull_directory('software_dir')
         root_dir = \
             os.path.join(software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
         log_text = root_dir
@@ -42,7 +42,9 @@ class Evaluator_registry(object):
                     import_cmd = 'from query_lib.processor_lib' + relpath + \
                                  filename + ' import Evaluator'
                     exec(import_cmd, globals())
-                    self._register_evaluator(filename, Evaluator())
+                    evaluator = Evaluator(self.static_data_object,
+                                          self.logger_object)
+                    self._register_evaluator(filename, evaluator)
                     log_text = 'Registered Evaluator from ' + filename
                     self.logger_object.print_log(log_text)
                 except Exception:

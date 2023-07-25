@@ -70,7 +70,7 @@ class BeatAML_Waves_3_And_4_static_data_object(Static_data_object):
         
         #
         raw_data_dir = \
-            self.static_data['directory_manager'].pull_directory('raw_data_dir')
+            self.static_data['directory_object'].pull_directory('raw_data_dir')
         if raw_data_dir is not None:
             data_file = \
                 os.path.join(raw_data_dir, 'wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx')

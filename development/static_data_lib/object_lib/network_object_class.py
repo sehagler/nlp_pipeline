@@ -6,7 +6,7 @@ Created on Wed Apr 15 16:32:22 2020
 """
 
 #
-class Network_manager(object):
+class Network_object(object):
     
     #
     def __init__(self):

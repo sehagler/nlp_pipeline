@@ -11,6 +11,7 @@ import statistics
 import traceback
 
 #
+from base_lib.evaluator_base_class import Evaluator_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
     import (
@@ -50,7 +51,7 @@ def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg,
     return ret_dict['performance']
 
 #
-def get_blast_value(blast_value_list):
+def get_blast_value(blast_value_list, manual_review):
     for i in range(len(blast_value_list)):
         blast_value_list[i] = \
             lambda_tools.lambda_conversion('(?<=(~|>|<))', blast_value_list[i], ' ')
@@ -125,12 +126,12 @@ def get_blast_value(blast_value_list):
     if len(blast_value) == 1:
         return blast_value[0]
     elif len(blast_value) > 1:
-        return 'MANUAL_REVIEW'
+        return manual_review
     else:
         return None
     
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,

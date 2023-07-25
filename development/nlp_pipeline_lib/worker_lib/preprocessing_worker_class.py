@@ -23,7 +23,7 @@ class Preprocessing_worker(Worker_base):
         self.preprocessor_registry = preprocessor_registry
         self.nlp_tool_manager_registry = nlp_tool_manager_registry
         static_data = self.static_data_object.get_static_data()
-        self.directory_manager = static_data['directory_manager']
+        self.directory_object = static_data['directory_object']
         self.server = static_data['acc_server'][2]
         self.user = static_data['user']
         
@@ -48,7 +48,7 @@ class Preprocessing_worker(Worker_base):
     def _generate_files(self, argument_dict):
         document_dict = argument_dict['document_dict']
         linguamatics_outdir = \
-            self.directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
+            self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out')
         linguamatics_i2e_object = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_object')
         for document_idx in document_dict.keys():

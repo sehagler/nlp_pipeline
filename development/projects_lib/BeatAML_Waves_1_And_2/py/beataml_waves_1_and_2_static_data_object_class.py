@@ -72,7 +72,7 @@ class BeatAML_Waves_1_And_2_static_data_object(Static_data_object):
         
         #
         raw_data_dir = \
-            self.static_data['directory_manager'].pull_directory('raw_data_dir')
+            self.static_data['directory_object'].pull_directory('raw_data_dir')
         if raw_data_dir is not None:
             raw_data_dir = raw_data_dir + '/pkl'
             pkl_file = os.path.join(raw_data_dir, 'training_groups.pkl')

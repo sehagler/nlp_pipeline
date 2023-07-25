@@ -211,8 +211,8 @@ class Specimens_manager(Manager_base):
     def __init__(self, static_data_object, logger_object):
         Manager_base.__init__(self, static_data_object, logger_object)
         static_data = static_data_object.get_static_data()
-        self.directory_manager = static_data['directory_manager']
-        self.log_dir = self.directory_manager.pull_directory('log_dir')
+        self.directory_object = static_data['directory_object']
+        self.log_dir = self.directory_object.pull_directory('log_dir')
     
     #                 
     def _evaluate_generic(self, entry_label, data_json):
@@ -227,7 +227,7 @@ class Specimens_manager(Manager_base):
                         if len(values) == 1:
                             value = values[0]
                         elif len(values) > 1:
-                            value = 'MANUAL_REVIEW'
+                            value = self.manual_review
                             
                             # kludge to fix BeatAML projects
                             if entry_label == 'FISH.Analysis.Summary':

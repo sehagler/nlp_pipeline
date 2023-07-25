@@ -6,6 +6,7 @@ Created on Wed Jun  5 14:28:01 2019
 """
 
 #
+from base_lib.evaluator_base_class import Evaluator_base
 from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
@@ -14,53 +15,6 @@ from tools_lib.regex_lib.regex_tools \
         s,
         tilde
     )
-    
-#
-def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
-    if nlp_value is not None:
-        
-        # kludge to get BeatAML projects working
-        if isinstance(nlp_value, list) and not isinstance(nlp_value, str):
-            nlp_value = list(set(nlp_value))
-            if len(nlp_value) > 1:
-                nlp_value = 'MANUAL_REVIEW'
-            else:
-                nlp_value = nlp_value[0][0]
-        # kludge to get BeatAML projects working
-                
-        nlp_value = nlp_value.replace('//', '/')
-        nlp_value_tmp = nlp_value
-        nlp_value_tmp = nlp_value_tmp.replace(' ', '')
-        nlp_value = []
-        nlp_value.append(nlp_value_tmp)
-    if nlp_value is not None:
-        nlp_value = tuple(nlp_value)
-    else:
-        nlp_value = None
-    if validation_value is not None:
-        validation_value = validation_value.replace('//', '/')
-        if validation_value == '':
-            validation_value = None
-        if validation_value == 'N/A':
-            validation_value = None
-        if validation_value == 'Not available':
-            validation_value = None
-        if validation_value == 'None':
-            validation_value = None
-    if validation_value is not None:
-        validation_value_tmp = validation_value
-        validation_value_tmp = \
-            validation_value_tmp.replace(' ', '')
-        validation_value = []
-        validation_value.append(validation_value_tmp)
-    if validation_value is not None:
-        validation_value = tuple(validation_value)
-    arg_dict = {}
-    arg_dict['display_flg'] = display_flg
-    arg_dict['nlp_value'] = nlp_value
-    arg_dict['validation_value'] = validation_value
-    ret_dict = evaluation_manager.evaluation(arg_dict)
-    return ret_dict['performance']
 
 #
 def atomize_karyotype(full_karyotype):
@@ -104,13 +58,55 @@ def simple_template():
     return template_dict
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,
                  display_flg):
-        return _evaluate(evaluation_manager, nlp_value, validation_value,
-                         display_flg)
+        if nlp_value is not None:
+            
+            # kludge to get BeatAML projects working
+            if isinstance(nlp_value, list) and not isinstance(nlp_value, str):
+                nlp_value = list(set(nlp_value))
+                if len(nlp_value) > 1:
+                    nlp_value = self.manual_review
+                else:
+                    nlp_value = nlp_value[0][0]
+            # kludge to get BeatAML projects working
+                    
+            nlp_value = nlp_value.replace('//', '/')
+            nlp_value_tmp = nlp_value
+            nlp_value_tmp = nlp_value_tmp.replace(' ', '')
+            nlp_value = []
+            nlp_value.append(nlp_value_tmp)
+        if nlp_value is not None:
+            nlp_value = tuple(nlp_value)
+        else:
+            nlp_value = None
+        if validation_value is not None:
+            validation_value = validation_value.replace('//', '/')
+            if validation_value == '':
+                validation_value = None
+            if validation_value == 'N/A':
+                validation_value = None
+            if validation_value == 'Not available':
+                validation_value = None
+            if validation_value == 'None':
+                validation_value = None
+        if validation_value is not None:
+            validation_value_tmp = validation_value
+            validation_value_tmp = \
+                validation_value_tmp.replace(' ', '')
+            validation_value = []
+            validation_value.append(validation_value_tmp)
+        if validation_value is not None:
+            validation_value = tuple(validation_value)
+        arg_dict = {}
+        arg_dict['display_flg'] = display_flg
+        arg_dict['nlp_value'] = nlp_value
+        arg_dict['validation_value'] = validation_value
+        ret_dict = evaluation_manager.evaluation(arg_dict)
+        return ret_dict['performance']
     
 #
 class Postprocessor(Postprocessor_base):

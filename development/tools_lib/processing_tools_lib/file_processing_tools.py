@@ -191,8 +191,8 @@ def read_json_file(filename):
 #
 def read_package_json_file(static_data):
     project_name = static_data['project_name']
-    directory_manager = static_data['directory_manager']
-    data_dir = directory_manager.pull_directory('processing_data_dir')
+    directory_object = static_data['directory_object']
+    data_dir = directory_object.pull_directory('processing_data_dir')
     nlp_data = \
         read_json_file(os.path.join(data_dir, project_name + '.json'))
     return nlp_data

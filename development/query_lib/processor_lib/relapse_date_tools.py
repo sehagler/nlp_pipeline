@@ -9,12 +9,13 @@ Created on Mon Apr  4 15:52:26 2022
 import re
 
 #
-from tools_lib.processing_tools_lib.variable_processing_tools \
-    import nlp_to_tuple, validation_to_tuple
+from base_lib.evaluator_base_class import Evaluator_base
 from query_lib.processor_lib.base_lib.date_tools_base \
     import Postprocessor as Postprocessor_base
 from query_lib.processor_lib.base_lib.date_tools_base \
     import Tokenizer as Tokenizer_base
+from tools_lib.processing_tools_lib.variable_processing_tools \
+    import nlp_to_tuple, validation_to_tuple
     
 #
 def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
@@ -38,7 +39,7 @@ def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     return ret_dict['performance']
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,

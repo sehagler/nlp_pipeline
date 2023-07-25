@@ -9,10 +9,10 @@ Created on Thu Feb 28 10:37:14 2019
 import re
 
 #
+from base_lib.evaluator_base_class import Evaluator_base
+from base_lib.postprocessor_base_class  import Postprocessor_base
 from tools_lib.processing_tools_lib.variable_processing_tools \
     import nlp_to_tuple, validation_to_tuple
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
     
 #
 def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
@@ -34,7 +34,7 @@ def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     return ret_dict['performance']
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,

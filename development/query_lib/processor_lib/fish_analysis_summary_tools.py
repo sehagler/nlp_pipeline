@@ -6,6 +6,7 @@ Created on Fri Feb 01 13:28:54 2019
 """
 
 #
+from base_lib.evaluator_base_class import Evaluator_base
 from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 
@@ -49,7 +50,7 @@ def simple_template():
     return template_dict
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,

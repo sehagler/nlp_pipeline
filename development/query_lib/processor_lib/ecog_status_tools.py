@@ -89,7 +89,7 @@ class Postprocessor(Postprocessor_base):
             if len(status_val_list) == 1:
                 score_processed = status_val_list[0]
             else:
-                score_processed = 'MANUAL_REVIEW'
+                score_processed = self.manual_review
             processed_score_list.append(score_processed)
         return processed_score_list
         

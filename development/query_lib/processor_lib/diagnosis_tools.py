@@ -9,15 +9,12 @@ Created on Fri Feb 15 12:32:58 2019
 import re
 
 #
-from tools_lib.processing_tools_lib.variable_processing_tools \
-    import trim_data_value
+from base_lib.evaluator_base_class import Evaluator_base
 from query_lib.processor_lib.base_lib.diagnosis_tools_base \
     import Postprocessor as Postprocessor_base
-
-#
-class Postprocessor(Postprocessor_base):
-    pass
-
+from tools_lib.processing_tools_lib.variable_processing_tools \
+    import trim_data_value
+    
 #
 def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     if nlp_value is not None:
@@ -50,7 +47,7 @@ def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     return ret_dict['performance']
 
 #                 
-def evaluate_diagnosis(data_json):
+def evaluate_diagnosis(data_json, manual_review):
     data_json_tmp = data_json
     for key0 in data_json_tmp.keys():
         for key1 in data_json_tmp[key0].keys():
@@ -81,7 +78,7 @@ def evaluate_diagnosis(data_json):
                     if len(values) == 1:
                         value = values[0]
                     elif len(values) > 1:
-                        value = 'MANUAL_REVIEW'
+                        value = manual_review
                     else:
                         value = None
                     if value is not None:
@@ -93,10 +90,14 @@ def evaluate_diagnosis(data_json):
     return data_json
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,
                  display_flg):
         return _evaluate(evaluation_manager, nlp_value, validation_value,
                          display_flg)
+
+#
+class Postprocessor(Postprocessor_base):
+    pass

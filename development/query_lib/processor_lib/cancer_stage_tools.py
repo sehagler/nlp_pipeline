@@ -123,9 +123,9 @@ class AB_fields_template_manager(Manager_base):
     #
     def template(self):
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
+        directory_object = static_data['directory_object']
         template_outlines_dir = \
-            directory_manager.pull_directory('template_outlines_dir')
+            directory_object.pull_directory('template_outlines_dir')
         filename = 'cancer_stage_template_outline.txt'
         with open(os.path.join(template_outlines_dir, filename), 'r') as f:
             primary_template_str = f.read()
@@ -232,5 +232,5 @@ class Postprocessor(Postprocessor_base):
             if len(cancer_stage_text_processed) == 1:
                 histologic_stage_text_list[i] = cancer_stage_text_processed[0]
             else:
-                histologic_stage_text_list[i] = 'MANUAL_REVIEW'
+                histologic_stage_text_list[i] = self.manual_review
         return histologic_stage_text_list

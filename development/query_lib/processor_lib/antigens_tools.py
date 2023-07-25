@@ -10,6 +10,7 @@ import re
 import traceback
 
 #
+from base_lib.evaluator_base_class import Evaluator_base
 from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
 from tools_lib.regex_lib.regex_tools \
@@ -105,7 +106,7 @@ def correct_antibodies(text):
     return text
 
 #                 
-def evaluate_antibodies_tested(data_json):
+def evaluate_antibodies_tested(data_json, manual_review):
     data_json_tmp = data_json
     for key0 in data_json_tmp.keys():
         for key1 in data_json_tmp[key0].keys():
@@ -117,7 +118,7 @@ def evaluate_antibodies_tested(data_json):
                     if len(diagnoses) == 1:
                         value = diagnoses[0]
                     elif len(diagnoses) > 1:
-                        value = 'MANUAL_REVIEW'
+                        value = manual_review
                     else:
                         value = None
                     if value is not None:
@@ -129,7 +130,7 @@ def evaluate_antibodies_tested(data_json):
     return data_json
 
 #                 
-def evaluate_surface_antigens(entry_label, data_json):
+def evaluate_surface_antigens(entry_label, data_json, manual_review):
     data_json_tmp = data_json
     for key0 in data_json_tmp.keys():
         for key1 in data_json_tmp[key0].keys():
@@ -141,7 +142,7 @@ def evaluate_surface_antigens(entry_label, data_json):
                     if len(antigens) == 1:
                         value = antigens[0]
                     elif len(antigens) > 1:
-                        value = 'MANUAL_REVIEW'
+                        value = manual_review
                     else:
                         value = None
                     if value is not None:
@@ -246,7 +247,7 @@ def simple_template():
     return template_dict
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
     def evaluate(self, evaluation_manager, nlp_value, validation_value,

@@ -65,8 +65,8 @@ class Pipeline_object(object):
             Static_data_object(server, user, root_dir,
                                 project_subdir=project_subdir)
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        log_dir = directory_manager.pull_directory('log_dir')
+        directory_object = static_data['directory_object']
+        log_dir = directory_object.pull_directory('log_dir')
         self.logger_object = Logger_object(log_dir)
         self.update_static_data_object = \
             Static_data_object('development', user, root_dir)
@@ -80,7 +80,7 @@ class Pipeline_object(object):
     def _create_registries(self, root_dir, password):
         self.remote_registry = \
             Remote_registry(self.static_data_object, 
-                            self.update_static_data_object,
+                            self.update_static_data_object, self.logger_object,
                             root_dir, password)
             
     #

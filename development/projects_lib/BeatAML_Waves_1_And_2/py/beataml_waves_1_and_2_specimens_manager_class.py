@@ -53,8 +53,8 @@ class BeatAML_Waves_1_And_2_specimens_manager(Specimens_manager):
     def __init__(self, static_data_object, logger_object, metadata_dict_dict):
         Specimens_manager.__init__(self, static_data_object, logger_object)
         static_data = static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
+        directory_object = static_data['directory_object']
+        self.deidentifier_xlsx = directory_object.pull_directory('raw_data_dir') + \
             '/manuscript OHSU MRNs.xlsx'
         self.metadata_dict_dict = metadata_dict_dict
         
@@ -87,19 +87,29 @@ class BeatAML_Waves_1_And_2_specimens_manager(Specimens_manager):
     
     #
     def _evaluate_features(self):
-        self.data_json = evaluate_antibodies_tested(self.data_json)
-        self.data_json = evaluate_bone_marrow_blast(self.data_json)
-        self.data_json = evaluate_diagnosis(self.data_json)
+        self.data_json = evaluate_antibodies_tested(self.data_json,
+                                                    self.manual_review)
+        self.data_json = evaluate_bone_marrow_blast(self.data_json,
+                                                    self.manual_review)
+        self.data_json = evaluate_diagnosis(self.data_json,
+                                            self.manual_review)
         self.data_json = self._evaluate_generic('dx.Date', self.data_json)
-        self.data_json = self._evaluate_generic('Extramedullary.dx', self.data_json)
-        self.data_json = self._evaluate_generic('FAB/Blast.Morphology', self.data_json)
-        self.data_json = self._evaluate_generic('FISH.Analysis.Summary', self.data_json)
+        self.data_json = self._evaluate_generic('Extramedullary.dx',
+                                                self.data_json)
+        self.data_json = self._evaluate_generic('FAB/Blast.Morphology',
+                                                self.data_json)
+        self.data_json = self._evaluate_generic('FISH.Analysis.Summary',
+                                                self.data_json)
         self.data_json = self._evaluate_generic('Karyotype', self.data_json)
-        self.data_json = evaluate_peripheral_blood_blast(self.data_json)
+        self.data_json = evaluate_peripheral_blood_blast(self.data_json,
+                                                         self.manual_review)
         self.data_json = self._evaluate_generic('Relapse.Date', self.data_json)
         self.data_json = self._evaluate_generic('Residual.dx', self.data_json)
-        self.data_json = evaluate_specific_diagnosis(self.data_json)
-        self.data_json = evaluate_surface_antigens('Surface.Antigens.(Immunohistochemical.Stains)', self.data_json)
+        self.data_json = evaluate_specific_diagnosis(self.data_json,
+                                                     self.manual_review)
+        self.data_json = \
+            evaluate_surface_antigens('Surface.Antigens.(Immunohistochemical.Stains)', 
+                                      self.data_json, self.manual_review)
     
     #
     def _get_deidentifier_keys(self, deidentifier_file):

@@ -20,7 +20,7 @@ class Postprocessing_worker(Worker_base):
     def __init__(self, static_data_object, logger_object, output_manager):
         Worker_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
-        self.directory_manager = static_data['directory_manager']
+        self.directory_object = static_data['directory_object']
         self.output_manager = output_manager
         
     #
@@ -49,9 +49,9 @@ class Postprocessing_worker(Worker_base):
         merged_data_dict_list = \
             self.output_manager.get_merged_data_dict_list()
         processing_base_dir = \
-            self.directory_manager.pull_directory('processing_base_dir')
+            self.directory_object.pull_directory('processing_base_dir')
         data_out = \
-            self.directory_manager.pull_directory('postprocessing_data_out')
+            self.directory_object.pull_directory('postprocessing_data_out')
         for data_dict in merged_data_dict_list:
             if nlp_data_key in data_dict.keys():
                 if bool(data_dict[nlp_data_key]):
