@@ -204,8 +204,8 @@ class Simple_template_object(object):
         return self.template_output
         
     #
-    def run_template(self, template_manager, text_dict, doc_list):
-        template_dict = template_manager.simple_template()
+    def run_template(self, template_object, text_dict, doc_list):
+        template_dict = template_object.simple_template()
         primary_template_list = template_dict['primary_template_list']
         if 'secondary_template_list' in template_dict.keys():
             secondary_template_list = template_dict['secondary_template_list']

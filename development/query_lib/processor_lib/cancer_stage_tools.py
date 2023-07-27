@@ -12,10 +12,7 @@ import re
 
 #
 from tools_lib.regex_lib.regex_tools import regex_from_list
-from tools_lib.processing_tools_lib.file_processing_tools \
-    import read_xlsx_file, write_file, xml_diff
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
 from query_lib.processor_lib.cancer_tools \
     import get_initialisms, nonnumeric_stage, numeric_stage
     

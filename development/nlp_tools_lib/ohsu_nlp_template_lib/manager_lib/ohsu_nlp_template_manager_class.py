@@ -52,7 +52,7 @@ class Ohsu_nlp_template_manager(Manager_base):
     def run_simple_template(self, argument_dict):
         doc_list = argument_dict['doc_list']
         sections = argument_dict['sections']
-        template_manager = argument_dict['template_manager']
+        template_object = argument_dict['template_object']
         if len(sections) > 0:
             text_dict = _create_text_dict_postprocessing_data_in(sections,
                                                                  doc_list)
@@ -60,7 +60,7 @@ class Ohsu_nlp_template_manager(Manager_base):
             text_dict = None
         del argument_dict
         del sections
-        self.simple_template_object.run_template(template_manager, 
+        self.simple_template_object.run_template(template_object, 
                                                  text_dict, doc_list)
             
     #

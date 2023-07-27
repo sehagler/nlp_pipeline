@@ -776,12 +776,11 @@ class Process_manager(Manager_base):
                 class_name = class_name[0].upper() + class_name[1:-6]
                 import_cmd = 'from projects_lib.' + project_name + \
                              '.nlp_templates.simple_templates.' + class_filename + \
-                             ' import ' + class_name + ' as Template_manager'
+                             ' import ' + class_name + ' as Template_object'
                 exec(import_cmd, globals())
-                log_text = 'OHSU NLP Template Manager: ' + class_name
+                log_text = 'OHSU NLP Template Object: ' + class_name
                 self.logger_object.print_log(log_text)
-                template_manager = Template_manager(self.static_data_object,
-                                                    self.logger_object)
+                template_object = Template_object()
                 partitioned_doc_list = self._get_partitioned_document_list()
                 num_worker_runs = len(partitioned_doc_list) // num_processes
                 template_output = []
@@ -794,7 +793,7 @@ class Process_manager(Manager_base):
                         argument_dict['doc_list'] = partitioned_doc_list[process_idx]
                         argument_dict['process_idx'] = process_idx
                         argument_dict['sections'] = sections_copy
-                        argument_dict['template_manager'] = template_manager
+                        argument_dict['template_object'] = template_object
                         self.simple_template_dict['argument_queues'][process_idx].put(argument_dict)
                     for process_idx in range(len(self.simple_template_dict['processes'])):
                         return_dict = \
@@ -803,7 +802,7 @@ class Process_manager(Manager_base):
                 filename, extension = os.path.splitext(file)
                 filename = re.sub('_simple_template_manager_class', '', filename)
                 csv_filename = filename + '.csv'
-                template_dict = template_manager.simple_template()
+                template_dict = template_object.simple_template()
                 template_headers = template_dict['template_headers']
                 header = [ 'DOCUMENT_ID', 'DATETIME', 'Section Title', 'Specimen Id' ]
                 for i in range(len(template_headers)):
