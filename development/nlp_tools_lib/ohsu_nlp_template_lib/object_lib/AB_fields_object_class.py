@@ -16,7 +16,7 @@ from tools_lib.processing_tools_lib.file_processing_tools \
     import read_xlsx_file, write_file
 
 #
-class AB_fields_manager(object):
+class AB_fields_object(object):
     
     #
     def __init__(self, static_data_object):

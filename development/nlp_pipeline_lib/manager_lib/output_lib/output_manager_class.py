@@ -58,8 +58,10 @@ urllib3.disable_warnings()
 class Output_manager(Manager_base):
 
     #
-    def __init__(self, static_data_object, logger_object, metadata_manager):
-        Manager_base.__init__(self, static_data_object, logger_object)
+    def __init__(self, static_data_object, directory_object, logger_object,
+                 metadata_manager):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         self.metadata_manager = metadata_manager
         static_data = self.static_data_object.get_static_data()
         self.project_name = static_data['project_name']

@@ -7,10 +7,10 @@ Created on Wed Jan 12 09:40:02 2022
 
 #
 from base_lib.manager_base_class import Manager_base
-from nlp_tools_lib.ohsu_nlp_template_lib.manager_lib.AB_fields_manager_class \
-    import AB_fields_manager
-from nlp_tools_lib.ohsu_nlp_template_lib.manager_lib.simple_template_manager_class \
-    import Simple_template_manager
+from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.AB_fields_object_class \
+    import AB_fields_object
+from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.simple_template_object_class \
+    import Simple_template_object
     
 #
 def _create_text_dict_postprocessing_data_in(sections, document_ids):
@@ -33,18 +33,19 @@ def _create_text_dict_postprocessing_data_in(sections, document_ids):
 class Ohsu_nlp_template_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object):
-        Manager_base.__init__(self, static_data_object, logger_object)
-        self.ab_fields_manager = AB_fields_manager(static_data_object)
-        self.simple_template_manager = Simple_template_manager()
+    def __init__(self, static_data_object, directory_object, logger_object):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
+        self.ab_fields_object = AB_fields_object(static_data_object)
+        self.simple_template_object = Simple_template_object()
     
     #
     def clear_simple_template_output(self):
-        self.simple_template_manager.clear_template_output()
+        self.simple_template_object.clear_template_output()
         
     #
     def pull_simple_template_output(self):
-        template_output = self.simple_template_manager.pull_template_output()
+        template_output = self.simple_template_object.pull_template_output()
         return template_output
     
     #
@@ -59,16 +60,16 @@ class Ohsu_nlp_template_manager(Manager_base):
             text_dict = None
         del argument_dict
         del sections
-        self.simple_template_manager.run_template(template_manager, 
-                                                  text_dict, doc_list)
+        self.simple_template_object.run_template(template_manager, 
+                                                 text_dict, doc_list)
             
     #
     def train_ab_fields(self, template_manager, metadata_manager, data_dir,
                         text_dict):
-        self.ab_fields_manager.train_template(template_manager, 
-                                              metadata_manager, data_dir,
-                                              text_dict)
+        self.ab_fields_object.train_template(template_manager, 
+                                             metadata_manager, data_dir,
+                                             text_dict)
         
     #
     def write_ab_fields(self, template_outlines_dir, filename):
-        self.ab_fields_manager.write_ab_fields(template_outlines_dir, filename)
+        self.ab_fields_object.write_ab_fields(template_outlines_dir, filename)

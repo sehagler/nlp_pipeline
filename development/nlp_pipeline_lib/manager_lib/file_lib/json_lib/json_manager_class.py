@@ -21,8 +21,10 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Json_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object, filename):
-        Manager_base.__init__(self, static_data_object, logger_object)
+    def __init__(self, static_data_object, directory_object, logger_object,
+                 filename):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         self.filename = filename
         
     #

@@ -19,12 +19,12 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Metadata_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object):
-        Manager_base.__init__(self, static_data_object, logger_object)
-        static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
+    def __init__(self, static_data_object, directory_object, logger_object):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         self.metadata_json_file = \
-            os.path.join(directory_object.pull_directory('metadata_dir'), 'metadata.json')
+            os.path.join(self.directory_object.pull_directory('metadata_dir'),
+                         'metadata.json')
         self.clear_metadata()
         
     #

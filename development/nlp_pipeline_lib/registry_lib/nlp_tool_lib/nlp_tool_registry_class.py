@@ -17,15 +17,17 @@ from nlp_tools_lib.ohsu_nlp_template_lib.manager_lib.ohsu_nlp_template_manager_c
 class Nlp_tool_registry(object):
     
     #
-    def __init__(self, static_data_object, logger_object, 
+    def __init__(self, static_data_object, directory_object,logger_object, 
                  remote_manager_registry, password):
         self.static_data_object = static_data_object
         self.nlp_tool_manager_registry = {}
         self._linguamatics_i2e_object(remote_manager_registry, password)
         self.nlp_tool_manager_registry['melax_clamp_manager'] = \
-            Melax_clamp_manager(static_data_object, logger_object)
+            Melax_clamp_manager(static_data_object, directory_object,
+                                logger_object)
         self.nlp_tool_manager_registry['ohsu_nlp_template_manager'] = \
-            Ohsu_nlp_template_manager(static_data_object, logger_object)
+            Ohsu_nlp_template_manager(static_data_object, directory_object,
+                                      logger_object)
             
     #
     def _linguamatics_i2e_object(self, remote_manager_registry, password):

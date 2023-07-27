@@ -212,9 +212,10 @@ def _trim_sections(sections_in, doc_list):
 class Process_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object, metadata_manager,
-                 remote_registry, password):
-        Manager_base.__init__(self, static_data_object, logger_object)
+    def __init__(self, static_data_object, directory_object, logger_object,
+                 metadata_manager, remote_registry, password):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         self.metadata_manager = metadata_manager
         self.password = password
         self._project_imports()
@@ -249,28 +250,31 @@ class Process_manager(Manager_base):
     #
     def _create_managers(self, password):
         static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
         project_name = static_data['project_name']
         processing_base_dir = \
-            directory_object.pull_directory('processing_base_dir')
+            self.directory_object.pull_directory('processing_base_dir')
         json_manager_registry = {}
         for key in [ 'performance_data_files', 'project_data_files' ]:
             for filename in static_data[key]:
                 file = os.path.join(processing_base_dir, filename)
                 json_manager_registry[filename] = \
-                    Json_manager(self.static_data_object, self.logger_object,
+                    Json_manager(self.static_data_object, 
+                                 self.directory_object, self.logger_object,
                                  file)
         self.dynamic_data_manager = \
-            Dynamic_data_manager(self.static_data_object, self.logger_object)
+            Dynamic_data_manager(self.static_data_object,
+                                 self.directory_object, self.logger_object)
         evaluator_registry = Evaluator_registry(self.static_data_object,
                                                 self.logger_object)
         evaluator_registry.create_evaluators()
         evaluation_manager = \
-            Evaluation_manager(self.static_data_object, self.logger_object,
+            Evaluation_manager(self.static_data_object, 
+                               self.directory_object, self.logger_object,
                                evaluator_registry)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,
+                                         self.directory_object,
                                          self.logger_object,
                                          evaluation_manager,
                                          json_manager_registry,
@@ -288,6 +292,7 @@ class Process_manager(Manager_base):
             for key in keys:
                 filename, extension = os.path.splitext(key)
         self.raw_data_manager = Raw_data_manager(self.static_data_object,
+                                                 self.directory_object,
                                                  self.logger_object,
                                                  multiprocessing_flg,
                                                  password)
@@ -306,10 +311,11 @@ class Process_manager(Manager_base):
         raw_data_dir = \
             directory_object.pull_directory('raw_data_dir')
         self.nlp_tool_registry = \
-            Nlp_tool_registry(self.static_data_object, self.logger_object,
-                              remote_registry, password)
+            Nlp_tool_registry(self.static_data_object, self.directory_object,
+                              self.logger_object, remote_registry, password)
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_object,
+                                   self.directory_object,
                                    self.logger_object,
                                    self.metadata_manager)
         self.xls_manager_registry = {}
@@ -319,13 +325,13 @@ class Process_manager(Manager_base):
             if extension.lower() in [ '.xls', '.xlsx' ]:
                 file = os.path.join(raw_data_dir, key)
                 self.xls_manager_registry[file] = \
-                    Xls_manager(self.static_data_object, self.logger_object,
-                                file, password)
+                    Xls_manager(self.static_data_object, self.directory_object,
+                                self.logger_object, file, password)
             elif extension.lower() in [ '.xml' ]:
                 file = os.path.join(raw_data_dir, key)
                 self.xml_manager_registry[file] = \
-                    Xml_manager(self.static_data_object, self.logger_object,
-                                file, password)
+                    Xml_manager(self.static_data_object, self.directory_object,
+                                self.logger_object, file, password)
         for file in os.listdir(project_AB_fields_dir):
             class_filename, extension = os.path.splitext(file)
             class_filename = re.sub('/', '.', class_filename)
@@ -333,24 +339,23 @@ class Process_manager(Manager_base):
             class_name = class_name[0].upper() + class_name[1:-6]
             import_cmd = 'from projects_lib.' + project_name + \
                          '.nlp_templates.AB_fields.' + class_filename + \
-                         ' import ' + class_name + ' as Template_manager'
+                         ' import ' + class_name + ' as Template_object'
             exec(import_cmd, globals())
-            log_text = 'OHSU NLP Template Manager: ' + class_name
+            log_text = 'OHSU NLP Template Object: ' + class_name
             self.logger_object.print_log(log_text)
-            template_manager = Template_manager(self.static_data_object,
-                                                self.logger_object)
-            training_data_file = template_manager.pull_training_data_file()
+            template_object = Template_object()
+            training_data_file = template_object.pull_training_data_file()
             file = os.path.join(raw_data_dir, training_data_file)
             self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.logger_object, file,
-                            password)
+                Xls_manager(self.static_data_object, self.directory_object,
+                            self.logger_object, file, password)
         if static_data['project_subdir'] == 'test' and \
            'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
             file = os.path.join(raw_data_dir, validation_filename)
             self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.logger_object, file,
-                            password)
+                Xls_manager(self.static_data_object, self.directory_object,
+                            self.logger_object, file, password)
         
     #
     def _create_workers(self):
@@ -371,6 +376,7 @@ class Process_manager(Manager_base):
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Preprocessing_worker(self.static_data_object,
+                                     self.directory_object,
                                      self.logger_object,
                                      preprocessor_registry,
                                      self.nlp_tool_registry)
@@ -384,11 +390,13 @@ class Process_manager(Manager_base):
         self.postprocessing_dict['return_queues'] = []
         for process_idx in range(num_processes):
             output_manager = Output_manager(self.static_data_object,
+                                            self.directory_object,
                                             self.logger_object,
                                             self.metadata_manager)
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Postprocessing_worker(self.static_data_object,
+                                      self.directory_object,
                                       self.logger_object,
                                       output_manager)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
@@ -405,6 +413,7 @@ class Process_manager(Manager_base):
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Simple_template_worker(self.static_data_object,
+                                       self.directory_object,
                                        self.logger_object,
                                        ohsu_nlp_template_manager)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
@@ -453,20 +462,19 @@ class Process_manager(Manager_base):
             class_name = class_name[0].upper() + class_name[1:-6]
             import_cmd = 'from projects_lib.' + project_name + \
                          '.nlp_templates.AB_fields.' + class_filename + \
-                         ' import ' + class_name + ' as Template_manager'
+                         ' import ' + class_name + ' as Template_object'
             exec(import_cmd, globals())
-            log_text = 'OHSU NLP Template Manager: ' + class_name
+            log_text = 'OHSU NLP Template Object: ' + class_name
             self.logger_object.print_log(log_text)
-            template_manager = Template_manager(self.static_data_object,
-                                                self.logger_object)
-            training_data_file = template_manager.pull_training_data_file()
+            template_object = Template_object()
+            training_data_file = template_object.pull_training_data_file()
             training_data_file = \
                 os.path.join(static_data['directory_object'].pull_directory('raw_data_dir'),
                              training_data_file)
             xls_manager = self.xls_manager_registry[training_data_file]
             xls_manager.read_training_data()
-            template_manager.push_xls_manager(xls_manager)
-            ohsu_nlp_template_manager.train_ab_fields(template_manager,
+            template_object.push_xls_manager(xls_manager)
+            ohsu_nlp_template_manager.train_ab_fields(template_object,
                                                       self.metadata_manager,
                                                       self.template_data_dir,
                                                       self.template_text_dict)
@@ -497,14 +505,13 @@ class Process_manager(Manager_base):
             class_name = class_name[0].upper() + class_name[1:-6]
             import_cmd = 'from projects_lib.' + project_name + \
                          '.nlp_templates.AB_fields.' + class_filename + \
-                         ' import ' + class_name + ' as Template_manager'
+                         ' import ' + class_name + ' as Template_object'
             exec(import_cmd, globals())
-            log_text = 'OHSU NLP Template Manager: ' + class_name
+            log_text = 'OHSU NLP Template Object: ' + class_name
             self.logger_object.print_log(log_text)
-            template_manager = Template_manager(self.static_data_object,
-                                                self.logger_object)
+            template_object = Template_object()
             '''
-            training_data_file = template_manager.pull_training_data_file()
+            training_data_file = template_object.pull_training_data_file()
             training_data_file = \
                 os.path.join(static_data['directory_object'].pull_directory('raw_data_dir'),
                              training_data_file)
@@ -512,12 +519,12 @@ class Process_manager(Manager_base):
             xls_manager.read_training_data()
             '''
             linguamatics_i2e_AB_fields_path = \
-                template_manager.pull_linguamatics_i2e_AB_fields_path()
+                template_object.pull_linguamatics_i2e_AB_fields_path()
             #data_AB_fields_dir = \
             #    directory_object.pull_directory('AB_fields_dir')
             filename, extension = os.path.splitext(file)
             filename = \
-                re.sub('_AB_fields_template_manager_class', '', filename)
+                re.sub('_AB_fields_template_object_class', '', filename)
             for field in [ '_AB_field', '_BA_field' ]:
                 i2qy_file =  user + '/' + linguamatics_i2e_AB_fields_path + \
                              '/' + filename + field + '.i2qy'
@@ -904,6 +911,7 @@ class Process_manager(Manager_base):
         data = {}
         for filename in os.listdir(load_dir):
             json_file = Json_manager(self.static_data_object,
+                                     self.directory_object,
                                      self.logger_object,
                                      os.path.join(load_dir, filename))
             key = filename[0:-5]

@@ -20,14 +20,15 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Melax_clamp_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object):
-        Manager_base.__init__(self, static_data_object, logger_object)
+    def __init__(self, static_data_object, directory_object, logger_object):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
     
     #
     def create_source_data_file(self, ctr, rpt_text):
         static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
-        outdir = directory_object.pull_directory('melax_clamp_preprocessing_data_out')
+        outdir = \
+            self.directory_object.pull_directory('melax_clamp_preprocessing_data_out')
         filename = str(ctr) + '.txt'
         write_file(os.path.join(outdir, filename), rpt_text, False, False)
         ret_val = True

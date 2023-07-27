@@ -9,7 +9,7 @@ Created on Thu Dec 19 12:35:50 2019
 import pickle
 
 #
-from static_data_lib.object_lib.directory_object_class \
+from nlp_pipeline_lib.object_lib.directory_lib.directory_object_class \
     import Directory_object
 from static_data_lib.tools_lib.json_structure_tools \
     import Json_structure_tools

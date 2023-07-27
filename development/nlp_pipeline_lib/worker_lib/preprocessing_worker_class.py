@@ -17,13 +17,13 @@ from tools_lib.processing_tools_lib.function_processing_tools \
 class Preprocessing_worker(Worker_base):
     
     #
-    def __init__(self, static_data_object, logger_object,
+    def __init__(self, static_data_object, directory_object, logger_object,
                  preprocessor_registry, nlp_tool_manager_registry):
-        Worker_base.__init__(self, static_data_object, logger_object)
+        Worker_base.__init__(self, static_data_object, directory_object,
+                             logger_object)
         self.preprocessor_registry = preprocessor_registry
         self.nlp_tool_manager_registry = nlp_tool_manager_registry
         static_data = self.static_data_object.get_static_data()
-        self.directory_object = static_data['directory_object']
         self.server = static_data['acc_server'][2]
         self.user = static_data['user']
         

@@ -11,7 +11,7 @@ import itertools
 import re
 
 #
-class Simple_template_manager(object):
+class Simple_template_object(object):
     
     #
     def __init__(self):
