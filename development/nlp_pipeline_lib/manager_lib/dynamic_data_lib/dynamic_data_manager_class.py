@@ -14,15 +14,14 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Dynamic_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_manager, logger_object):
-        Manager_base.__init__(self, static_data_object,
-                              directory_manager, logger_object)
+    def __init__(self, static_data_object, directory_object, logger_object,
+                 processing_data_dir):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
         keywords_filename = project_name + ".keywords.txt"
-        self.keywords_filename = \
-            self.directory_object.pull_directory('processing_data_dir') + \
-            '/' + keywords_filename
+        self.keywords_filename = processing_data_dir + '/' + keywords_filename
         self.clear_keywords_text()
         
     #

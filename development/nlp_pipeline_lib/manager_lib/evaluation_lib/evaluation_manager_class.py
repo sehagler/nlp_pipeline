@@ -102,10 +102,10 @@ def _compare_values_range(x, y, display_flg, value_range,
 class Evaluation_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_manager, logger_object,
+    def __init__(self, static_data_object, directory_object, logger_object,
                  evaluator_registry):
-        Manager_base.__init__(self, static_data_object,
-                              directory_manager, logger_object)
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         
     #
     def evaluation(self, arg_dict, value_range=None):
