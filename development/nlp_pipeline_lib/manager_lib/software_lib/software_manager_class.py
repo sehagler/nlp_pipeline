@@ -20,19 +20,18 @@ class Software_manager(Manager_base):
         Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = static_data_object.get_static_data()
         self.server_manager = server_manager
-        self.directory_object = self.static_data['directory_object']
         
     #
-    def _copy_nlp_software(self, sandbox_path):
-        self.cleanup_nlp_software()
+    def _copy_nlp_software(self, sandbox_path, software_dir):
+        self.cleanup_nlp_software(sofware_dir)
         if os.path.exists(sandbox_path):
             shutil.rmtree(sandbox_path)
         shutil.copytree('X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Software',
                         sandbox_path, ignore=shutil.ignore_patterns('.git'))
     
     #
-    def cleanup_nlp_software(self):
-        for root, dirs, files in os.walk(self.directory_object.pull_directory('software_dir')):
+    def cleanup_nlp_software(self, software_dir):
+        for root, dirs, files in os.walk(sofware_dir):
             for name in dirs:
                 if name == '__pycache__':
                     shutil.rmtree(os.path.join(root, name))
@@ -42,10 +41,10 @@ class Software_manager(Manager_base):
                     os.remove(os.path.join(root, name))
         
     #
-    def copy_x_nlp_software_to_nlp_sandbox(self, dest_drive):
+    def copy_x_nlp_software_to_nlp_sandbox(self, dest_drive, software_dir):
         if dest_drive == 'X':
             sandbox_path = 'X:/OHSU Shared/Restricted/OCTRI/Informatics/NLP/NLP_Sandbox/' + \
                             self.static_data['user'] + '/NLP_Software'
         elif dest_drive == 'Z':
             sandbox_path = 'Z:/NLP/NLP_Sandbox/' + self.static_data['user'] + '/NLP_Software'
-        self._copy_nlp_software(sandbox_path)
+        self._copy_nlp_software(sandbox_path, software_dir)

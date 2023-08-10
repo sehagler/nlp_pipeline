@@ -28,18 +28,18 @@ servers = [ 'development', 'production' ]
 pipeline_mode_flgs = [ 'training_sets', 'linguamatics_i2e_prequeries',
                        'linguamatics_i2e_indexer',
                        'linguamatics_i2e_push_queries',
-                       'linguamatics_i2e_postqueries' ]
+                       'linguamatics_i2e_postqueries', 'generate_AB_fields' ]
 
 #
 mode_flgs = [ 'update', 'run' ]
 
 #
-project_name = project_names[5]
+project_name = project_names[7]
 project_subdir = project_subdirs[1]
-server = servers[1]
+server = servers[0]
 
 #
-pipeline_mode_flg = pipeline_mode_flgs[1]
+pipeline_mode_flg = pipeline_mode_flgs[5]
 
 #
 mode_flg = mode_flgs[1]
@@ -113,4 +113,6 @@ elif mode_flg == 'run':
         pipeline_object.linguamatics_i2e_postqueries(project_subdir)
     elif pipeline_mode_flg == 'linguamatics_i2e_push_queries':
         pipeline_object.linguamatics_i2e_push_queries()
+    elif pipeline_mode_flg == 'generate_AB_fields':
+        pipeline_object.ohsu_nlp_templates_generate_AB_fields()
     sys.path.remove(software_path)

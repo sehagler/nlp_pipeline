@@ -17,7 +17,7 @@ from query_lib.processor_lib.cancer_tools \
     import get_initialisms, nonnumeric_stage, numeric_stage
     
 #
-class AB_fields_template_object(object):
+class AB_fields_object(object):
     
     #
     def __init__(self):

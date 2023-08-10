@@ -26,6 +26,7 @@ class OhsuNlpTemplate_static_data_object(Static_data_object):
         self.project_subdir = project_subdir
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
+        self.static_data['extracts_file'] = 'ohsunlptemplate_templates.xlsx'
         self.static_data['queries_list'] = \
             [ ('CANCER_STAGE', None, 'CANCER_STAGE', 'CANCER_STAGE', 'single_value', True) ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'

@@ -351,6 +351,29 @@ class Process_manager(Manager_base):
             self.xls_manager_registry[file] = \
                 Xls_manager(self.static_data_object, self.directory_object,
                             self.logger_object, file, password)
+                
+    #
+    def _create_text_dict_postprocessing_data_in(self, sections):
+        document_ids = []
+        for i in range(1, len(sections)):
+            row = sections[i]
+            document_ids.append(row[0])
+        document_ids = list(set(document_ids))
+        document_ids = sorted(document_ids)
+        text_dict = {}
+        for document_id in document_ids:
+            text_dict[document_id] = {}
+            for i in range(1, len(sections)):
+                row = sections[i]
+                if row[0] == document_id:
+                    key = (row[2], row[3])
+                    section = row[4]
+                    offset_base = 0
+                    if section != '.*':
+                        text_dict[document_id][key] = {}
+                        text_dict[document_id][key]['OFFSET_BASE'] = offset_base
+                        text_dict[document_id][key]['TEXT'] = section
+        return text_dict
         
     #
     def _create_workers(self):
@@ -387,7 +410,9 @@ class Process_manager(Manager_base):
             output_manager = Output_manager(self.static_data_object,
                                             self.directory_object,
                                             self.logger_object,
-                                            self.metadata_manager)
+                                            self.metadata_manager,
+                                            self.linguamatics_i2e_preprocessing_data_out_dir,
+                                            self.postprocessing_data_out_dir)
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Postprocessing_worker(self.static_data_object,
@@ -703,6 +728,44 @@ class Process_manager(Manager_base):
         melax_clamp_manager.run_pipeline()
         
     #
+    def ohsu_nlp_templates_generate_AB_fields(self):
+        static_data = self.static_data_object.get_static_data()
+        project_name = static_data['project_name']
+        ohsu_nlp_template_manager = \
+            self.nlp_tool_registry.get_manager('ohsu_nlp_template_manager')
+        files = \
+            glob.glob(self.ohsu_nlp_project_AB_fields_dir + '/**/*.py', recursive=True)
+        for i in range(len(files)):
+            files[i] = re.sub(self.ohsu_nlp_project_AB_fields_dir + '/', '', files[i])
+        for file in files:
+            class_filename, extension = os.path.splitext(file)
+            class_filename = re.sub('/', '.', class_filename)
+            class_name, extension = os.path.splitext(os.path.basename(file))
+            class_name = class_name[0].upper() + class_name[1:-6]
+            import_cmd = 'from projects_lib.' + project_name + \
+                         '.nlp_templates.AB_fields.' + class_filename + \
+                         ' import ' + class_name + ' as Template_object'
+            exec(import_cmd, globals())
+            print('OHSU NLP Template Object: ' + class_name)
+            template_object = Template_object()
+            extracts_file = static_data['extracts_file']
+            extracts_file = os.path.join(self.raw_data_dir, extracts_file)
+            xls_manager = \
+                self.xls_manager_registry[extracts_file]
+            xls_manager.read_training_data()
+            template_object.push_xls_manager(xls_manager)
+            ohsu_nlp_template_manager.clear_template_output()
+            ohsu_nlp_template_manager.train_ab_fields(template_object,
+                                                      self.metadata_manager,
+                                                      self.template_data_dir,
+                                                      self.template_text_dict)
+            filename, extension = os.path.splitext(file)
+            filename = filename[:-32]
+            print(filename)
+            ohsu_nlp_template_manager.write_ab_fields(self.AB_fields_dir,
+                                                      filename)
+        
+    #
     def ohsu_nlp_templates_run_simple_templates(self):
         static_data = self.static_data_object.get_static_data()
         num_processes = static_data['num_processes']
@@ -766,6 +829,20 @@ class Process_manager(Manager_base):
                     writer.writerow(header)
                     writer.writerows(template_output)
             self._stop_simple_template_workers()
+            
+    #
+    def ohsu_nlp_templates_setup(self):
+        if 'sections.csv' in os.listdir(self.postprocessing_data_in_dir):
+            sections = []
+            with open(os.path.join(self.postprocessing_data_in_dir, 'sections.csv')) as f:
+                csv_reader = csv.reader(f)
+                for row in csv_reader:
+                    sections.append(row)
+            text_dict = _create_text_dict_postprocessing_data_in(sections)
+        else:
+            text_dict = None
+        self.template_data_dir = self.postprocessing_data_in_dir
+        self.template_text_dict = text_dict
         
     #
     def postperformance(self):

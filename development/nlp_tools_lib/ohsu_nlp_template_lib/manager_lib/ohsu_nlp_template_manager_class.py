@@ -44,6 +44,10 @@ class Ohsu_nlp_template_manager(Manager_base):
         self.simple_template_object.clear_template_output()
         
     #
+    def clear_template_output(self):
+        self.template_output = []
+        
+    #
     def pull_simple_template_output(self):
         template_output = self.simple_template_object.pull_template_output()
         return template_output

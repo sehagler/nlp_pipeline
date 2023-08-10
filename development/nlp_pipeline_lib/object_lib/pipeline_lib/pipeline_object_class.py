@@ -68,6 +68,7 @@ class Pipeline_object(object):
                                 project_subdir=project_subdir)
         static_data = self.static_data_object.get_static_data()
         self.directory_object = Directory_object(static_data, root_dir)
+        self.software_dir = self.directory_object.pull_directory('software_dir')
         log_dir = self.directory_object.pull_directory('log_dir')
         self.logger_object = Logger_object(log_dir)
         self.update_static_data_object = \
@@ -233,7 +234,8 @@ class Pipeline_object(object):
         else:
             log_text = 'bad root directory'
             self.logger.print_log(log_texft)
-        self.nlp_software.copy_x_nlp_software_to_nlp_sandbox(dest_drive)
+        self.nlp_software.copy_x_nlp_software_to_nlp_sandbox(dest_drive,
+                                                             software_dir)
         
     #
     def ohsu_nlp_templates_generate_AB_fields(self):
