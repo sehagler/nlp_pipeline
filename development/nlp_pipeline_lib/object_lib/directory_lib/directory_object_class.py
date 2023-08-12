@@ -86,7 +86,9 @@ class Directory_object(object):
                                     project_subdir)
                 
             self.directory_dict['raw_data_dir'] = nlp_source_data_root_dir
-            
+
+            self.directory_dict['ab_fields_training_dir'] = \
+                source_data_root_dir + '/NLP_Source_Data/AB_Fields_Training'
             self._create_dict_entry('log_dir',
                                     self.directory_dict['processing_data_dir'],
                                     'log')
@@ -111,7 +113,7 @@ class Directory_object(object):
             self._create_dict_entry('simple_templates_dir',
                                     self.directory_dict['template_outlines_dir'],
                                     'simple_templates')
-            self._create_dict_entry('AB_fields_dir',
+            self._create_dict_entry('ab_fields_text_dir',
                                     self.directory_dict['template_outlines_dir'],
                                     'AB_fields')
             self._linguamatics_i2e_directories(nlp_software_root_dir, server,

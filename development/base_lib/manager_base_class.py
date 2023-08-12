@@ -12,7 +12,10 @@ class Manager_base(object):
         self.static_data_object = static_data_object
         self.directory_object = directory_object
         self.logger_object = logger_object
-        self.AB_fields_dir = directory_object.pull_directory('AB_fields_dir')
+        self.ab_fields_text_dir = \
+            directory_object.pull_directory('ab_fields_text_dir')
+        self.ab_fields_training_dir = \
+            directory_object.pull_directory('ab_fields_training_dir')
         self.common_queries_dir = \
             directory_object.pull_directory('linguamatics_i2e_common_queries_dir')
         self.general_queries_dir = \

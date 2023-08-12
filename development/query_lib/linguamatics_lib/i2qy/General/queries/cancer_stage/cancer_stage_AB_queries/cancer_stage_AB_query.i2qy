@@ -6,7 +6,7 @@ query:
       multiSentence: true
       showInDefaultOutput: false
       of:
-      - link: {path: ../cancer_stage_AB_fields/cancer_stage_AB_field.i2qy}
+      - link: {path: /api;type=saved_query/__private__/haglers/AB_fields/cancer_stage_AB_fields/cancer_stage_AB_field.i2qy}
       where:
       - link:
           path: constraint_query.i2qy

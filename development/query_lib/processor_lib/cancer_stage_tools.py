@@ -91,9 +91,11 @@ class AB_fields_object(object):
     def pull_primary_template_list(self):
         return self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
     
+    '''
     #
     def pull_training_data_file(self):
         return self.training_data_file
+    '''
     
     #
     def push_primary_template_list(self, AB_field_list, BA_field_list):
