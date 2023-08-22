@@ -152,6 +152,10 @@ class Pipeline_object(object):
         exec(import_cmd, globals())
         
     #
+    def _push_directories(self):
+        self.metadata_manager.push_directory(self.directory_object.pull_directory('metadata_dir'))
+        
+    #
     def cleanup_directory(self, directory_label):
         self.process_manager.cleanup_directory(directory_label)
     
@@ -224,10 +228,6 @@ class Pipeline_object(object):
             self.process_manager.ohsu_nlp_templates_generate_AB_fields()
             self.process_manager.ohsu_nlp_templates_push_AB_fields()
         self.process_manager.linguamatics_i2e_push_queries()
-            
-    #
-    def melax_clamp_run_pipeline(self):
-        self.process_manager.melax_clamp_run_pipeline()
     
     #
     def move_software(self):
@@ -273,6 +273,7 @@ class Pipeline_object(object):
         self._create_objects(server, root_dir, project_subdir, user, password)
         self._create_managers()
         self._create_registries(root_dir, password)
+        self._push_directories()
         self.process_manager = Process_manager(self.static_data_object,
                                                self.directory_object,
                                                self.logger_object,
@@ -285,6 +286,7 @@ class Pipeline_object(object):
         self.root_dir = root_dir
         self._create_objects(None, root_dir, None, user, password)
         self._create_registries(root_dir, password)
+        self._push_directories()
         server_manager = self.remote_registry.get_manager('update_manager')
         self.nlp_software = Software_manager(self.update_static_data_object,
                                              self.logger_object,

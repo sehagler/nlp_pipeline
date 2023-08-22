@@ -47,27 +47,15 @@ class Preprocessing_worker(Worker_base):
     #
     def _generate_files(self, argument_dict):
         document_dict = argument_dict['document_dict']
-        linguamatics_outdir = \
-            self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out')
+        linguamatics_i2e_preprocessing_data_out_dir = \
+            argument_dict['linguamatics_i2e_preprocessing_data_out_dir']
         linguamatics_i2e_object = \
             self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_object')
         for document_idx in document_dict.keys():
             generate_data_file_ret_val = \
-                linguamatics_i2e_object.create_source_data_file(linguamatics_outdir,
+                linguamatics_i2e_object.create_source_data_file(linguamatics_i2e_preprocessing_data_out_dir,
                                                                 document_idx,
                                                                 document_dict)
-            '''
-            melax_clamp_manager = \
-                self.nlp_tool_manager_registry.get_manager('melax_clamp_manager')
-            generate_data_file_ret_val = \
-                melax_clamp_manager.create_source_data_file(document_idx,
-                                                            processed_report_text)
-            ohsu_nlp_template_manager = \
-                self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
-            generate_data_file_ret_val = \
-                ohsu_nlp_template_manager.create_source_data_file(document_idx,
-                                                                  processed_report_text)
-            '''
 
     #
     def _preprocess_document(self, dynamic_data_manager, document_idx,
@@ -131,6 +119,8 @@ class Preprocessing_worker(Worker_base):
     def _process_data(self, argument_dict):
         self.i2e_version = argument_dict['i2e_version'] 
         dynamic_data_manager = argument_dict['dynamic_data_manager']
+        linguamatics_i2e_preprocessing_data_out_dir = \
+            argument_dict['linguamatics_i2e_preprocessing_data_out_dir']
         metadata_manager = argument_dict['metadata_manager'] 
         self.num_processes = argument_dict['num_processes']
         self.process_idx = argument_dict['process_idx']
@@ -142,6 +132,8 @@ class Preprocessing_worker(Worker_base):
                                        password)
         argument_dict = {}
         argument_dict['document_dict'] = document_dict
+        argument_dict['linguamatics_i2e_preprocessing_data_out_dir'] = \
+            linguamatics_i2e_preprocessing_data_out_dir
         argument_dict['metadata_manager'] = metadata_manager
         return_dict = \
             parallel_composition([self._update_metadata_manager,

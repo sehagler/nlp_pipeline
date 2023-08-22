@@ -8,26 +8,19 @@ Created on Tue Mar 15 17:37:17 2022
 #
 from nlp_tools_lib.linguamatics_i2e_lib.object_lib.linguamatics_i2e_object_class \
     import Linguamatics_i2e_object
-from nlp_tools_lib.melax_clamp_lib.manager_lib.melax_clamp_manager_class \
-    import Melax_clamp_manager
-from nlp_tools_lib.ohsu_nlp_template_lib.manager_lib.ohsu_nlp_template_manager_class \
-    import Ohsu_nlp_template_manager
+from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.ohsu_nlp_template_object_class \
+    import Ohsu_nlp_template_object
 
 #
 class Nlp_tool_registry(object):
     
     #
-    def __init__(self, static_data_object, directory_object,logger_object, 
-                 remote_manager_registry, password):
+    def __init__(self, static_data_object, remote_manager_registry, password):
         self.static_data_object = static_data_object
         self.nlp_tool_manager_registry = {}
         self._linguamatics_i2e_object(remote_manager_registry, password)
-        self.nlp_tool_manager_registry['melax_clamp_manager'] = \
-            Melax_clamp_manager(static_data_object, directory_object,
-                                logger_object)
-        self.nlp_tool_manager_registry['ohsu_nlp_template_manager'] = \
-            Ohsu_nlp_template_manager(static_data_object, directory_object,
-                                      logger_object)
+        self.nlp_tool_manager_registry['ohsu_nlp_template_object'] = \
+            Ohsu_nlp_template_object(static_data_object)
             
     #
     def _linguamatics_i2e_object(self, remote_manager_registry, password):

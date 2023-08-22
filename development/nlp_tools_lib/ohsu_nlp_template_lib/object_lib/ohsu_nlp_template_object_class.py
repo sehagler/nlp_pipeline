@@ -6,7 +6,6 @@ Created on Wed Jan 12 09:40:02 2022
 """
 
 #
-from base_lib.manager_base_class import Manager_base
 from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.AB_fields_object_class \
     import AB_fields_object
 from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.simple_template_object_class \
@@ -30,12 +29,10 @@ def _create_text_dict_postprocessing_data_in(sections, document_ids):
     return text_dict
 
 #
-class Ohsu_nlp_template_manager(Manager_base):
+class Ohsu_nlp_template_object(object):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+    def __init__(self, static_data_object):
         self.ab_fields_object = AB_fields_object(static_data_object)
         self.simple_template_object = Simple_template_object()
     

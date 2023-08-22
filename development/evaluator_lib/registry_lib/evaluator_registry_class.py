@@ -26,11 +26,9 @@ class Evaluator_registry(object):
     #
     def create_evaluators(self):
         static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
         operation_mode = static_data['operation_mode']
-        software_dir = directory_object.pull_directory('software_dir')
         root_dir = \
-            os.path.join(software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
+            os.path.join(self.software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
         log_text = root_dir
         self.logger_object.print_log(log_text)
         for root, dirs, files in os.walk(root_dir):
@@ -54,6 +52,10 @@ class Evaluator_registry(object):
     #
     def get_keys(self):
         return self.evaluator_registry.keys()
+    
+    #
+    def push_directory(self, directory):
+        self.software_dir = directory
     
     #
     def run_evaluator(self, evaluator, evaluation_manager, nlp_value, 

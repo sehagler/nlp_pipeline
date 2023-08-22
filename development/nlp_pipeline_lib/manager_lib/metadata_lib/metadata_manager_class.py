@@ -22,9 +22,6 @@ class Metadata_manager(Manager_base):
     def __init__(self, static_data_object, directory_object, logger_object):
         Manager_base.__init__(self, static_data_object, directory_object,
                               logger_object)
-        self.metadata_json_file = \
-            os.path.join(self.directory_object.pull_directory('metadata_dir'),
-                         'metadata.json')
         self.clear_metadata()
         
     #
@@ -103,6 +100,11 @@ class Metadata_manager(Manager_base):
             document_identifier_list.append(document['METADATA'][document_identifier_key])
         document_identifier_list = sorted(list(set(document_identifier_list)))
         return document_identifier_list
+    
+    #
+    def push_directory(self, directory):
+        self.metadata_json_file = \
+            os.path.join(directory, 'metadata.json')
     
     #
     def read_metadata(self):

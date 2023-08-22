@@ -220,6 +220,7 @@ class Process_manager(Manager_base):
         self.password = password
         self._project_imports()
         self._create_registries(remote_registry, password)
+        self._push_directories()
         self._create_managers(password)
         self._create_workers()
         
@@ -264,13 +265,11 @@ class Process_manager(Manager_base):
             Dynamic_data_manager(self.static_data_object,
                                  self.directory_object, self.logger_object,
                                  self.processing_data_dir)
-        evaluator_registry = Evaluator_registry(self.static_data_object,
-                                                self.logger_object)
-        evaluator_registry.create_evaluators()
+        self.evaluator_registry.create_evaluators()
         evaluation_manager = \
             Evaluation_manager(self.static_data_object, 
                                self.directory_object, self.logger_object,
-                               evaluator_registry)
+                               self.evaluator_registry)
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,
@@ -306,9 +305,11 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
         project_AB_fields_dir = self.ohsu_nlp_project_AB_fields_dir
+        self.evaluator_registry = Evaluator_registry(self.static_data_object,
+                                                     self.logger_object)
         self.nlp_tool_registry = \
-            Nlp_tool_registry(self.static_data_object, self.directory_object,
-                              self.logger_object, remote_registry, password)
+            Nlp_tool_registry(self.static_data_object, remote_registry,
+                              password)
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_object,
                                    self.directory_object, self.logger_object,
@@ -332,25 +333,6 @@ class Process_manager(Manager_base):
             self.xls_manager_registry[file] = \
                 Xls_manager(self.static_data_object, self.directory_object,
                             self.logger_object, file, password)
-        '''
-        for file in os.listdir(project_AB_fields_dir):
-            class_filename, extension = os.path.splitext(file)
-            class_filename = re.sub('/', '.', class_filename)
-            class_name, extension = os.path.splitext(os.path.basename(file))
-            class_name = class_name[0].upper() + class_name[1:-6]
-            import_cmd = 'from projects_lib.' + project_name + \
-                         '.nlp_templates.AB_fields.' + class_filename + \
-                         ' import ' + class_name + ' as Template_object'
-            exec(import_cmd, globals())
-            log_text = 'OHSU NLP Template Object: ' + class_name
-            self.logger_object.print_log(log_text)
-            template_object = Template_object()
-            training_data_file = template_object.pull_training_data_file()
-            file = os.path.join(self.raw_data_dir, training_data_file)
-            self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.directory_object,
-                            self.logger_object, file, password)
-        '''
         if static_data['project_subdir'] == 'test' and \
            'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
@@ -435,14 +417,14 @@ class Process_manager(Manager_base):
         self.simple_template_dict['argument_queues'] = []
         self.simple_template_dict['return_queues'] = []
         for process_idx in range(num_processes):
-            ohsu_nlp_template_manager = \
-                self.nlp_tool_registry.get_manager('ohsu_nlp_template_manager')
+            ohsu_nlp_template_object = \
+                self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Simple_template_worker(self.static_data_object,
                                        self.directory_object,
                                        self.logger_object,
-                                       ohsu_nlp_template_manager)
+                                       ohsu_nlp_template_object)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
             self.simple_template_dict['processes'].append(p)
             self.simple_template_dict['argument_queues'].append(aq)
@@ -510,6 +492,10 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             log_text = 'Postprocessor_registry: Postprocessor_registry'
             self.logger_object.print_log(log_text)
+            
+    #
+    def _push_directories(self):
+        self.evaluator_registry.push_directory(self.software_dir)
             
     #
     def _start_preprocessing_workers(self):
@@ -644,17 +630,11 @@ class Process_manager(Manager_base):
         linguamatics_i2e_object.logout()
         
     #
-    def melax_clamp_run_pipeline(self):
-        melax_clamp_manager = \
-            self.nlp_tool_registry.get_manager('melax_clamp_manager')
-        melax_clamp_manager.run_pipeline()
-        
-    #
     def ohsu_nlp_templates_generate_AB_fields(self):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
-        ohsu_nlp_template_manager = \
-            self.nlp_tool_registry.get_manager('ohsu_nlp_template_manager')
+        ohsu_nlp_template_object = \
+            self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
         if 'sections.csv' in os.listdir(self.postprocessing_data_in_dir):
             sections = []
             with open(os.path.join(self.postprocessing_data_in_dir, 'sections.csv')) as f:
@@ -691,8 +671,8 @@ class Process_manager(Manager_base):
                 self.xls_manager_registry[AB_fields_training_file]
             xls_manager.read_training_data()
             template_object.push_xls_manager(xls_manager)
-            ohsu_nlp_template_manager.clear_template_output()
-            ohsu_nlp_template_manager.train_ab_fields(template_object,
+            ohsu_nlp_template_object.clear_template_output()
+            ohsu_nlp_template_object.train_ab_fields(template_object,
                                                       self.metadata_manager,
                                                       self.template_data_dir,
                                                       self.template_text_dict)
@@ -700,7 +680,7 @@ class Process_manager(Manager_base):
             filedir += '/' + filename + '_AB_fields'
             if not os.path.exists(filedir):
                 os.mkdir(filedir)
-            ohsu_nlp_template_manager.write_ab_fields(filedir, filename)
+            ohsu_nlp_template_object.write_ab_fields(filedir, filename)
             
     #
     def ohsu_nlp_templates_push_AB_fields(self):
@@ -724,8 +704,8 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         num_processes = static_data['num_processes']
         project_name = static_data['project_name']
-        ohsu_nlp_template_manager = \
-            self.nlp_tool_registry.get_manager('ohsu_nlp_template_manager')
+        ohsu_nlp_template_object = \
+            self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
         files = glob.glob(self.ohsu_nlp_project_simple_templates_dir + '/*.py')
         for i in range(len(files)):
             files[i] = \
@@ -939,6 +919,8 @@ class Process_manager(Manager_base):
                 argument_dict = {}
                 argument_dict['dynamic_data_manager'] = \
                     dynamic_data_manager_copy
+                argument_dict['linguamatics_i2e_preprocessing_data_out_dir'] = \
+                    self.linguamatics_i2e_preprocessing_data_out_dir
                 argument_dict['metadata_manager'] = metadata_manager_copy
                 argument_dict['num_processes'] = \
                     len(self.preprocessing_dict['processes'])

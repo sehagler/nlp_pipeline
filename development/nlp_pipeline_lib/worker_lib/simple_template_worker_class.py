@@ -13,17 +13,17 @@ class Simple_template_worker(Worker_base):
     
     #
     def __init__(self, static_data_object, directory_object, logger_object,
-                 ohsu_nlp_template_manager):
+                 ohsu_nlp_template_object):
         Worker_base.__init__(self, static_data_object, directory_object,
                              logger_object)
-        self.ohsu_nlp_template_manager = ohsu_nlp_template_manager
+        self.ohsu_nlp_template_object = ohsu_nlp_template_object
         
     #
     def _process_data(self, argument_dict):
-        self.ohsu_nlp_template_manager.clear_simple_template_output()
-        self.ohsu_nlp_template_manager.run_simple_template(argument_dict)
+        self.ohsu_nlp_template_object.clear_simple_template_output()
+        self.ohsu_nlp_template_object.run_simple_template(argument_dict)
         template_output = \
-            self.ohsu_nlp_template_manager.pull_simple_template_output()
+            self.ohsu_nlp_template_object.pull_simple_template_output()
         return_dict = {}
         return_dict['template_output'] = template_output
         return return_dict

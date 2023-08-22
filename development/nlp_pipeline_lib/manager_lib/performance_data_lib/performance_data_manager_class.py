@@ -259,8 +259,6 @@ class Performance_data_manager(Manager_base):
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
         self.xls_manager_registry = xls_manager_registry
-        static_data = self.static_data_object.get_static_data()
-        self.directory_object = static_data['directory_object']
         self.save_dir = \
             self.directory_object.pull_directory('processing_data_dir')
         self.log_dir = self.directory_object.pull_directory('log_dir')
@@ -590,8 +588,7 @@ class Performance_data_manager(Manager_base):
         self.performance_statistics_overall_dict = {}
         static_data = self.static_data_object.get_static_data()
         validation_filename = static_data['validation_file']
-        directory_object = static_data['directory_object']
-        data_dir = directory_object.pull_directory('raw_data_dir')
+        data_dir = self.directory_object.pull_directory('raw_data_dir')
         filename = os.path.join(data_dir, validation_filename)
         self.validation_data_manager = self.xls_manager_registry[filename]
         self.validation_data_manager.read_validation_data()

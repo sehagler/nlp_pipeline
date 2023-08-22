@@ -124,7 +124,6 @@ class Directory_object(object):
                 self.directory_dict['production_data_dir'] = \
                     os.path.join(self.directory_dict['processing_data_dir'],
                                  static_data['project_name'] + datetime_str)
-            self._melax_clamp_directories()
             self._ohsu_nlp_directories(nlp_software_root_dir, server,
                                             project_dir)
             
@@ -160,12 +159,6 @@ class Directory_object(object):
         self._create_dict_entry('linguamatics_i2e_preprocessing_data_out',
                                 self.directory_dict['preprocessing_data_out'],
                                 'linguamatics_i2e_preprocessing_data_out')  
-
-    #
-    def _melax_clamp_directories(self):
-        self._create_dict_entry('melax_clamp_preprocessing_data_out',
-                                self.directory_dict['preprocessing_data_out'],
-                                'melax_clamp_preprocessing_data_out') 
                 
     #
     def _ohsu_nlp_directories(self, nlp_software_root_dir, server, project_dir):

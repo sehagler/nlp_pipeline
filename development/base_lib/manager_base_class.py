@@ -22,6 +22,7 @@ class Manager_base(object):
             directory_object.pull_directory('linguamatics_i2e_general_queries_dir')
         self.linguamatics_i2e_preprocessing_data_out_dir = \
             directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out')
+        self.metadata_dir = directory_object.pull_directory('metadata_dir')
         self.ohsu_nlp_preprocessing_data_out_dir = \
             directory_object.pull_directory('ohsu_nlp_preprocessing_data_out')
         self.ohsu_nlp_project_simple_templates_dir = \
