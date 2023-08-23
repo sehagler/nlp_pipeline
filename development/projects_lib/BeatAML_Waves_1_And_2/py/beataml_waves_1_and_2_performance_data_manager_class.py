@@ -32,19 +32,15 @@ def _get_nlp_value(arg_dict):
 class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_object, logger_object, evaluation_manager,
-                 json_manager_registry, metadata_manager,
+    def __init__(self, static_data_object, directory_object, logger_object,
+                 evaluation_manager, json_manager_registry, metadata_manager,
                  xls_manager_registry):
         Performance_data_manager.__init__(self, static_data_object,
-                                          logger_object, evaluation_manager,
+                                          directory_object, logger_object,
+                                          evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry)
-        static_data = self.static_data_object.get_static_data()
-        if static_data['project_subdir'] == 'test':
-            self.identifier_key = 'MRN'
-            self.identifier_list = static_data['patient_list']
-            self.queries = static_data['queries_list']
     
     #
     def _get_nlp_data(self, data_in, queries):
@@ -76,6 +72,7 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
     def _get_nlp_values(self, nlp_data, data_json):
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
         specimens_manager = Specimens_manager(self.static_data_object,
+                                              self.directory_object,
                                               self.logger_object,
                                               metadata_dict_dict)
         specimens_manager.generate_document_map(data_json, 'file_map.txt')
@@ -219,3 +216,13 @@ class BeatAML_Waves_1_And_2_performance_data_manager(Performance_data_manager):
             if doc_name not in data_json[identifier][specimen_date][proc_nm].keys():
                 data_json[identifier][specimen_date][proc_nm][doc_name + '_' + doc_label + '_' + result_date] = data_out
         return data_json
+    
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
+        static_data = self.static_data_object.get_static_data()
+        static_data = self.static_data_object.get_static_data()
+        if static_data['project_subdir'] == 'test':
+            self.identifier_key = 'MRN'
+            self.identifier_list = static_data['patient_list']
+            self.queries = static_data['queries_list']

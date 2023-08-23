@@ -20,6 +20,13 @@ from processor_lib.registry_lib.postprocessor_registry_class \
 class BeatAML_Waves_3_And_4_postprocessor_registry(Postprocessor_registry):
     
     #
+    def __init__(self, static_data_object, directory_object, logger_object,
+                 metadata_manager):
+        Postprocessor_registry.__init__(self, static_data_object,
+                                        directory_object, logger_object,
+                                        metadata_manager)
+    
+    #
     def create_postprocessor(self, filename):
         Postprocessor_registry.create_postprocessor(self, filename)
         static_data = self.static_data_object.get_static_data()
@@ -31,4 +38,5 @@ class BeatAML_Waves_3_And_4_postprocessor_registry(Postprocessor_registry):
         if filename in [ 'sections.csv' ]:
             self._register_postprocessor('postprocessor_specific_diagnosis',
                                          Postprocessor_specific_diagnosis(self.static_data_object,
+                                                                          self.directory_object,
                                                                           self.logger_object))

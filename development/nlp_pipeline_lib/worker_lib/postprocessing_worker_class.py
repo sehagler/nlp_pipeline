@@ -26,12 +26,14 @@ class Postprocessing_worker(Worker_base):
     #
     def _process_data(self, argument_dict):
         data_dict_dict = argument_dict['data_dict_dict']
+        data_out = argument_dict['postprocessing_data_out']
         doc_list = argument_dict['doc_list']
         file_list = argument_dict['file_list']
         filename = argument_dict['filename']
         self.json_manager_registry = argument_dict['json_manager_registry']
         nlp_data_key = argument_dict['nlp_data_key']
         self.postprocessor_registry = argument_dict['postprocessor_registry']
+        processing_base_dir = argument_dict['processing_base_dir']
         for filename in file_list:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
@@ -48,10 +50,6 @@ class Postprocessing_worker(Worker_base):
         self.output_manager.include_text()
         merged_data_dict_list = \
             self.output_manager.get_merged_data_dict_list()
-        processing_base_dir = \
-            self.directory_object.pull_directory('processing_base_dir')
-        data_out = \
-            self.directory_object.pull_directory('postprocessing_data_out')
         for data_dict in merged_data_dict_list:
             if nlp_data_key in data_dict.keys():
                 if bool(data_dict[nlp_data_key]):

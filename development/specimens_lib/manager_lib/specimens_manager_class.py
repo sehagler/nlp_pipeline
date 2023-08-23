@@ -208,8 +208,9 @@ def _trim_specimen_tree(argument_dict):
 class Specimens_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object):
-        Manager_base.__init__(self, static_data_object, logger_object)
+    def __init__(self, static_data_object, directory_object, logger_object):
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         static_data = static_data_object.get_static_data()
         self.directory_object = static_data['directory_object']
         self.log_dir = self.directory_object.pull_directory('log_dir')

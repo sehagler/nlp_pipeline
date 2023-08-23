@@ -259,9 +259,6 @@ class Performance_data_manager(Manager_base):
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
         self.xls_manager_registry = xls_manager_registry
-        self.save_dir = \
-            self.directory_object.pull_directory('processing_data_dir')
-        self.log_dir = self.directory_object.pull_directory('log_dir')
         self.csv_body = ''
         self.csv_header = ''
         
@@ -588,8 +585,7 @@ class Performance_data_manager(Manager_base):
         self.performance_statistics_overall_dict = {}
         static_data = self.static_data_object.get_static_data()
         validation_filename = static_data['validation_file']
-        data_dir = self.directory_object.pull_directory('raw_data_dir')
-        filename = os.path.join(data_dir, validation_filename)
+        filename = os.path.join(self.raw_data_dir, validation_filename)
         self.validation_data_manager = self.xls_manager_registry[filename]
         self.validation_data_manager.read_validation_data()
         validation_datum_keys = self._validation_datum_keys()
@@ -638,6 +634,25 @@ class Performance_data_manager(Manager_base):
     def get_performance_data(self, display_flg):
         self.read_nlp_data()
         self.calculate_performance(display_flg)
+        
+    #
+    def push_log_directory(self, directory):
+        self.log_dir = directory
+        
+    #
+    def push_processing_data_directory(self, directory):
+        self.save_dir = directory
+        
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
+        static_data = self.static_data_object.get_static_data()
+        if static_data['project_subdir'] == 'test':
+            self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
+            validation_filename = static_data['validation_file']
+            filename = os.path.join(self.raw_data_dir, validation_filename)
+            self.xls_manager_registry[filename].read_validation_data()
+            self.queries = static_data['queries_list']
             
     #
     def read_nlp_data(self):

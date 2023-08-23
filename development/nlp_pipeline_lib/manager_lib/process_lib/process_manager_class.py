@@ -33,20 +33,22 @@ from nlp_pipeline_lib.manager_lib.file_lib.xml_lib.xml_manager_class \
     import Xml_manager
 from nlp_pipeline_lib.manager_lib.output_lib.output_manager_class \
     import Output_manager
+from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_class \
+    import Performance_data_manager
 from nlp_pipeline_lib.manager_lib.raw_data_lib.raw_data_manager_class \
     import Raw_data_manager
 from nlp_pipeline_lib.registry_lib.nlp_tool_lib.nlp_tool_registry_class \
     import Nlp_tool_registry
 from nlp_text_normalization_lib.object_lib.text_normalization_object_class \
     import Text_normalization_object
-from processor_lib.registry_lib.preprocessor_registry_class \
-    import Preprocessor_registry
 from nlp_pipeline_lib.worker_lib.postprocessing_worker_class \
     import Postprocessing_worker
 from nlp_pipeline_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
 from nlp_pipeline_lib.worker_lib.simple_template_worker_class \
     import Simple_template_worker
+from processor_lib.registry_lib.preprocessor_registry_class \
+    import Preprocessor_registry
 from tools_lib.processing_tools_lib.file_processing_tools \
     import read_txt_file, write_file
     
@@ -220,8 +222,9 @@ class Process_manager(Manager_base):
         self.password = password
         self._project_imports()
         self._create_registries(remote_registry, password)
-        self._push_directories()
+        self._push_directories_0()
         self._create_managers(password)
+        self._push_directories_1()
         self._create_workers()
         
         # Kludge to get around memory issue in processor
@@ -306,6 +309,7 @@ class Process_manager(Manager_base):
         project_name = static_data['project_name']
         project_AB_fields_dir = self.ohsu_nlp_project_AB_fields_dir
         self.evaluator_registry = Evaluator_registry(self.static_data_object,
+                                                     self.directory_object,
                                                      self.logger_object)
         self.nlp_tool_registry = \
             Nlp_tool_registry(self.static_data_object, remote_registry,
@@ -494,8 +498,14 @@ class Process_manager(Manager_base):
             self.logger_object.print_log(log_text)
             
     #
-    def _push_directories(self):
+    def _push_directories_0(self):
         self.evaluator_registry.push_directory(self.software_dir)
+        
+    #
+    def _push_directories_1(self):
+        self.performance_data_manager.push_log_directory(self.log_dir)
+        self.performance_data_manager.push_processing_data_directory(self.processing_data_dir)
+        self.performance_data_manager.push_raw_data_directory(self.raw_data_dir)
             
     #
     def _start_preprocessing_workers(self):
@@ -839,10 +849,16 @@ class Process_manager(Manager_base):
                 argument_dict['doc_list'] = doc_list
                 argument_dict['filename'] = filename
                 argument_dict['file_list'] = file_list
-                argument_dict['json_manager_registry'] = json_manager_registry_copy
+                argument_dict['json_manager_registry'] = \
+                    json_manager_registry_copy
                 argument_dict['nlp_data_key'] = self.nlp_data_key
-                argument_dict['postprocessor_registry'] = postprocessor_registry_copy
+                argument_dict['postprocessor_registry'] = \
+                    postprocessor_registry_copy
+                argument_dict['postprocessing_data_out'] = \
+                    self.postprocessing_data_out_dir
                 argument_dict['process_idx'] = process_idx
+                argument_dict['processing_base_dir'] = \
+                    self.processing_base_dir
                 self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
             for process_idx in range(len(self.postprocessing_dict['processes'])):
                 self.postprocessing_dict['return_queues'][process_idx].get()

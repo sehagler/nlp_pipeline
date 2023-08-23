@@ -14,8 +14,9 @@ import traceback
 class Evaluator_registry(object):
     
     #
-    def __init__(self, static_data_object, logger_object):
+    def __init__(self, static_data_object, directory_object, logger_object):
         self.static_data_object = static_data_object
+        self.directory_object = directory_object
         self.logger_object = logger_object
         self.evaluator_registry = {}
     
@@ -41,6 +42,7 @@ class Evaluator_registry(object):
                                  filename + ' import Evaluator'
                     exec(import_cmd, globals())
                     evaluator = Evaluator(self.static_data_object,
+                                          self.directory_object,
                                           self.logger_object)
                     self._register_evaluator(filename, evaluator)
                     log_text = 'Registered Evaluator from ' + filename
