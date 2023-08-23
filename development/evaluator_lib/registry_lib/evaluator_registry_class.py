@@ -11,13 +11,15 @@ import re
 import traceback
 
 #
-class Evaluator_registry(object):
+from base_lib.manager_base_class import Manager_base
+
+#
+class Evaluator_registry(Manager_base):
     
     #
     def __init__(self, static_data_object, directory_object, logger_object):
-        self.static_data_object = static_data_object
-        self.directory_object = directory_object
-        self.logger_object = logger_object
+        Manager_base.__init__(self, static_data_object, directory_object,
+                              logger_object)
         self.evaluator_registry = {}
     
     #

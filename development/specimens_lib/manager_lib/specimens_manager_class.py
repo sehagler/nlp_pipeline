@@ -281,8 +281,8 @@ class Specimens_manager(Manager_base):
         self._evaluate_features()
     
     #
-    def generate_json_file(self, jsons_out_dir, filename):
-        with open(os.path.join(jsons_out_dir, filename), 'w') as f:
+    def generate_json_file(self, filename):
+        with open(os.path.join(self.log_dir, filename), 'w') as f:
             json.dump(self.data_json, f)
             
     #

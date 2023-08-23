@@ -8,8 +8,6 @@ Created on Mon Mar 04 12:29:38 2019
 #
 from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_class \
     import Performance_data_manager
-from projects_lib.BeatAML_Waves_3_And_4.py.beataml_waves_3_and_4_specimens_manager_class \
-    import BeatAML_Waves_3_And_4_specimens_manager as Specimens_manager
 from tools_lib.processing_tools_lib.function_processing_tools \
     import parallel_composition, sequential_composition
     
@@ -34,13 +32,14 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     #
     def __init__(self, static_data_object, directory_object, logger_object,
                  evaluation_manager, json_manager_registry, metadata_manager,
-                 xls_manager_registry):
+                 xls_manager_registry, specimens_manager):
         Performance_data_manager.__init__(self, static_data_object,
                                           directory_object, logger_object,
                                           evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
-                                          xls_manager_registry)
+                                          xls_manager_registry,
+                                          specimens_manager)
     
     #
     def _get_nlp_data(self, data_in, queries):
@@ -70,14 +69,10 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     
     #
     def _get_nlp_values(self, nlp_data, data_json):
-        metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
-        specimens_manager = Specimens_manager(self.static_data_object,
-                                              self.directory_object,
-                                              self.logger_object,
-                                              metadata_dict_dict)
-        specimens_manager.generate_document_map(data_json, 'file_map.txt')
-        specimens_manager.generate_json_file(self.directory_object.pull_directory('log_dir'), 'validation.json')
-        nlp_values = specimens_manager.get_data_json()
+        self.specimens_manager.push_nlp_data(nlp_data)
+        self.specimens_manager.generate_document_map(data_json, 'file_map.txt')
+        self.specimens_manager.generate_json_file('validation.json')
+        nlp_values = self.specimens_manager.get_data_json()
         return nlp_values
     
     #
@@ -165,22 +160,6 @@ class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
         else:
             x = None
         return x
-    
-    #
-    def _read_metadata(self, nlp_data):
-        metadata_keys = []
-        metadata_dict_dict = {}
-        for key in nlp_data.keys():
-            metadata_dict_dict[key] = {}
-            metadata_dict_dict[key]['METADATA'] = \
-                nlp_data[key]['METADATA']
-            metadata_dict_dict[key]['NLP_METADATA'] = \
-                nlp_data[key]['NLP_METADATA']
-        for metadata_key in metadata_dict_dict.keys():
-            for key in metadata_dict_dict[metadata_key].keys():
-                if key not in metadata_keys:
-                    metadata_keys.append(key)
-        return metadata_keys, metadata_dict_dict
             
     #
     def _read_nlp_value(self, nlp_data, data_json, key, identifier):

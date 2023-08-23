@@ -49,6 +49,8 @@ from nlp_pipeline_lib.worker_lib.simple_template_worker_class \
     import Simple_template_worker
 from processor_lib.registry_lib.preprocessor_registry_class \
     import Preprocessor_registry
+from specimens_lib.manager_lib.specimens_manager_class \
+    import Specimens_manager
 from tools_lib.processing_tools_lib.file_processing_tools \
     import read_txt_file, write_file
     
@@ -274,6 +276,17 @@ class Process_manager(Manager_base):
                                self.directory_object, self.logger_object,
                                self.evaluator_registry)
         try:
+            specimens_manager = \
+                Specimens_manager(self.static_data_object,
+                                  self.directory_object,
+                                  self.logger_object)
+            log_text = 'Specimens_manager: ' + project_name + \
+                       '_specimens_manager'
+            self.logger_object.print_log(log_text)
+        except Exception:
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
+        try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,
                                          self.directory_object,
@@ -281,7 +294,8 @@ class Process_manager(Manager_base):
                                          evaluation_manager,
                                          json_manager_registry,
                                          self.metadata_manager,
-                                         self.xls_manager_registry)
+                                         self.xls_manager_registry,
+                                         specimens_manager)
             log_text = 'Performance_data_manager: ' + project_name + \
                        '_performance_data_manager'
             self.logger_object.print_log(log_text)
@@ -496,6 +510,18 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             log_text = 'Postprocessor_registry: Postprocessor_registry'
             self.logger_object.print_log(log_text)
+        try:
+            import_cmd = 'from projects_lib.' + project_name + '.py.' + \
+                         project_name.lower() + \
+                         '_specimens_manager_class import ' + project_name + \
+                         '_specimens_manager as Specimens_manager'
+            exec(import_cmd, globals())
+            log_text = 'Specimens_manager: ' + project_name + \
+                       '_specimens_manager'
+            self.logger_object.print_log(log_text)
+        except Exception:
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
             
     #
     def _push_directories_0(self):

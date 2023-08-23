@@ -10,8 +10,7 @@ import os
 import traceback
 
 #
-from base_lib.manager_base_class \
-    import Manager_base
+from base_lib.manager_base_class import Manager_base
 from tools_lib.processing_tools_lib.file_processing_tools \
     import read_json_file, write_file
 

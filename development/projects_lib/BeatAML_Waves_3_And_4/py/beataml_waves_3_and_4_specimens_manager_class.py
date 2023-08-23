@@ -50,15 +50,13 @@ def _get_process_label(proc_nm, doc_label):
 class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
-                 metadata_dict_dict):
+    def __init__(self, static_data_object, directory_object, logger_object):
         Specimens_manager.__init__(self, static_data_object, directory_object,
                                    logger_object)
         static_data = static_data_object.get_static_data()
         directory_object = static_data['directory_object']
         self.deidentifier_xlsx = directory_object.pull_directory('raw_data_dir') + \
             '/wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
-        self.metadata_dict_dict = metadata_dict_dict
         
     #
     def _cluster_specimens(self, specimen_tree_in, deidentifier_key_dict):
@@ -143,3 +141,24 @@ class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
                 deidentifier_key_dict[mrn]['patientId'] = str(patientid_tmp[0])
                 deidentifier_key_dict[mrn]['labIds'] = doc_dict
         return deidentifier_key_dict
+    
+    #
+    def _read_metadata(self, nlp_data):
+        metadata_keys = []
+        metadata_dict_dict = {}
+        for key in nlp_data.keys():
+            metadata_dict_dict[key] = {}
+            metadata_dict_dict[key]['METADATA'] = \
+                nlp_data[key]['METADATA']
+            metadata_dict_dict[key]['NLP_METADATA'] = \
+                nlp_data[key]['NLP_METADATA']
+        for metadata_key in metadata_dict_dict.keys():
+            for key in metadata_dict_dict[metadata_key].keys():
+                if key not in metadata_keys:
+                    metadata_keys.append(key)
+        return metadata_keys, metadata_dict_dict
+    
+    #
+    def push_nlp_data(self, nlp_data):
+        metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
+        self.metadata_dict_dict = metadata_dict_dict

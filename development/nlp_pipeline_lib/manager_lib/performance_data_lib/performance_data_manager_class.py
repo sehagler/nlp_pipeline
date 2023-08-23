@@ -252,13 +252,14 @@ class Performance_data_manager(Manager_base):
     #
     def __init__(self, static_data_object, directory_object, logger_object,
                  evaluation_manager, json_manager_registry, metadata_manager,
-                 xls_manager_registry):
+                 xls_manager_registry, specimens_manager):
         Manager_base.__init__(self, static_data_object, directory_object,
                               logger_object)
         self.evaluation_manager = evaluation_manager
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
         self.xls_manager_registry = xls_manager_registry
+        self.specimens_manager = specimens_manager
         self.csv_body = ''
         self.csv_header = ''
         
