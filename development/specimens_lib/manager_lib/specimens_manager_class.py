@@ -211,9 +211,6 @@ class Specimens_manager(Manager_base):
     def __init__(self, static_data_object, directory_object, logger_object):
         Manager_base.__init__(self, static_data_object, directory_object,
                               logger_object)
-        static_data = static_data_object.get_static_data()
-        self.directory_object = static_data['directory_object']
-        self.log_dir = self.directory_object.pull_directory('log_dir')
     
     #                 
     def _evaluate_generic(self, entry_label, data_json):
@@ -288,3 +285,11 @@ class Specimens_manager(Manager_base):
     #
     def get_data_json(self):
         return self.data_json
+    
+    #
+    def push_log_directory(self, directory):
+        self.log_dir = directory
+    
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory

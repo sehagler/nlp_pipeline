@@ -225,8 +225,10 @@ class Process_manager(Manager_base):
         self._project_imports()
         self._create_registries(remote_registry, password)
         self._push_directories_0()
-        self._create_managers(password)
+        self._create_managers_0(password)
         self._push_directories_1()
+        self._create_managers_1()
+        self._push_directories_2()
         self._create_workers()
         
         # Kludge to get around memory issue in processor
@@ -253,7 +255,7 @@ class Process_manager(Manager_base):
         return performance_statistics_dict
     
     #
-    def _create_managers(self, password):
+    def _create_managers_0(self, password):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
         processing_base_dir = \
@@ -271,33 +273,17 @@ class Process_manager(Manager_base):
                                  self.directory_object, self.logger_object,
                                  self.processing_data_dir)
         self.evaluator_registry.create_evaluators()
-        evaluation_manager = \
+        self.evaluation_manager = \
             Evaluation_manager(self.static_data_object, 
                                self.directory_object, self.logger_object,
                                self.evaluator_registry)
         try:
-            specimens_manager = \
+            self.specimens_manager = \
                 Specimens_manager(self.static_data_object,
                                   self.directory_object,
                                   self.logger_object)
             log_text = 'Specimens_manager: ' + project_name + \
                        '_specimens_manager'
-            self.logger_object.print_log(log_text)
-        except Exception:
-            traceback_text = traceback.format_exc()
-            self.logger_object.print_exc(traceback_text)
-        try:
-            self.performance_data_manager = \
-                Performance_data_manager(self.static_data_object,
-                                         self.directory_object,
-                                         self.logger_object,
-                                         evaluation_manager,
-                                         json_manager_registry,
-                                         self.metadata_manager,
-                                         self.xls_manager_registry,
-                                         specimens_manager)
-            log_text = 'Performance_data_manager: ' + project_name + \
-                       '_performance_data_manager'
             self.logger_object.print_log(log_text)
         except Exception:
             traceback_text = traceback.format_exc()
@@ -316,6 +302,25 @@ class Process_manager(Manager_base):
         # kludge to get postperformance() working
         self.json_manager_registry = json_manager_registry
         # kludge to get postperformance() working
+        
+    #
+    def _create_managers_1(self):
+        try:
+            self.performance_data_manager = \
+                Performance_data_manager(self.static_data_object,
+                                         self.directory_object,
+                                         self.logger_object,
+                                         self.evaluation_manager,
+                                         self.json_manager_registry,
+                                         self.metadata_manager,
+                                         self.xls_manager_registry,
+                                         self.specimens_manager)
+            log_text = 'Performance_data_manager: ' + project_name + \
+                       '_performance_data_manager'
+            self.logger_object.print_log(log_text)
+        except Exception:
+            traceback_text = traceback.format_exc()
+            self.logger_object.print_exc(traceback_text)
             
     #
     def _create_registries(self, remote_registry, password):
@@ -525,10 +530,16 @@ class Process_manager(Manager_base):
             
     #
     def _push_directories_0(self):
-        self.evaluator_registry.push_directory(self.software_dir)
+        self.evaluator_registry.push_software_directory(self.software_dir)
+        self.postprocessor_registry.push_raw_data_directory(self.raw_data_dir)
         
     #
     def _push_directories_1(self):
+        self.specimens_manager.push_log_directory(self.log_dir)
+        self.specimens_manager.push_raw_data_directory(self.raw_data_dir)
+    
+    #
+    def _push_directories_2(self):
         self.performance_data_manager.push_log_directory(self.log_dir)
         self.performance_data_manager.push_processing_data_directory(self.processing_data_dir)
         self.performance_data_manager.push_raw_data_directory(self.raw_data_dir)
@@ -698,6 +709,7 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             print('OHSU NLP Template Object: ' + class_name)
             template_object = Template_object()
+            template_object.push_template_outlines_directory(self.template_outlines_dir)
             AB_fields_training_file = \
                 static_data['AB_fields_training_files'][filename]
             AB_fields_training_file = \

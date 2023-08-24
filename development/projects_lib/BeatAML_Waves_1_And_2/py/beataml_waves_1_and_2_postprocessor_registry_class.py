@@ -30,10 +30,8 @@ class BeatAML_Waves_1_And_2_postprocessor_registry(Postprocessor_registry):
     #
     def create_postprocessor(self, filename):
         Postprocessor_registry.create_postprocessor(self, filename)
-        static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
         diagnosis_reader = \
-            Diagnosis_reader(os.path.join(directory_object.pull_directory('raw_data_dir'),'diagnoses.xlsx'))
+            Diagnosis_reader(os.path.join(self.raw_data_dir,'diagnoses.xlsx'))
         if filename in [ 'diagnosis.csv' ]:
             self.postprocessor_registry['postprocessor_diagnosis'].push_diagnosis_reader(diagnosis_reader)
         if filename in [ 'sections.csv' ]:

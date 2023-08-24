@@ -91,12 +91,6 @@ class AB_fields_object(object):
     def pull_primary_template_list(self):
         return self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
     
-    '''
-    #
-    def pull_training_data_file(self):
-        return self.training_data_file
-    '''
-    
     #
     def push_primary_template_list(self, AB_field_list, BA_field_list):
         self.AB_field_list = AB_field_list
@@ -119,12 +113,8 @@ class AB_fields_object(object):
     
     #
     def template(self):
-        static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
-        template_outlines_dir = \
-            directory_object.pull_directory('template_outlines_dir')
         filename = 'cancer_stage_template_outline.txt'
-        with open(os.path.join(template_outlines_dir, filename), 'r') as f:
+        with open(os.path.join(self.template_outlines_dir, filename), 'r') as f:
             primary_template_str = f.read()
         primary_template_list = \
             ast.literal_eval(primary_template_str)

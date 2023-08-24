@@ -58,7 +58,7 @@ class Evaluator_registry(Manager_base):
         return self.evaluator_registry.keys()
     
     #
-    def push_directory(self, directory):
+    def push_software_directory(self, directory):
         self.software_dir = directory
     
     #

@@ -352,6 +352,10 @@ class AB_fields_object(object):
         return primary_template_list
     
     #
+    def push_template_outlines_directory(self, directory):
+        self.template_outlines_dir = directory
+    
+    #
     def train_template(self, template_manager, metadata_manager, data_dir,
                        text_dict):
         self.template_manager = template_manager

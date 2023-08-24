@@ -53,10 +53,6 @@ class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
     def __init__(self, static_data_object, directory_object, logger_object):
         Specimens_manager.__init__(self, static_data_object, directory_object,
                                    logger_object)
-        static_data = static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
-        self.deidentifier_xlsx = directory_object.pull_directory('raw_data_dir') + \
-            '/wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
         
     #
     def _cluster_specimens(self, specimen_tree_in, deidentifier_key_dict):
@@ -162,3 +158,9 @@ class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
     def push_nlp_data(self, nlp_data):
         metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
         self.metadata_dict_dict = metadata_dict_dict
+        
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
+        self.deidentifier_xlsx = self.raw_data_dir + \
+            '/wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'

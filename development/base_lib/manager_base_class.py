@@ -45,6 +45,8 @@ class Manager_base(object):
         self.project_queries_dir = \
             directory_object.pull_directory('linguamatics_i2e_project_queries_dir')
         self.software_dir = directory_object.pull_directory('software_dir')
+        self.template_outlines_dir = \
+            directory_object.pull_directory('template_outlines_dir')
         self.raw_data_dir = directory_object.pull_directory('raw_data_dir')
         self.source_data_dir = directory_object.pull_directory('source_data')
         static_data = self.static_data_object.get_static_data()

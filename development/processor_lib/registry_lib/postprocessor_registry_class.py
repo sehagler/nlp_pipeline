@@ -82,6 +82,10 @@ class Postprocessor_registry(object):
             for key in self.postprocessor_registry.keys():
                 self._push_data_dict(key, filename_base, data_dict,
                                      sections_data_dict, document_list)
+                
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
             
     #
     def run_registry(self):

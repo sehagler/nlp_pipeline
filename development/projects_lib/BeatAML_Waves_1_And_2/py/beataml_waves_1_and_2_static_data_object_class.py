@@ -71,8 +71,12 @@ class BeatAML_Waves_1_And_2_static_data_object(Static_data_object):
                 print('Bad project_subdir value: None')
         
         #
-        raw_data_dir = \
-            self.static_data['directory_object'].pull_directory('raw_data_dir')
+        if self.project_subdir is not None:
+            raw_data_dir = \
+                '/home/groups/hopper2/RDW_NLP_WORKSPACE/NLP/NLP_Source_Data/BeatAML_Waves_1_And_2'
+            raw_data_dir += '/' + self.project_subdir
+        else:
+            raw_data_dir = None
         if raw_data_dir is not None:
             raw_data_dir = raw_data_dir + '/pkl'
             pkl_file = os.path.join(raw_data_dir, 'training_groups.pkl')
