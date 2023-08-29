@@ -59,8 +59,7 @@ class Output_manager(Manager_base):
 
     #
     def __init__(self, static_data_object, directory_object, logger_object,
-                 metadata_manager, preprocessing_data_out_dir,
-                 postprocessing_data_out_dir):
+                 metadata_manager, postprocessing_data_out_dir):
         Manager_base.__init__(self, static_data_object, directory_object,
                               logger_object)
         self.metadata_manager = metadata_manager
@@ -68,7 +67,6 @@ class Output_manager(Manager_base):
         self.project_name = static_data['project_name']
         self.merged_data_dict_list = []
         self.data_dict_classes_list = []
-        self.preprocessing_data_out = preprocessing_data_out_dir
         self.data_out = postprocessing_data_out_dir
     
     #
@@ -129,3 +127,7 @@ class Output_manager(Manager_base):
                                                  data_dict[self.nlp_data_key][data_key])
             merged_data_dict_list.append(merged_dict)
         self.merged_data_dict_list = merged_data_dict_list
+        
+    #
+    def push_linguamatics_i2e_preprocessing_data_out_dir(self, directory):
+        self.preprocessing_data_out = directory

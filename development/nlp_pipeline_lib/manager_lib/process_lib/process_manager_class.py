@@ -277,6 +277,11 @@ class Process_manager(Manager_base):
             Evaluation_manager(self.static_data_object, 
                                self.directory_object, self.logger_object,
                                self.evaluator_registry)
+        self.output_manager = Output_manager(self.static_data_object,
+                                             self.directory_object,
+                                             self.logger_object,
+                                             self.metadata_manager,
+                                             self.postprocessing_data_out_dir)
         try:
             self.specimens_manager = \
                 Specimens_manager(self.static_data_object,
@@ -342,16 +347,16 @@ class Process_manager(Manager_base):
         for key in static_data['raw_data_files'].keys():
             filename, extension = os.path.splitext(key)
             if extension.lower() in [ '.xls', '.xlsx' ]:
-                file = os.path.join(self.raw_data_dir, key)
+                file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
                 self.xls_manager_registry[file] = \
                     Xls_manager(self.static_data_object, self.directory_object,
                                 self.logger_object, file, password)
             elif extension.lower() in [ '.xml' ]:
-                file = os.path.join(self.raw_data_dir, key)
+                file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
                 self.xml_manager_registry[file] = \
                     Xml_manager(self.static_data_object, self.directory_object,
                                 self.logger_object, file, password)
-        files = glob.glob(self.ab_fields_training_dir + '/*.xlsx')
+        files = glob.glob(self.directory_object.pull_directory('ab_fields_training_dir') + '/*.xlsx')
         for file in files:
             self.xls_manager_registry[file] = \
                 Xls_manager(self.static_data_object, self.directory_object,
@@ -359,7 +364,7 @@ class Process_manager(Manager_base):
         if static_data['project_subdir'] == 'test' and \
            'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
-            file = os.path.join(self.raw_data_dir, validation_filename)
+            file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), validation_filename)
             self.xls_manager_registry[file] = \
                 Xls_manager(self.static_data_object, self.directory_object,
                             self.logger_object, file, password)
@@ -419,18 +424,12 @@ class Process_manager(Manager_base):
         self.postprocessing_dict['argument_queues'] = []
         self.postprocessing_dict['return_queues'] = []
         for process_idx in range(num_processes):
-            output_manager = Output_manager(self.static_data_object,
-                                            self.directory_object,
-                                            self.logger_object,
-                                            self.metadata_manager,
-                                            self.linguamatics_i2e_preprocessing_data_out_dir,
-                                            self.postprocessing_data_out_dir)
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Postprocessing_worker(self.static_data_object,
                                       self.directory_object,
                                       self.logger_object,
-                                      output_manager)
+                                      self.output_manager)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
             self.postprocessing_dict['processes'].append(p)
             self.postprocessing_dict['argument_queues'].append(aq)
@@ -531,18 +530,19 @@ class Process_manager(Manager_base):
     #
     def _push_directories_0(self):
         self.evaluator_registry.push_software_directory(self.software_dir)
-        self.postprocessor_registry.push_raw_data_directory(self.raw_data_dir)
+        self.postprocessor_registry.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
         
     #
     def _push_directories_1(self):
-        self.specimens_manager.push_log_directory(self.log_dir)
-        self.specimens_manager.push_raw_data_directory(self.raw_data_dir)
+        self.output_manager.push_linguamatics_i2e_preprocessing_data_out_dir(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'))
+        self.specimens_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
+        self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
     
     #
     def _push_directories_2(self):
-        self.performance_data_manager.push_log_directory(self.log_dir)
+        self.performance_data_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
         self.performance_data_manager.push_processing_data_directory(self.processing_data_dir)
-        self.performance_data_manager.push_raw_data_directory(self.raw_data_dir)
+        self.performance_data_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
             
     #
     def _start_preprocessing_workers(self):
@@ -645,13 +645,13 @@ class Process_manager(Manager_base):
         root_dir_flg = static_data['root_dir_flg']
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        linguamatics_i2e_object.generate_regions_file(self.preprocessing_data_out_dir,
+        linguamatics_i2e_object.generate_regions_file(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'),
                                                       self.processing_data_dir)
-        linguamatics_i2e_object.generate_xml_configuation_file(self.preprocessing_data_out_dir,
+        linguamatics_i2e_object.generate_xml_configuation_file(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'),
                                                                self.processing_data_dir)
         linguamatics_i2e_object.login()
         linguamatics_i2e_object.push_resources(project_name, keywords_file,
-                                               self.preprocessing_data_out_dir,
+                                               self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'),
                                                self.processing_data_dir, 
                                                self.source_data_dir,
                                                max_files_per_zip, root_dir_flg)
@@ -666,12 +666,13 @@ class Process_manager(Manager_base):
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         linguamatics_i2e_object.generate_query_bundle_file(project_name,
                                                            self.processing_data_dir,
-                                                           self.common_queries_dir,
-                                                           self.general_queries_dir, 
-                                                           self.project_queries_dir, 
+                                                           self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'),
+                                                           self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir'), 
+                                                           self.directory_object.pull_directory('linguamatics_i2e_project_queries_dir'), 
                                                            max_files_per_zip)
-        linguamatics_i2e_object.fix_queries(self.general_queries_dir)
-        linguamatics_i2e_object.fix_queries(self.project_queries_dir)
+        linguamatics_i2e_object.fix_queries(self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'))
+        linguamatics_i2e_object.fix_queries(self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir'))
+        linguamatics_i2e_object.fix_queries(self.directory_object.pull_directory('linguamatics_i2e_project_queries_dir'))
         linguamatics_i2e_object.login()
         linguamatics_i2e_object.push_queries(self.processing_data_dir)
         linguamatics_i2e_object.logout()
@@ -713,7 +714,7 @@ class Process_manager(Manager_base):
             AB_fields_training_file = \
                 static_data['AB_fields_training_files'][filename]
             AB_fields_training_file = \
-                os.path.join(self.ab_fields_training_dir, 
+                os.path.join(self.directory_object.pull_directory('ab_fields_training_dir'), 
                              AB_fields_training_file)
             xls_manager = \
                 self.xls_manager_registry[AB_fields_training_file]
@@ -724,7 +725,7 @@ class Process_manager(Manager_base):
                                                       self.metadata_manager,
                                                       self.template_data_dir,
                                                       self.template_text_dict)
-            filedir = self.ab_fields_text_dir
+            filedir = self.directory_object.pull_directory('ab_fields_text_dir')
             filedir += '/' + filename + '_AB_fields'
             if not os.path.exists(filedir):
                 os.mkdir(filedir)
@@ -737,13 +738,13 @@ class Process_manager(Manager_base):
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         linguamatics_i2e_object.login()
-        for ab_fields_dir in os.listdir(self.ab_fields_text_dir):
+        for ab_fields_dir in os.listdir(self.directory_object.pull_directory('ab_fields_text_dir')):
             filename = ab_fields_dir[:-10]
             for field in [ '_AB_field', '_BA_field' ]:
                 i2qy_file =  user + '/AB_fields/' + filename + \
                              '_AB_fields/' + filename + field + '.i2qy'
-                txt_file = self.ab_fields_text_dir + '/' + ab_fields_dir + \
-                           '/' + filename + field + '.txt'
+                txt_file = self.directory_object.pull_directory('ab_fields_text_dir') + \
+                           '/' + ab_fields_dir + '/' + filename + field + '.txt'
                 linguamatics_i2e_object.insert_field(i2qy_file, txt_file) 
         linguamatics_i2e_object.logout()
         
@@ -930,7 +931,7 @@ class Process_manager(Manager_base):
             raw_data_files_seq = list(raw_data_files_dict.keys())
         raw_data_files = []
         for i in range(len(raw_data_files_seq)):
-            raw_data_files.append(os.path.join(self.raw_data_dir,
+            raw_data_files.append(os.path.join(self.directory_object.pull_directory('raw_data_dir'),
                                   raw_data_files_seq[i]))            
         num_docs_preprocessed = 0
         self.metadata_manager.load_metadata()
@@ -974,7 +975,7 @@ class Process_manager(Manager_base):
                 argument_dict['dynamic_data_manager'] = \
                     dynamic_data_manager_copy
                 argument_dict['linguamatics_i2e_preprocessing_data_out_dir'] = \
-                    self.linguamatics_i2e_preprocessing_data_out_dir
+                    self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out')
                 argument_dict['metadata_manager'] = metadata_manager_copy
                 argument_dict['num_processes'] = \
                     len(self.preprocessing_dict['processes'])
@@ -1016,7 +1017,7 @@ class Process_manager(Manager_base):
             raw_data_files_seq = list(raw_data_files_dict.keys())
         raw_data_files = []
         for i in range(len(raw_data_files_seq)):
-            raw_data_files.append(os.path.join(self.raw_data_dir,
+            raw_data_files.append(os.path.join(self.directory_object.pull_directory('raw_data_dir'),
                                                raw_data_files_seq[i]))
         self.metadata_manager.load_metadata()
         doc_idx_offset = self.metadata_manager.get_doc_idx_offset()
