@@ -12,12 +12,6 @@ class Manager_base(object):
         self.static_data_object = static_data_object
         self.directory_object = directory_object
         self.logger_object = logger_object
-        self.ohsu_nlp_preprocessing_data_out_dir = \
-            directory_object.pull_directory('ohsu_nlp_preprocessing_data_out')
-        self.ohsu_nlp_project_simple_templates_dir = \
-            directory_object.pull_directory('ohsu_nlp_project_simple_templates_dir')
-        self.ohsu_nlp_project_AB_fields_dir = \
-            directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir')
         self.postprocessing_data_in_dir = \
             directory_object.pull_directory('postprocessing_data_in')
         self.postprocessing_data_out_dir = \
@@ -26,8 +20,11 @@ class Manager_base(object):
             directory_object.pull_directory('processing_base_dir')
         self.processing_data_dir = \
             directory_object.pull_directory('processing_data_dir')
-        self.production_data_dir = \
-            directory_object.pull_directory('production_data_dir')
+        try:
+            self.production_data_dir = \
+                directory_object.pull_directory('production_data_dir')
+        except:
+            pass
         self.software_dir = directory_object.pull_directory('software_dir')
         self.template_outlines_dir = \
             directory_object.pull_directory('template_outlines_dir')

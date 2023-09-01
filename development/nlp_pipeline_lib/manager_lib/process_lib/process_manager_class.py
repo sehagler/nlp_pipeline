@@ -331,7 +331,8 @@ class Process_manager(Manager_base):
     def _create_registries(self, remote_registry, password):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
-        project_AB_fields_dir = self.ohsu_nlp_project_AB_fields_dir
+        project_AB_fields_dir = \
+            self.directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir')
         self.evaluator_registry = Evaluator_registry(self.static_data_object,
                                                      self.directory_object,
                                                      self.logger_object)
@@ -695,9 +696,9 @@ class Process_manager(Manager_base):
         self.template_data_dir = self.postprocessing_data_in_dir
         self.template_text_dict = text_dict
         files = \
-            glob.glob(self.ohsu_nlp_project_AB_fields_dir + '/**/*.py', recursive=True)
+            glob.glob(self.directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir') + '/**/*.py', recursive=True)
         for i in range(len(files)):
-            files[i] = re.sub(self.ohsu_nlp_project_AB_fields_dir + '/', '', files[i])
+            files[i] = re.sub(self.directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir') + '/', '', files[i])
         for file in files:
             class_filename, extension = os.path.splitext(file)
             filename = class_filename[:-32]
@@ -755,10 +756,10 @@ class Process_manager(Manager_base):
         project_name = static_data['project_name']
         ohsu_nlp_template_object = \
             self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
-        files = glob.glob(self.ohsu_nlp_project_simple_templates_dir + '/*.py')
+        files = glob.glob(self.directory_object.pull_directory('ohsu_nlp_project_simple_templates_dir') + '/*.py')
         for i in range(len(files)):
             files[i] = \
-                re.sub(self.ohsu_nlp_project_simple_templates_dir + '/', '', files[i])
+                re.sub(self.directory_object.pull_directory('ohsu_nlp_project_simple_templates_dir') + '/', '', files[i])
         if len(files) > 0:
             self._start_simple_template_workers()
             sections = []

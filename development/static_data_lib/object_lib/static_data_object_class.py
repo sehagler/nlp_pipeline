@@ -35,7 +35,10 @@ class Static_data_object(object):
         self.static_data = {}
         self.static_data['project_name'] = project_name
         self.static_data['project_subdir'] = project_subdir
-        self.static_data['acc_server'] = server_dict[operation_mode]
+        if operation_mode is not None:
+            self.static_data['acc_server'] = server_dict[operation_mode]
+        else:
+            self.static_data['acc_server'] = None
         self.static_data['datetime_keys'] = \
             ['RESULT_COMPLETED_DT','SPECIMEN_COLL_DT']
         self.static_data['docs_per_processor'] = 10000

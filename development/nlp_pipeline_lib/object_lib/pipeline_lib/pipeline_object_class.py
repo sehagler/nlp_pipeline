@@ -17,8 +17,6 @@ from nlp_pipeline_lib.manager_lib.metadata_lib.metadata_manager_class \
     import Metadata_manager
 from nlp_pipeline_lib.manager_lib.process_lib.process_manager_class \
     import Process_manager
-from nlp_pipeline_lib.manager_lib.software_lib.software_manager_class \
-    import Software_manager
 from nlp_pipeline_lib.object_lib.directory_lib.directory_object_class \
     import Directory_object
 from nlp_pipeline_lib.object_lib.logger_lib.logger_object_class \
@@ -280,14 +278,3 @@ class Pipeline_object(object):
                                                self.metadata_manager,
                                                self.remote_registry,
                                                password)
-        
-    #
-    def software_manager(self, root_dir, user, password):
-        self.root_dir = root_dir
-        self._create_objects(None, root_dir, None, user, password)
-        self._create_registries(root_dir, password)
-        self._push_directories()
-        server_manager = self.remote_registry.get_manager('update_manager')
-        self.nlp_software = Software_manager(self.update_static_data_object,
-                                             self.logger_object,
-                                             server_manager)
