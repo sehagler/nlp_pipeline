@@ -26,11 +26,9 @@ class Preprocessor_registry(object):
     #
     def create_preprocessors(self):
         static_data = self.static_data_object.get_static_data()
-        directory_object = static_data['directory_object']
         operation_mode = static_data['operation_mode']
-        software_dir = directory_object.pull_directory('software_dir')
         root_dir = \
-            os.path.join(software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
+            os.path.join(self.software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
         log_text = root_dir
         self.logger_object.print_log(log_text)
         for root, dirs, files in os.walk(root_dir):
@@ -53,6 +51,10 @@ class Preprocessor_registry(object):
     def push_text_normalization_object(self, text_normalization_object):
         self._register_preprocessor('text_normalization_object',
                                     text_normalization_object)
+    
+    #
+    def push_software_directory(self, directory):
+        self.software_dir = directory
                     
     #
     def run_registry(self, dynamic_data_manager, text, source_system):

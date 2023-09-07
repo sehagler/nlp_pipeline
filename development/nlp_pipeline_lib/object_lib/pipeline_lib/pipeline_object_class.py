@@ -75,7 +75,6 @@ class Pipeline_object(object):
     #
     def _create_managers(self):
         self.metadata_manager = Metadata_manager(self.static_data_object,
-                                                 self.directory_object,
                                                  self.logger_object)
         
     #
@@ -83,8 +82,7 @@ class Pipeline_object(object):
         self.remote_registry = \
             Remote_registry(self.static_data_object, 
                             self.update_static_data_object,
-                            self.directory_object, self.logger_object,
-                            root_dir, password)
+                            self.logger_object, root_dir, password)
             
     #
     def _data_set_summary_info(self):

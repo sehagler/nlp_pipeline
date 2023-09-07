@@ -21,10 +21,9 @@ import lambda_lib.tool_lib.lambda_tools as lambda_tools
 class Server_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
+    def __init__(self, static_data_object, logger_object,
                  password):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+        Manager_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
         if static_data['acc_server'] is not None:
             self.server = static_data['acc_server'][1]

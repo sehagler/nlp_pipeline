@@ -50,9 +50,8 @@ def _get_process_label(proc_nm, doc_label):
 class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object):
-        Specimens_manager.__init__(self, static_data_object, directory_object,
-                                   logger_object)
+    def __init__(self, static_data_object, logger_object):
+        Specimens_manager.__init__(self, static_data_object, logger_object)
         
     #
     def _cluster_specimens(self, specimen_tree_in, deidentifier_key_dict):

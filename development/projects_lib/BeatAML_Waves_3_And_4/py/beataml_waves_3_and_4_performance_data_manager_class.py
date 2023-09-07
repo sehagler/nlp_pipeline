@@ -30,12 +30,11 @@ def _get_nlp_value(arg_dict):
 class BeatAML_Waves_3_And_4_performance_data_manager(Performance_data_manager):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
-                 evaluation_manager, json_manager_registry, metadata_manager,
-                 xls_manager_registry, specimens_manager):
+    def __init__(self, static_data_object, logger_object, evaluation_manager,
+                 json_manager_registry, metadata_manager, xls_manager_registry,
+                 specimens_manager):
         Performance_data_manager.__init__(self, static_data_object,
-                                          directory_object, logger_object,
-                                          evaluation_manager,
+                                          logger_object, evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
                                           xls_manager_registry,

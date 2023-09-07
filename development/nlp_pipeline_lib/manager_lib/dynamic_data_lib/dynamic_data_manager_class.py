@@ -14,9 +14,8 @@ from tools_lib.processing_tools_lib.file_processing_tools \
 class Dynamic_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         
     #
     def append_keywords_text(self, keyword, index_flg):

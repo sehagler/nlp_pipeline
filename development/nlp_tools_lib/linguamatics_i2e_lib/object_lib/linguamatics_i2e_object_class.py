@@ -624,10 +624,11 @@ class Linguamatics_i2e_object(object):
             except Exception:
                 traceback.print_exc()
             if resource_type == 'source_data':
-                for source_data_file in sorted(os.listdir(source_data_dir)):
+                for source_data_file in sorted(os.listdir(self.source_data_dir)):
                     try:
                         self.create_resource(project_name, resource_type,
-                                             os.path.join(source_data_dir, source_data_file))
+                                             os.path.join(self.source_data_dir,
+                                                          source_data_file))
                     except Exception:
                         traceback.print_exc()
             else:

@@ -218,8 +218,8 @@ class Process_manager(Manager_base):
     #
     def __init__(self, static_data_object, directory_object, logger_object,
                  metadata_manager, remote_registry, password):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+        Manager_base.__init__(self, static_data_object, logger_object)
+        self.directory_object = directory_object
         self.metadata_manager = metadata_manager
         self.password = password
         self._project_imports()
@@ -265,26 +265,20 @@ class Process_manager(Manager_base):
             for filename in static_data[key]:
                 file = os.path.join(processing_base_dir, filename)
                 json_manager_registry[filename] = \
-                    Json_manager(self.static_data_object, 
-                                 self.directory_object, self.logger_object,
+                    Json_manager(self.static_data_object, self.logger_object,
                                  file)
         self.dynamic_data_manager = \
-            Dynamic_data_manager(self.static_data_object,
-                                 self.directory_object, self.logger_object)
+            Dynamic_data_manager(self.static_data_object, self.logger_object)
         self.evaluator_registry.create_evaluators()
         self.evaluation_manager = \
-            Evaluation_manager(self.static_data_object, 
-                               self.directory_object, self.logger_object,
+            Evaluation_manager(self.static_data_object, self.logger_object,
                                self.evaluator_registry)
         self.output_manager = Output_manager(self.static_data_object,
-                                             self.directory_object,
                                              self.logger_object,
                                              self.metadata_manager)
         try:
             self.specimens_manager = \
-                Specimens_manager(self.static_data_object,
-                                  self.directory_object,
-                                  self.logger_object)
+                Specimens_manager(self.static_data_object, self.logger_object)
             log_text = 'Specimens_manager: ' + project_name + \
                        '_specimens_manager'
             self.logger_object.print_log(log_text)
@@ -297,7 +291,6 @@ class Process_manager(Manager_base):
             for key in keys:
                 filename, extension = os.path.splitext(key)
         self.raw_data_manager = Raw_data_manager(self.static_data_object,
-                                                 self.directory_object,
                                                  self.logger_object,
                                                  multiprocessing_flg,
                                                  password)
@@ -311,7 +304,6 @@ class Process_manager(Manager_base):
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,
-                                         self.directory_object,
                                          self.logger_object,
                                          self.evaluation_manager,
                                          self.json_manager_registry,
@@ -332,14 +324,12 @@ class Process_manager(Manager_base):
         project_AB_fields_dir = \
             self.directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir')
         self.evaluator_registry = Evaluator_registry(self.static_data_object,
-                                                     self.directory_object,
                                                      self.logger_object)
         self.nlp_tool_registry = \
             Nlp_tool_registry(self.static_data_object, remote_registry,
                               password)
         self.postprocessor_registry = \
-            Postprocessor_registry(self.static_data_object,
-                                   self.directory_object, self.logger_object,
+            Postprocessor_registry(self.static_data_object, self.logger_object,
                                    self.metadata_manager)
         self.xls_manager_registry = {}
         self.xml_manager_registry = {}
@@ -348,25 +338,25 @@ class Process_manager(Manager_base):
             if extension.lower() in [ '.xls', '.xlsx' ]:
                 file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
                 self.xls_manager_registry[file] = \
-                    Xls_manager(self.static_data_object, self.directory_object,
-                                self.logger_object, file, password)
+                    Xls_manager(self.static_data_object, self.logger_object,
+                                file, password)
             elif extension.lower() in [ '.xml' ]:
                 file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
                 self.xml_manager_registry[file] = \
-                    Xml_manager(self.static_data_object, self.directory_object,
-                                self.logger_object, file, password)
+                    Xml_manager(self.static_data_object, self.logger_object,
+                                file, password)
         files = glob.glob(self.directory_object.pull_directory('ab_fields_training_dir') + '/*.xlsx')
         for file in files:
             self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.directory_object,
-                            self.logger_object, file, password)
+                Xls_manager(self.static_data_object, self.logger_object, file,
+                            password)
         if static_data['project_subdir'] == 'test' and \
            'validation_file' in static_data.keys():
             validation_filename = static_data['validation_file']
             file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), validation_filename)
             self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.directory_object,
-                            self.logger_object, file, password)
+                Xls_manager(self.static_data_object, self.logger_object, file,
+                            password)
                 
     #
     def _create_text_dict_postprocessing_data_in(self, sections):
@@ -406,11 +396,11 @@ class Process_manager(Manager_base):
             preprocessor_registry = Preprocessor_registry(self.static_data_object,
                                                           self.logger_object)
             preprocessor_registry.push_text_normalization_object(text_normalization_object)
+            preprocessor_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
             preprocessor_registry.create_preprocessors()
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Preprocessing_worker(self.static_data_object,
-                                     self.directory_object,
                                      self.logger_object,
                                      preprocessor_registry,
                                      self.nlp_tool_registry)
@@ -426,7 +416,6 @@ class Process_manager(Manager_base):
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Postprocessing_worker(self.static_data_object,
-                                      self.directory_object,
                                       self.logger_object,
                                       self.output_manager)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
@@ -443,7 +432,6 @@ class Process_manager(Manager_base):
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Simple_template_worker(self.static_data_object,
-                                       self.directory_object,
                                        self.logger_object,
                                        ohsu_nlp_template_object)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
@@ -904,8 +892,8 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         data = {}
         for filename in os.listdir(self.directory_object.pull_directory('postprocessing_data_out')):
-            json_file = Json_manager(self.static_data_object,
-                                     self.directory_object, self.logger_object,
+            json_file = Json_manager(self.static_data_object, 
+                                     self.logger_object,
                                      os.path.join(self.directory_object.pull_directory('postprocessing_data_out'),
                                                   filename))
             key = filename[0:-5]

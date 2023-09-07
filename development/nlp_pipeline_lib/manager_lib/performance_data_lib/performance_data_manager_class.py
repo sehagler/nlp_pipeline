@@ -250,11 +250,10 @@ def _process_validation_item(x):
 class Performance_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
-                 evaluation_manager, json_manager_registry, metadata_manager,
+    def __init__(self, static_data_object, logger_object, evaluation_manager,
+                 json_manager_registry, metadata_manager,
                  xls_manager_registry, specimens_manager):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.evaluation_manager = evaluation_manager
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager

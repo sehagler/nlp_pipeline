@@ -17,10 +17,9 @@ from base_lib.manager_base_class import Manager_base
 class Xml_manager(Manager_base):
 
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
-                 raw_data_file, password):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+    def __init__(self, static_data_object, logger_object, raw_data_file,
+                 password):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.static_data = self.static_data_object.get_static_data()
         self.raw_data_file = raw_data_file       
         

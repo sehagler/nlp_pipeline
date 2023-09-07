@@ -17,10 +17,8 @@ from nlp_pipeline_lib.manager_lib.file_lib.json_lib.json_manager_class \
 class Postprocessing_worker(Worker_base):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
-                 output_manager):
-        Worker_base.__init__(self, static_data_object, directory_object,
-                             logger_object)
+    def __init__(self, static_data_object, logger_object, output_manager):
+        Worker_base.__init__(self, static_data_object, logger_object)
         self.output_manager = output_manager
         
     #
@@ -60,7 +58,6 @@ class Postprocessing_worker(Worker_base):
                     filename = file.replace(processing_base_dir + '/', '')
                     self.json_manager_registry[filename] = \
                         Json_manager(self.static_data_object,
-                                     self.directory_object,
                                      self.logger_object, file)
                     self.json_manager_registry[filename].write_file(data_dict)
         return_dict = {}

@@ -13,10 +13,8 @@ import traceback
 class Postprocessor_registry(object):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object,
-                 metadata_manager):
+    def __init__(self, static_data_object, logger_object, metadata_manager):
         self.static_data_object = static_data_object
-        self.directory_object = directory_object
         self.logger_object = logger_object
         self.data_dict_classes_list = []
         self.postprocessor_registry = {}
@@ -60,7 +58,6 @@ class Postprocessor_registry(object):
             try:
                 self._register_postprocessor('postprocessor_' + filename,
                                              Postprocessor(self.static_data_object,
-                                                           self.directory_object,
                                                            self.logger_object))
                 log_text = filename + ' registration succeeded'
                 self.logger_object.print_log(log_text)

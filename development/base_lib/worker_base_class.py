@@ -9,9 +9,8 @@ Created on Tue Jun 13 12:28:51 2023
 class Worker_base(object):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object):
+    def __init__(self, static_data_object, logger_object):
         self.static_data_object = static_data_object
-        self.directory_object = directory_object
         self.logger_object = logger_object
     
     #

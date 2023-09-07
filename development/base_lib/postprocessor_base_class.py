@@ -135,9 +135,8 @@ def _trim_snippet(data_row):
 class Postprocessor_base(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_object, logger_object):
-        Manager_base.__init__(self, static_data_object, directory_object,
-                              logger_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.data_dict_list = {}
         self.filename = None
         self.sections_data_dict_list = {}
