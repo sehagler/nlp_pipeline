@@ -226,18 +226,6 @@ class Pipeline_object(object):
             self.process_manager.ohsu_nlp_templates_generate_AB_fields()
             self.process_manager.ohsu_nlp_templates_push_AB_fields()
         self.process_manager.linguamatics_i2e_push_queries()
-    
-    #
-    def move_software(self):
-        if self.root_dir == 'X':
-            dest_drive = 'Z'
-        elif self.root_dir == 'Z':
-            dest_drive = 'X'
-        else:
-            log_text = 'bad root directory'
-            self.logger.print_log(log_text)
-        self.nlp_software.copy_x_nlp_software_to_nlp_sandbox(dest_drive,
-                                                             software_dir)
         
     #
     def ohsu_nlp_templates_generate_AB_fields(self):

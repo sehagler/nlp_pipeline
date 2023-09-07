@@ -36,3 +36,27 @@ class Nlp_tool_registry(object):
     #
     def get_manager(self, manager_name):
         return self.nlp_tool_manager_registry[manager_name]
+    
+    #
+    def push_linguamatics_i2e_common_queries_directory(self, directory):
+        self.nlp_tool_manager_registry['linguamatics_i2e_object'].push_linguamatics_i2e_common_queries_directory(directory)
+        
+    #
+    def push_linguamatics_i2e_general_queries_directory(self, directory):
+        self.nlp_tool_manager_registry['linguamatics_i2e_object'].push_linguamatics_i2e_general_queries_directory(directory)
+        
+    #
+    def push_linguamatics_i2e_project_queries_directory(self, directory):
+        self.nlp_tool_manager_registry['linguamatics_i2e_object'].push_linguamatics_i2e_project_queries_directory(directory)
+    
+    #
+    def push_linguamatics_i2e_preprocessing_data_out_directory(self, directory):
+        self.nlp_tool_manager_registry['linguamatics_i2e_object'].push_linguamatics_i2e_preprocessing_data_out_directory(directory)
+    
+    #
+    def push_processing_data_directory(self, directory):
+        self.nlp_tool_manager_registry['linguamatics_i2e_object'].push_processing_data_directory(directory)
+        
+    #
+    def push_source_data_directory(self, directory):
+        self.nlp_tool_manager_registry['linguamatics_i2e_object'].push_source_data_directory(directory)

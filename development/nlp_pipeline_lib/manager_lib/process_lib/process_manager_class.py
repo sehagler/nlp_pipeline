@@ -270,8 +270,7 @@ class Process_manager(Manager_base):
                                  file)
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_object,
-                                 self.directory_object, self.logger_object,
-                                 self.processing_data_dir)
+                                 self.directory_object, self.logger_object)
         self.evaluator_registry.create_evaluators()
         self.evaluation_manager = \
             Evaluation_manager(self.static_data_object, 
@@ -280,8 +279,7 @@ class Process_manager(Manager_base):
         self.output_manager = Output_manager(self.static_data_object,
                                              self.directory_object,
                                              self.logger_object,
-                                             self.metadata_manager,
-                                             self.postprocessing_data_out_dir)
+                                             self.metadata_manager)
         try:
             self.specimens_manager = \
                 Specimens_manager(self.static_data_object,
@@ -458,7 +456,7 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         docs_per_processor = static_data['docs_per_processor']
         num_processes = static_data['num_processes']
-        data_dir = self.postprocessing_data_in_dir
+        data_dir = self.directory_object.pull_directory('postprocessing_data_in')
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         sections_data_dict = \
@@ -530,19 +528,27 @@ class Process_manager(Manager_base):
             
     #
     def _push_directories_0(self):
-        self.evaluator_registry.push_software_directory(self.software_dir)
+        self.evaluator_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
+        self.nlp_tool_registry.push_linguamatics_i2e_common_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'))
+        self.nlp_tool_registry.push_linguamatics_i2e_general_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir')) 
+        self.nlp_tool_registry.push_linguamatics_i2e_project_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_project_queries_dir'))
+        self.nlp_tool_registry.push_linguamatics_i2e_preprocessing_data_out_directory(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'))
+        self.nlp_tool_registry.push_source_data_directory(self.directory_object.pull_directory('source_data'))
+        self.nlp_tool_registry.push_processing_data_directory(self.directory_object.pull_directory('processing_data_dir'))
         self.postprocessor_registry.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
         
     #
     def _push_directories_1(self):
+        self.dynamic_data_manager.push_processing_data_dir(self.directory_object.pull_directory('processing_data_dir'))
         self.output_manager.push_linguamatics_i2e_preprocessing_data_out_dir(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'))
+        self.output_manager.push_postprocessing_data_out_dir(self.directory_object.pull_directory('postprocessing_data_out'))
         self.specimens_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
         self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
     
     #
     def _push_directories_2(self):
         self.performance_data_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
-        self.performance_data_manager.push_processing_data_directory(self.processing_data_dir)
+        self.performance_data_manager.push_processing_data_directory(self.directory_object.pull_directory('processing_data_dir'))
         self.performance_data_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
             
     #
@@ -612,7 +618,7 @@ class Process_manager(Manager_base):
     def linguamatics_i2e_generate_csv_files(self):
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        linguamatics_i2e_object.generate_csv_files(self.postprocessing_data_in_dir)
+        linguamatics_i2e_object.generate_csv_files(self.directory_object.pull_directory('postprocessing_data_in'))
     
     #
     def linguamatics_i2e_indexer(self):
@@ -646,15 +652,10 @@ class Process_manager(Manager_base):
         root_dir_flg = static_data['root_dir_flg']
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
-        linguamatics_i2e_object.generate_regions_file(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'),
-                                                      self.processing_data_dir)
-        linguamatics_i2e_object.generate_xml_configuation_file(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'),
-                                                               self.processing_data_dir)
+        linguamatics_i2e_object.generate_regions_file()
+        linguamatics_i2e_object.generate_xml_configuation_file()
         linguamatics_i2e_object.login()
         linguamatics_i2e_object.push_resources(project_name, keywords_file,
-                                               self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'),
-                                               self.processing_data_dir, 
-                                               self.source_data_dir,
                                                max_files_per_zip, root_dir_flg)
         linguamatics_i2e_object.logout()
         
@@ -666,16 +667,10 @@ class Process_manager(Manager_base):
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         linguamatics_i2e_object.generate_query_bundle_file(project_name,
-                                                           self.processing_data_dir,
-                                                           self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'),
-                                                           self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir'), 
-                                                           self.directory_object.pull_directory('linguamatics_i2e_project_queries_dir'), 
                                                            max_files_per_zip)
-        linguamatics_i2e_object.fix_queries(self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'))
-        linguamatics_i2e_object.fix_queries(self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir'))
-        linguamatics_i2e_object.fix_queries(self.directory_object.pull_directory('linguamatics_i2e_project_queries_dir'))
+        linguamatics_i2e_object.fix_queries()
         linguamatics_i2e_object.login()
-        linguamatics_i2e_object.push_queries(self.processing_data_dir)
+        linguamatics_i2e_object.push_queries()
         linguamatics_i2e_object.logout()
         
     #
@@ -684,16 +679,16 @@ class Process_manager(Manager_base):
         project_name = static_data['project_name']
         ohsu_nlp_template_object = \
             self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
-        if 'sections.csv' in os.listdir(self.postprocessing_data_in_dir):
+        if 'sections.csv' in os.listdir(self.directory_object.pull_directory('postprocessing_data_in')):
             sections = []
-            with open(os.path.join(self.postprocessing_data_in_dir, 'sections.csv')) as f:
+            with open(os.path.join(self.directory_object.pull_directory('postprocessing_data_in'), 'sections.csv')) as f:
                 csv_reader = csv.reader(f)
                 for row in csv_reader:
                     sections.append(row)
             text_dict = _create_text_dict_postprocessing_data_in(sections)
         else:
             text_dict = None
-        self.template_data_dir = self.postprocessing_data_in_dir
+        self.template_data_dir = self.directory_object.pull_directory('postprocessing_data_in')
         self.template_text_dict = text_dict
         files = \
             glob.glob(self.directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir') + '/**/*.py', recursive=True)
@@ -711,7 +706,7 @@ class Process_manager(Manager_base):
             exec(import_cmd, globals())
             print('OHSU NLP Template Object: ' + class_name)
             template_object = Template_object()
-            template_object.push_template_outlines_directory(self.template_outlines_dir)
+            template_object.push_template_outlines_directory(self.directory_object.pull_directory('template_outlines_dir'))
             AB_fields_training_file = \
                 static_data['AB_fields_training_files'][filename]
             AB_fields_training_file = \
@@ -763,8 +758,8 @@ class Process_manager(Manager_base):
         if len(files) > 0:
             self._start_simple_template_workers()
             sections = []
-            if 'sections.csv' in os.listdir(self.postprocessing_data_in_dir):
-                with open(os.path.join(self.postprocessing_data_in_dir, 'sections.csv')) as f:
+            if 'sections.csv' in os.listdir(self.directory_object.pull_directory('postprocessing_data_in')):
+                with open(os.path.join(self.directory_object.pull_directory('postprocessing_data_in'), 'sections.csv')) as f:
                     csv_reader = csv.reader(f)
                     for row in csv_reader:
                         sections.append(row)
@@ -808,7 +803,7 @@ class Process_manager(Manager_base):
                     header.append(template_headers[i])
                 #header.append('Snippet')
                 header.append('Coords')
-                with open(os.path.join(self.postprocessing_data_in_dir, csv_filename), 'w', encoding='UTF8', newline='') as f:
+                with open(os.path.join(self.directory_object.pull_directory('postprocessing_data_in'), csv_filename), 'w', encoding='UTF8', newline='') as f:
                     writer = csv.writer(f)
                     writer.writerow(header)
                     writer.writerows(template_output)
@@ -842,10 +837,10 @@ class Process_manager(Manager_base):
                 if tmp_dict:    
                     documents_wrapper[self.documents_wrapper_key][i][self.document_wrapper_key][self.nlp_performance_key] = \
                         static_data['project_name'] + '.performance.json'
-            production_data_file = self.production_data_dir  + '/' + \
+            production_data_file = self.directory_object.pull_directory('production_data_dir')  + '/' + \
                                    static_data['project_name'] + '.json'                     
             write_file(production_data_file, documents_wrapper, True, True)
-            performance_data_file = self.production_data_dir  + '/' + \
+            performance_data_file = self.directory_object.pull_directory('production_data_dir')  + '/' + \
                                     static_data['project_name'] + '.performance.json'
             write_file(performance_data_file, performance_statistics_dict, False, False)
 
@@ -853,7 +848,7 @@ class Process_manager(Manager_base):
     def postprocessor(self):
         static_data = self.static_data_object.get_static_data()
         num_processes = static_data['num_processes']
-        file_list = os.listdir(self.postprocessing_data_in_dir)
+        file_list = os.listdir(self.directory_object.pull_directory('postprocessing_data_in'))
         linguamatics_i2e_object = \
             self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
         if static_data['project_subdir'] == 'test' and \
@@ -872,7 +867,7 @@ class Process_manager(Manager_base):
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
                 data_dict = \
-                    linguamatics_i2e_object.generate_data_dict(self.postprocessing_data_in_dir,
+                    linguamatics_i2e_object.generate_data_dict(self.directory_object.pull_directory('postprocessing_data_in'),
                                                                filename)
                 data_dict_dict[filename_base] = data_dict
         for n in range(num_worker_runs):
@@ -895,10 +890,10 @@ class Process_manager(Manager_base):
                 argument_dict['postprocessor_registry'] = \
                     postprocessor_registry_copy
                 argument_dict['postprocessing_data_out'] = \
-                    self.postprocessing_data_out_dir
+                    self.directory_object.pull_directory('postprocessing_data_out')
                 argument_dict['process_idx'] = process_idx
                 argument_dict['processing_base_dir'] = \
-                    self.processing_base_dir
+                    self.directory_object.pull_directory('processing_base_dir')
                 self.postprocessing_dict['argument_queues'][process_idx].put(argument_dict)
             for process_idx in range(len(self.postprocessing_dict['processes'])):
                 self.postprocessing_dict['return_queues'][process_idx].get()
@@ -908,10 +903,10 @@ class Process_manager(Manager_base):
     def preperformance(self):
         static_data = self.static_data_object.get_static_data()
         data = {}
-        for filename in os.listdir(self.postprocessing_data_out_dir):
+        for filename in os.listdir(self.directory_object.pull_directory('postprocessing_data_out')):
             json_file = Json_manager(self.static_data_object,
                                      self.directory_object, self.logger_object,
-                                     os.path.join(self.postprocessing_data_out_dir,
+                                     os.path.join(self.directory_object.pull_directory('postprocessing_data_out'),
                                                   filename))
             key = filename[0:-5]
             data[key] = json_file.read_json_file()
