@@ -24,9 +24,17 @@ class Evaluator_registry(Manager_base):
     #
     def _register_evaluator(self, evaluator_name, evaluator):
         self.evaluator_registry[evaluator_name] = evaluator
+    
+    #
+    def get_keys(self):
+        return self.evaluator_registry.keys()
+    
+    #
+    def push_software_directory(self, directory):
+        self.software_dir = directory
         
     #
-    def create_evaluators(self):
+    def register_items(self):
         static_data = self.static_data_object.get_static_data()
         operation_mode = static_data['operation_mode']
         root_dir = \
@@ -50,14 +58,6 @@ class Evaluator_registry(Manager_base):
                 except Exception:
                     log_text = traceback.format_exc()
                     self.logger_object.print_exc(log_text)
-    
-    #
-    def get_keys(self):
-        return self.evaluator_registry.keys()
-    
-    #
-    def push_software_directory(self, directory):
-        self.software_dir = directory
     
     #
     def run_evaluator(self, evaluator, evaluation_manager, nlp_value, 

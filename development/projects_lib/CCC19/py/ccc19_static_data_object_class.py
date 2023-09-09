@@ -113,7 +113,7 @@ class CCC19_static_data_object(Static_data_object):
 
             #
             data_set_flgs = [ 'testing', 'training' ]
-            data_set_flg = data_set_flgs[1]
+            data_set_flg = data_set_flgs[0]
             if self.static_data['root_dir_flg'] == 'X':
                 base_dir = 'Z:'
             elif self.static_data['root_dir_flg'] == 'Z':

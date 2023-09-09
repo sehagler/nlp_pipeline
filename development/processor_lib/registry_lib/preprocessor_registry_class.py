@@ -22,9 +22,18 @@ class Preprocessor_registry(object):
     #
     def _register_preprocessor(self, preprocessor_name, preprocessor):
         self.preprocessor_registry[preprocessor_name] = preprocessor
+                    
+    #
+    def push_text_normalization_object(self, text_normalization_object):
+        self._register_preprocessor('text_normalization_object',
+                                    text_normalization_object)
     
     #
-    def create_preprocessors(self):
+    def push_software_directory(self, directory):
+        self.software_dir = directory
+        
+    #
+    def register_items(self):
         static_data = self.static_data_object.get_static_data()
         operation_mode = static_data['operation_mode']
         root_dir = \
@@ -46,15 +55,6 @@ class Preprocessor_registry(object):
                 except Exception:
                     log_text = traceback.format_exc()
                     self.logger_object.print_exc(log_text)
-                    
-    #
-    def push_text_normalization_object(self, text_normalization_object):
-        self._register_preprocessor('text_normalization_object',
-                                    text_normalization_object)
-    
-    #
-    def push_software_directory(self, directory):
-        self.software_dir = directory
                     
     #
     def run_registry(self, dynamic_data_manager, text, source_system):

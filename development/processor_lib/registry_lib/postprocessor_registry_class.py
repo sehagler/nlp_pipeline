@@ -37,9 +37,26 @@ class Postprocessor_registry(object):
     #
     def _register_postprocessor(self, postprocessor_name, postprocessor):
         self.postprocessor_registry[postprocessor_name] = postprocessor
-    
+                
     #
-    def create_postprocessor(self, file):
+    def pull_postprocessor_registry(self):
+        return self.postprocessor_registry
+     
+    #
+    def push_data_dict(self, filename, data_dict, sections_data_dict,
+                       document_list):
+        filename_base, extension = os.path.splitext(filename)
+        if extension == '.csv' and filename_base != 'sections':
+            for key in self.postprocessor_registry.keys():
+                self._push_data_dict(key, filename_base, data_dict,
+                                     sections_data_dict, document_list)
+                
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
+        
+    #
+    def register_item(self, file):
         filename, extension = os.path.splitext(file)
         import_cmd = 'from query_lib.processor_lib.' + filename + \
                      '_tools import Postprocessor'
@@ -66,23 +83,6 @@ class Postprocessor_registry(object):
                 self.logger_object.print_exc(log_text)
                 log_text = filename + ' registration failed'
                 self.logger_object.print_log(log_text)
-                
-    #
-    def pull_postprocessor_registry(self):
-        return self.postprocessor_registry
-     
-    #
-    def push_data_dict(self, filename, data_dict, sections_data_dict,
-                       document_list):
-        filename_base, extension = os.path.splitext(filename)
-        if extension == '.csv' and filename_base != 'sections':
-            for key in self.postprocessor_registry.keys():
-                self._push_data_dict(key, filename_base, data_dict,
-                                     sections_data_dict, document_list)
-                
-    #
-    def push_raw_data_directory(self, directory):
-        self.raw_data_dir = directory
             
     #
     def run_registry(self):

@@ -224,11 +224,9 @@ class Process_manager(Manager_base):
         self.password = password
         self._project_imports()
         self._create_registries(remote_registry, password)
-        self._push_directories_0()
-        self._create_managers_0(password)
-        self._push_directories_1()
-        self._create_managers_1()
-        self._push_directories_2()
+        self._create_managers(password)
+        self._push_directories()
+        self._register_items(password)
         self._create_workers()
         
         # Kludge to get around memory issue in processor
@@ -255,7 +253,37 @@ class Process_manager(Manager_base):
         return performance_statistics_dict
     
     #
-    def _create_managers_0(self, password):
+    def _create_file_registries(self, password):
+        static_data = self.static_data_object.get_static_data()
+        self.xls_manager_registry = {}
+        self.xml_manager_registry = {}
+        for key in static_data['raw_data_files'].keys():
+            filename, extension = os.path.splitext(key)
+            if extension.lower() in [ '.xls', '.xlsx' ]:
+                file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
+                self.xls_manager_registry[file] = \
+                    Xls_manager(self.static_data_object, self.logger_object,
+                                file, password)
+            elif extension.lower() in [ '.xml' ]:
+                file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
+                self.xml_manager_registry[file] = \
+                    Xml_manager(self.static_data_object, self.logger_object,
+                                file, password)
+        files = glob.glob(self.directory_object.pull_directory('ab_fields_training_dir') + '/*.xlsx')
+        for file in files:
+            self.xls_manager_registry[file] = \
+                Xls_manager(self.static_data_object, self.logger_object, file,
+                            password)
+        if static_data['project_subdir'] == 'test' and \
+           'validation_file' in static_data.keys():
+            validation_filename = static_data['validation_file']
+            file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), validation_filename)
+            self.xls_manager_registry[file] = \
+                Xls_manager(self.static_data_object, self.logger_object, file,
+                            password)
+    
+    #
+    def _create_managers(self, password):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
         processing_base_dir = \
@@ -269,7 +297,6 @@ class Process_manager(Manager_base):
                                  file)
         self.dynamic_data_manager = \
             Dynamic_data_manager(self.static_data_object, self.logger_object)
-        self.evaluator_registry.create_evaluators()
         self.evaluation_manager = \
             Evaluation_manager(self.static_data_object, self.logger_object,
                                self.evaluator_registry)
@@ -299,8 +326,6 @@ class Process_manager(Manager_base):
         self.json_manager_registry = json_manager_registry
         # kludge to get postperformance() working
         
-    #
-    def _create_managers_1(self):
         try:
             self.performance_data_manager = \
                 Performance_data_manager(self.static_data_object,
@@ -320,43 +345,20 @@ class Process_manager(Manager_base):
     #
     def _create_registries(self, remote_registry, password):
         static_data = self.static_data_object.get_static_data()
-        project_name = static_data['project_name']
-        project_AB_fields_dir = \
-            self.directory_object.pull_directory('ohsu_nlp_project_AB_fields_dir')
         self.evaluator_registry = Evaluator_registry(self.static_data_object,
                                                      self.logger_object)
         self.nlp_tool_registry = \
-            Nlp_tool_registry(self.static_data_object, remote_registry,
-                              password)
+            Nlp_tool_registry(self.static_data_object, remote_registry)
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_object, self.logger_object,
                                    self.metadata_manager)
-        self.xls_manager_registry = {}
-        self.xml_manager_registry = {}
-        for key in static_data['raw_data_files'].keys():
-            filename, extension = os.path.splitext(key)
-            if extension.lower() in [ '.xls', '.xlsx' ]:
-                file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
-                self.xls_manager_registry[file] = \
-                    Xls_manager(self.static_data_object, self.logger_object,
-                                file, password)
-            elif extension.lower() in [ '.xml' ]:
-                file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), key)
-                self.xml_manager_registry[file] = \
-                    Xml_manager(self.static_data_object, self.logger_object,
-                                file, password)
-        files = glob.glob(self.directory_object.pull_directory('ab_fields_training_dir') + '/*.xlsx')
-        for file in files:
-            self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.logger_object, file,
-                            password)
-        if static_data['project_subdir'] == 'test' and \
-           'validation_file' in static_data.keys():
-            validation_filename = static_data['validation_file']
-            file = os.path.join(self.directory_object.pull_directory('raw_data_dir'), validation_filename)
-            self.xls_manager_registry[file] = \
-                Xls_manager(self.static_data_object, self.logger_object, file,
-                            password)
+        text_normalization_object = \
+            Text_normalization_object(static_data['section_header_structure_tools'],
+                                      static_data['remove_date'])
+        self.preprocessor_registry = Preprocessor_registry(self.static_data_object,
+                                                           self.logger_object)
+        self.preprocessor_registry.push_text_normalization_object(text_normalization_object)
+        self._create_file_registries(password)
                 
     #
     def _create_text_dict_postprocessing_data_in(self, sections):
@@ -389,20 +391,11 @@ class Process_manager(Manager_base):
         self.preprocessing_dict['argument_queues'] = []
         self.preprocessing_dict['return_queues'] = []
         for process_idx in range(num_processes):
-            static_data = self.static_data_object.get_static_data()
-            text_normalization_object = \
-                Text_normalization_object(static_data['section_header_structure_tools'],
-                                          static_data['remove_date'])
-            preprocessor_registry = Preprocessor_registry(self.static_data_object,
-                                                          self.logger_object)
-            preprocessor_registry.push_text_normalization_object(text_normalization_object)
-            preprocessor_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
-            preprocessor_registry.create_preprocessors()
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Preprocessing_worker(self.static_data_object,
                                      self.logger_object,
-                                     preprocessor_registry,
+                                     self.preprocessor_registry,
                                      self.nlp_tool_registry)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
             self.preprocessing_dict['processes'].append(p)
@@ -515,7 +508,8 @@ class Process_manager(Manager_base):
             self.logger_object.print_exc(traceback_text)
             
     #
-    def _push_directories_0(self):
+    def _push_directories(self):
+        self.dynamic_data_manager.push_processing_data_dir(self.directory_object.pull_directory('processing_data_dir'))
         self.evaluator_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
         self.nlp_tool_registry.push_linguamatics_i2e_common_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'))
         self.nlp_tool_registry.push_linguamatics_i2e_general_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir')) 
@@ -523,22 +517,22 @@ class Process_manager(Manager_base):
         self.nlp_tool_registry.push_linguamatics_i2e_preprocessing_data_out_directory(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'))
         self.nlp_tool_registry.push_source_data_directory(self.directory_object.pull_directory('source_data'))
         self.nlp_tool_registry.push_processing_data_directory(self.directory_object.pull_directory('processing_data_dir'))
-        self.postprocessor_registry.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
-        
-    #
-    def _push_directories_1(self):
-        self.dynamic_data_manager.push_processing_data_dir(self.directory_object.pull_directory('processing_data_dir'))
         self.output_manager.push_linguamatics_i2e_preprocessing_data_out_dir(self.directory_object.pull_directory('linguamatics_i2e_preprocessing_data_out'))
         self.output_manager.push_postprocessing_data_out_dir(self.directory_object.pull_directory('postprocessing_data_out'))
-        self.specimens_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
-        self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
-    
-    #
-    def _push_directories_2(self):
+        self.postprocessor_registry.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
         self.performance_data_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
         self.performance_data_manager.push_processing_data_directory(self.directory_object.pull_directory('processing_data_dir'))
         self.performance_data_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
-            
+        self.preprocessor_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
+        self.specimens_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
+        self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
+        
+    #
+    def _register_items(self, password):
+        self.evaluator_registry.register_items()
+        self.nlp_tool_registry.register_items(password)
+        self.preprocessor_registry.register_items()
+    
     #
     def _start_preprocessing_workers(self):
         for process_idx in range(len(self.preprocessing_dict['processes'])):
@@ -737,8 +731,8 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         num_processes = static_data['num_processes']
         project_name = static_data['project_name']
-        ohsu_nlp_template_object = \
-            self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
+        #ohsu_nlp_template_object = \
+        #    self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
         files = glob.glob(self.directory_object.pull_directory('ohsu_nlp_project_simple_templates_dir') + '/*.py')
         for i in range(len(files)):
             files[i] = \
@@ -846,7 +840,7 @@ class Process_manager(Manager_base):
         for filename in file_list:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
-                self.postprocessor_registry.create_postprocessor(filename)
+                self.postprocessor_registry.register_item(filename)
         partitioned_doc_list = self._get_partitioned_document_list()
         num_worker_runs = len(partitioned_doc_list) // num_processes
         self._start_postprocessing_workers()
