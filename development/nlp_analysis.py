@@ -90,7 +90,6 @@ class Nlp_analysis_main_object(object):
 #
 def main():
     args = sys.argv[1:]
-    print(args)
     mode = args[1]
     nlp_analysis_main_object = Nlp_analysis_main_object()
     if mode == 'pipeline':

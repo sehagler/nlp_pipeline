@@ -12,6 +12,5 @@ from base_lib.manager_base_class import Manager_base
 class Evaluator_base(Manager_base):
     
     #
-    def __init__(self, static_data_object, directory_base, logger_object):
-        Manager_base.__init__(self, static_data_object, directory_base,
-                              logger_object)
+    def __init__(self, static_data_object, logger_object):
+        Manager_base.__init__(self, static_data_object, logger_object)

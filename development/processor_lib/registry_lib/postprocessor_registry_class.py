@@ -18,12 +18,14 @@ class Postprocessor_registry(object):
         self.logger_object = logger_object
         self.data_dict_classes_list = []
         self.postprocessor_registry = {}
-        self._import_postprocessors(static_data_object)
+        #self._import_postprocessors(static_data_object)
         
+    '''
     #
     def _import_postprocessors(self, static_data_object):
         log_text = '_import_postprocessors() not defined'
         self.logger_object.print_log(log_text)
+    '''
         
     #
     def _push_data_dict(self, postprocessor_name, filename, data_dict,

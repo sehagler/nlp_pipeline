@@ -26,8 +26,8 @@ class BeatAML_Waves_1_And_2_postprocessor_registry(Postprocessor_registry):
                                         logger_object, metadata_manager)
     
     #
-    def create_postprocessor(self, filename):
-        Postprocessor_registry.create_postprocessor(self, filename)
+    def register_item(self, filename):
+        Postprocessor_registry.register_item(self, filename)
         diagnosis_reader = \
             Diagnosis_reader(os.path.join(self.raw_data_dir,'diagnoses.xlsx'))
         if filename in [ 'diagnosis.csv' ]:

@@ -58,7 +58,7 @@ query:
     - phrase:
         id: phrase1
         of:
-        - link: {path: ../../tools/block_query.i2qy}
+        - link: {path: ../../../tools/block_query.i2qy}
     - phrase:
         quantifier: {minimum: 0, maximum: none}
         of:
@@ -106,7 +106,7 @@ query:
                     - whilst
                     - yet
             - ','
-        - link: {path: ../../tools/block_query.i2qy}
+        - link: {path: ../../../tools/block_query.i2qy}
 output:
   columns:
   - {id: phrase1}

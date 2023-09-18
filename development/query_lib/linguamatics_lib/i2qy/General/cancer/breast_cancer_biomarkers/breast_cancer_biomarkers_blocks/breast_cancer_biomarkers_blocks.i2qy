@@ -8,9 +8,6 @@ query:
         text: test
         morphoVariants: true
         quantifier: {minimum: 0, maximum: 1}
-    - word:
-        text: ':'
-        quantifier: {minimum: 0, maximum: 1}
     - alternative:
         quantifier: {minimum: 0, maximum: none}
         of:
