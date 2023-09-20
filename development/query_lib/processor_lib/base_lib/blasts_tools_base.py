@@ -134,7 +134,7 @@ def get_blast_value(blast_value_list, manual_review):
 class Evaluator(Evaluator_base):
     
     #
-    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+    def run_object(self, evaluation_manager, nlp_value, validation_value,
                  display_flg, value_range):
         return _evaluate(evaluation_manager, nlp_value, validation_value,
                          display_flg, value_range)

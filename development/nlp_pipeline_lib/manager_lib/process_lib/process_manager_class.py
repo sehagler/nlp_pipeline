@@ -19,8 +19,6 @@ import xml.etree.ElementTree as ET
 
 #
 from base_lib.manager_base_class import Manager_base
-from evaluator_lib.registry_lib.evaluator_registry_class \
-    import Evaluator_registry
 from nlp_pipeline_lib.manager_lib.dynamic_data_lib.dynamic_data_manager_class \
     import Dynamic_data_manager
 from nlp_pipeline_lib.manager_lib.evaluation_lib.evaluation_manager_class \
@@ -37,8 +35,12 @@ from nlp_pipeline_lib.manager_lib.performance_data_lib.performance_data_manager_
     import Performance_data_manager
 from nlp_pipeline_lib.manager_lib.raw_data_lib.raw_data_manager_class \
     import Raw_data_manager
-from nlp_pipeline_lib.registry_lib.nlp_tool_lib.nlp_tool_registry_class \
+from nlp_pipeline_lib.registry_lib.evaluator_registry_class \
+    import Evaluator_registry
+from nlp_pipeline_lib.registry_lib.nlp_tool_registry_class \
     import Nlp_tool_registry
+from nlp_pipeline_lib.registry_lib.preprocessor_registry_class \
+    import Preprocessor_registry
 from nlp_text_normalization_lib.object_lib.text_normalization_object_class \
     import Text_normalization_object
 from nlp_pipeline_lib.worker_lib.postprocessing_worker_class \
@@ -47,8 +49,6 @@ from nlp_pipeline_lib.worker_lib.preprocessing_worker_class \
     import Preprocessing_worker
 from nlp_pipeline_lib.worker_lib.simple_template_worker_class \
     import Simple_template_worker
-from processor_lib.registry_lib.preprocessor_registry_class \
-    import Preprocessor_registry
 from specimens_lib.manager_lib.specimens_manager_class \
     import Specimens_manager
 from tools_lib.processing_tools_lib.file_processing_tools \
@@ -226,7 +226,7 @@ class Process_manager(Manager_base):
         self._create_registries(remote_registry, password)
         self._create_managers(password)
         self._push_directories()
-        self._register_items(password)
+        self._register_objects(password)
         self._create_workers()
         
         # Kludge to get around memory issue in processor
@@ -490,7 +490,7 @@ class Process_manager(Manager_base):
         except Exception:
             traceback_text = traceback.format_exc()
             self.logger_object.print_exc(traceback_text)
-            import_cmd = 'from processor_lib.registry_lib.postprocessor_registry_class import Postprocessor_registry'
+            import_cmd = 'from nlp_pipeline_lib.registry_lib.postprocessor_registry_class import Postprocessor_registry'
             exec(import_cmd, globals())
             log_text = 'Postprocessor_registry: Postprocessor_registry'
             self.logger_object.print_log(log_text)
@@ -528,10 +528,10 @@ class Process_manager(Manager_base):
         self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
         
     #
-    def _register_items(self, password):
-        self.evaluator_registry.register_items()
-        self.nlp_tool_registry.register_items(password)
-        self.preprocessor_registry.register_items()
+    def _register_objects(self, password):
+        self.evaluator_registry.register_objects()
+        self.nlp_tool_registry.register_objects(password)
+        self.preprocessor_registry.register_objects()
     
     #
     def _start_preprocessing_workers(self):
@@ -840,7 +840,7 @@ class Process_manager(Manager_base):
         for filename in file_list:
             filename_base, extension = os.path.splitext(filename)
             if extension in [ '.csv' ]:
-                self.postprocessor_registry.register_item(filename)
+                self.postprocessor_registry.register_object(filename)
         partitioned_doc_list = self._get_partitioned_document_list()
         num_worker_runs = len(partitioned_doc_list) // num_processes
         self._start_postprocessing_workers()

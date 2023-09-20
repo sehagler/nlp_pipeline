@@ -21,7 +21,7 @@ from nlp_pipeline_lib.object_lib.directory_lib.directory_object_class \
     import Directory_object
 from nlp_pipeline_lib.object_lib.logger_lib.logger_object_class \
     import Logger_object
-from nlp_pipeline_lib.registry_lib.remote_lib.remote_registry_class \
+from nlp_pipeline_lib.registry_lib.remote_registry_class \
     import Remote_registry
 from static_data_lib.object_lib.static_data_object_class \
     import Static_data_object

@@ -33,7 +33,7 @@ class Preprocessor_registry(object):
         self.software_dir = directory
         
     #
-    def register_items(self):
+    def register_objects(self):
         static_data = self.static_data_object.get_static_data()
         operation_mode = static_data['operation_mode']
         root_dir = \

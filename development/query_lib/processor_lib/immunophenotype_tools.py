@@ -20,7 +20,7 @@ from query_lib.processor_lib.antigens_tools import correct_antibodies
 class Evaluator(Evaluator_base):
     
     #
-    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+    def run_object(self, evaluation_manager, nlp_value, validation_value,
                  display_flg):
         if nlp_value is not None:
             if isinstance(nlp_value, list):

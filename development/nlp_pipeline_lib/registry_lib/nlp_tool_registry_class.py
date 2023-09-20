@@ -60,7 +60,7 @@ class Nlp_tool_registry(object):
         self.source_data_dir = directory
         
     #
-    def register_items(self, password):
+    def register_objects(self, password):
         self._linguamatics_i2e_object(self.remote_manager_registry, password)
         self.nlp_tool_manager_registry['ohsu_nlp_template_object'] = \
             Ohsu_nlp_template_object(self.static_data_object)

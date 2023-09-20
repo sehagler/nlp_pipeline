@@ -410,7 +410,7 @@ class Postprocessor_base(Manager_base):
         self.diagnosis_reader = diagnosis_reader
     
     #
-    def run_postprocessor(self, query_name=None, section_name=None):
+    def run_object(self, query_name=None, section_name=None):
         argument_dict = {}
         argument_dict['data_dict_list'] = self.data_dict_list
         argument_dict['filename'] = self.filename

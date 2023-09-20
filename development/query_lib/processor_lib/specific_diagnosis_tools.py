@@ -91,7 +91,7 @@ def evaluate_specific_diagnosis(data_json, manual_review):
 class Evaluator(Evaluator_base):
     
     #
-    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+    def run_object(self, evaluation_manager, nlp_value, validation_value,
                  display_flg):
         return _evaluate(evaluation_manager, nlp_value, validation_value,
                          display_flg)
@@ -131,7 +131,7 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
     #
-    def run_postprocessor(self):
-        Postprocessor_base.run_postprocessor(self,
+    def run_object(self):
+        Postprocessor_base.run_object(self,
                                              query_name='SPECIFIC_DIAGNOSIS',
                                              section_name='(COMMENT|NOTE|SUMMARY)')
