@@ -27,6 +27,10 @@ class Registry_base(Manager_base):
     #
     def get_keys(self):
         return self.registry_dict.keys()
+    
+    #
+    def pull_object(self, object_name):
+        return self.registry_dict[object_name]
         
     #
     def register_object(self, file):

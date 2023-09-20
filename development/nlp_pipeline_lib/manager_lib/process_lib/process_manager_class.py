@@ -231,7 +231,7 @@ class Process_manager(Manager_base):
         
         # Kludge to get around memory issue in processor
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         self.i2e_version = \
             linguamatics_i2e_object.get_i2e_version(password)
         # Kludge to get around memory issue in processor
@@ -348,7 +348,8 @@ class Process_manager(Manager_base):
         self.evaluator_registry = Evaluator_registry(self.static_data_object,
                                                      self.logger_object)
         self.nlp_tool_registry = \
-            Nlp_tool_registry(self.static_data_object, remote_registry)
+            Nlp_tool_registry(self.static_data_object, self.logger_object,
+                              remote_registry)
         self.postprocessor_registry = \
             Postprocessor_registry(self.static_data_object, self.logger_object,
                                    self.metadata_manager)
@@ -421,7 +422,7 @@ class Process_manager(Manager_base):
         self.simple_template_dict['return_queues'] = []
         for process_idx in range(num_processes):
             ohsu_nlp_template_object = \
-                self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
+                self.nlp_tool_registry.pull_object('ohsu_nlp_template_object')
             aq = multiprocessing.Queue()
             rq = multiprocessing.Queue()
             w = Simple_template_worker(self.static_data_object,
@@ -439,7 +440,7 @@ class Process_manager(Manager_base):
         num_processes = static_data['num_processes']
         data_dir = self.directory_object.pull_directory('postprocessing_data_in')
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         sections_data_dict = \
             linguamatics_i2e_object.generate_data_dict(data_dir, 'sections.csv')
         doc_list = sections_data_dict.keys()
@@ -510,7 +511,6 @@ class Process_manager(Manager_base):
     #
     def _push_directories(self):
         self.dynamic_data_manager.push_processing_data_dir(self.directory_object.pull_directory('processing_data_dir'))
-        self.evaluator_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
         self.nlp_tool_registry.push_linguamatics_i2e_common_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_common_queries_dir'))
         self.nlp_tool_registry.push_linguamatics_i2e_general_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_general_queries_dir')) 
         self.nlp_tool_registry.push_linguamatics_i2e_project_queries_directory(self.directory_object.pull_directory('linguamatics_i2e_project_queries_dir'))
@@ -523,15 +523,28 @@ class Process_manager(Manager_base):
         self.performance_data_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
         self.performance_data_manager.push_processing_data_directory(self.directory_object.pull_directory('processing_data_dir'))
         self.performance_data_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
-        self.preprocessor_registry.push_software_directory(self.directory_object.pull_directory('software_dir'))
         self.specimens_manager.push_log_directory(self.directory_object.pull_directory('log_dir'))
         self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
         
     #
     def _register_objects(self, password):
-        self.evaluator_registry.register_objects()
-        self.nlp_tool_registry.register_objects(password)
-        self.preprocessor_registry.register_objects()
+        static_data = self.static_data_object.get_static_data()
+        operation_mode = static_data['operation_mode']
+        software_dir = \
+            self.directory_object.pull_directory('software_dir')
+        root_dir = \
+            os.path.join(software_dir,
+                         os.path.join(operation_mode,
+                                      'query_lib/processor_lib'))
+        log_text = root_dir
+        self.logger_object.print_log(log_text)
+        for root, dirs, files in os.walk(root_dir):
+            for file in files:
+                file = os.path.basename(file)
+                self.evaluator_registry.register_object(file)
+                self.preprocessor_registry.register_object(file)
+        self.nlp_tool_registry.register_linguamatics_i2e_object(password)
+        self.nlp_tool_registry.register_nlp_template_object()
     
     #
     def _start_preprocessing_workers(self):
@@ -599,7 +612,7 @@ class Process_manager(Manager_base):
     #
     def linguamatics_i2e_generate_csv_files(self):
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         linguamatics_i2e_object.generate_csv_files(self.directory_object.pull_directory('postprocessing_data_in'))
     
     #
@@ -609,7 +622,7 @@ class Process_manager(Manager_base):
         now = datetime.datetime.now()
         self.index_start_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         linguamatics_i2e_object.login()
         linguamatics_i2e_object.make_index_runner(project_name)
         linguamatics_i2e_object.logout()
@@ -633,7 +646,7 @@ class Process_manager(Manager_base):
         max_files_per_zip = static_data['max_files_per_zip']
         root_dir_flg = static_data['root_dir_flg']
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         linguamatics_i2e_object.generate_regions_file()
         linguamatics_i2e_object.generate_xml_configuation_file()
         linguamatics_i2e_object.login()
@@ -647,7 +660,7 @@ class Process_manager(Manager_base):
         max_files_per_zip = static_data['max_files_per_zip']
         project_name = static_data['project_name']
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_manager('linguamatics_i2e_object')
         linguamatics_i2e_object.generate_query_bundle_file(project_name,
                                                            max_files_per_zip)
         linguamatics_i2e_object.fix_queries()
@@ -660,7 +673,7 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
         ohsu_nlp_template_object = \
-            self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
+            self.nlp_tool_registry.pull_manager('ohsu_nlp_template_object')
         if 'sections.csv' in os.listdir(self.directory_object.pull_directory('postprocessing_data_in')):
             sections = []
             with open(os.path.join(self.directory_object.pull_directory('postprocessing_data_in'), 'sections.csv')) as f:
@@ -714,7 +727,7 @@ class Process_manager(Manager_base):
         static_data = self.static_data_object.get_static_data()
         user = static_data['user']
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         linguamatics_i2e_object.login()
         for ab_fields_dir in os.listdir(self.directory_object.pull_directory('ab_fields_text_dir')):
             filename = ab_fields_dir[:-10]
@@ -732,7 +745,7 @@ class Process_manager(Manager_base):
         num_processes = static_data['num_processes']
         project_name = static_data['project_name']
         #ohsu_nlp_template_object = \
-        #    self.nlp_tool_registry.get_manager('ohsu_nlp_template_object')
+        #    self.nlp_tool_registry.pull_object('ohsu_nlp_template_object')
         files = glob.glob(self.directory_object.pull_directory('ohsu_nlp_project_simple_templates_dir') + '/*.py')
         for i in range(len(files)):
             files[i] = \
@@ -832,7 +845,7 @@ class Process_manager(Manager_base):
         num_processes = static_data['num_processes']
         file_list = os.listdir(self.directory_object.pull_directory('postprocessing_data_in'))
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         if static_data['project_subdir'] == 'test' and \
            'test_postprocessing_data_in_files' in static_data.keys():
             file_list = \

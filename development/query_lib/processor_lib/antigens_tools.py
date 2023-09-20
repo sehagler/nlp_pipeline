@@ -277,7 +277,7 @@ class Postprocessor(Postprocessor_base):
 class Preprocessor(object):
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         antigens = antigens_list()
         text = lambda_tools.lambda_conversion('HLA ?DR', text, 'HLA-DR')
         text = \

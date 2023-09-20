@@ -19,7 +19,6 @@ class Postprocessor_registry(Registry_base):
         Registry_base.__init__(self, static_data_object, logger_object)
         self.Tool_name = 'Postprocessor_'
         self.tool_name = 'postprocessor_'
-
         self.data_dict_classes_list = []
         
     #

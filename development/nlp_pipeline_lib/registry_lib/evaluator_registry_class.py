@@ -7,7 +7,6 @@ Created on Tue May  9 15:07:01 2023
 
 #
 import os
-import traceback
 
 #
 from base_lib.registry_base_class import Registry_base
@@ -28,23 +27,6 @@ class Evaluator_registry(Registry_base):
                         'from query_lib.processor_lib.base_lib.' + filename + \
                         ' import Evaluator as Object' ]
         return import_cmds
-    
-    #
-    def push_software_directory(self, directory):
-        self.software_dir = directory
-        
-    #
-    def register_objects(self):
-        static_data = self.static_data_object.get_static_data()
-        operation_mode = static_data['operation_mode']
-        root_dir = \
-            os.path.join(self.software_dir, os.path.join(operation_mode, 'query_lib/processor_lib'))
-        log_text = root_dir
-        self.logger_object.print_log(log_text)
-        for root, dirs, files in os.walk(root_dir):
-            for file in files:
-                file = os.path.basename(file)
-                self.register_object(file)
     
     #
     def run_object(self, evaluator, evaluation_manager, nlp_value, 

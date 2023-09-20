@@ -454,7 +454,7 @@ class Postprocessor(Postprocessor_base):
 class Preprocessor(object):
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = sequential_composition([_process_tnm_staging,
                                        _remove_extraneous_text], text)
         return text

@@ -108,7 +108,7 @@ def _process_tubule_formation(text):
 class Preprocessor(object):
         
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.lambda_conversion('(?<= )I( / | of )III(?=( |\n))', text, '1 / 3')
         text = \

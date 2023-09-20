@@ -28,6 +28,6 @@ def _normalize_chemical_abbreviations(text):
 class Preprocessor(object):
         
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = _normalize_chemical_abbreviations(text)
         return text

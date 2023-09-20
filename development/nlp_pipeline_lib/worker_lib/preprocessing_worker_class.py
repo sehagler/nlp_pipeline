@@ -49,7 +49,7 @@ class Preprocessing_worker(Worker_base):
         linguamatics_i2e_preprocessing_data_out_dir = \
             argument_dict['linguamatics_i2e_preprocessing_data_out_dir']
         linguamatics_i2e_object = \
-            self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_manager_registry.pull_object('linguamatics_i2e_object')
         for document_idx in document_dict.keys():
             generate_data_file_ret_val = \
                 linguamatics_i2e_object.create_source_data_file(linguamatics_i2e_preprocessing_data_out_dir,

@@ -78,11 +78,9 @@ class Pipeline_object(object):
                                                  self.logger_object)
         
     #
-    def _create_registries(self, root_dir, password):
+    def _create_registries(self):
         self.remote_registry = \
-            Remote_registry(self.static_data_object, 
-                            self.update_static_data_object,
-                            self.logger_object, root_dir, password)
+            Remote_registry(self.static_data_object, self.logger_object)
             
     #
     def _data_set_summary_info(self):
@@ -151,6 +149,16 @@ class Pipeline_object(object):
     def _push_directories(self):
         self.metadata_manager.push_directory(self.directory_object.pull_directory('metadata_dir'))
         
+    #
+    def _register_objects(self, root_dir, password):
+        self.remote_registry.register_server_manager(self.static_data_object,
+                                                     self.logger_object,
+                                                     password)
+        self.remote_registry.register_update_manager(self.static_data_object, 
+                                                     self.update_static_data_object,
+                                                     self.logger_object,
+                                                     root_dir, password)
+    
     #
     def cleanup_directory(self, directory_label):
         self.process_manager.cleanup_directory(directory_label)
@@ -256,8 +264,9 @@ class Pipeline_object(object):
         self._project_imports(server, root_dir, project_name)
         self._create_objects(server, root_dir, project_subdir, user, password)
         self._create_managers()
-        self._create_registries(root_dir, password)
+        self._create_registries()
         self._push_directories()
+        self._register_objects(root_dir, password)
         self.process_manager = Process_manager(self.static_data_object,
                                                self.directory_object,
                                                self.logger_object,

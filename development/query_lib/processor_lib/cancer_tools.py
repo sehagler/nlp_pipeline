@@ -147,7 +147,7 @@ class Preprocessor(object):
         pass
         
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.lambda_conversion('MDS / MPN', text, 'MDS/MPN')
         text = sequential_composition([_process_irregular_initialisms,

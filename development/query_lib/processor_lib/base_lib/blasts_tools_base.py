@@ -303,7 +303,7 @@ class Postprocessor(Postprocessor_base):
 class Preprocessor(object):
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.lambda_conversion('(?i)immunohistochemi(cal|stry)',
                                            text, 'IHC')

@@ -27,7 +27,7 @@ class Software_object(object):
         self.root_dir = root_dir
         self._create_objects(None, root_dir, None, user, password)
         self._create_registries(root_dir, password)
-        self.server_manager = self.remote_registry.get_manager('update_manager')
+        self.server_manager = self.remote_registry.get_object('update_manager')
         
     #
     def _cleanup_nlp_software(self, software_dir):

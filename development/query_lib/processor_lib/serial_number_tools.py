@@ -63,7 +63,7 @@ def _remove_test(text):
 class Preprocessor(object):
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = sequential_composition([_remove_test,
                                        _remove_slide,
                                        _remove_slice,
