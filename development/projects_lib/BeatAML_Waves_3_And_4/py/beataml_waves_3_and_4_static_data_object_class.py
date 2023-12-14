@@ -41,6 +41,7 @@ class BeatAML_Waves_3_And_4_static_data_object(Static_data_object):
         self.static_data['remove_date'] = False
         self.static_data['validation_file'] = 'wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
         if self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx'] = {}
             self.static_data['raw_data_files']['Beaker_Bone_Marrow_Morphology_Reports.xlsx']['DATETIME_FORMAT'] = '%m/%d/%Y'
@@ -63,6 +64,7 @@ class BeatAML_Waves_3_And_4_static_data_object(Static_data_object):
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
             self.static_data['raw_data_files']['PowerPath_Hematopathology_Reports.xlsx']['NLP_MODE'] = 'RESULT_ID'
         else:
+            self.static_data['deidentifier_flg'] = False
             if isinstance(self.project_subdir, str):
                 print('Bad project_subdir value: ' + self.project_subdir)
             elif self.project_subdir is None:

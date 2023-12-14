@@ -59,6 +59,7 @@ class BreastCancerPathology_static_data_object(Static_data_object):
         self.static_data['validation_file'] = \
             'breastcancerpathology_testing.xlsx'
         if self.project_subdir == 'production':
+            self.static_data['deidentifier_flg'] = False
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230717_055320.XML'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230717_055320.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
@@ -69,6 +70,7 @@ class BreastCancerPathology_static_data_object(Static_data_object):
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230717_055320.XML']['SOURCE_SYSTEM'] = 'Epic Beaker'
             self.static_data['raw_data_files_sequence'] = [ 'RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20230717_055320.XML' ]
         elif self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls'] = {}
             self.static_data['raw_data_files']['BreastCancerPathology.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'

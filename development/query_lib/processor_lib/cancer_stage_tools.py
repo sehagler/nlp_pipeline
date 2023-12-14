@@ -11,13 +11,15 @@ import os
 import re
 
 #
-from tools_lib.regex_lib.regex_tools import regex_from_list
 from base_lib.postprocessor_base_class import Postprocessor_base
+from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.AB_fields_object_class \
+    import AB_fields_object
 from query_lib.processor_lib.cancer_tools \
     import get_initialisms, nonnumeric_stage, numeric_stage
+from tools_lib.regex_lib.regex_tools import regex_from_list
     
 #
-class AB_fields_object(object):
+class AB_fields_object(AB_fields_object):
     
     #
     def __init__(self):

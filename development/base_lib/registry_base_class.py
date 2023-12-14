@@ -36,30 +36,34 @@ class Registry_base(Manager_base):
     def register_object(self, file):
         filename, extension = os.path.splitext(file)
         import_cmds = self._get_import_cmds(filename)
-        for import_cmd in import_cmds:
-            try:
-                exec(import_cmd, globals())
-                log_text = self.Tool_name + filename + ' import succeeded'
-                self.logger_object.print_log(log_text)
-                object_imported_flg = True
-            except Exception:
-                log_text = self.Tool_name + filename + ' import failed'
-                self.logger_object.print_log(log_text)
-                log_text = traceback.format_exc()
-                self.logger_object.print_exc(log_text)
-                object_imported_flg = False
-            if object_imported_flg:
+        stop_flg = False
+        for i in range(len(import_cmds)):
+            if not stop_flg:
+                import_cmd = import_cmds[i]
                 try:
-                    self._register_object(self.tool_name + filename,
-                                          Object(self.static_data_object,
-                                                 self.logger_object))
-                    log_text = filename + ' registration succeeded'
+                    exec(import_cmd, globals())
+                    log_text = self.Tool_name + filename + ' import succeeded'
                     self.logger_object.print_log(log_text)
+                    object_imported_flg = True
+                    stop_flg = True
                 except Exception:
+                    log_text = self.Tool_name + filename + ' import failed'
+                    self.logger_object.print_log(log_text)
                     log_text = traceback.format_exc()
                     self.logger_object.print_exc(log_text)
-                    log_text = filename + ' registration failed'
-                    self.logger_object.print_log(log_text)
+                    object_imported_flg = False
+                if object_imported_flg:
+                    try:
+                        self._register_object(self.tool_name + filename,
+                                              Object(self.static_data_object,
+                                                     self.logger_object))
+                        log_text = filename + ' registration succeeded'
+                        self.logger_object.print_log(log_text)
+                    except Exception:
+                        log_text = traceback.format_exc()
+                        self.logger_object.print_exc(log_text)
+                        log_text = filename + ' registration failed'
+                        self.logger_object.print_log(log_text)
         
     #
     def run_registry(self):

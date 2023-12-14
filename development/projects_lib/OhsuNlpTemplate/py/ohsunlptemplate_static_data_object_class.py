@@ -35,6 +35,7 @@ class OhsuNlpTemplate_static_data_object(Static_data_object):
         if self.project_subdir == 'production':
             pass
         elif self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'

@@ -6,11 +6,6 @@ Created on Tue Nov 13 08:12:07 2018
 """
 
 #
-import os
-import re
-import traceback
-
-#
 from base_lib.registry_base_class import Registry_base
 
 #
@@ -45,4 +40,4 @@ class Preprocessor_registry(Registry_base):
             if key != 'text_normalization_object':
                 rpt_text = \
                     self.registry_dict[key].run_object(rpt_text)
-        return dynamic_data_manager, raw_text, rpt_text
+        return dynamic_data_manager, rpt_text

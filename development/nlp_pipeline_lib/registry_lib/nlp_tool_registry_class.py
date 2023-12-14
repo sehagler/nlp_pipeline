@@ -31,6 +31,10 @@ class Nlp_tool_registry(Registry_base):
         self.registry_dict['linguamatics_i2e_object'] = \
             Linguamatics_i2e_object(server_manager, project_name, server,
                                     user, password)
+            
+    #
+    def pull_manager(self, manager_name):
+        return self.registry_dict[manager_name]
     
     #
     def push_linguamatics_i2e_common_queries_directory(self, directory):

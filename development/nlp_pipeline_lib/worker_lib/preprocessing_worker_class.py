@@ -17,12 +17,14 @@ from tools_lib.processing_tools_lib.function_processing_tools \
 class Preprocessing_worker(Worker_base):
     
     #
-    def __init__(self, static_data_object, logger_object,
-                 preprocessor_registry, nlp_tool_manager_registry):
+    def __init__(self, static_data_object, logger_object, deidentifier_object,
+                 preprocessor_registry, nlp_tool_registry):
         Worker_base.__init__(self, static_data_object, logger_object)
+        self.deidentifier_object = deidentifier_object
         self.preprocessor_registry = preprocessor_registry
-        self.nlp_tool_manager_registry = nlp_tool_manager_registry
+        self.nlp_tool_registry = nlp_tool_registry
         static_data = self.static_data_object.get_static_data()
+        self.deidentifier_flg = static_data['deidentifier_flg']
         self.server = static_data['acc_server'][2]
         self.user = static_data['user']
         
@@ -49,7 +51,7 @@ class Preprocessing_worker(Worker_base):
         linguamatics_i2e_preprocessing_data_out_dir = \
             argument_dict['linguamatics_i2e_preprocessing_data_out_dir']
         linguamatics_i2e_object = \
-            self.nlp_tool_manager_registry.pull_object('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         for document_idx in document_dict.keys():
             generate_data_file_ret_val = \
                 linguamatics_i2e_object.create_source_data_file(linguamatics_i2e_preprocessing_data_out_dir,
@@ -62,17 +64,20 @@ class Preprocessing_worker(Worker_base):
         now = datetime.datetime.now()
         document_start_datetime = \
             now.strftime("%d-%b-%y %H:%M:%S.%f") [:-3]
-        dynamic_data_manager, processed_raw_text, \
-        processed_report_text = \
+        deidentified_raw_text = \
+            self.deidentifier_object.deidentify(text_item,
+                                                self.deidentifier_flg)
+        dynamic_data_manager, processed_report_text = \
             self.preprocessor_registry.run_registry(dynamic_data_manager,
-                                                    text_item, source_system)
+                                                    deidentified_raw_text,
+                                                    source_system)
         now = datetime.datetime.now()
         document_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         nlp_metadata['DOCUMENT_PREPROCESSING_START_DATETIME'] = \
             document_start_datetime
         nlp_metadata['DOCUMENT_PREPROCESSING_END_DATETIME'] = \
             document_end_datetime
-        return dynamic_data_manager, nlp_metadata, processed_raw_text, processed_report_text
+        return dynamic_data_manager, nlp_metadata, deidentified_raw_text, processed_report_text
     
     #
     def _preprocess_documents(self, dynamic_data_manager, start_idx, password):

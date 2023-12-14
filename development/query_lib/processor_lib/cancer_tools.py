@@ -141,6 +141,11 @@ def numeric_stage():
 
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
         
     #
     def process_abbreviations(self):

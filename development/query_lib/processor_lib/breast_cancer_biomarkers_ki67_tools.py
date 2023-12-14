@@ -15,6 +15,11 @@ class Postprocessor(Postprocessor_base):
   
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
     
     #
     def run_object(self, text):

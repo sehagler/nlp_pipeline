@@ -47,6 +47,7 @@ class NewBiomarkers_static_data_object(Static_data_object):
               ('PDL1_VARIABILITY', None, 'BREAST_CANCER_BIOMARKERS_PDL1', 'PDL1_VARIABILITY', 'single_value', True) ]
         self.static_data['validation_file'] = 'smmart_nlp_new_markers.xlsx'
         if self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML'] = {}
             self.static_data['raw_data_files']['RDW_BREAST_CANCER_PATIENTS_NLP_PATH_RESULTS_20220906_123020.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'

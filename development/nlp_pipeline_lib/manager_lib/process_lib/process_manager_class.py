@@ -19,6 +19,8 @@ import xml.etree.ElementTree as ET
 
 #
 from base_lib.manager_base_class import Manager_base
+from deidentifier_lib.deidentifier_object_class \
+    import Deidentifier_object
 from nlp_pipeline_lib.manager_lib.dynamic_data_lib.dynamic_data_manager_class \
     import Dynamic_data_manager
 from nlp_pipeline_lib.manager_lib.evaluation_lib.evaluation_manager_class \
@@ -224,9 +226,12 @@ class Process_manager(Manager_base):
         self.password = password
         self._project_imports()
         self._create_registries(remote_registry, password)
+        self._create_objects()
         self._create_managers(password)
         self._push_directories()
-        self._register_objects(password)
+        self._register_evaluator_objects()
+        self._register_nlp_tool_objects(password)
+        self._register_preprocessor_objects()
         self._create_workers()
         
         # Kludge to get around memory issue in processor
@@ -343,6 +348,10 @@ class Process_manager(Manager_base):
             self.logger_object.print_exc(traceback_text)
             
     #
+    def _create_objects(self):
+        self.deidentifier_object = Deidentifier_object()
+            
+    #
     def _create_registries(self, remote_registry, password):
         static_data = self.static_data_object.get_static_data()
         self.evaluator_registry = Evaluator_registry(self.static_data_object,
@@ -396,6 +405,7 @@ class Process_manager(Manager_base):
             rq = multiprocessing.Queue()
             w = Preprocessing_worker(self.static_data_object,
                                      self.logger_object,
+                                     self.deidentifier_object,
                                      self.preprocessor_registry,
                                      self.nlp_tool_registry)
             p = multiprocessing.Process(target=w.process_data, args=(aq, rq,))
@@ -527,7 +537,7 @@ class Process_manager(Manager_base):
         self.specimens_manager.push_raw_data_directory(self.directory_object.pull_directory('raw_data_dir'))
         
     #
-    def _register_objects(self, password):
+    def _register_evaluator_objects(self):
         static_data = self.static_data_object.get_static_data()
         operation_mode = static_data['operation_mode']
         software_dir = \
@@ -542,9 +552,41 @@ class Process_manager(Manager_base):
             for file in files:
                 file = os.path.basename(file)
                 self.evaluator_registry.register_object(file)
-                self.preprocessor_registry.register_object(file)
+    
+    #
+    def _register_nlp_tool_objects(self, password):
         self.nlp_tool_registry.register_linguamatics_i2e_object(password)
         self.nlp_tool_registry.register_nlp_template_object()
+        
+    #
+    def _register_postprocessor_objects(self):
+        static_data = self.static_data_object.get_static_data()
+        file_list = os.listdir(self.directory_object.pull_directory('postprocessing_data_in'))
+        if static_data['project_subdir'] == 'test' and \
+           'test_postprocessing_data_in_files' in static_data.keys():
+            file_list = \
+                list(set(file_list).intersection(static_data['test_postprocessing_data_in_files']))
+        for filename in file_list:
+            filename_base, extension = os.path.splitext(filename)
+            if extension in [ '.csv' ]:
+                self.postprocessor_registry.register_object(filename)
+        
+    #
+    def _register_preprocessor_objects(self):
+        static_data = self.static_data_object.get_static_data()
+        operation_mode = static_data['operation_mode']
+        software_dir = \
+            self.directory_object.pull_directory('software_dir')
+        root_dir = \
+            os.path.join(software_dir,
+                         os.path.join(operation_mode,
+                                      'query_lib/processor_lib'))
+        log_text = root_dir
+        self.logger_object.print_log(log_text)
+        for root, dirs, files in os.walk(root_dir):
+            for file in files:
+                file = os.path.basename(file)
+                self.preprocessor_registry.register_object(file)
     
     #
     def _start_preprocessing_workers(self):
@@ -680,7 +722,7 @@ class Process_manager(Manager_base):
                 csv_reader = csv.reader(f)
                 for row in csv_reader:
                     sections.append(row)
-            text_dict = _create_text_dict_postprocessing_data_in(sections)
+            text_dict = self._create_text_dict_postprocessing_data_in(sections)
         else:
             text_dict = None
         self.template_data_dir = self.directory_object.pull_directory('postprocessing_data_in')
@@ -702,8 +744,7 @@ class Process_manager(Manager_base):
             print('OHSU NLP Template Object: ' + class_name)
             template_object = Template_object()
             template_object.push_template_outlines_directory(self.directory_object.pull_directory('template_outlines_dir'))
-            AB_fields_training_file = \
-                static_data['AB_fields_training_files'][filename]
+            AB_fields_training_file = 'cancer_stage.xlsx'
             AB_fields_training_file = \
                 os.path.join(self.directory_object.pull_directory('ab_fields_training_dir'), 
                              AB_fields_training_file)
@@ -735,7 +776,7 @@ class Process_manager(Manager_base):
                 i2qy_file =  user + '/AB_fields/' + filename + \
                              '_AB_fields/' + filename + field + '.i2qy'
                 txt_file = self.directory_object.pull_directory('ab_fields_text_dir') + \
-                           '/' + ab_fields_dir + '/' + filename + field + '.txt'
+                           '/' + filename + '_AB_fields/' + filename + field + '.txt'
                 linguamatics_i2e_object.insert_field(i2qy_file, txt_file) 
         linguamatics_i2e_object.logout()
         
@@ -843,20 +884,17 @@ class Process_manager(Manager_base):
     def postprocessor(self):
         static_data = self.static_data_object.get_static_data()
         num_processes = static_data['num_processes']
-        file_list = os.listdir(self.directory_object.pull_directory('postprocessing_data_in'))
         linguamatics_i2e_object = \
-            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
-        if static_data['project_subdir'] == 'test' and \
-           'test_postprocessing_data_in_files' in static_data.keys():
-            file_list = \
-                list(set(file_list).intersection(static_data['test_postprocessing_data_in_files']))
-        for filename in file_list:
-            filename_base, extension = os.path.splitext(filename)
-            if extension in [ '.csv' ]:
-                self.postprocessor_registry.register_object(filename)
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')  
+        self._register_postprocessor_objects()
         partitioned_doc_list = self._get_partitioned_document_list()
         num_worker_runs = len(partitioned_doc_list) // num_processes
         self._start_postprocessing_workers()
+        file_list = os.listdir(self.directory_object.pull_directory('postprocessing_data_in'))
+        if static_data['project_subdir'] == 'test' and \
+           'test_postprocessing_data_in_files' in static_data.keys():
+            file_list = \
+                list(set(file_list).intersection(static_data['test_postprocessing_data_in_files']))  
         data_dict_dict = {}
         for filename in file_list:
             filename_base, extension = os.path.splitext(filename)

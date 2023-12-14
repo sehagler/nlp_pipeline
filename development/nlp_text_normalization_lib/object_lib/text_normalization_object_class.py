@@ -14,8 +14,6 @@ from nlp_text_normalization_lib.artifact_normalizer_lib.artifact_normalizer \
     import artifact_normalizer
 from nlp_text_normalization_lib.character_normalizer_lib.character_normalizer \
     import character_normalizer
-from nlp_text_normalization_lib.deidentifier_lib.deidentifier \
-    import deidentifier, deidentify_date
 from nlp_text_normalization_lib.layout_normalizer_lib.layout_normalizer_class \
     import Layout_normalizer
 from nlp_text_normalization_lib.specimen_normalizer_lib.specimen_normalizer \
@@ -238,8 +236,6 @@ class Text_normalization_object(object):
         rpt_text = sequential_composition([normalize_whitespace,
                                            artifact_normalizer,
                                            normalize_whitespace,
-                                           deidentifier,
-                                           normalize_whitespace,
                                            character_normalizer,
                                            normalize_whitespace,
                                            style_normalizer,
@@ -257,8 +253,6 @@ class Text_normalization_object(object):
                                            _remove_mychart,
                                            normalize_whitespace,
                                            _remove_extraneous_text], rpt_text)
-        if self.remove_date_flg:
-            rpt_text = deidentify_date(rpt_text)
         rpt_text = normalize_whitespace(rpt_text)  
         rpt_text = make_xml_compatible(rpt_text)
         return dynamic_data_manager, rpt_text

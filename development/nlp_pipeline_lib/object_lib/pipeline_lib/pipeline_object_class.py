@@ -228,9 +228,8 @@ class Pipeline_object(object):
     #
     def linguamatics_i2e_push_queries(self):
         static_data = self.static_data_object.get_static_data()
-        if 'AB_fields_training_files' in static_data:
-            self.process_manager.ohsu_nlp_templates_generate_AB_fields()
-            self.process_manager.ohsu_nlp_templates_push_AB_fields()
+        self.process_manager.ohsu_nlp_templates_generate_AB_fields()
+        self.process_manager.ohsu_nlp_templates_push_AB_fields()
         self.process_manager.linguamatics_i2e_push_queries()
         
     #
