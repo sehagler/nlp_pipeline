@@ -40,4 +40,6 @@ class Preprocessor_registry(Registry_base):
             if key != 'text_normalization_object':
                 rpt_text = \
                     self.registry_dict[key].run_object(rpt_text)
+        rpt_text = \
+            self.registry_dict['text_normalization_object'].run_cleanup(rpt_text)
         return dynamic_data_manager, rpt_text

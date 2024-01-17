@@ -171,6 +171,8 @@ def normalize_whitespace(text):
     #
     text = \
         lambda_tools.lambda_conversion('\r', text, '\n')
+    text = \
+        lambda_tools.lambda_conversion('\t', text, ' ')
     
     #
     text = \
@@ -184,6 +186,7 @@ def normalize_whitespace(text):
     text = \
         lambda_tools.lambda_conversion('\n ', text, '\n')
     
+    '''
     #
     text = \
         lambda_tools.lambda_conversion('\t+', text, '\t')
@@ -200,6 +203,8 @@ def normalize_whitespace(text):
     #    lambda_tools.lambda_conversion('[\n\s]*\n\s*\n', text, '\n\n')
     text = \
         lambda_tools.lambda_conversion('\n-', text, '\n\t-')
+    '''
+    
     text = \
         lambda_tools.deletion_lambda_conversion('^[\n\s]*', text)
     text = \
@@ -256,6 +261,16 @@ class Text_normalization_object(object):
         rpt_text = normalize_whitespace(rpt_text)  
         rpt_text = make_xml_compatible(rpt_text)
         return dynamic_data_manager, rpt_text
+    
+    #
+    def run_cleanup(self, text):
+        text = \
+            lambda_tools.lambda_conversion(' +', text, ' ')
+        text = \
+            lambda_tools.lambda_conversion('\n ', text, '\n')
+        text = \
+            lambda_tools.lambda_conversion('\n+\n\n', text, '\n\n')
+        return text
             
     #
     def run_object(self, dynamic_data_manager, text, source_system):

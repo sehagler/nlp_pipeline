@@ -99,7 +99,8 @@ def _create_text_dict_preprocessing_data_out(data_dir, keywords_regexp):
     text_dict = {}
     filenames = os.listdir(data_dir)
     filenames = sorted(filenames)
-    for filename in filenames:
+    for i in range(len(filenames)):
+        filename = filenames[i]
         filename_base, extension = os.path.splitext(filename)
         if extension in [ '.xml' ]:
             parser = ET.iterparse(os.path.join(data_dir, filename))
@@ -119,7 +120,8 @@ def _create_text_dict_preprocessing_data_out(data_dir, keywords_regexp):
 def _get_document_metadata(raw_data_manager, raw_data_files, i2e_version,
                            process_idx, start_idx, password):
     metadata = {}
-    for data_file in raw_data_files:
+    for i in range(len(raw_data_files)):
+        data_file = raw_data_files[i]
         document_numbers = \
             raw_data_manager.get_document_numbers(data_file)
         for document_number in document_numbers:
