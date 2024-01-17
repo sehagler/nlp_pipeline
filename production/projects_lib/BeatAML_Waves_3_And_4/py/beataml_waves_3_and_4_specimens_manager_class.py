@@ -50,13 +50,8 @@ def _get_process_label(proc_nm, doc_label):
 class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
     
     #
-    def __init__(self, static_data_object, logger_object, metadata_dict_dict):
+    def __init__(self, static_data_object, logger_object):
         Specimens_manager.__init__(self, static_data_object, logger_object)
-        static_data = static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        self.deidentifier_xlsx = directory_manager.pull_directory('raw_data_dir') + \
-            '/wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'
-        self.metadata_dict_dict = metadata_dict_dict
         
     #
     def _cluster_specimens(self, specimen_tree_in, deidentifier_key_dict):
@@ -94,19 +89,29 @@ class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
                     
     #
     def _evaluate_features(self):
-        self.data_json = evaluate_antibodies_tested(self.data_json)
-        self.data_json = evaluate_bone_marrow_blast(self.data_json)
-        self.data_json = evaluate_diagnosis(self.data_json)
+        self.data_json = evaluate_antibodies_tested(self.data_json,
+                                                    self.manual_review)
+        self.data_json = evaluate_bone_marrow_blast(self.data_json,
+                                                    self.manual_review)
+        self.data_json = evaluate_diagnosis(self.data_json,
+                                            self.manual_review)
         self.data_json = self._evaluate_generic('dx.Date', self.data_json)
-        self.data_json = self._evaluate_generic('Extramedullary.dx', self.data_json)
-        self.data_json = self._evaluate_generic('FAB/Blast.Morphology', self.data_json)
-        self.data_json = self._evaluate_generic('FISH.Analysis.Summary', self.data_json)
+        self.data_json = self._evaluate_generic('Extramedullary.dx',
+                                                self.data_json)
+        self.data_json = self._evaluate_generic('FAB/Blast.Morphology',
+                                                self.data_json)
+        self.data_json = self._evaluate_generic('FISH.Analysis.Summary',
+                                                self.data_json)
         self.data_json = self._evaluate_generic('karyotype', self.data_json)
-        self.data_json = evaluate_peripheral_blood_blast(self.data_json)
+        self.data_json = evaluate_peripheral_blood_blast(self.data_json,
+                                                         self.manual_review)
         self.data_json = self._evaluate_generic('Relapse.Date', self.data_json)
         self.data_json = self._evaluate_generic('Residual.dx', self.data_json)
-        self.data_json = evaluate_specific_diagnosis(self.data_json)
-        self.data_json = evaluate_surface_antigens('surfaceAntigensImmunohistochemicalStains', self.data_json)
+        self.data_json = evaluate_specific_diagnosis(self.data_json,
+                                                     self.manual_review)
+        self.data_json = \
+            evaluate_surface_antigens('surfaceAntigensImmunohistochemicalStains', 
+                                      self.data_json, self.manual_review)
     
     #
     def _get_deidentifier_keys(self, deidentifier_file):
@@ -131,3 +136,30 @@ class BeatAML_Waves_3_And_4_specimens_manager(Specimens_manager):
                 deidentifier_key_dict[mrn]['patientId'] = str(patientid_tmp[0])
                 deidentifier_key_dict[mrn]['labIds'] = doc_dict
         return deidentifier_key_dict
+    
+    #
+    def _read_metadata(self, nlp_data):
+        metadata_keys = []
+        metadata_dict_dict = {}
+        for key in nlp_data.keys():
+            metadata_dict_dict[key] = {}
+            metadata_dict_dict[key]['METADATA'] = \
+                nlp_data[key]['METADATA']
+            metadata_dict_dict[key]['NLP_METADATA'] = \
+                nlp_data[key]['NLP_METADATA']
+        for metadata_key in metadata_dict_dict.keys():
+            for key in metadata_dict_dict[metadata_key].keys():
+                if key not in metadata_keys:
+                    metadata_keys.append(key)
+        return metadata_keys, metadata_dict_dict
+    
+    #
+    def push_nlp_data(self, nlp_data):
+        metadata_keys, metadata_dict_dict = self._read_metadata(nlp_data)
+        self.metadata_dict_dict = metadata_dict_dict
+        
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
+        self.deidentifier_xlsx = self.raw_data_dir + \
+            '/wave3&4_unique_OHSU_clinical_summary_11_17_2020.xlsx'

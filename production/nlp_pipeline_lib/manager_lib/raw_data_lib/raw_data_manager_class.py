@@ -115,8 +115,8 @@ def _prune_metadata(metadata):
 class Raw_data_manager(Manager_base):
     
     #
-    def __init__(self, static_data_object, logger_object, multiprocessing_flg,
-                 password):
+    def __init__(self, static_data_object, logger_object,
+                 multiprocessing_flg, password):
         Manager_base.__init__(self, static_data_object, logger_object)
         static_data = self.static_data_object.get_static_data()
         self.multiprocessing_flg = multiprocessing_flg

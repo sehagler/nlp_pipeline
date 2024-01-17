@@ -14,8 +14,6 @@ from nlp_text_normalization_lib.artifact_normalizer_lib.artifact_normalizer \
     import artifact_normalizer
 from nlp_text_normalization_lib.character_normalizer_lib.character_normalizer \
     import character_normalizer
-from nlp_text_normalization_lib.deidentifier_lib.deidentifier \
-    import deidentifier, deidentify_date
 from nlp_text_normalization_lib.layout_normalizer_lib.layout_normalizer_class \
     import Layout_normalizer
 from nlp_text_normalization_lib.specimen_normalizer_lib.specimen_normalizer \
@@ -173,6 +171,8 @@ def normalize_whitespace(text):
     #
     text = \
         lambda_tools.lambda_conversion('\r', text, '\n')
+    text = \
+        lambda_tools.lambda_conversion('\t', text, ' ')
     
     #
     text = \
@@ -186,6 +186,7 @@ def normalize_whitespace(text):
     text = \
         lambda_tools.lambda_conversion('\n ', text, '\n')
     
+    '''
     #
     text = \
         lambda_tools.lambda_conversion('\t+', text, '\t')
@@ -202,6 +203,8 @@ def normalize_whitespace(text):
     #    lambda_tools.lambda_conversion('[\n\s]*\n\s*\n', text, '\n\n')
     text = \
         lambda_tools.lambda_conversion('\n-', text, '\n\t-')
+    '''
+    
     text = \
         lambda_tools.deletion_lambda_conversion('^[\n\s]*', text)
     text = \
@@ -238,8 +241,6 @@ class Text_normalization_object(object):
         rpt_text = sequential_composition([normalize_whitespace,
                                            artifact_normalizer,
                                            normalize_whitespace,
-                                           deidentifier,
-                                           normalize_whitespace,
                                            character_normalizer,
                                            normalize_whitespace,
                                            style_normalizer,
@@ -257,14 +258,22 @@ class Text_normalization_object(object):
                                            _remove_mychart,
                                            normalize_whitespace,
                                            _remove_extraneous_text], rpt_text)
-        if self.remove_date_flg:
-            rpt_text = deidentify_date(rpt_text)
         rpt_text = normalize_whitespace(rpt_text)  
         rpt_text = make_xml_compatible(rpt_text)
         return dynamic_data_manager, rpt_text
+    
+    #
+    def run_cleanup(self, text):
+        text = \
+            lambda_tools.lambda_conversion(' +', text, ' ')
+        text = \
+            lambda_tools.lambda_conversion('\n ', text, '\n')
+        text = \
+            lambda_tools.lambda_conversion('\n+\n\n', text, '\n\n')
+        return text
             
     #
-    def run_preprocessor(self, dynamic_data_manager, text, source_system):
+    def run_object(self, dynamic_data_manager, text, source_system):
         raw_text = self._normalize_raw_text(text)
         dynamic_data_manager, rpt_text = \
             self._normalize_rpt_text(dynamic_data_manager, copy.copy(text),

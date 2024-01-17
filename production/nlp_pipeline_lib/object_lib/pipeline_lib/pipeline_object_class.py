@@ -17,11 +17,11 @@ from nlp_pipeline_lib.manager_lib.metadata_lib.metadata_manager_class \
     import Metadata_manager
 from nlp_pipeline_lib.manager_lib.process_lib.process_manager_class \
     import Process_manager
-from nlp_pipeline_lib.manager_lib.software_lib.software_manager_class \
-    import Software_manager
+from nlp_pipeline_lib.object_lib.directory_lib.directory_object_class \
+    import Directory_object
 from nlp_pipeline_lib.object_lib.logger_lib.logger_object_class \
     import Logger_object
-from nlp_pipeline_lib.registry_lib.remote_lib.remote_registry_class \
+from nlp_pipeline_lib.registry_lib.remote_registry_class \
     import Remote_registry
 from static_data_lib.object_lib.static_data_object_class \
     import Static_data_object
@@ -65,8 +65,9 @@ class Pipeline_object(object):
             Static_data_object(server, user, root_dir,
                                 project_subdir=project_subdir)
         static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        log_dir = directory_manager.pull_directory('log_dir')
+        self.directory_object = Directory_object(static_data, root_dir)
+        self.software_dir = self.directory_object.pull_directory('software_dir')
+        log_dir = self.directory_object.pull_directory('log_dir')
         self.logger_object = Logger_object(log_dir)
         self.update_static_data_object = \
             Static_data_object('development', user, root_dir)
@@ -77,11 +78,9 @@ class Pipeline_object(object):
                                                  self.logger_object)
         
     #
-    def _create_registries(self, root_dir, password):
+    def _create_registries(self):
         self.remote_registry = \
-            Remote_registry(self.static_data_object, 
-                            self.update_static_data_object,
-                            root_dir, password)
+            Remote_registry(self.static_data_object, self.logger_object)
             
     #
     def _data_set_summary_info(self):
@@ -147,6 +146,20 @@ class Pipeline_object(object):
         exec(import_cmd, globals())
         
     #
+    def _push_directories(self):
+        self.metadata_manager.push_directory(self.directory_object.pull_directory('metadata_dir'))
+        
+    #
+    def _register_objects(self, root_dir, password):
+        self.remote_registry.register_server_manager(self.static_data_object,
+                                                     self.logger_object,
+                                                     password)
+        self.remote_registry.register_update_manager(self.static_data_object, 
+                                                     self.update_static_data_object,
+                                                     self.logger_object,
+                                                     root_dir, password)
+    
+    #
     def cleanup_directory(self, directory_label):
         self.process_manager.cleanup_directory(directory_label)
     
@@ -195,7 +208,7 @@ class Pipeline_object(object):
         self.process_manager.linguamatics_i2e_push_resources()
         self.process_manager.linguamatics_i2e_indexer()
         self.process_manager.linguamatics_i2e_postindexer()
-        #self.process_manager.linguamatics_i2e_push_queries()
+        self.process_manager.linguamatics_i2e_push_queries()
         
     #
     def linguamatics_i2e_postqueries(self, project_subdir):
@@ -214,27 +227,18 @@ class Pipeline_object(object):
         
     #
     def linguamatics_i2e_push_queries(self):
+        static_data = self.static_data_object.get_static_data()
+        self.process_manager.ohsu_nlp_templates_generate_AB_fields()
+        self.process_manager.ohsu_nlp_templates_push_AB_fields()
         self.process_manager.linguamatics_i2e_push_queries()
-            
-    #
-    def melax_clamp_run_pipeline(self):
-        self.process_manager.melax_clamp_run_pipeline()
-    
-    #
-    def move_software(self):
-        if self.root_dir == 'X':
-            dest_drive = 'Z'
-        elif self.root_dir == 'Z':
-            dest_drive = 'X'
-        else:
-            log_text = 'bad root directory'
-            self.logger.print_log(log_texft)
-        self.nlp_software.copy_x_nlp_software_to_nlp_sandbox(dest_drive)
         
     #
     def ohsu_nlp_templates_generate_AB_fields(self):
-        self.process_manager.ohsu_nlp_templates_setup()
-        self.process_manager.ohsu_nlp_templates_generate_AB_fields()
+        static_data = self.static_data_object.get_static_data()
+        if 'AB_fields_training_files' in static_data:
+            self.process_manager.ohsu_nlp_templates_setup()
+            self.process_manager.ohsu_nlp_templates_generate_AB_fields()
+            self.process_manager.ohsu_nlp_templates_push_AB_fields()
         
     #
     def ohsu_nlp_templates_run_templates(self, password, project_subdir):
@@ -259,19 +263,12 @@ class Pipeline_object(object):
         self._project_imports(server, root_dir, project_name)
         self._create_objects(server, root_dir, project_subdir, user, password)
         self._create_managers()
-        self._create_registries(root_dir, password)
+        self._create_registries()
+        self._push_directories()
+        self._register_objects(root_dir, password)
         self.process_manager = Process_manager(self.static_data_object,
+                                               self.directory_object,
                                                self.logger_object,
                                                self.metadata_manager,
                                                self.remote_registry,
                                                password)
-        
-    #
-    def software_manager(self, root_dir, user, password):
-        self.root_dir = root_dir
-        self._create_objects(None, root_dir, None, user, password)
-        self._create_registries(root_dir, password)
-        server_manager = self.remote_registry.get_manager('update_manager')
-        self.nlp_software = Software_manager(self.update_static_data_object,
-                                             self.logger_object,
-                                             server_manager)

@@ -10,8 +10,7 @@ import os
 import traceback
 
 #
-from base_lib.manager_base_class \
-    import Manager_base
+from base_lib.manager_base_class import Manager_base
 from tools_lib.processing_tools_lib.file_processing_tools \
     import read_json_file, write_file
 
@@ -21,10 +20,6 @@ class Metadata_manager(Manager_base):
     #
     def __init__(self, static_data_object, logger_object):
         Manager_base.__init__(self, static_data_object, logger_object)
-        static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        self.metadata_json_file = \
-            os.path.join(directory_manager.pull_directory('metadata_dir'), 'metadata.json')
         self.clear_metadata()
         
     #
@@ -103,6 +98,11 @@ class Metadata_manager(Manager_base):
             document_identifier_list.append(document['METADATA'][document_identifier_key])
         document_identifier_list = sorted(list(set(document_identifier_list)))
         return document_identifier_list
+    
+    #
+    def push_directory(self, directory):
+        self.metadata_json_file = \
+            os.path.join(directory, 'metadata.json')
     
     #
     def read_metadata(self):

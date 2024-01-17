@@ -75,14 +75,19 @@ class Postprocessor(Postprocessor_base):
                     value = 'quit more than 10 years ago'
                 value_list.append(value.lower())
             else:
-                value_list.append('MANUAL_REVIEW')
+                value_list.append(self.manual_review)
         return value_list
     
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.initialism_lambda_conversion('packs?(' + slash() + '| a | per )day', text, 'PPD')
         text = \

@@ -94,7 +94,7 @@ def _get_data_value(section_data_list, section_key_list, mode_flg):
         elif len(data_value[0]) == 1:
             data_value = [ data_value[0][0] ]
         elif len(data_value[0]) > 1:
-            data_value = [ 'MANUAL_REVIEW' ]
+            data_value = [ self.manual_review ]
             data_value = tuple(data_value)
             data_value = [ data_value ]
     elif mode_flg == 'multiple_values':
@@ -105,6 +105,7 @@ def _get_data_value(section_data_list, section_key_list, mode_flg):
 #
 def _get_nlp_value(arg_dict):
     identifier = arg_dict['identifier']
+    manual_review = arg_dict['manual_review']
     nlp_values = arg_dict['nlp_values']
     validation_datum_key = arg_dict['validation_datum_key']
     if identifier in nlp_values.keys():
@@ -117,7 +118,7 @@ def _get_nlp_value(arg_dict):
             nlp_value = None
     else:
         nlp_value = None
-    nlp_value = _nlp_to_tuple(nlp_value)
+    nlp_value = _nlp_to_tuple(nlp_value, manual_review)
     return nlp_value
 
 #
@@ -150,13 +151,13 @@ def _normalize_percentage_range(text):
     return text
 
 #
-def _nlp_to_tuple(value):
+def _nlp_to_tuple(value, manual_review):
     if value is not None:
         value_tmp = []
         value = list(value)
         for i in range(len(value)):
             if type(value[i]) is not tuple:
-                if value[i] != 'MANUAL_REVIEW':
+                if value[i] != manual_review:
                     value[i] = value[i].lower()
                 value[i] = value[i].replace(' ', '')
                 value_tmp.append(value[i])
@@ -251,17 +252,13 @@ class Performance_data_manager(Manager_base):
     #
     def __init__(self, static_data_object, logger_object, evaluation_manager,
                  json_manager_registry, metadata_manager,
-                 xls_manager_registry):
+                 xls_manager_registry, specimens_manager):
         Manager_base.__init__(self, static_data_object, logger_object)
         self.evaluation_manager = evaluation_manager
         self.json_manager_registry = json_manager_registry
         self.metadata_manager = metadata_manager
         self.xls_manager_registry = xls_manager_registry
-        static_data = self.static_data_object.get_static_data()
-        self.directory_manager = static_data['directory_manager']
-        self.save_dir = \
-            self.directory_manager.pull_directory('processing_data_dir')
-        self.log_dir = self.directory_manager.pull_directory('log_dir')
+        self.specimens_manager = specimens_manager
         self.csv_body = ''
         self.csv_header = ''
         
@@ -366,7 +363,8 @@ class Performance_data_manager(Manager_base):
                 if row[2] == identifier:
                     validation_value = \
                         _process_validation_item(row[validation_idx[0]])
-        validation_value = self._validation_to_tuple(validation_value)
+        validation_value = self._validation_to_tuple(validation_value,
+                                                     self.manual_review)
         return validation_value
     
     #
@@ -407,6 +405,7 @@ class Performance_data_manager(Manager_base):
                 validation_datum_key = self.queries[i][0]
                 arg_dict = {}
                 arg_dict['identifier'] = csn
+                arg_dict['manual_review'] = self.manual_review
                 arg_dict['nlp_values'] = nlp_values
                 arg_dict['validation_datum_key'] = validation_datum_key
                 return_dict = parallel_composition([self._get_validation_value,
@@ -515,9 +514,9 @@ class Performance_data_manager(Manager_base):
         return validation_datum_keys
 
     #
-    def _validation_to_tuple(self, value):
+    def _validation_to_tuple(self, value, manual_review):
         if value is not None:
-            if value != 'MANUAL_REVIEW':
+            if value != manual_review:
                 value = value.lower()
             value = _normalize_percentage_range(value)
             value = value.replace(' ', '')
@@ -586,9 +585,7 @@ class Performance_data_manager(Manager_base):
         self.performance_statistics_overall_dict = {}
         static_data = self.static_data_object.get_static_data()
         validation_filename = static_data['validation_file']
-        directory_manager = static_data['directory_manager']
-        data_dir = directory_manager.pull_directory('raw_data_dir')
-        filename = os.path.join(data_dir, validation_filename)
+        filename = os.path.join(self.raw_data_dir, validation_filename)
         self.validation_data_manager = self.xls_manager_registry[filename]
         self.validation_data_manager.read_validation_data()
         validation_datum_keys = self._validation_datum_keys()
@@ -637,6 +634,25 @@ class Performance_data_manager(Manager_base):
     def get_performance_data(self, display_flg):
         self.read_nlp_data()
         self.calculate_performance(display_flg)
+        
+    #
+    def push_log_directory(self, directory):
+        self.log_dir = directory
+        
+    #
+    def push_processing_data_directory(self, directory):
+        self.save_dir = directory
+        
+    #
+    def push_raw_data_directory(self, directory):
+        self.raw_data_dir = directory
+        static_data = self.static_data_object.get_static_data()
+        if static_data['project_subdir'] == 'test':
+            self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
+            validation_filename = static_data['validation_file']
+            filename = os.path.join(self.raw_data_dir, validation_filename)
+            self.xls_manager_registry[filename].read_validation_data()
+            self.queries = static_data['queries_list']
             
     #
     def read_nlp_data(self):

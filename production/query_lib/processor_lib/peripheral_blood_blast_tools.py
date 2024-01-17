@@ -17,18 +17,7 @@ from query_lib.processor_lib.base_lib.blasts_tools_base \
     import get_blast_value
     
 #
-class Postprocessor(Postprocessor_base):
-    pass
-    
-#
-class Preprocessor(object):
-    
-    #
-    def run_preprocessor(self, text):
-        return text
-
-#
-def evaluate_peripheral_blood_blast(data_json):
+def evaluate_peripheral_blood_blast(data_json, manual_review):
     data_json_tmp = data_json
     for key0 in data_json_tmp.keys():
         for key1 in data_json_tmp[key0].keys():
@@ -36,7 +25,7 @@ def evaluate_peripheral_blood_blast(data_json):
                 try:
                     blast_value_list = data_json_tmp[key0][key1][key2]['%.Blasts.in.PB']
                     blast_value_list = trim_data_value(blast_value_list)
-                    value = get_blast_value(blast_value_list)
+                    value = get_blast_value(blast_value_list, manual_review)
                     if value is not None:
                         data_json[key0][key1][key2]['%.Blasts.in.PB'] = value
                     else:
@@ -44,3 +33,19 @@ def evaluate_peripheral_blood_blast(data_json):
                 except Exception:
                     traceback.print_exc()
     return data_json
+    
+#
+class Postprocessor(Postprocessor_base):
+    pass
+    
+#
+class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
+    
+    #
+    def run_object(self, text):
+        return text

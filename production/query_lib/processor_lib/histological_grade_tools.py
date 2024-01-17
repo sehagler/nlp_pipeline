@@ -106,9 +106,14 @@ def _process_tubule_formation(text):
 
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
         
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.lambda_conversion('(?<= )I( / | of )III(?=( |\n))', text, '1 / 3')
         text = \

@@ -61,9 +61,14 @@ def _remove_test(text):
 
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = sequential_composition([_remove_test,
                                        _remove_slide,
                                        _remove_slice,

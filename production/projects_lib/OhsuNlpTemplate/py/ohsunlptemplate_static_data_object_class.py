@@ -24,6 +24,9 @@ class OhsuNlpTemplate_static_data_object(Static_data_object):
                                      project_name=project_name,
                                      project_subdir=project_subdir)
         self.project_subdir = project_subdir
+        self.static_data['AB_fields_training_files'] = {}
+        self.static_data['AB_fields_training_files']['cancer_stage'] = \
+            'cancer_stage.xlsx'
         self.static_data['document_identifiers'] = \
             [ 'CASE_NUMBER', 'SOURCE_SYSTEM_NOTE_CSN_ID' ]
         self.static_data['queries_list'] = \
@@ -32,6 +35,7 @@ class OhsuNlpTemplate_static_data_object(Static_data_object):
         if self.project_subdir == 'production':
             pass
         elif self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
@@ -107,7 +111,7 @@ class OhsuNlpTemplate_static_data_object(Static_data_object):
                 list(set(self.static_data['patient_list']))
             
             raw_data_dir = \
-                self.static_data['directory_manager'].pull_directory('raw_data_dir')
+                self.static_data['directory_object'].pull_directory('raw_data_dir')
             raw_data_file = os.path.join(raw_data_dir, 'ccc19_testing.xlsx')
             book = read_xlsx_file(raw_data_file)
             sheet = book.sheet_by_index(0)

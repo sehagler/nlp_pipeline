@@ -41,6 +41,7 @@ class CCC19_static_data_object(Static_data_object):
               'smoking_status.csv' ]
         self.static_data['validation_file'] = 'ccc19_testing.xlsx'
         if self.project_subdir == 'production':
+            self.static_data['deidentifier_flg'] = False
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML'] = {}
             self.static_data['raw_data_files']['NAGLE_CCC19_NLP_HNO_NOTE_20230507_114645.XML']['DATETIME_FORMAT'] = '%Y-%m-%d %H:%M:%S'
@@ -85,6 +86,7 @@ class CCC19_static_data_object(Static_data_object):
                                                             'NAGLE_CCC19_NLP_HNO_NOTE_20230507_123355.XML',
                                                             'NAGLE_CCC19_NLP_PATH_RESULTS_20230507_114634.XML' ]
         elif self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml'] = {}
             self.static_data['raw_data_files']['Nagle_CCC19_NLP_hno_note_v_covid_positive.xml']['DATETIME_FORMAT'] = '%d-%b-%y'
@@ -165,7 +167,7 @@ class CCC19_static_data_object(Static_data_object):
                 list(set(self.static_data['patient_list']))
             
             raw_data_dir = \
-                self.static_data['directory_manager'].pull_directory('raw_data_dir')
+                self.static_data['directory_object'].pull_directory('raw_data_dir')
             raw_data_file = os.path.join(raw_data_dir, 'ccc19_testing.xlsx')
             book = read_xlsx_file(raw_data_file)
             sheet = book.sheet_by_index(0)

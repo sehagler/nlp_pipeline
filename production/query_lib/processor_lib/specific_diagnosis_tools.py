@@ -10,6 +10,7 @@ import re
 import traceback
 
 #
+from base_lib.evaluator_base_class import Evaluator_base
 from base_lib.postprocessor_base_class import Postprocessor_base
 import lambda_lib.tool_lib.lambda_tools as lambda_tools
         
@@ -59,7 +60,7 @@ def _evaluate(evaluation_manager, nlp_value, validation_value, display_flg):
     return ret_dict['performance']
 
 #                 
-def evaluate_specific_diagnosis(data_json):
+def evaluate_specific_diagnosis(data_json, manual_review):
     data_json_tmp = data_json
     for key0 in data_json_tmp.keys():
         for key1 in data_json_tmp[key0].keys():
@@ -75,7 +76,7 @@ def evaluate_specific_diagnosis(data_json):
                     if len(specific_diagnoses) == 1:
                         value = specific_diagnoses[0]
                     elif len(specific_diagnoses) > 1:
-                        value = 'MANUAL_REVIEW'
+                        value = manual_review
                     else:
                         value = None
                     if value is not None:
@@ -87,10 +88,10 @@ def evaluate_specific_diagnosis(data_json):
     return data_json
 
 #
-class Evaluator(object):
+class Evaluator(Evaluator_base):
     
     #
-    def evaluate(self, evaluation_manager, nlp_value, validation_value,
+    def run_object(self, evaluation_manager, nlp_value, validation_value,
                  display_flg):
         return _evaluate(evaluation_manager, nlp_value, validation_value,
                          display_flg)
@@ -130,7 +131,7 @@ class Postprocessor(Postprocessor_base):
         return extracted_data_dict
     
     #
-    def run_postprocessor(self):
-        Postprocessor_base.run_postprocessor(self,
+    def run_object(self):
+        Postprocessor_base.run_object(self,
                                              query_name='SPECIFIC_DIAGNOSIS',
                                              section_name='(COMMENT|NOTE|SUMMARY)')

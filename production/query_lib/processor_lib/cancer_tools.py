@@ -141,13 +141,18 @@ def numeric_stage():
 
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
         
     #
     def process_abbreviations(self):
         pass
         
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.lambda_conversion('MDS / MPN', text, 'MDS/MPN')
         text = sequential_composition([_process_irregular_initialisms,

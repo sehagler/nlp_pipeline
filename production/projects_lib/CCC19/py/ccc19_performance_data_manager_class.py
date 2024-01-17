@@ -17,22 +17,14 @@ class CCC19_performance_data_manager(Performance_data_manager):
     
     #
     def __init__(self, static_data_object, logger_object, evaluation_manager,
-                 json_manager_registry, metadata_manager,
-                 xls_manager_registry):
+                 json_manager_registry, metadata_manager, xls_manager_registry,
+                 specimens_manager):
         Performance_data_manager.__init__(self, static_data_object,
                                           logger_object, evaluation_manager,
                                           json_manager_registry,
                                           metadata_manager,
-                                          xls_manager_registry)
-        static_data = self.static_data_object.get_static_data()
-        if static_data['project_subdir'] == 'test':
-            self.identifier_key = 'SOURCE_SYSTEM_DOCUMENT_ID'
-            validation_filename = static_data['validation_file']
-            directory_manager = static_data['directory_manager']
-            data_dir = directory_manager.pull_directory('raw_data_dir')
-            filename = os.path.join(data_dir, validation_filename)
-            self.xls_manager_registry[filename].read_validation_data()
-            self.queries = static_data['queries_list']
+                                          xls_manager_registry,
+                                          specimens_manager)
     
     #
     def _validation_datum_keys(self):

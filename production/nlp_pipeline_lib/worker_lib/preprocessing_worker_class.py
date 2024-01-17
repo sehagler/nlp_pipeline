@@ -17,13 +17,14 @@ from tools_lib.processing_tools_lib.function_processing_tools \
 class Preprocessing_worker(Worker_base):
     
     #
-    def __init__(self, static_data_object, logger_object,
-                 preprocessor_registry, nlp_tool_manager_registry):
+    def __init__(self, static_data_object, logger_object, deidentifier_object,
+                 preprocessor_registry, nlp_tool_registry):
         Worker_base.__init__(self, static_data_object, logger_object)
+        self.deidentifier_object = deidentifier_object
         self.preprocessor_registry = preprocessor_registry
-        self.nlp_tool_manager_registry = nlp_tool_manager_registry
+        self.nlp_tool_registry = nlp_tool_registry
         static_data = self.static_data_object.get_static_data()
-        self.directory_manager = static_data['directory_manager']
+        self.deidentifier_flg = static_data['deidentifier_flg']
         self.server = static_data['acc_server'][2]
         self.user = static_data['user']
         
@@ -47,27 +48,15 @@ class Preprocessing_worker(Worker_base):
     #
     def _generate_files(self, argument_dict):
         document_dict = argument_dict['document_dict']
-        linguamatics_outdir = \
-            self.directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
+        linguamatics_i2e_preprocessing_data_out_dir = \
+            argument_dict['linguamatics_i2e_preprocessing_data_out_dir']
         linguamatics_i2e_object = \
-            self.nlp_tool_manager_registry.get_manager('linguamatics_i2e_object')
+            self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         for document_idx in document_dict.keys():
             generate_data_file_ret_val = \
-                linguamatics_i2e_object.create_source_data_file(linguamatics_outdir,
+                linguamatics_i2e_object.create_source_data_file(linguamatics_i2e_preprocessing_data_out_dir,
                                                                 document_idx,
                                                                 document_dict)
-            '''
-            melax_clamp_manager = \
-                self.nlp_tool_manager_registry.get_manager('melax_clamp_manager')
-            generate_data_file_ret_val = \
-                melax_clamp_manager.create_source_data_file(document_idx,
-                                                            processed_report_text)
-            ohsu_nlp_template_manager = \
-                self.nlp_tool_manager_registry.get_manager('ohsu_nlp_template_manager')
-            generate_data_file_ret_val = \
-                ohsu_nlp_template_manager.create_source_data_file(document_idx,
-                                                                  processed_report_text)
-            '''
 
     #
     def _preprocess_document(self, dynamic_data_manager, document_idx,
@@ -75,17 +64,20 @@ class Preprocessing_worker(Worker_base):
         now = datetime.datetime.now()
         document_start_datetime = \
             now.strftime("%d-%b-%y %H:%M:%S.%f") [:-3]
-        dynamic_data_manager, processed_raw_text, \
-        processed_report_text = \
+        deidentified_raw_text = \
+            self.deidentifier_object.deidentify(text_item,
+                                                self.deidentifier_flg)
+        dynamic_data_manager, processed_report_text = \
             self.preprocessor_registry.run_registry(dynamic_data_manager,
-                                                    text_item, source_system)
+                                                    deidentified_raw_text,
+                                                    source_system)
         now = datetime.datetime.now()
         document_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         nlp_metadata['DOCUMENT_PREPROCESSING_START_DATETIME'] = \
             document_start_datetime
         nlp_metadata['DOCUMENT_PREPROCESSING_END_DATETIME'] = \
             document_end_datetime
-        return dynamic_data_manager, nlp_metadata, processed_raw_text, processed_report_text
+        return dynamic_data_manager, nlp_metadata, deidentified_raw_text, processed_report_text
     
     #
     def _preprocess_documents(self, dynamic_data_manager, start_idx, password):
@@ -131,6 +123,8 @@ class Preprocessing_worker(Worker_base):
     def _process_data(self, argument_dict):
         self.i2e_version = argument_dict['i2e_version'] 
         dynamic_data_manager = argument_dict['dynamic_data_manager']
+        linguamatics_i2e_preprocessing_data_out_dir = \
+            argument_dict['linguamatics_i2e_preprocessing_data_out_dir']
         metadata_manager = argument_dict['metadata_manager'] 
         self.num_processes = argument_dict['num_processes']
         self.process_idx = argument_dict['process_idx']
@@ -142,6 +136,8 @@ class Preprocessing_worker(Worker_base):
                                        password)
         argument_dict = {}
         argument_dict['document_dict'] = document_dict
+        argument_dict['linguamatics_i2e_preprocessing_data_out_dir'] = \
+            linguamatics_i2e_preprocessing_data_out_dir
         argument_dict['metadata_manager'] = metadata_manager
         return_dict = \
             parallel_composition([self._update_metadata_manager,

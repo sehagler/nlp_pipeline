@@ -47,7 +47,7 @@ class Postprocessor(Postprocessor_base):
     def _process_smoking_status_text_list(self, smoking_status_text_list):
         value_list = []
         for text in smoking_status_text_list:
-            value = 'MANUAL_REVIEW'
+            value = self.manual_review
             if re.search('(?i)(abstain|quit)', text) is not None:
                 value = 'former smoker'
             if re.search('(?i)current ([a-z]+ ){0,3}(:|hx|smoker)', text) is not None:

@@ -6,7 +6,6 @@ Created on Fri Feb 15 12:32:58 2019
 """
 
 #
-import os
 import re
 
 #
@@ -56,3 +55,7 @@ class Postprocessor(Postprocessor_base):
                 value_dict_list.append(value_dict)
             extracted_data_dict[key] = value_dict_list
         return extracted_data_dict
+    
+    #
+    def push_diagnosis_reader(self, diagnosis_reader):
+        self.diagnosis_reader = diagnosis_reader

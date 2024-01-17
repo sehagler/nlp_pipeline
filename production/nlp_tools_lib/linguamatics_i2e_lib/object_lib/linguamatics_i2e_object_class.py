@@ -34,6 +34,8 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 #
+from nlp_tools_lib.linguamatics_i2e_lib.object_lib.linguamatics_i2e_file_object_class \
+    import Linguamatics_i2e_file_object
 from nlp_tools_lib.linguamatics_i2e_lib.check_queries \
     import QuerySetFixer, get_logger, yaml_constructor
 from tools_lib.processing_tools_lib.file_processing_tools \
@@ -53,12 +55,12 @@ logger = logging.getLogger()
 class Linguamatics_i2e_object(object):
     
     #
-    def __init__(self, linguamatics_i2e_file_manager, server_manager,
-                 project_name, server, user, password):
+    def __init__(self, server_manager, project_name, server, user, password):
         self.server_manager = server_manager
         self.server = server
         self.user = user
-        self.linguamatics_i2e_file_manager = linguamatics_i2e_file_manager
+        self.linguamatics_i2e_file_object = \
+            Linguamatics_i2e_file_object(project_name, user)
         self.license_pool = 'admin'
         self.query_bundle_path = \
             '/Repository/Saved Queries/__private__/' + user + '/'
@@ -67,12 +69,12 @@ class Linguamatics_i2e_object(object):
             "/api;type=index_template/" + project_name
         self.i2e_resources_dict['region_list'] = \
             "/api;type=region_list/" + \
-            self.linguamatics_i2e_file_manager.filename('regions')
+            self.linguamatics_i2e_file_object.filename('regions')
         self.i2e_resources_dict['source_data'] = \
             "/api;type=source_data/" + project_name
         self.i2e_resources_dict['xml_and_html_config_file'] = \
             '/api;type=xml_and_html_config_file/' + \
-            self.linguamatics_i2e_file_manager.filename('xmlconf')
+            self.linguamatics_i2e_file_object.filename('xmlconf')
         self.i2e_server = I2EServer(server)
         self.i2e_user = I2EUser(user, password)
         self.connection_settings = ClientConnectionSettings.create()           
@@ -139,7 +141,7 @@ class Linguamatics_i2e_object(object):
     #
     def _generate_source_data_file(self, project_name, preprocessing_data_out_dir,
                                    source_data_dir, max_files_per_zip):
-        source_data_filename = self.linguamatics_i2e_file_manager.source_data_filename()
+        source_data_filename = self.linguamatics_i2e_file_object.source_data_filename()
         data_files = [os.path.join(preprocessing_data_out_dir, file) \
                       for file in os.listdir(preprocessing_data_out_dir) \
                       if os.path.splitext(file)[1] == '.xml']
@@ -177,20 +179,20 @@ class Linguamatics_i2e_object(object):
     #
     def _prepare_keywords_file(self, keywords_file, keywords_tmp_file):
         self.server_manager.open_ssh_client()
-        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
         self.server_manager.close_ssh_client()
-        shutil.copyfile(keywords_file, self.linguamatics_i2e_file_manager.server_file('keywords'))
+        shutil.copyfile(keywords_file, self.linguamatics_i2e_file_object.server_file('keywords'))
         self.server_manager.open_ssh_client()
-        self.server_manager.exec_sudo_command('chmod 644 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chmod 644 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
         self.server_manager.close_ssh_client()
         
     #
     def _prepare_keywords_file_ssh(self, keywords_file, keywords_tmp_file):
         self.server_manager.open_ssh_client()
         self.server_manager.push_file(keywords_file, keywords_tmp_file)
-        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_manager.server_file('keywords'))
+        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_object.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_object.server_file('keywords'))
         self.server_manager.close_ssh_client()
     
     #
@@ -366,8 +368,10 @@ class Linguamatics_i2e_object(object):
         request_maker.delete_resource(resource)
         
     #
-    def fix_queries(self, queries_dir):
-        ret_val = self._fix_queries(queries_dir)
+    def fix_queries(self):
+        self._fix_queries(self.linguamatics_i2e_common_queries_dir)
+        self._fix_queries(self.linguamatics_i2e_general_queries_dir)
+        self._fix_queries(self.linguamatics_i2e_project_queries_dir)
 
     #
     def folder_downloader(self, query_folder, local_destination):
@@ -404,35 +408,30 @@ class Linguamatics_i2e_object(object):
     
     #
     def generate_query_bundle_file(self, project_name,
-                                   processing_data_dir,
-                                   common_queries_source_dir,
-                                   general_queries_source_dir,
-                                   project_queries_source_dir,
                                    max_files_per_zip):
         dest_path_base = self.query_bundle_path
-        filename = os.path.join(processing_data_dir,
-                                self.linguamatics_i2e_file_manager.query_bundle_filename())
+        filename = os.path.join(self.processing_data_dir,
+                                self.linguamatics_i2e_file_object.query_bundle_filename())
         remove_file(filename)
         common_dest_path_base = dest_path_base + 'Common'
         self._generate_query_bundle_file_component(filename,
-                                                   common_queries_source_dir,
+                                                   self.linguamatics_i2e_common_queries_dir,
                                                    common_dest_path_base,
                                                    max_files_per_zip)
         general_dest_path_base = dest_path_base + 'General'
         self._generate_query_bundle_file_component(filename,
-                                                   general_queries_source_dir,
+                                                   self.linguamatics_i2e_general_queries_dir,
                                                    general_dest_path_base,
                                                    max_files_per_zip)
         project_dest_path_base = dest_path_base + project_name
         self._generate_query_bundle_file_component(filename,
-                                                   project_queries_source_dir,
+                                                   self.linguamatics_i2e_project_queries_dir,
                                                    project_dest_path_base,
                                                    max_files_per_zip)
     
     #
-    def generate_regions_file(self, preprocessing_data_out_dir,
-                              processing_data_dir):
-        self._read_file_metadata(preprocessing_data_out_dir)
+    def generate_regions_file(self):
+        self._read_file_metadata(self.linguamatics_i2e_preprocessing_data_out_dir)
         text = []
         text.append('hc.metadata\t\"Record Metadata\"\t-\tnonleaf\n')
         for key in self.metadata_keys:
@@ -459,14 +458,13 @@ class Linguamatics_i2e_object(object):
         text.append('\tlinguamatics.relativepath\t"Relative Path"\tlinguamatics.metadata\tleaf,shadow\n')
         text.append('\tlinguamatics.sourcetype\t"Source Type"\tlinguamatics.metadata\tleaf,shadow\n')
         text = ''.join(text)
-        filename = os.path.join(processing_data_dir,
-                                self.linguamatics_i2e_file_manager.regions_filename())
+        filename = os.path.join(self.processing_data_dir,
+                                self.linguamatics_i2e_file_object.regions_filename())
         write_file(filename, text, False, False)
         
     #
-    def generate_xml_configuation_file(self, preprocessing_data_out_dir,
-                                       processing_data_dir):
-        self._read_file_metadata(preprocessing_data_out_dir)
+    def generate_xml_configuation_file(self):
+        self._read_file_metadata(self.linguamatics_i2e_preprocessing_data_out_dir)
         text = []
         text.append('split Report\n')
         text.append('\n')
@@ -504,8 +502,8 @@ class Linguamatics_i2e_object(object):
         text.append('regions\n')
         text.append('include\t*\t0\n')
         text = ''.join(text)
-        filename = os.path.join(processing_data_dir,
-                                self.linguamatics_i2e_file_manager.xmlconf_filename())
+        filename = os.path.join(self.processing_data_dir,
+                                self.linguamatics_i2e_file_object.xmlconf_filename())
         write_file(filename, text, False, False)
         
     #
@@ -577,15 +575,44 @@ class Linguamatics_i2e_object(object):
         print("Task status is %s" % monitor.get_status())
         
     #
-    def push_resources(self, project_name, keywords_file, preprocessing_data_out_dir, 
-                       processing_data_dir, source_data_dir, max_files_per_zip,
+    def push_linguamatics_i2e_common_queries_directory(self, directory):
+        self.linguamatics_i2e_common_queries_dir = directory
+        
+    #
+    def push_linguamatics_i2e_general_queries_directory(self, directory):
+        self.linguamatics_i2e_general_queries_dir = directory
+        
+    #
+    def push_linguamatics_i2e_project_queries_directory(self, directory):
+        self.linguamatics_i2e_project_queries_dir = directory
+        
+    #
+    def push_linguamatics_i2e_preprocessing_data_out_directory(self, directory):
+        self.linguamatics_i2e_preprocessing_data_out_dir = directory
+        
+    #
+    def push_processing_data_directory(self, directory):
+        self.processing_data_dir = directory
+        
+    #
+    def push_queries(self):
+        try:
+            bundle = os.path.join(self.processing_data_dir,
+                                  self.linguamatics_i2e_file_object.query_bundle_filename())
+            self.upload_bundle(bundle)
+        except Exception:
+            traceback.print_exc()
+        
+    #
+    def push_resources(self, project_name, keywords_file, max_files_per_zip,
                        root_dir_flg):
-        self._generate_source_data_file(project_name, preprocessing_data_out_dir,
-                                        source_data_dir, max_files_per_zip)
+        self._generate_source_data_file(project_name, 
+                                        self.linguamatics_i2e_preprocessing_data_out_dir,
+                                        self.source_data_dir, max_files_per_zip)
         self._put_keywords_file(root_dir_flg, keywords_file)
         for resource in [ 'regions', 'source_data', 'xmlconf' ]:
-            filename = os.path.join(processing_data_dir,
-                                    self.linguamatics_i2e_file_manager.filename(resource))
+            filename = os.path.join(self.processing_data_dir,
+                                    self.linguamatics_i2e_file_object.filename(resource))
             if resource == 'regions':
                 resource_type = 'region_list'
             elif resource == 'source_data':
@@ -597,10 +624,11 @@ class Linguamatics_i2e_object(object):
             except Exception:
                 traceback.print_exc()
             if resource_type == 'source_data':
-                for source_data_file in sorted(os.listdir(source_data_dir)):
+                for source_data_file in sorted(os.listdir(self.source_data_dir)):
                     try:
                         self.create_resource(project_name, resource_type,
-                                             os.path.join(source_data_dir, source_data_file))
+                                             os.path.join(self.source_data_dir,
+                                                          source_data_file))
                     except Exception:
                         traceback.print_exc()
             else:
@@ -608,15 +636,10 @@ class Linguamatics_i2e_object(object):
                     self.create_resource(None, resource_type, filename)
                 except Exception:
                     traceback.print_exc()
-            
+                    
     #
-    def push_queries(self, processing_data_dir):
-        try:
-            bundle = os.path.join(processing_data_dir,
-                                  self.linguamatics_i2e_file_manager.query_bundle_filename())
-            self.upload_bundle(bundle)
-        except Exception:
-            traceback.print_exc()
+    def push_source_data_directory(self, directory):
+        self.source_data_dir = directory
             
     #
     def set_index_configuration(self, project_name):

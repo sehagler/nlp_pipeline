@@ -11,21 +11,18 @@ import os
 import re
 
 #
-from base_lib.manager_base_class import Manager_base
-from tools_lib.regex_lib.regex_tools import regex_from_list
-from tools_lib.processing_tools_lib.file_processing_tools \
-    import read_xlsx_file, write_file, xml_diff
-from base_lib.postprocessor_base_class \
-    import Postprocessor_base
+from base_lib.postprocessor_base_class import Postprocessor_base
+from nlp_tools_lib.ohsu_nlp_template_lib.object_lib.AB_fields_object_class \
+    import AB_fields_object
 from query_lib.processor_lib.cancer_tools \
     import get_initialisms, nonnumeric_stage, numeric_stage
+from tools_lib.regex_lib.regex_tools import regex_from_list
     
 #
-class AB_fields_template_manager(Manager_base):
+class AB_fields_object(AB_fields_object):
     
     #
-    def __init__(self, static_data_object, logger_object):
-        Manager_base.__init__(self, static_data_object, logger_object)
+    def __init__(self):
         self.xls_manager = None
         self._get_secondary_template_list()
         self.blank_space = ' NLP_BLANK_SPACE '
@@ -97,10 +94,6 @@ class AB_fields_template_manager(Manager_base):
         return self.xls_manager.column('ANNOTATED_CANCER_STAGE_EXTRACT')
     
     #
-    def pull_training_data_file(self):
-        return self.training_data_file
-    
-    #
     def push_primary_template_list(self, AB_field_list, BA_field_list):
         self.AB_field_list = AB_field_list
         self.BA_field_list = BA_field_list
@@ -122,12 +115,8 @@ class AB_fields_template_manager(Manager_base):
     
     #
     def template(self):
-        static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        template_outlines_dir = \
-            directory_manager.pull_directory('template_outlines_dir')
         filename = 'cancer_stage_template_outline.txt'
-        with open(os.path.join(template_outlines_dir, filename), 'r') as f:
+        with open(os.path.join(self.template_outlines_dir, filename), 'r') as f:
             primary_template_str = f.read()
         primary_template_list = \
             ast.literal_eval(primary_template_str)
@@ -232,5 +221,5 @@ class Postprocessor(Postprocessor_base):
             if len(cancer_stage_text_processed) == 1:
                 histologic_stage_text_list[i] = cancer_stage_text_processed[0]
             else:
-                histologic_stage_text_list[i] = 'MANUAL_REVIEW'
+                histologic_stage_text_list[i] = self.manual_review
         return histologic_stage_text_list

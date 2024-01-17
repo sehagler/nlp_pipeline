@@ -43,6 +43,7 @@ class BeatAML_Waves_1_And_2_static_data_object(Static_data_object):
         self.static_data['remove_date'] = False
         self.static_data['validation_file'] = 'Sup Table 5 Clinical summary.xlsx'
         if self.project_subdir == 'test':
+            self.static_data['deidentifier_flg'] = True
             self.static_data['raw_data_files'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls'] = {}
             self.static_data['raw_data_files']['Beaker Results.xls']['DATETIME_FORMAT'] = '%m/%d/%Y'
@@ -65,14 +66,19 @@ class BeatAML_Waves_1_And_2_static_data_object(Static_data_object):
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['DATETIME_KEY'] = 'SPECIMEN_COLL_DT'
             self.static_data['raw_data_files']['Beaker Chromosome Reports.xls']['NLP_MODE'] = 'CASE_NUMBER'
         else:
+            self.static_data['deidentifier_flg'] = False
             if isinstance(self.project_subdir, str):
                 print('Bad project_subdir value: ' + self.project_subdir)
             elif self.project_subdir is None:
                 print('Bad project_subdir value: None')
         
         #
-        raw_data_dir = \
-            self.static_data['directory_manager'].pull_directory('raw_data_dir')
+        if self.project_subdir is not None:
+            raw_data_dir = \
+                '/home/groups/hopper2/RDW_NLP_WORKSPACE/NLP/NLP_Source_Data/BeatAML_Waves_1_And_2'
+            raw_data_dir += '/' + self.project_subdir
+        else:
+            raw_data_dir = None
         if raw_data_dir is not None:
             raw_data_dir = raw_data_dir + '/pkl'
             pkl_file = os.path.join(raw_data_dir, 'training_groups.pkl')

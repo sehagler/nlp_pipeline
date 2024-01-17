@@ -58,22 +58,13 @@ urllib3.disable_warnings()
 class Output_manager(Manager_base):
 
     #
-    def __init__(self, static_data_object, metadata_manager):
-        Manager_base.__init__(self, static_data_object)
+    def __init__(self, static_data_object, logger_object, metadata_manager):
+        Manager_base.__init__(self, static_data_object, logger_object)
         self.metadata_manager = metadata_manager
         static_data = self.static_data_object.get_static_data()
         self.project_name = static_data['project_name']
         self.merged_data_dict_list = []
         self.data_dict_classes_list = []
-        self._set_data_dirs()
-    
-    #
-    def _set_data_dirs(self):
-        static_data = self.static_data_object.get_static_data()
-        directory_manager = static_data['directory_manager']
-        self.preprocessing_data_out = \
-            directory_manager.pull_directory('linguamatics_i2e_preprocessing_data_out')
-        self.data_out = directory_manager.pull_directory('postprocessing_data_out')
     
     #
     def append(self, data_dict):
@@ -133,3 +124,11 @@ class Output_manager(Manager_base):
                                                  data_dict[self.nlp_data_key][data_key])
             merged_data_dict_list.append(merged_dict)
         self.merged_data_dict_list = merged_data_dict_list
+        
+    #
+    def push_linguamatics_i2e_preprocessing_data_out_dir(self, directory):
+        self.preprocessing_data_out = directory
+        
+    #
+    def push_postprocessing_data_out_dir(self, directory):
+        self.data_out = directory

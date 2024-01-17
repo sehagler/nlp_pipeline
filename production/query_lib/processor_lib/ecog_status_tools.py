@@ -89,16 +89,21 @@ class Postprocessor(Postprocessor_base):
             if len(status_val_list) == 1:
                 score_processed = status_val_list[0]
             else:
-                score_processed = 'MANUAL_REVIEW'
+                score_processed = self.manual_review
             processed_score_list.append(score_processed)
         return processed_score_list
         
     
 #
 class Preprocessor(object):
+
+    #
+    def __init__(self, static_data_object, logger_object):
+        self.static_data_object = static_data_object
+        self.logger_object = logger_object
     
     #
-    def run_preprocessor(self, text):
+    def run_object(self, text):
         text = \
             lambda_tools.lambda_conversion('(?<!{ )ecog(' + colon() + '| )((performance )?(status|score)|ps)?',
                                            text, 'ECOG (ZUBROD) ')
