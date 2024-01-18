@@ -78,9 +78,10 @@ class Pipeline_object(object):
                                                  self.logger_object)
         
     #
-    def _create_registries(self):
+    def _create_registries(self, password):
         self.remote_registry = \
-            Remote_registry(self.static_data_object, self.logger_object)
+            Remote_registry(self.static_data_object, None, self.logger_object,
+                            None, password)
             
     #
     def _data_set_summary_info(self):
@@ -151,13 +152,7 @@ class Pipeline_object(object):
         
     #
     def _register_objects(self, root_dir, password):
-        self.remote_registry.register_server_manager(self.static_data_object,
-                                                     self.logger_object,
-                                                     password)
-        self.remote_registry.register_update_manager(self.static_data_object, 
-                                                     self.update_static_data_object,
-                                                     self.logger_object,
-                                                     root_dir, password)
+        pass
     
     #
     def cleanup_directory(self, directory_label):
@@ -263,7 +258,7 @@ class Pipeline_object(object):
         self._project_imports(server, root_dir, project_name)
         self._create_objects(server, root_dir, project_subdir, user, password)
         self._create_managers()
-        self._create_registries()
+        self._create_registries(password)
         self._push_directories()
         self._register_objects(root_dir, password)
         self.process_manager = Process_manager(self.static_data_object,

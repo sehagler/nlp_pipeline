@@ -18,8 +18,9 @@ class Remote_registry(Registry_base):
         Registry_base.__init__(self, static_data_object, logger_object)
         self._register_server_manager(static_data_object, logger_object,
                                      password)
-        self._register_update_manager(update_static_data_object, logger_object,
-                                      root_dir, password)
+        if update_static_data_object is not None:
+            self._register_update_manager(update_static_data_object,
+                                          logger_object, root_dir, password)
     
     #
     def _register_server_manager(self, static_data_object, logger_object,
