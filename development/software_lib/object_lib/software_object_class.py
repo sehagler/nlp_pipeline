@@ -14,7 +14,7 @@ from nlp_pipeline_lib.object_lib.directory_lib.directory_object_class \
     import Directory_object
 from nlp_pipeline_lib.object_lib.logger_lib.logger_object_class \
     import Logger_object
-from nlp_pipeline_lib.registry_lib.remote_lib.remote_registry_class \
+from nlp_pipeline_lib.registry_lib.remote_registry_class \
     import Remote_registry
 from static_data_lib.object_lib.static_data_object_class \
     import Static_data_object
@@ -27,7 +27,7 @@ class Software_object(object):
         self.root_dir = root_dir
         self._create_objects(None, root_dir, None, user, password)
         self._create_registries(root_dir, password)
-        self.server_manager = self.remote_registry.get_object('update_manager')
+        self.server_manager = self.remote_registry.pull_object('update_manager')
         
     #
     def _cleanup_nlp_software(self, software_dir):
@@ -75,9 +75,8 @@ class Software_object(object):
     #
     def _create_registries(self, root_dir, password):
         self.remote_registry = \
-            Remote_registry(self.static_data_object, 
-                            self.update_static_data_object,
-                            self.directory_object, self.logger_object,
+            Remote_registry(self.static_data_object,
+                            self.update_static_data_object, self.logger_object,
                             root_dir, password)        
         
     #
