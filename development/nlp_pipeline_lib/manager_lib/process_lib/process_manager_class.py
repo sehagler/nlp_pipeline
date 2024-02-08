@@ -663,12 +663,15 @@ class Process_manager(Manager_base):
     def linguamatics_i2e_indexer(self):
         static_data = self.static_data_object.get_static_data()
         project_name = static_data['project_name']
+        project_subdir = static_data['project_subdir']
+        user = static_data['user']
         now = datetime.datetime.now()
         self.index_start_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         linguamatics_i2e_object = \
             self.nlp_tool_registry.pull_object('linguamatics_i2e_object')
         linguamatics_i2e_object.login()
-        linguamatics_i2e_object.make_index_runner(project_name)
+        linguamatics_i2e_object.make_index_runner(project_name, project_subdir,
+                                                  user)
         linguamatics_i2e_object.logout()
         now = datetime.datetime.now()
         self.index_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]

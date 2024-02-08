@@ -78,7 +78,7 @@ class Linguamatics_i2e_object(object):
         self.i2e_server = I2EServer(server)
         self.i2e_user = I2EUser(user, password)
         self.connection_settings = ClientConnectionSettings.create()
-        self.connection_settings.disable_ssl_verification()           
+        self.connection_settings.disable_ssl_verification()         
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
@@ -561,19 +561,44 @@ class Linguamatics_i2e_object(object):
         self.conn.logout()
 
     #
-    def make_index_runner(self, project_name):
+    def make_index_runner(self, project_name, project_subdir, user):
+        request_maker = RequestMaker(self.conn)
         index_template = self.i2e_resources_dict['index_template']
         print('Making I2E index ' + project_name)
         template = Resource(index_template)
-        source_data_path = Resource("/api;type=source_data/%s" %
-                                    project_name)
         task_launcher = TaskLauncher(self.conn)
         index_config = task_launcher.create_index_configuration()
+        #region_list_path = Resource("/api;type=region_list/%s" %
+        #                            project_name)
+        #index_config.set_region_list(region_list_path)
+        source_data_path = Resource("/api;type=source_data/%s" %
+                                    project_name)
         index_config.set_source_data(source_data_path)
+        #xml_or_html_config_path = Resource("/api;type=xml_and_html_config/%s" %
+        #                                   project_name)
+        #index_config.set_xml_or_html_config(xml_or_html_config_path)
         monitor = task_launcher.make_index(template, index_config)
         while monitor.is_running():
             time.sleep(5)
         print("Task status is %s" % monitor.get_status())
+        '''
+        index_resource = monitor.get_created_indexes()
+        print(len(index_resource))
+        index_name = str(index_resource[0])
+        index_name = re.sub('/api;type=index/','', index_name)
+        index_name = re.sub('/Part_*', '', index_name)
+        index_name = index_name[:-1]
+        if project_subdir == 'test':
+            publication_uri = '/api;type=published_index/__private__%2f' + user + '/' + index_name
+        elif project_subdir == 'production':
+            publication_uri = '/api;type=published_index/All/' + index_name
+        else:
+            print('Bad project_subdir')
+        published_resource = Resource(publication_uri)
+        published_response = request_maker.copy_resource(index_resource[0],
+                                                         published_resource)
+        print (published_response)
+        '''
         
     #
     def push_linguamatics_i2e_common_queries_directory(self, directory):
@@ -642,11 +667,16 @@ class Linguamatics_i2e_object(object):
     def push_source_data_directory(self, directory):
         self.source_data_dir = directory
             
+    '''
     #
     def set_index_configuration(self, project_name):
         index_config = MakeIndexConfiguration()
+        index_config.set_publishing_path("api;type=publishing_path/__private__/" + 'mccoyda')
+        index_config.set_region_list("/api;type=region_list/" + project_name)
         index_config.set_source_data("/api;type=source_data/" + project_name)
-            
+        index_config.set_xml_or_html_config("/api;type=xml_or_html_config/" + project_name)
+    '''        
+   
     #
     def upload_bundle(self, bundle):
         
