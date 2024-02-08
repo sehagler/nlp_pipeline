@@ -77,7 +77,8 @@ class Linguamatics_i2e_object(object):
             self.linguamatics_i2e_file_object.filename('xmlconf')
         self.i2e_server = I2EServer(server)
         self.i2e_user = I2EUser(user, password)
-        self.connection_settings = ClientConnectionSettings.create()           
+        self.connection_settings = ClientConnectionSettings.create()
+        self.connection_settings.disable_ssl_verification()           
         self.conn = I2EConnection(self.i2e_server, self.i2e_user,
                                   connection_settings=self.connection_settings,
                                   license_pool=self.license_pool)
