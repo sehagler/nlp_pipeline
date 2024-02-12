@@ -18,7 +18,13 @@ project_names=("AdverseEvants" \
 "KDLReports" \
 "NewBiomarkers" \
 "OhsuNlpTemplate")
-			
-nohup python3 -u ../NLP_Software/development/nlp_analysis.py -mode pipeline \
--server ${servers[0]} -subdir ${subdirs[1]} -pipeline_mode ${pipeline_modes[1]} \
--project_name ${project_names[1]} &> nlp_analysis.out
+	
+if false ; then
+	nohup python3 -u ../NLP_Software/development/nlp_analysis.py -mode pipeline \
+	-server ${servers[0]} -subdir ${subdirs[1]} -pipeline_mode ${pipeline_modes[4]} \
+	-project_name ${project_names[3]} &> nlp_analysis.out
+else
+	nohup python3 -u ../NLP_Software/production/nlp_analysis.py -mode pipeline \
+	-server ${servers[1]} -subdir ${subdirs[1]} -pipeline_mode ${pipeline_modes[1]} \
+	-project_name ${project_names[3]} &> nlp_analysis.out
+fi
