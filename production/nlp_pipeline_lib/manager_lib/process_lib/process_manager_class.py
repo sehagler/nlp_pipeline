@@ -782,7 +782,7 @@ class Process_manager(Manager_base):
                              '_AB_fields/' + filename + field + '.i2qy'
                 txt_file = self.directory_object.pull_directory('ab_fields_text_dir') + \
                            '/' + filename + '_AB_fields/' + filename + field + '.txt'
-                linguamatics_i2e_object.insert_field(i2qy_file, txt_file) 
+                linguamatics_i2e_object.insert_field(i2qy_file, txt_file)
         linguamatics_i2e_object.logout()
         
     #
