@@ -180,11 +180,9 @@ class Linguamatics_i2e_object(object):
     #
     def _prepare_keywords_file(self, keywords_file, keywords_tmp_file):
         self.server_manager.open_ssh_client()
+        self.server_manager.exec_sudo_command('cp ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_object.server_file('keywords'))
         self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.close_ssh_client()
-        shutil.copyfile(keywords_file, self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.open_ssh_client()
-        self.server_manager.exec_sudo_command('chmod 644 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_object.server_file('keywords'))
         self.server_manager.close_ssh_client()
         
     #
