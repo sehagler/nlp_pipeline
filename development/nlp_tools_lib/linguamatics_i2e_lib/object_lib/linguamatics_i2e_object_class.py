@@ -16,7 +16,8 @@ from i2e.wsapi.common import (ClientConnectionSettings, I2EConnection,
                               I2EServer, I2EUser, RequestMaker,
                               RequestConfiguration)
 from i2e.wsapi.serialize import Resource
-from i2e.wsapi.task import MakeIndexConfiguration, QueryConfiguration, TaskLauncher
+from i2e.wsapi.task \
+    import MakeIndexConfiguration, QueryConfiguration, TaskLauncher
 from io import open
 import json
 import logging
@@ -176,31 +177,17 @@ class Linguamatics_i2e_object(object):
             text_tmp = tuple([ target_in_text, text_in[start:stop] ])
             text.append(text_tmp)
         return text
-        
-    #
-    def _prepare_keywords_file(self, keywords_file, keywords_tmp_file):
-        self.server_manager.open_ssh_client()
-        self.server_manager.exec_sudo_command('cp ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.close_ssh_client()
-        
-    #
-    def _prepare_keywords_file_ssh(self, keywords_file, keywords_tmp_file):
-        self.server_manager.open_ssh_client()
-        self.server_manager.push_file(keywords_file, keywords_tmp_file)
-        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_object.server_file('keywords'))
-        self.server_manager.close_ssh_client()
     
     #
     def _put_keywords_file(self, root_dir_flg, keywords_file):
         keywords_tmp_file = '/tmp/keywords_default.txt'
+        self.server_manager.open_ssh_client()
         if root_dir_flg in ''.join([ 'X', 'Z' ]):
-            self._prepare_keywords_file_ssh(keywords_file, keywords_tmp_file)
-        elif root_dir_flg in ''.join([ 'dev_server', 'prod_server' ]):
-            self._prepare_keywords_file(keywords_file, keywords_tmp_file)
+            self.server_manager.push_file(keywords_file, keywords_tmp_file)
+        self.server_manager.exec_sudo_command('mv ' + keywords_tmp_file + ' ' + self.linguamatics_i2e_file_object.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chmod 664 ' + self.linguamatics_i2e_file_object.server_file('keywords'))
+        self.server_manager.exec_sudo_command('chown i2e:i2e ' + self.linguamatics_i2e_file_object.server_file('keywords'))
+        self.server_manager.close_ssh_client()
             
     #
     def _read_file_metadata(self, preprocessing_data_out_dir):
