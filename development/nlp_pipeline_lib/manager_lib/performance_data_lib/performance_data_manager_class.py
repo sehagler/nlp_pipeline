@@ -525,6 +525,8 @@ class Performance_data_manager(Manager_base):
             value = value.replace(')', '\')')
             value = value.replace('\'(', '(')
             value = value.replace(')\'', ')')
+            value = value.replace('\'', '\\\'')
+            value = value.replace('\"', '\\\"')
             try:
                 value_eval = '[\'' + value + '\']'
                 value_list = eval(value_eval)
