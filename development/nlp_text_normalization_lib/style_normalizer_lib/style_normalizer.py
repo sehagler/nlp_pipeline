@@ -43,8 +43,12 @@ def _normalize_abbreviation(text):
         lambda_tools.space_correction_lambda_conversion('laboratories', text, 'LABS')
     text = \
         lambda_tools.space_correction_lambda_conversion('laboratory', text, 'LAB')
-    #text = \
-    #    lambda_tools.space_correction_lambda_conversion('metastases', text, 'ets')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('medical record number', text, 'MRN')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('MRN \(', text, 'MRN ')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('(?<=MRN \d{8} )\)', text, '')
     text = \
         lambda_tools.space_correction_lambda_conversion('months', text, 'MOS')
     text = \
