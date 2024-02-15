@@ -44,12 +44,6 @@ def _normalize_abbreviation(text):
     text = \
         lambda_tools.space_correction_lambda_conversion('laboratory', text, 'LAB')
     text = \
-        lambda_tools.space_correction_lambda_conversion('medical record number', text, 'MRN')
-    text = \
-        lambda_tools.space_correction_lambda_conversion('MRN \(', text, 'MRN ')
-    text = \
-        lambda_tools.space_correction_lambda_conversion('(?<=MRN \d{8} )\)', text, '')
-    text = \
         lambda_tools.space_correction_lambda_conversion('months', text, 'MOS')
     text = \
         lambda_tools.space_correction_lambda_conversion('month', text, 'MO')
@@ -72,13 +66,19 @@ def _normalize_abbreviation(text):
     text = \
         lambda_tools.space_correction_lambda_conversion('year', text, 'YR')
     text = \
+        lambda_tools.space_correction_lambda_conversion('(?<=[0-9][\- ])yo(?= )', text, 'Y/O')
+    return text
+
+#
+def _normalize_age(text):
+    text = \
         lambda_tools.space_correction_lambda_conversion('yr?s?(' + minus_sign() + '|' + space() + ')old', text, 'Y/O')
     text = \
         lambda_tools.space_correction_lambda_conversion('y\.o\.', text, 'Y/O')
     text = \
-        lambda_tools.space_correction_lambda_conversion('(?<=[0-9])yo(?= )', text, 'Y/O')
+        lambda_tools.space_correction_lambda_conversion('(?<=[0-9])yo(?= )', text, ' Y/O')
     text = \
-        lambda_tools.space_correction_lambda_conversion('(?<=[0-9][\- ])yo(?= )', text, 'Y/O')
+        lambda_tools.space_correction_lambda_conversion('(?<=[0-9])( +)?-( +)?(?=Y/O)', text, ' ')
     return text
         
 #
@@ -137,6 +137,24 @@ def _normalize_less_than_sign(text):
         lambda_tools.lambda_conversion('less th(a|e)n', text, '<')
     text = \
         lambda_tools.lambda_conversion('up to( ~)?', text, '<')
+    return text
+
+#
+def _normalize_medical_record_number(text):
+    text = \
+        lambda_tools.space_correction_lambda_conversion('medical record (#|number)', text, 'MRN ')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('MRN +', text, 'MRN ')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('MRN \(', text, 'MRN ')
+    for i in [5, 6, 7, 8]:
+        text = \
+            lambda_tools.space_correction_lambda_conversion('(?<=MRN \d{' + str(i) + '} )\)', text, '')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('MRN \"', text, 'MRN ')
+    for i in [5, 6, 7, 8]:
+        text = \
+            lambda_tools.space_correction_lambda_conversion('(?<=MRN \d{' + str(i) + '} )(( \.)?\")', text, '')
     return text
 
 #
@@ -271,8 +289,10 @@ def style_normalizer(text):
                                    _normalize_slash,
                                    _normalize_tilde,
                                    _normalize_abbreviation,
+                                   _normalize_age,
                                    _normalize_credentials,
                                    _normalize_datetime,
+                                   _normalize_medical_record_number,
                                    _normalize_of,
                                    _normalize_per,
                                    _normalize_plural,
