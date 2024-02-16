@@ -44,9 +44,13 @@ def _normalize_abbreviation(text):
     text = \
         lambda_tools.space_correction_lambda_conversion('laboratory', text, 'LAB')
     text = \
+        lambda_tools.space_correction_lambda_conversion('m . d .', text, 'MD')
+    text = \
         lambda_tools.space_correction_lambda_conversion('months', text, 'MOS')
     text = \
         lambda_tools.space_correction_lambda_conversion('month', text, 'MO')
+    text = \
+        lambda_tools.space_correction_lambda_conversion('ph . d .', text, 'PHD')
     text = \
         lambda_tools.space_correction_lambda_conversion('patients', text, 'PTS')
     text = \
