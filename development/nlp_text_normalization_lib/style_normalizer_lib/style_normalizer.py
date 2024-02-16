@@ -128,6 +128,14 @@ def _normalize_greater_than_sign(text):
     text = \
         lambda_tools.lambda_conversion('(greater|more) th(a|e)n', text, '>')
     return text
+
+#
+def _normalize_kdl(text):
+    text = \
+        lambda_tools.lambda_conversion('kdl', text, 'KDL')
+    text = \
+        lambda_tools.lambda_conversion('knight diagnostic +lab(oratory)?', text, 'KDL')
+    return text
         
 #
 def _normalize_less_than_sign(text):
@@ -205,6 +213,14 @@ def _normalize_of(text):
         lambda_tools.lambda_conversion('(?<=[0-9])of', text, ' of')
     text = \
         lambda_tools.lambda_conversion('of(?=[0-9])', text, 'of ')
+    return text
+
+#
+def _normalize_ohsu(text):
+    text = \
+        lambda_tools.lambda_conversion('ohsu', text, 'OHSU')
+    text = \
+        lambda_tools.lambda_conversion('oregon health (&|and) science university', text, 'OHSU')
     return text
         
 #
@@ -292,7 +308,9 @@ def style_normalizer(text):
                                    _normalize_age,
                                    _normalize_credentials,
                                    _normalize_datetime,
+                                   _normalize_kdl,
                                    _normalize_medical_record_number,
+                                   _normalize_ohsu,
                                    _normalize_of,
                                    _normalize_per,
                                    _normalize_plural,
