@@ -227,8 +227,8 @@ class Process_manager(Manager_base):
         self.metadata_manager = metadata_manager
         self.password = password
         self._project_imports()
-        self._create_registries(remote_registry, password)
         self._create_objects()
+        self._create_registries(remote_registry, password)
         self._create_managers(password)
         self._push_directories()
         self._register_evaluator_objects()

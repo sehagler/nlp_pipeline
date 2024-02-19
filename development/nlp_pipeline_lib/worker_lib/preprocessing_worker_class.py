@@ -64,20 +64,19 @@ class Preprocessing_worker(Worker_base):
         now = datetime.datetime.now()
         document_start_datetime = \
             now.strftime("%d-%b-%y %H:%M:%S.%f") [:-3]
-        deidentified_raw_text = \
-            self.deidentifier_object.deidentify(text_item,
-                                                self.deidentifier_flg)
         dynamic_data_manager, processed_report_text = \
             self.preprocessor_registry.run_registry(dynamic_data_manager,
-                                                    deidentified_raw_text,
+                                                    text_item,
                                                     source_system)
+        deidentified_report_text = \
+            self.deidentifier_object.deidentify(processed_report_text)
         now = datetime.datetime.now()
         document_end_datetime = now.strftime("%d-%b-%y %H:%M:%S.%f")[:-3]
         nlp_metadata['DOCUMENT_PREPROCESSING_START_DATETIME'] = \
             document_start_datetime
         nlp_metadata['DOCUMENT_PREPROCESSING_END_DATETIME'] = \
             document_end_datetime
-        return dynamic_data_manager, nlp_metadata, deidentified_raw_text, processed_report_text
+        return dynamic_data_manager, nlp_metadata, text_item, deidentified_report_text
     
     #
     def _preprocess_documents(self, dynamic_data_manager, start_idx, password):
