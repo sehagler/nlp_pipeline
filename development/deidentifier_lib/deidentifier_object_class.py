@@ -7,17 +7,15 @@ Created on Wed Feb 14 13:46:12 2024
 
 #
 import datetime
-#from names_dataset import NameDataset
-#from pydeidentify import Deidentifier, DeidentifiedText
+from names_dataset import NameDataset
+from pydeidentify import Deidentifier, DeidentifiedText
 import random
 import re
 import string
 
 #
 class Deidentifier_object(object):
-    pass
-    
-    '''
+
     #
     def __init__(self):
         nd = NameDataset()
@@ -179,8 +177,3 @@ class Deidentifier_object(object):
             person_str = self._random_person(person_str)
             text = re.sub(person_key, person_str, text)
         return text    
-    '''
-    
-    #
-    def deidentify(self, text):
-        return text
